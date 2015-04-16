@@ -1,7 +1,7 @@
 package net.alcuria.umbracraft;
 
-import net.alcuria.umbracraft.views.MainView;
-import net.alcuria.umbracraft.views.View;
+import net.alcuria.umbracraft.layouts.Layout;
+import net.alcuria.umbracraft.layouts.MainLayout;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -13,13 +13,13 @@ import com.kotcrab.vis.ui.VisUI;
 
 public class UmbraCraft extends ApplicationAdapter {
 	private SpriteBatch batch;
-	View view;
+	Layout view;
 	
 	@Override
 	public void create () {
 		VisUI.load();
 		batch = new SpriteBatch();
-		view = new MainView();
+		view = new MainLayout();
 	}
 
 	@Override

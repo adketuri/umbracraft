@@ -1,4 +1,4 @@
-package net.alcuria.umbracraft.views;
+package net.alcuria.umbracraft.layouts;
 
 import net.alcuria.umbracraft.modules.HeroModule;
 import net.alcuria.umbracraft.modules.Module;
@@ -12,17 +12,17 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
-public class MainView implements View {
+public class MainLayout extends Layout {
 
 	private Array<Module> modules;
 	private Stage stage;
 	private Table content;
 	
-	public MainView() {
+	public MainLayout() {
 		modules = new Array<Module>();
 		modules.add(new HeroModule());
 		stage = new Stage();
-		stage.setDebugAll(true);
+		//stage.setDebugAll(true);
 		Gdx.input.setInputProcessor(stage);
 		Table root = new Table();
 		root.setFillParent(true);
@@ -56,7 +56,7 @@ public class MainView implements View {
 					{
 						addListener(new ClickListener(){
 							public void clicked(InputEvent event, float x, float y) {
-								for (Module m : modules){
+								for (Module<?> m : modules){
 									m.save();
 								}
 							};
