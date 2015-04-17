@@ -1,40 +1,41 @@
 package net.alcuria.umbracraft.layouts;
 
-import net.alcuria.umbracraft.modules.Module;
+import net.alcuria.umbracraft.mapgen.MapGenerator;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 
 public class MapLayout extends Layout {
-	private Stage stage;
-	private Table content;
+	private final Table content;
+	private final MapGenerator gen;
+	private final Stage stage;
 
 	public MapLayout() {
+		gen = new MapGenerator();
 		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
+		Gdx.input.setInputProcessor(gen);
 		Table root = new Table();
 		content = new Table();
 		root.setFillParent(true);
-		root.add(new Table(){
+		root.add(new Table() {
 			{
 				add(content).expand().fill();
 			}
 		}).expand().fill();
 		stage.addActor(root);
 	}
-	
+
 	@Override
-	public void update(float delta) {
-		stage.act();		
+	public void render(SpriteBatch batch) {
+		stage.draw();
+		gen.draw(batch);
 	}
 
 	@Override
-	public void render() {
-		stage.draw();		
+	public void update(float delta) {
+		stage.act();
 	}
 
 }

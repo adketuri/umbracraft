@@ -4,33 +4,33 @@ import net.alcuria.umbracraft.modules.HeroModule;
 import net.alcuria.umbracraft.modules.Module;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 public class MainLayout extends Layout {
 
-	private Array<Module> modules;
-	private Stage stage;
-	private Table content;
-	
+	private final Table content;
+	private final Array<Module> modules;
+	private final Stage stage;
+
 	public MainLayout() {
 		modules = new Array<Module>();
 		modules.add(new HeroModule());
 		stage = new Stage();
-		//stage.setDebugAll(true);
+		// stage.setDebugAll(true);
 		Gdx.input.setInputProcessor(stage);
 		Table root = new Table();
 		root.setFillParent(true);
 		final Table menu = new Table();
 		content = new Table();
-		for (final Module m : modules){
+		for (final Module m : modules) {
 			menu.add(m.getButton()).row();
-			m.getButton().addListener(new ClickListener(){
+			m.getButton().addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					content.clear();
@@ -39,24 +39,30 @@ public class MainLayout extends Layout {
 			});
 		}
 		root.add(topnav()).expandX().fill().height(20).row();
-		root.add(new Table(){
+		root.add(new Table() {
 			{
 				add(menu);
 				add(content).expand().fill();
-				
+
 			}
 		}).expand().fill();
 		stage.addActor(root);
 	}
-	
-	private Table topnav(){
-		return new Table(){
+
+	@Override
+	public void render(SpriteBatch batch) {
+		stage.draw();
+	}
+
+	private Table topnav() {
+		return new Table() {
 			{
-				add(new VisTextButton("Save"){
+				add(new VisTextButton("Save") {
 					{
-						addListener(new ClickListener(){
+						addListener(new ClickListener() {
+							@Override
 							public void clicked(InputEvent event, float x, float y) {
-								for (Module<?> m : modules){
+								for (Module<?> m : modules) {
 									m.save();
 								}
 							};
@@ -66,15 +72,10 @@ public class MainLayout extends Layout {
 			}
 		};
 	}
-	
+
 	@Override
 	public void update(float delta) {
 		stage.act();
-	}
-
-	@Override
-	public void render() {
-		stage.draw();
 	}
 
 }
