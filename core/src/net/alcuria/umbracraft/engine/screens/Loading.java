@@ -39,6 +39,7 @@ public class Loading implements UmbraScreen {
 	@Override
 	public void show() {
 		App.assets().load("tiles/debug.png", Texture.class);
+		App.assets().load("sprites/andoru.png", Texture.class);
 
 	}
 

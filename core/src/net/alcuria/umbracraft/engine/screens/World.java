@@ -1,17 +1,16 @@
 package net.alcuria.umbracraft.engine.screens;
 
 import net.alcuria.umbracraft.App;
+import net.alcuria.umbracraft.engine.components.GameObjectManager;
 import net.alcuria.umbracraft.engine.map.Map;
-
-import com.badlogic.gdx.graphics.Texture;
 
 public class World implements UmbraScreen {
 	private Map map;
-	private Texture tex;
+	private GameObjectManager objects;
 
 	@Override
 	public void dispose() {
-
+		objects.dispose();
 	}
 
 	@Override
@@ -27,6 +26,7 @@ public class World implements UmbraScreen {
 	@Override
 	public void render(float delta) {
 		map.render();
+		objects.render();
 	}
 
 	@Override
@@ -41,13 +41,14 @@ public class World implements UmbraScreen {
 
 	@Override
 	public void show() {
-		tex = App.assets().get("tiles/debug.png", Texture.class);
 		map = new Map();
+		objects = new GameObjectManager();
 	}
 
 	@Override
 	public void update(float delta) {
 		map.update(delta);
+		objects.update(delta);
 		App.camera().update();
 	}
 
