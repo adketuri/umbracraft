@@ -7,13 +7,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.kotcrab.vis.ui.VisUI;
 
-public class UmbraCraft implements ApplicationListener {
+public class UmbraCraftEngine implements ApplicationListener {
 	private App app;
 
 	@Override
 	public void create() {
 		VisUI.load();
-		// view = new MapLayout();
 		app = new App();
 		App.setScreen(new Loading());
 	}

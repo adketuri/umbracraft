@@ -3,7 +3,7 @@ package net.alcuria.umbracraft.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import net.alcuria.umbracraft.UmbraCraft;
+import net.alcuria.umbracraft.UmbraCraftEngine;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -14,6 +14,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener getApplicationListener () {
-                return new UmbraCraft();
+                return new UmbraCraftEngine();
         }
 }
