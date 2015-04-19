@@ -1,8 +1,7 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.App;
-import net.alcuria.umbracraft.engine.components.base.BaseComponent;
-import net.alcuria.umbracraft.engine.components.base.GameObject;
+import net.alcuria.umbracraft.engine.objects.GameObject;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
@@ -77,8 +76,8 @@ public class InputComponent implements BaseComponent, InputProcessor {
 
 	@Override
 	public void update(GameObject object) {
-		object.position.x = lastTouch.x;
-		object.position.y = lastTouch.y;
+		object.desiredPosition.x = lastTouch.x;
+		object.desiredPosition.y = lastTouch.y;
 
 	}
 

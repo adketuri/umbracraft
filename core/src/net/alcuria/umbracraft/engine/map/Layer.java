@@ -7,28 +7,30 @@ import com.badlogic.gdx.utils.Array;
 
 public class Layer {
 	private final Tile[][] data;
-	private final int width, height;
+	private final int width, height, altitude;
 
 	public Layer(int width, int height) {
 		this.width = width;
 		this.height = height;
+		altitude = 0;
 		data = new Tile[width][height];
 		for (int i = 0; i < data.length; i++) {
 			for (int j = 0; j < data[0].length; j++) {
 				if (i == 1 && j == 0) {
-					data[i][j] = new Tile(19);
+					data[i][j] = new Tile(19, false);
 				} else {
-					data[i][j] = new Tile(0);
+					data[i][j] = new Tile(0, true);
 				}
 			}
 		}
 	}
 
 	public void render(Array<TextureRegion> tiles) {
+		final int tileSize = App.config().tileWidth;
 		for (int i = 0; i < data.length; i++) {
 			for (int j = 0; j < data[0].length; j++) {
 				if (data[i][j] != null) {
-					App.batch().draw(tiles.get(data[i][j].id), (i * 16), (j * -16), 16, 16);
+					App.batch().draw(tiles.get(data[i][j].id), (i * tileSize), (j * -tileSize), tileSize, tileSize);
 				}
 			}
 		}

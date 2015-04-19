@@ -1,8 +1,10 @@
-package net.alcuria.umbracraft.engine.components;
+package net.alcuria.umbracraft.engine.objects;
 
 import net.alcuria.umbracraft.App;
-import net.alcuria.umbracraft.engine.components.base.BaseComponent;
-import net.alcuria.umbracraft.engine.components.base.GameObject;
+import net.alcuria.umbracraft.engine.components.BaseComponent;
+import net.alcuria.umbracraft.engine.components.InputComponent;
+import net.alcuria.umbracraft.engine.components.PhysicsComponent;
+import net.alcuria.umbracraft.engine.map.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,8 +15,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Andrew Keturi */
 public class GameObjectCreator {
 
-	/** @return A player {@link GameObject} */
-	public static GameObject player() {
+	/** @param map
+	 * @return A player {@link GameObject} */
+	public static GameObject player(Map map) {
 		GameObject player = new GameObject(new BaseComponent() {
 			private TextureRegion character;
 
@@ -39,9 +42,10 @@ public class GameObjectCreator {
 			}
 		});
 		// input
-		final InputComponent component = new InputComponent();
-		Gdx.input.setInputProcessor(component);
-		player.addComponent(component);
+		final InputComponent input = new InputComponent();
+		Gdx.input.setInputProcessor(input);
+		player.addComponent(input);
+		player.addComponent(new PhysicsComponent(map));
 		return player;
 	}
 }

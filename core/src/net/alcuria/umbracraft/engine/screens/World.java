@@ -1,8 +1,8 @@
 package net.alcuria.umbracraft.engine.screens;
 
 import net.alcuria.umbracraft.App;
-import net.alcuria.umbracraft.engine.components.GameObjectManager;
 import net.alcuria.umbracraft.engine.map.Map;
+import net.alcuria.umbracraft.engine.objects.GameObjectManager;
 
 public class World implements UmbraScreen {
 	private Map map;
@@ -42,7 +42,7 @@ public class World implements UmbraScreen {
 	@Override
 	public void show() {
 		map = new Map();
-		objects = new GameObjectManager();
+		objects = new GameObjectManager(map);
 	}
 
 	@Override

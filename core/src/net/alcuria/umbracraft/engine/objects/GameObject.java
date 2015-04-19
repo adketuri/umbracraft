@@ -1,16 +1,18 @@
-package net.alcuria.umbracraft.engine.components.base;
+package net.alcuria.umbracraft.engine.objects;
+
+import net.alcuria.umbracraft.engine.components.BaseComponent;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-/**
- * A top-level game object. Players, enemies, decorations, and so on, all should be instantiated
- * as GameObjects with logic separated out in the {@link BaseComponent}.
- * @author Andrew Keturi
- */
+/** A top-level game object. Players, enemies, decorations, and so on, all should
+ * be instantiated as GameObjects with logic separated out in the
+ * {@link BaseComponent}.
+ * @author Andrew Keturi */
 public class GameObject {
 
 	private final Array<BaseComponent> components;
+	public Vector2 desiredPosition;
 	public Vector2 position;
 	public Vector2 velocity;
 
@@ -18,6 +20,7 @@ public class GameObject {
 		components = new Array<BaseComponent>();
 		position = new Vector2();
 		velocity = new Vector2();
+		desiredPosition = new Vector2();
 	}
 
 	public GameObject(BaseComponent... components) {
@@ -28,10 +31,8 @@ public class GameObject {
 		}
 	}
 
-	/**
-	 * Adds a single component after instantiation
-	 * @param component the component to add
-	 */
+	/** Adds a single component after instantiation
+	 * @param component the component to add */
 	public void addComponent(BaseComponent component) {
 		component.create();
 		components.add(component);

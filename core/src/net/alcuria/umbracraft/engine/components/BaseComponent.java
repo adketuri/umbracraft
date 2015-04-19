@@ -1,4 +1,6 @@
-package net.alcuria.umbracraft.engine.components.base;
+package net.alcuria.umbracraft.engine.components;
+
+import net.alcuria.umbracraft.engine.objects.GameObject;
 
 /**
  * A basic component
