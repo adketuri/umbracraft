@@ -1,5 +1,9 @@
 package net.alcuria.umbracraft.engine.map;
 
 public class Tile {
-	private int id;
+	final int id;
+
+	public Tile(int id) {
+		this.id = id;
+	}
 }

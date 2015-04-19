@@ -53,7 +53,7 @@ public class App {
 	public App() {
 		config = new Config();
 		assets = new AssetManager();
-		camera = new OrthographicCamera(config.width, config.height);
+		camera = new OrthographicCamera(config.viewWwidth, config.viewHeight);
 		batch = new SpriteBatch();
 	}
 

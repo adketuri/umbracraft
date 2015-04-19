@@ -26,7 +26,7 @@ public class World implements UmbraScreen {
 
 	@Override
 	public void render(float delta) {
-		App.batch().draw(tex, 0, 0);
+		map.render();
 	}
 
 	@Override
@@ -42,11 +42,12 @@ public class World implements UmbraScreen {
 	@Override
 	public void show() {
 		tex = App.assets().get("tiles/debug.png", Texture.class);
+		map = new Map();
 	}
 
 	@Override
 	public void update(float delta) {
-		App.camera().rotate(delta);
+		map.update(delta);
 		App.camera().update();
 	}
 
