@@ -1,6 +1,6 @@
 package net.alcuria.umbracraft;
 import net.alcuria.umbracraft.layouts.Layout;
-import net.alcuria.umbracraft.layouts.MapLayout;
+import net.alcuria.umbracraft.layouts.MapGenLayout;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -17,7 +17,7 @@ public class UmbraCraftMapgenTest implements ApplicationListener {
 	public void create() {
 		VisUI.load();
 		batch = new SpriteBatch();
-		view = new MapLayout();
+		view = new MapGenLayout();
 	}
 
 	@Override

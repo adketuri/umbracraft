@@ -1,7 +1,7 @@
 package net.alcuria.umbracraft;
 
 import net.alcuria.umbracraft.layouts.Layout;
-import net.alcuria.umbracraft.layouts.MainLayout;
+import net.alcuria.umbracraft.layouts.EditorLayout;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -18,7 +18,7 @@ public class UmbraCraftEditor implements ApplicationListener {
 	public void create() {
 		VisUI.load();
 		batch = new SpriteBatch();
-		view = new MainLayout();
+		view = new EditorLayout();
 	}
 
 	@Override

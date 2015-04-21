@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-public class MapLayout extends Layout {
+public class MapGenLayout extends Layout {
 	private final Table content;
 	private final MapGenerator gen;
 	private final Stage stage;
 
-	public MapLayout() {
+	public MapGenLayout() {
 		gen = new MapGenerator();
 		stage = new Stage();
 		Gdx.input.setInputProcessor(gen);

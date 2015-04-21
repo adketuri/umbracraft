@@ -4,6 +4,9 @@ import net.alcuria.umbracraft.App;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.objects.GameObjectManager;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+
 public class World implements UmbraScreen {
 	private Map map;
 	private GameObjectManager objects;
@@ -48,8 +51,19 @@ public class World implements UmbraScreen {
 	@Override
 	public void update(float delta) {
 		map.update(delta);
+		if (Gdx.input.isKeyPressed(Keys.W)) {
+			App.camera().translate(0, 4, 0);
+		}
+		if (Gdx.input.isKeyPressed(Keys.A)) {
+			App.camera().translate(-4, 0, 0);
+		}
+		if (Gdx.input.isKeyPressed(Keys.S)) {
+			App.camera().translate(0, -4, 0);
+		}
+		if (Gdx.input.isKeyPressed(Keys.D)) {
+			App.camera().translate(4, 0, 0);
+		}
 		objects.update(delta);
 		App.camera().update();
 	}
-
 }

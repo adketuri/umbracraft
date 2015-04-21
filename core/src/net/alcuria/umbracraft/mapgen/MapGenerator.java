@@ -25,9 +25,7 @@ public class MapGenerator implements InputProcessor {
 		generate();
 	}
 
-	/**
-	 * Clears the filled map
-	 */
+	/** Clears the filled map */
 	private void clearFilled() {
 		for (int i = 0; i < filled.length; i++) {
 			for (int j = 0; j < filled[0].length; j++) {
@@ -55,9 +53,7 @@ public class MapGenerator implements InputProcessor {
 		renderer.end();
 	}
 
-	/**
-	 * Given coordinates, fills a random adjacent point, if it is valid
-	 */
+	/** Given coordinates, fills a random adjacent point, if it is valid */
 	private void fillNearby(int i, int j) {
 		i += MathUtils.random(-1, 1);
 		j += MathUtils.random(-1, 1);
@@ -66,19 +62,15 @@ public class MapGenerator implements InputProcessor {
 		}
 	}
 
-	/**
-	 * Given a point, sets it to filled
-	 */
+	/** Given a point, sets it to filled */
 	private void fillPoint(Point p) {
 		if (p.x >= 0 && p.y >= 0 && p.x < filled.length && p.y < filled[0].length) {
 			filled[p.x][p.y] = true;
 		}
 	}
 
-	/**
-	 * Iterates thru the filled tiles and if an unfilled tile is found with 4
-	 * adjacent filled tiles, we fill it in.
-	 */
+	/** Iterates thru the filled tiles and if an unfilled tile is found with 4
+	 * adjacent filled tiles, we fill it in. */
 	private void fillSuffocated() {
 		for (int i = 1; i < filled.length - 1; i++) {
 			for (int j = 1; j < filled[0].length - 1; j++) {
@@ -90,9 +82,7 @@ public class MapGenerator implements InputProcessor {
 
 	}
 
-	/**
-	 * Fills a weighted path from a starting point to an ending point
-	 */
+	/** Fills a weighted path from a starting point to an ending point */
 	private void fillWalk(Point start, Point end) {
 		fillPoint(start);
 		if (start.equals(end)) {
@@ -128,10 +118,8 @@ public class MapGenerator implements InputProcessor {
 
 	}
 
-	/**
-	 * Given a starting point, some point values, and an offset to that values
-	 * array, this finds and returns the nearest point (as a new point)
-	 */
+	/** Given a starting point, some point values, and an offset to that values
+	 * array, this finds and returns the nearest point (as a new point) */
 	private Point findNearest(Point start, Array<Point> values, int indexOffset) {
 		double nearestDist = Double.MAX_VALUE;
 		Point nearest = new Point(start);
@@ -146,7 +134,7 @@ public class MapGenerator implements InputProcessor {
 
 	}
 
-	private void generate() {
+	public void generate() {
 		long startTime = System.nanoTime();
 		int widenTimes = MathUtils.random(2, 10);
 		int margin = widenTimes + 1;
@@ -203,6 +191,14 @@ public class MapGenerator implements InputProcessor {
 		System.out.println(String.format("Generated! (Took %d ns)", (endTime - startTime)));
 	}
 
+	public int getHeight() {
+		return mapH;
+	}
+
+	public int getWidth() {
+		return mapW;
+	}
+
 	private boolean hasAdjacentEmptySpace(boolean[][] filledRef, int i, int j) {
 		if (!filledRef[i][j]) {
 			return false;
@@ -218,6 +214,14 @@ public class MapGenerator implements InputProcessor {
 			return true;
 		}
 		return false;
+	}
+
+	public boolean isFilled(int x, int y) {
+		if (filled == null || x < 0 || x >= mapW || y < 0 || y >= mapH) {
+			return true;
+		}
+		return filled[x][y];
+
 	}
 
 	@Override
@@ -283,5 +287,4 @@ public class MapGenerator implements InputProcessor {
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
-
 }
