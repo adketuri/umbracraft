@@ -64,6 +64,7 @@ public class World implements UmbraScreen {
 			App.camera().translate(4, 0, 0);
 		}
 		objects.update(delta);
+		App.cameraManager().update();
 		App.camera().update();
 	}
 }

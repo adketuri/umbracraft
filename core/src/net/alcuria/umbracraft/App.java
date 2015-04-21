@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft;
 
+import net.alcuria.umbracraft.engine.events.EventPublisher;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
 
 import com.badlogic.gdx.Gdx;
@@ -11,8 +12,9 @@ public class App {
 
 	private static AssetManager assets;
 	private static SpriteBatch batch;
-	private static OrthographicCamera camera;
+	private static CameraManager camera;
 	private static Config config;
+	private static EventPublisher publisher;
 	private static UmbraScreen screen;
 
 	public static AssetManager assets() {
@@ -24,6 +26,10 @@ public class App {
 	}
 
 	public static OrthographicCamera camera() {
+		return camera.getCamera();
+	}
+
+	public static CameraManager cameraManager() {
 		return camera;
 	}
 
@@ -33,6 +39,10 @@ public class App {
 
 	public static void log(String string) {
 		System.out.println(string);
+	}
+
+	public static EventPublisher publisher() {
+		return publisher;
 	}
 
 	public static UmbraScreen screen() {
@@ -51,10 +61,14 @@ public class App {
 	}
 
 	public App() {
+		// initialize everything
 		config = new Config();
 		assets = new AssetManager();
-		camera = new OrthographicCamera(config.viewWwidth, config.viewHeight);
+		camera = new CameraManager(new OrthographicCamera(config.viewWwidth, config.viewHeight));
 		batch = new SpriteBatch();
+		publisher = new EventPublisher();
+		// now subscribe
+		App.publisher().addListener(camera);
 	}
 
 	public void dispose() {

@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.App;
 import net.alcuria.umbracraft.engine.components.BaseComponent;
 import net.alcuria.umbracraft.engine.components.InputComponent;
 import net.alcuria.umbracraft.engine.components.PhysicsComponent;
+import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
 import net.alcuria.umbracraft.engine.map.Map;
 
 import com.badlogic.gdx.Gdx;
@@ -46,6 +47,7 @@ public class GameObjectCreator {
 		Gdx.input.setInputProcessor(input);
 		player.addComponent(input);
 		player.addComponent(new PhysicsComponent(map));
+		App.publisher().publish(new CameraTargetEvent(player));
 		return player;
 	}
 }
