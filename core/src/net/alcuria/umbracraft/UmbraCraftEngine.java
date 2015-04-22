@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.kotcrab.vis.ui.VisUI;
 
 public class UmbraCraftEngine implements ApplicationListener {
-	private App app;
+	private Game app;
 
 	@Override
 	public void create() {
 		VisUI.load();
-		app = new App();
-		App.setScreen(new Loading());
+		app = new Game();
+		Game.setScreen(new Loading());
 	}
 
 	@Override
@@ -30,17 +30,17 @@ public class UmbraCraftEngine implements ApplicationListener {
 
 	@Override
 	public void render() {
-		if (App.screen() != null) {
-			App.screen().update(Gdx.graphics.getDeltaTime());
+		if (Game.screen() != null) {
+			Game.screen().update(Gdx.graphics.getDeltaTime());
 		}
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		App.batch().begin();
-		App.batch().setProjectionMatrix(App.camera().combined);
-		if (App.screen() != null) {
-			App.screen().render(Gdx.graphics.getDeltaTime());
+		Game.batch().begin();
+		Game.batch().setProjectionMatrix(Game.camera().getCamera().combined);
+		if (Game.screen() != null) {
+			Game.screen().render(Gdx.graphics.getDeltaTime());
 		}
-		App.batch().end();
+		Game.batch().end();
 	}
 
 	@Override

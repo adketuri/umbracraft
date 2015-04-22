@@ -16,4 +16,8 @@ public class EventPublisher {
 			listener.onEvent(event);
 		}
 	}
+
+	public void removeAllListeners() {
+		listeners.clear();
+	}
 }

@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
+/** Generates a map into a 2d array. Also contains some methods to render the map
+ * using simple shapes.
+ * @author Andrew Keturi */
 public class MapGenerator implements InputProcessor {
 
 	Point entrance, exit;

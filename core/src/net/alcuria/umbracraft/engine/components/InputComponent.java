@@ -1,6 +1,6 @@
 package net.alcuria.umbracraft.engine.components;
 
-import net.alcuria.umbracraft.App;
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.objects.GameObject;
 
 import com.badlogic.gdx.InputProcessor;
@@ -56,7 +56,7 @@ public class InputComponent implements BaseComponent, InputProcessor {
 		lastTouch.x = screenX;
 		lastTouch.y = screenY;
 		lastTouch.z = 0;
-		App.camera().unproject(lastTouch);
+		Game.camera().getCamera().unproject(lastTouch);
 		return true;
 	}
 
@@ -65,7 +65,7 @@ public class InputComponent implements BaseComponent, InputProcessor {
 		lastTouch.x = screenX;
 		lastTouch.y = screenY;
 		lastTouch.z = 0;
-		App.camera().unproject(lastTouch);
+		Game.camera().getCamera().unproject(lastTouch);
 		return true;
 	}
 

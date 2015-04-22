@@ -1,6 +1,6 @@
 package net.alcuria.umbracraft.engine.objects;
 
-import net.alcuria.umbracraft.App;
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.components.BaseComponent;
 import net.alcuria.umbracraft.engine.components.InputComponent;
 import net.alcuria.umbracraft.engine.components.PhysicsComponent;
@@ -24,7 +24,7 @@ public class GameObjectCreator {
 
 			@Override
 			public void create() {
-				character = new TextureRegion(App.assets().get("sprites/andoru.png", Texture.class), 16, 27);
+				character = new TextureRegion(Game.assets().get("sprites/andoru.png", Texture.class), 16, 27);
 			}
 
 			@Override
@@ -34,7 +34,7 @@ public class GameObjectCreator {
 
 			@Override
 			public void render(GameObject object) {
-				App.batch().draw(character, object.position.x, object.position.y);
+				Game.batch().draw(character, object.position.x, object.position.y);
 			}
 
 			@Override
@@ -47,7 +47,7 @@ public class GameObjectCreator {
 		Gdx.input.setInputProcessor(input);
 		player.addComponent(input);
 		player.addComponent(new PhysicsComponent(map));
-		App.publisher().publish(new CameraTargetEvent(player));
+		Game.publisher().publish(new CameraTargetEvent(player));
 		return player;
 	}
 }

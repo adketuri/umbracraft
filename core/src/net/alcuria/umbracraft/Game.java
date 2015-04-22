@@ -8,7 +8,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class App {
+public class Game {
 
 	private static AssetManager assets;
 	private static SpriteBatch batch;
@@ -25,11 +25,7 @@ public class App {
 		return batch;
 	}
 
-	public static OrthographicCamera camera() {
-		return camera.getCamera();
-	}
-
-	public static CameraManager cameraManager() {
+	public static CameraManager camera() {
 		return camera;
 	}
 
@@ -50,17 +46,17 @@ public class App {
 	}
 
 	public static void setScreen(UmbraScreen screen) {
-		if (App.screen != null) {
-			App.screen.hide();
+		if (Game.screen != null) {
+			Game.screen.hide();
 		}
-		App.screen = screen;
-		if (App.screen != null) {
-			App.screen.show();
-			App.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Game.screen = screen;
+		if (Game.screen != null) {
+			Game.screen.show();
+			Game.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		}
 	}
 
-	public App() {
+	public Game() {
 		// initialize everything
 		config = new Config();
 		assets = new AssetManager();
@@ -68,7 +64,7 @@ public class App {
 		batch = new SpriteBatch();
 		publisher = new EventPublisher();
 		// now subscribe
-		App.publisher().addListener(camera);
+		Game.publisher().addListener(camera);
 	}
 
 	public void dispose() {
@@ -80,7 +76,16 @@ public class App {
 		if (batch != null) {
 			batch.dispose();
 		}
-		batch = null;
+		camera = null;
+		config = null;
+		if (publisher != null) {
+			publisher.removeAllListeners();
+		}
+		publisher = null;
+		if (screen != null) {
+			screen.dispose();
+		}
+		screen = null;
 		System.gc();
 	}
 }

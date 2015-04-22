@@ -1,6 +1,6 @@
 package net.alcuria.umbracraft.engine.screens;
 
-import net.alcuria.umbracraft.App;
+import net.alcuria.umbracraft.Game;
 
 import com.badlogic.gdx.graphics.Texture;
 
@@ -38,15 +38,15 @@ public class Loading implements UmbraScreen {
 
 	@Override
 	public void show() {
-		App.assets().load("tiles/debug.png", Texture.class);
-		App.assets().load("sprites/andoru.png", Texture.class);
+		Game.assets().load("tiles/debug.png", Texture.class);
+		Game.assets().load("sprites/andoru.png", Texture.class);
 
 	}
 
 	@Override
 	public void update(float delta) {
-		if (App.assets().update()) {
-			App.setScreen(new World());
+		if (Game.assets().update()) {
+			Game.setScreen(new World());
 		}
 	}
 

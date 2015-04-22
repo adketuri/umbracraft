@@ -1,6 +1,6 @@
 package net.alcuria.umbracraft.engine.map;
 
-import net.alcuria.umbracraft.App;
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import net.alcuria.umbracraft.mapgen.MapGenerator;
 
@@ -54,11 +54,11 @@ public class Layer {
 	}
 
 	public void render(Array<TextureRegion> tiles) {
-		final int tileSize = App.config().tileWidth;
+		final int tileSize = Game.config().tileWidth;
 		for (int i = 0; i < data.length; i++) {
 			for (int j = 0; j < data[0].length; j++) {
 				if (data[i][j] != null) {
-					App.batch().draw(tiles.get(data[i][j].id), (i * tileSize), (j * -tileSize), tileSize, tileSize);
+					Game.batch().draw(tiles.get(data[i][j].id), (i * tileSize), (j * -tileSize), tileSize, tileSize);
 				}
 			}
 		}

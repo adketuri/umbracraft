@@ -24,7 +24,7 @@ public class CameraManager implements EventListener {
 		if (event instanceof CameraTargetEvent) {
 			CameraTargetEvent camEvent = ((CameraTargetEvent) event);
 			target = camEvent.player;
-			App.log("Set camera target to " + target);
+			Game.log("Set camera target to " + target);
 		}
 	}
 
