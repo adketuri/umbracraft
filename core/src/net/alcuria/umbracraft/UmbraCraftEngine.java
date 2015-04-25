@@ -8,19 +8,19 @@ import com.badlogic.gdx.graphics.GL20;
 import com.kotcrab.vis.ui.VisUI;
 
 public class UmbraCraftEngine implements ApplicationListener {
-	private Game app;
+	private Game game;
 
 	@Override
 	public void create() {
 		VisUI.load();
-		app = new Game();
+		game = new Game();
 		Game.setScreen(new Loading());
 	}
 
 	@Override
 	public void dispose() {
 		VisUI.dispose();
-		app.dispose();
+		game.dispose();
 	}
 
 	@Override
