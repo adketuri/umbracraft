@@ -7,6 +7,7 @@ import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -18,13 +19,15 @@ import com.badlogic.gdx.utils.Json;
  * @author Andrew Keturi */
 public class Map implements Disposable {
 	private final int[][] altMap;
-	private final Tile[][] data;
 	private TilesetDefinition def;
+	private final BitmapFont font;
 	private final int height;
+	private final Array<Layer> layers;
 	private final Array<TextureRegion> tiles;
 	private final int width;
 
 	public Map() {
+		font = Game.assets().get("fonts/message.fnt", BitmapFont.class);
 		String filename = "";
 		// json -> object
 		Json json = new Json();
@@ -39,92 +42,83 @@ public class Map implements Disposable {
 		tiles.addAll(getRegions(filename));
 		width = 20;
 		height = 15;
-		data = new Tile[width][height];
+		layers = new Array<Layer>();
 		altMap = new int[width][height];
-		altMap[3][3] = 2;
-		altMap[3][4] = 2;
-		altMap[4][3] = 2;
-		altMap[4][4] = 2;
-		altMap[5][3] = 2;
-		altMap[5][4] = 2;
-		altMap[3][5] = 2;
-		altMap[4][5] = 2;
-		altMap[5][5] = 2;
+
+		// set dummy alts
+		for (int i = 3; i < 9; i++) {
+			for (int j = 3; j < 9; j++) {
+				altMap[i][j] = 2;
+			}
+		}
+		for (int i = 5; i < 7; i++) {
+			for (int j = 5; j < 7; j++) {
+				altMap[i][j] = 4;
+			}
+		}
 		//---
 		altMap[10][10] = 4;
 		altMap[10][11] = 4;
 		altMap[9][10] = 4;
 		altMap[9][11] = 4;
-		int curAlt = 0;
-		for (int i = 0; i < data.length; i++) {
-			for (int j = 0; j < data[0].length; j++) {
-				data[i][j] = new Tile(altMap[i][j], 0);
-			}
-		}
 
-		for (int i = 0; i < data.length; i++) {
-			for (int j = 0; j < data[0].length; j++) {
-				if (altMap[i][j] > curAlt) {
-					int alt = altMap[i][j];
-					data[i][j - alt].id = getEdgeData(i, j);
-					while (alt > 0) {
-						alt--;
-						data[i][j - alt].id = getWallData(i, j, alt);
-					}
+		// create list of all heights
+		Array<Integer> heights = new Array<Integer>();
+		for (int i = 0; i < altMap.length; i++) {
+			for (int j = 0; j < altMap[0].length; j++) {
+				if (!heights.contains(Integer.valueOf(altMap[i][j]), false)) {
+					heights.add(new Integer(altMap[i][j]));
 				}
 			}
 		}
+		heights.sort();
+
+		for (Integer altitude : heights) {
+			Layer l = new Layer();
+			l.alt = altitude;
+			l.data = new Tile[width][height];
+			for (int i = 0; i < altMap.length; i++) {
+				for (int j = 0; j < altMap[0].length; j++) {
+					if (altMap[i][j] == altitude) {
+						if (j + altitude >= 0 && j + altitude < altMap[0].length) {
+							l.data[i][j + altitude] = new Tile(l.alt, l.alt);
+							if (j - 1 >= 0 && j - 1 < altMap[0].length) { // if in range
+								int drop = altMap[i][j] - altMap[i][j - 1];
+								while (drop > 0) {
+									l.data[i][(j + altitude) - drop] = new Tile(def.middleCenterWall, l.alt);
+									drop--;
+								}
+							}
+							//							for (int k = 1; k <= altitude; k++) {
+							//								if (altMap[i][j - k] < altitude - altMap[i][j]) {
+							//									l.data[i][(j + altitude) - k] = new Tile(def.middleCenterWall, l.alt);
+							//								}
+							//							}
+						}
+					}
+				}
+			}
+			layers.add(l);
+		}
+
+		//		for (int i = 0; i < data.length; i++) {
+		//			for (int j = 0; j < data[0].length; j++) {
+		//				if (altMap[i][j] > curAlt) {
+		//					int alt = altMap[i][j];
+		//					data[i][j - alt].id = getEdgeData(i, j);
+		//					while (alt > 0) {
+		//						alt--;
+		//						data[i][j - alt].id = getWallData(i, j, alt);
+		//					}
+		//				}
+		//			}
+		//		}
 	}
 
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
 
-	}
-
-	/** For a given true coordinate, use the altMap to figure out which edge to
-	 * place
-	 * @param i
-	 * @param j
-	 * @return */
-	private int getEdgeData(int i, int j) {
-		if (def == null) {
-			return 0;
-		}
-		// top right down left
-		int mask = 0b0000;
-		if (altMap[i][j - 1] < altMap[i][j]) {
-			mask = mask ^ 0b1000;
-		}
-		if (altMap[i + 1][j] < altMap[i][j]) {
-			mask = mask ^ 0b0100;
-		}
-		if (altMap[i][j + 1] < altMap[i][j]) {
-			mask = mask ^ 0b0010;
-		}
-		if (altMap[i - 1][j] < altMap[i][j]) {
-			mask = mask ^ 0b0001;
-		}
-		// now to switch on every possibility
-		switch (mask) {
-		case 0b0001:
-			return def.edgeLeft;
-		case 0b0010:
-			return def.edgeBottom;
-		case 0b0100:
-			return def.edgeRight;
-		case 0b1000:
-			return def.edgeTop;
-		case 0b1100:
-			return def.edgeTopRight;
-		case 0b1001:
-			return def.edgeTopLeft;
-		case 0b0110:
-			return def.edgeBottomRight;
-		case 0b0011:
-			return def.edgeBottomLeft;
-		}
-		return 0;
 	}
 
 	/** Returns an array of texture regions loaded from the tileset
@@ -136,42 +130,27 @@ public class Map implements Disposable {
 			final int x = (i * Game.config().tileWidth) % Game.config().tilesetWidth;
 			final int y = (i / Game.config().tileWidth) * Game.config().tileWidth;
 			final int w = Game.config().tileWidth;
-			Game.log(x + " " + y);
 			regions.add(new TextureRegion(texture, x, y, w, w));
 		}
 		return regions;
 	}
 
-	private int getWallData(int i, int j, int altOff) {
-		int alt = altMap[i][j];
-		if (altOff == 0) {
-			if (data[i][j - alt].id == def.edgeBottomLeft) {
-				return def.bottomLeftWall;
-			} else if (data[i][j - alt].id == def.edgeBottom) {
-				return def.bottomCenterWall;
-			} else if (data[i][j - alt].id == def.edgeBottomRight) {
-				return def.bottomRightWall;
-			}
-		} else {
-			if (data[i][j - alt].id == def.edgeBottomLeft) {
-				return def.middleLeftWall;
-			} else if (data[i][j - alt].id == def.edgeBottom) {
-				return def.middleCenterWall;
-			} else if (data[i][j - alt].id == def.edgeBottomRight) {
-				return def.middleRightWall;
-			}
-		}
-		return 0;
-	}
-
 	/** Renders every visible layer. */
 	public void render() {
 		final int tileSize = Game.config().tileWidth;
-		for (int i = 0; i < data.length; i++) {
-			for (int j = 0; j < data[0].length; j++) {
-				if (data[i][j] != null) {
-					Game.batch().draw(tiles.get(data[i][j].id), (i * tileSize), (j * -tileSize), tileSize, tileSize);
+		for (int k = 0; k < layers.size; k++) {
+			final Tile[][] data = layers.get(k).data;
+			for (int i = 0; i < data.length; i++) {
+				for (int j = 0; j < data[0].length; j++) {
+					if (data[i][j] != null) {
+						Game.batch().draw(tiles.get(data[i][j].id), (i * tileSize), (j * tileSize), tileSize, tileSize);
+					}
 				}
+			}
+		}
+		for (int i = 0; i < altMap.length; i++) {
+			for (int j = 0; j < altMap[0].length; j++) {
+				font.draw(Game.batch(), String.valueOf(altMap[i][j]), i * tileSize + 6, j * tileSize + 14);
 			}
 		}
 	}

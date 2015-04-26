@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.screens;
 import net.alcuria.umbracraft.Game;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class Loading implements UmbraScreen {
 
@@ -40,6 +41,7 @@ public class Loading implements UmbraScreen {
 	public void show() {
 		Game.assets().load("tiles/debug.png", Texture.class);
 		Game.assets().load("sprites/andoru.png", Texture.class);
+		Game.assets().load("fonts/message.fnt", BitmapFont.class);
 
 	}
 
