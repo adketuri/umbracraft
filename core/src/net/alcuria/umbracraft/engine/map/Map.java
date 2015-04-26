@@ -46,14 +46,19 @@ public class Map implements Disposable {
 		altMap = new int[width][height];
 
 		//set dummy alts
-		for (int i = 5; i < 7; i++) {
+		for (int i = 3; i < 9; i++) {
 			for (int j = 3; j < 9; j++) {
 				altMap[i][j] = 1;
 			}
 		}
+		for (int i = 4; i < 8; i++) {
+			for (int j = 4; j < 8; j++) {
+				altMap[i][j] = 2;
+			}
+		}
 		for (int i = 5; i < 7; i++) {
 			for (int j = 5; j < 7; j++) {
-				altMap[i][j] = 2;
+				altMap[i][j] = 3;
 			}
 		}
 		//---
@@ -99,15 +104,6 @@ public class Map implements Disposable {
 			layers.add(l);
 			lastAlt = l.alt;
 		}
-
-		//		// fill in missing tiles underneath edges
-		//		for (int i = 0; i < altMap.length; i++) {
-		//			for (int j = 0; j < altMap[0].length; j++) {
-		//				if (layers.get(0).data[i][j] == null) {
-		//					layers.get(0).data[i][j] = new Tile(def.floor, layers.get(0).alt);
-		//				}
-		//			}
-		//		}
 
 	}
 
@@ -203,7 +199,7 @@ public class Map implements Disposable {
 	/** Renders every visible layer. */
 	public void render() {
 		final int tileSize = Game.config().tileWidth;
-		for (int k = 0; k < 3; k++) {
+		for (int k = 0; k < layers.size; k++) {
 			final Tile[][] data = layers.get(k).data;
 			for (int i = 0; i < data.length; i++) {
 				for (int j = 0; j < data[0].length; j++) {
