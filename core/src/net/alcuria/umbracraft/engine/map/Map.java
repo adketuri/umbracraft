@@ -23,6 +23,7 @@ public class Map implements Disposable {
 	private final BitmapFont font;
 	private final int height;
 	private final Array<Layer> layers;
+	private final int maxAlt;
 	private final Array<TextureRegion> tiles;
 	private final int width;
 
@@ -45,28 +46,35 @@ public class Map implements Disposable {
 		layers = new Array<Layer>();
 		altMap = new int[width][height];
 
-		//set dummy alts
-		for (int i = 3; i < 9; i++) {
-			for (int j = 3; j < 9; j++) {
-				altMap[i][j] = 1;
-			}
-		}
-		for (int i = 4; i < 8; i++) {
-			for (int j = 4; j < 8; j++) {
-				altMap[i][j] = 2;
-			}
-		}
-		for (int i = 5; i < 7; i++) {
-			for (int j = 5; j < 7; j++) {
-				altMap[i][j] = 3;
-			}
-		}
+		//		set dummy alts
+		//		for (int i = 3; i < 9; i++) {
+		//			for (int j = 3; j < 9; j++) {
+		//				altMap[i][j] = 1;
+		//			}
+		//		}
+		//		for (int i = 4; i < 8; i++) {
+		//			for (int j = 4; j < 8; j++) {
+		//				altMap[i][j] = 2;
+		//			}
+		//		}
+		//		for (int i = 5; i < 7; i++) {
+		//			for (int j = 5; j < 7; j++) {
+		//				altMap[i][j] = 3;
+		//			}
+		//		}
 		//---
-		//		altMap[10][10] = 4;
-		//		altMap[10][11] = 4;
-		//		altMap[9][10] = 4;
-		//		altMap[9][11] = 4;
-
+		altMap[10][8] = 4;
+		altMap[10][9] = 4;
+		altMap[9][8] = 4;
+		altMap[9][9] = 4;
+		altMap[10 + 4][8] = 2;
+		altMap[10 + 4][9] = 2;
+		altMap[9 + 4][8] = 2;
+		altMap[9 + 4][9] = 2;
+		altMap[10 + 8][8] = 1;
+		altMap[10 + 8][9] = 1;
+		altMap[9 + 8][8] = 1;
+		altMap[9 + 8][9] = 1;
 		// create list of all heights
 		Array<Integer> heights = new Array<Integer>();
 		for (int i = 0; i < altMap.length; i++) {
@@ -77,6 +85,7 @@ public class Map implements Disposable {
 			}
 		}
 		heights.sort();
+		maxAlt = heights.get(heights.size - 1);
 
 		// build the layer
 		int lastAlt = 0;
@@ -91,7 +100,7 @@ public class Map implements Disposable {
 							l.data[i][j + altitude] = new Tile(createEdge(i, j, altitude), l.alt); // create edge
 							// check if we need to create a wall
 							if (j - 1 >= 0 && j - 1 < altMap[0].length) {
-								int drop = altitude - altMap[i][j - 1];
+								int drop = (altitude - altMap[i][j - 1]) - lastAlt;
 								while (drop > 0) {
 									l.data[i][(j + altitude) - drop] = new Tile(createWall(i, j, drop, altitude, lastAlt), l.alt);
 									drop--;
@@ -152,10 +161,8 @@ public class Map implements Disposable {
 	}
 
 	private int createWall(int i, int j, int drop, int altitude, int lastAlt) {
-		Game.log(i + " " + j + " " + " " + drop + " " + altitude);
 		if (drop + lastAlt == altitude) {
 			// lower walls
-			Game.log("placing low");
 			if (altContains(i - 1, j) && altMap[i - 1][j] < altitude) {
 				return def.bottomLeftWall;
 			} else if (altContains(i + 1, j) && altMap[i + 1][j] < altitude) {
@@ -164,7 +171,6 @@ public class Map implements Disposable {
 				return def.bottomCenterWall;
 			}
 		} else {
-			Game.log("placing mid");
 			// upper walls
 			if (altContains(i - 1, j) && altMap[i - 1][j] < altitude) {
 				return def.middleLeftWall;
@@ -182,6 +188,11 @@ public class Map implements Disposable {
 
 	}
 
+	/** @return the tallest altitude on this map */
+	public int getMaxAltitude() {
+		return maxAlt;
+	}
+
 	/** Returns an array of texture regions loaded from the tileset
 	 * @param filename */
 	private Array<TextureRegion> getRegions(String filename) {
@@ -196,16 +207,17 @@ public class Map implements Disposable {
 		return regions;
 	}
 
-	/** Renders every visible layer. */
-	public void render() {
+	/** Renders every visible layer.
+	 * @param row */
+	public void render(int row) {
 		final int tileSize = Game.config().tileWidth;
-		for (int k = 0; k < layers.size; k++) {
+		for (int k = 0; k < 4; k++) {
+			int alt = layers.get(k).alt;
 			final Tile[][] data = layers.get(k).data;
+			row += alt;
 			for (int i = 0; i < data.length; i++) {
-				for (int j = 0; j < data[0].length; j++) {
-					if (data[i][j] != null) {
-						Game.batch().draw(tiles.get(data[i][j].id), (i * tileSize), (j * tileSize), tileSize, tileSize);
-					}
+				if (row >= 0 && row < data[i].length && data[i][row] != null) {
+					Game.batch().draw(tiles.get(data[i][row].id), (i * tileSize), (row * tileSize), tileSize, tileSize);
 				}
 			}
 		}
@@ -219,5 +231,4 @@ public class Map implements Disposable {
 	public void update(float delta) {
 
 	}
-
 }

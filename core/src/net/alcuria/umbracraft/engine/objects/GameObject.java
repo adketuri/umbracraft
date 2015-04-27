@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class GameObject {
 
+	public int altitude;
 	private final Array<BaseComponent> components;
 	public Vector2 desiredPosition;
 	public Vector2 position;

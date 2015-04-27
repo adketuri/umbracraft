@@ -5,13 +5,11 @@ import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.objects.GameObjectManager;
 
 public class World implements UmbraScreen {
-	private Map map;
 	private GameObjectManager objects;
 
 	@Override
 	public void dispose() {
 		objects.dispose();
-		map.dispose();
 	}
 
 	@Override
@@ -26,7 +24,6 @@ public class World implements UmbraScreen {
 
 	@Override
 	public void render(float delta) {
-		map.render();
 		objects.render();
 	}
 
@@ -42,13 +39,12 @@ public class World implements UmbraScreen {
 
 	@Override
 	public void show() {
-		map = new Map();
+		Map map = new Map();
 		objects = new GameObjectManager(map);
 	}
 
 	@Override
 	public void update(float delta) {
-		map.update(delta);
 		objects.update(delta);
 		Game.camera().update();
 	}

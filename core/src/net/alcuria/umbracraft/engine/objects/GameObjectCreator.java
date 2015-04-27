@@ -21,10 +21,12 @@ public class GameObjectCreator {
 	public static GameObject player(Map map) {
 		GameObject player = new GameObject(new BaseComponent() {
 			private TextureRegion character;
+			private TextureRegion shadow;
 
 			@Override
 			public void create() {
 				character = new TextureRegion(Game.assets().get("sprites/andoru.png", Texture.class), 16, 27);
+				shadow = new TextureRegion(Game.assets().get("sprites/shadow.png", Texture.class), 16, 16);
 			}
 
 			@Override
@@ -34,7 +36,8 @@ public class GameObjectCreator {
 
 			@Override
 			public void render(GameObject object) {
-				Game.batch().draw(character, object.position.x, object.position.y);
+				Game.batch().draw(shadow, object.position.x, object.position.y);
+				Game.batch().draw(character, object.position.x, object.position.y + object.altitude);
 			}
 
 			@Override
