@@ -185,6 +185,13 @@ public class Map implements Disposable {
 
 	}
 
+	public int getAltitudeAt(int i, int j) {
+		if (i >= 0 && i < altMap.length && j >= 0 && j < altMap[0].length) {
+			return altMap[i][j];
+		}
+		return 0;
+	}
+
 	/** @return the tallest altitude on this map */
 	public int getMaxAltitude() {
 		return maxAlt;
@@ -211,23 +218,27 @@ public class Map implements Disposable {
 		for (int k = 0; k < layers.size; k++) {
 			int alt = layers.get(k).alt;
 			final Tile[][] data = layers.get(k).data;
-			//row += alt;
 			if (row < 0 || row >= altMap[0].length) {
 				return;
 			}
+			if (k > 0 && alt == 0) {
+			}
 			for (int i = 0; i < data.length; i++) {
-				for (int j = 0; j <= altMap[i][row]; j++) {
+				// prevents bottom rows from creeping up during rendering
+				// TODO: make this generic. i think for alts > 0 it will break
+				int rowRenderHeight = alt == 0 ? 0 : altMap[i][row];
+				for (int j = 0; j <= rowRenderHeight; j++) {
 					if (row >= 0 && row < data[i].length && data[i][row + j] != null) {
 						Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * 16, tileSize, tileSize);
 					}
 				}
 			}
 		}
-		for (int i = 0; i < altMap.length; i++) {
-			for (int j = 0; j < altMap[0].length; j++) {
-				font.draw(Game.batch(), String.valueOf(altMap[i][j]), i * tileSize + 6, j * tileSize + 14);
-			}
-		}
+		//		for (int i = 0; i < altMap.length; i++) {
+		//			for (int j = 0; j < altMap[0].length; j++) {
+		//				font.draw(Game.batch(), String.valueOf(altMap[i][j]), i * tileSize + 6, j * tileSize + 14);
+		//			}
+		//		}
 	}
 
 	public void update(float delta) {

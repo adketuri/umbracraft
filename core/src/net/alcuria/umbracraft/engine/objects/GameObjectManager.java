@@ -47,9 +47,7 @@ public class GameObjectManager {
 				gameObjects.get(0).render();
 			}
 			row--;
-
 		}
-
 	}
 
 	public void update(float delta) {

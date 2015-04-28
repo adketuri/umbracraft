@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.engine.components;
 
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.objects.GameObject;
 
@@ -49,9 +50,35 @@ public class PhysicsComponent implements BaseComponent {
 		bounds.y = object.position.y;
 		if (object.velocity.y > 0) {
 			// NORTH
-			bounds.y += height;
+			int tileX = (int) (object.position.x + width / 2) / Game.config().tileWidth;
+			int tileY = (int) (object.position.y + height) / Game.config().tileWidth;
+			if (map.getAltitudeAt(tileX, tileY) > object.altitude) {
+				object.position.y = (tileY - 1) * Game.config().tileWidth;
+			}
+
 		} else if (object.velocity.y < 0) {
 			// SOUTH
+			int tileX = (int) (object.position.x + width / 2) / Game.config().tileWidth;
+			int tileY = (int) (object.position.y) / Game.config().tileWidth;
+			if (map.getAltitudeAt(tileX, tileY) > object.altitude) {
+				object.position.y = (tileY + 1) * Game.config().tileWidth;
+			}
+		}
+
+		if (object.velocity.x > 0) {
+			// RIGHT
+			int tileX = (int) (object.position.x + width) / Game.config().tileWidth;
+			int tileY = (int) (object.position.y + height / 2) / Game.config().tileWidth;
+			if (map.getAltitudeAt(tileX, tileY) > object.altitude) {
+				object.position.x = (tileX - 1) * Game.config().tileWidth;
+			}
+		} else if (object.velocity.x < 0) {
+			// RIGHT
+			int tileX = (int) (object.position.x) / Game.config().tileWidth;
+			int tileY = (int) (object.position.y + height / 2) / Game.config().tileWidth;
+			if (map.getAltitudeAt(tileX, tileY) > object.altitude) {
+				object.position.x = (tileX + 1) * Game.config().tileWidth;
+			}
 		}
 	}
 }
