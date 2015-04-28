@@ -60,7 +60,7 @@ public class Game {
 		// initialize everything
 		config = new Config();
 		assets = new AssetManager();
-		camera = new CameraManager(new OrthographicCamera(config.viewWwidth, config.viewHeight));
+		camera = new CameraManager(new OrthographicCamera(config.viewWidth, config.viewHeight));
 		batch = new SpriteBatch();
 		publisher = new EventPublisher();
 		// now subscribe
