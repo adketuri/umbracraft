@@ -18,7 +18,7 @@ public class GameObjectCreator {
 
 	/** @param map
 	 * @return A player {@link GameObject} */
-	public static GameObject player(Map map) {
+	public static GameObject player(final Map map) {
 		GameObject player = new GameObject(new BaseComponent() {
 			private TextureRegion character;
 			private TextureRegion shadow;
@@ -36,7 +36,7 @@ public class GameObjectCreator {
 
 			@Override
 			public void render(GameObject object) {
-				Game.batch().draw(shadow, object.position.x, object.position.y);
+				Game.batch().draw(shadow, object.position.x - 1, object.position.y - 6 + 16 * map.getAltitudeAt(object.position.x / 16, object.position.y / 16));
 				Game.batch().draw(character, object.position.x, object.position.y + object.altitude);
 			}
 

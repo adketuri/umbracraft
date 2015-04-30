@@ -4,24 +4,21 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.objects.GameObject;
 
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class PhysicsComponent implements BaseComponent {
 
-	private final Rectangle bounds;
-	private final int height = 16, width = 16; //FIXME: don't hardcode
+	private BitmapFont debug;
+	private final int height = 8, width = 14; //FIXME: don't hardcode
 	private final Map map;
-	Vector2 tmp;
 
 	public PhysicsComponent(Map map) {
 		this.map = map;
-		bounds = new Rectangle(0, 0, width, height);
 	}
 
 	@Override
 	public void create() {
-		tmp = new Vector2();
+		debug = Game.assets().get("fonts/message.fnt", BitmapFont.class);
 	}
 
 	@Override
@@ -31,54 +28,78 @@ public class PhysicsComponent implements BaseComponent {
 
 	@Override
 	public void render(GameObject object) {
+		int tileX1 = (int) (object.position.x + width) / Game.config().tileWidth;
+		int tileY = (int) (object.position.y + height + object.velocity.y) / Game.config().tileWidth;
+		debug.draw(Game.batch(), map.getAltitudeAt(tileX1, tileY) + "", -20, 10);
 	}
 
 	@Override
 	public void update(GameObject object) {
-		/*
-		 * if (object.desiredPosition.dst2(object.position) > 3) { // simple
-		 * move towards the desired position tmp.set(object.position);
-		 * object.velocity
-		 * .set(tmp.sub(object.desiredPosition).nor().rotate(180).scl(150 *
-		 * Gdx.graphics.getDeltaTime())); } else {
-		 * object.velocity.set(Vector2.Zero); }
-		 * Game.log(object.velocity.toString());
-		 */
-		object.position.add(object.velocity);
+
+		int tileAltitude = object.altitude / Game.config().tileWidth;
 		// check for collisions
-		bounds.x = object.position.x;
-		bounds.y = object.position.y;
 		if (object.velocity.y > 0) {
 			// NORTH
-			int tileX = (int) (object.position.x + width / 2) / Game.config().tileWidth;
-			int tileY = (int) (object.position.y + height) / Game.config().tileWidth;
-			if (map.getAltitudeAt(tileX, tileY) > object.altitude) {
-				object.position.y = (tileY - 1) * Game.config().tileWidth;
+			int tileX1 = (int) (object.position.x + width) / Game.config().tileWidth;
+			int tileX2 = (int) (object.position.x) / Game.config().tileWidth;
+			int tileY = (int) (object.position.y + height + object.velocity.y) / Game.config().tileWidth;
+			if (map.getAltitudeAt(tileX1, tileY) > tileAltitude || map.getAltitudeAt(tileX2, tileY) > tileAltitude) {
+				object.velocity.y = 0;
+				// nudge out if we're stuck
+				if (map.getAltitudeAt(tileX1, tileY) <= tileAltitude && object.velocity.x == 0) {
+					object.velocity.x += 2f;
+				} else if (map.getAltitudeAt(tileX2, tileY) <= tileAltitude && object.velocity.x == 0) {
+					object.velocity.x -= 2f;
+				}
 			}
 
 		} else if (object.velocity.y < 0) {
 			// SOUTH
-			int tileX = (int) (object.position.x + width / 2) / Game.config().tileWidth;
-			int tileY = (int) (object.position.y) / Game.config().tileWidth;
-			if (map.getAltitudeAt(tileX, tileY) > object.altitude) {
-				object.position.y = (tileY + 1) * Game.config().tileWidth;
+			int tileX1 = (int) (object.position.x + width) / Game.config().tileWidth;
+			int tileX2 = (int) (object.position.x) / Game.config().tileWidth;
+			int tileY = (int) (object.position.y + object.velocity.y) / Game.config().tileWidth;
+			if (map.getAltitudeAt(tileX1, tileY) > tileAltitude || map.getAltitudeAt(tileX2, tileY) > tileAltitude) {
+				object.velocity.y = 0;
+				// nudge out if we're stuck
+				if (map.getAltitudeAt(tileX1, tileY) <= tileAltitude && object.velocity.x == 0) {
+					object.velocity.x += 2f;
+				} else if (map.getAltitudeAt(tileX2, tileY) <= tileAltitude && object.velocity.x == 0) {
+					object.velocity.x -= 2f;
+				}
 			}
 		}
 
 		if (object.velocity.x > 0) {
 			// RIGHT
-			int tileX = (int) (object.position.x + width) / Game.config().tileWidth;
-			int tileY = (int) (object.position.y + height / 2) / Game.config().tileWidth;
-			if (map.getAltitudeAt(tileX, tileY) > object.altitude) {
-				object.position.x = (tileX - 1) * Game.config().tileWidth;
+			int tileX = (int) (object.position.x + width + object.velocity.x) / Game.config().tileWidth;
+			int tileY1 = (int) (object.position.y + height + object.velocity.y) / Game.config().tileWidth;
+			int tileY2 = (int) (object.position.y + object.velocity.y) / Game.config().tileWidth;
+			if (map.getAltitudeAt(tileX, tileY1) > tileAltitude || map.getAltitudeAt(tileX, tileY2) > tileAltitude) {
+				object.velocity.x = 0;
+				// nudge out if we're stuck
+				if (map.getAltitudeAt(tileX, tileY1) <= tileAltitude && object.velocity.y == 0) {
+					object.velocity.y += 2f;
+				} else if (map.getAltitudeAt(tileX, tileY2) <= tileAltitude && object.velocity.y == 0) {
+					object.velocity.y -= 2f;
+				}
+
 			}
 		} else if (object.velocity.x < 0) {
-			// RIGHT
-			int tileX = (int) (object.position.x) / Game.config().tileWidth;
-			int tileY = (int) (object.position.y + height / 2) / Game.config().tileWidth;
-			if (map.getAltitudeAt(tileX, tileY) > object.altitude) {
-				object.position.x = (tileX + 1) * Game.config().tileWidth;
+			// LEFT
+			int tileX = (int) (object.position.x + object.velocity.x) / Game.config().tileWidth;
+			int tileY2 = (int) (object.position.y + object.velocity.y) / Game.config().tileWidth;
+			int tileY1 = (int) (object.position.y + height + object.velocity.y) / Game.config().tileWidth;
+			if (map.getAltitudeAt(tileX, tileY1) > tileAltitude || map.getAltitudeAt(tileX, tileY2) > tileAltitude) {
+				object.velocity.x = 0;
+				// nudge out if we're stuck
+				if (map.getAltitudeAt(tileX, tileY1) <= tileAltitude && object.velocity.y == 0) {
+					object.velocity.y += 2f;
+				} else if (map.getAltitudeAt(tileX, tileY2) <= tileAltitude && object.velocity.y == 0) {
+					object.velocity.y -= 2f;
+				}
 			}
 		}
+		object.position.add(object.velocity);
+
 	}
 }

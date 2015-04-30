@@ -185,6 +185,10 @@ public class Map implements Disposable {
 
 	}
 
+	public float getAltitudeAt(float f, float g) {
+		return getAltitudeAt((int) f, (int) g);
+	}
+
 	public int getAltitudeAt(int i, int j) {
 		if (i >= 0 && i < altMap.length && j >= 0 && j < altMap[0].length) {
 			return altMap[i][j];
