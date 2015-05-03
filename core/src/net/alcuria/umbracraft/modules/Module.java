@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.modules;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -10,8 +11,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextArea;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -47,14 +51,18 @@ public abstract class Module<T extends Definition> {
 		try {
 			content.add(new Table() {
 				{
+					int idx = 0;
 					ArrayList<Field> fieldList = new ArrayList<Field>();
 					fieldList.addAll(Arrays.asList(clazz.getDeclaredFields()));
 					for (int i = 0; i < fieldList.size(); i++) {
 						final Field field = fieldList.get(i);
-						if (i % 3 == 2) {
-							add(keyInput(definition, field)).row();
-						} else {
-							add(keyInput(definition, field));
+						if (field.getModifiers() != Modifier.PRIVATE && (field.getType().toString().equals("int") || field.getType() == String.class || field.getType().toString().equals("boolean"))) {
+							if (idx % 3 == 2) {
+								add(keyInput(definition, field)).row();
+							} else {
+								add(keyInput(definition, field));
+							}
+							idx++;
 						}
 					}
 					int size = fieldList.size();
@@ -67,33 +75,61 @@ public abstract class Module<T extends Definition> {
 				private Table keyInput(final Definition definition, final Field field) {
 					return new Table() {
 						{
-							add(new VisLabel(field.getName())).width(130);
-							String value;
-							try {
-								value = String.valueOf(field.get(definition));
-							} catch (Exception e) {
-								value = "";
-							}
-							final VisTextArea textArea = new VisTextArea(value);
-							textArea.setTextFieldListener(new TextFieldListener() {
-
-								@Override
-								public void keyTyped(VisTextField textField, char c) {
-									try {
-										if (field.getType().toString().equals("int")) {
-											field.setInt(definition, Integer.valueOf(textField.getText()));
-										} else {
-											field.set(definition, textField.getText());
-										}
-									} catch (IllegalArgumentException e) {
-										e.printStackTrace();
-									} catch (IllegalAccessException e) {
-										e.printStackTrace();
-									}
-
+							if (field.getType().toString().equals("boolean")) {
+								add(new VisLabel(field.getName())).width(130);
+								boolean value = false;
+								try {
+									value = Boolean.valueOf(field.getBoolean(definition));
+								} catch (Exception e) {
 								}
-							});
-							add(textArea).width(100);
+								final VisCheckBox checkBox = new VisCheckBox(":", value);
+								checkBox.addListener(new ClickListener() {
+									@Override
+									public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+										try {
+											field.setBoolean(definition, checkBox.isChecked());
+										} catch (IllegalArgumentException | IllegalAccessException e) {
+											e.printStackTrace();
+										}
+									};
+								});
+								checkBox.align(Align.left);
+								add(checkBox).width(100).expandX().fill().left();
+
+							} else if (field.getType().toString().equals("int") || field.getType() == String.class) {
+								add(new VisLabel(field.getName())).width(130);
+								String value;
+								try {
+									value = String.valueOf(field.get(definition));
+								} catch (Exception e) {
+									value = "";
+								}
+								final VisTextArea textArea = new VisTextArea(value);
+								textArea.setTextFieldListener(new TextFieldListener() {
+
+									@Override
+									public void keyTyped(VisTextField textField, char c) {
+										try {
+											if (field.getType().toString().equals("int")) {
+												if (textField.getText().equals("")) {
+													field.setInt(definition, 0);
+												} else {
+													field.setInt(definition, Integer.valueOf(textField.getText()));
+												}
+											} else {
+												field.set(definition, textField.getText());
+											}
+										} catch (IllegalArgumentException e) {
+											e.printStackTrace();
+										} catch (IllegalAccessException e) {
+											e.printStackTrace();
+										}
+
+									}
+								});
+								add(textArea).width(100);
+							}
+
 						}
 					};
 				}

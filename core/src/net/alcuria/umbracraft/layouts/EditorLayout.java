@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.layouts;
 
+import net.alcuria.umbracraft.modules.AnimationsModule;
 import net.alcuria.umbracraft.modules.HeroModule;
 import net.alcuria.umbracraft.modules.Module;
 import net.alcuria.umbracraft.modules.TilesetsModule;
@@ -22,16 +23,15 @@ public class EditorLayout extends Layout {
 
 	public EditorLayout() {
 		modules = new Array<Module>();
-		modules.add(new HeroModule());
-		modules.add(new TilesetsModule());
+		addModules();
 		stage = new Stage();
-		//		stage.setDebugAll(true);
+		stage.setDebugAll(true);
 		Gdx.input.setInputProcessor(stage);
 		Table root = new Table();
 		root.setFillParent(true);
 		final Table menu = new Table();
 		content = new Table();
-		for (final Module m : modules) {
+		for (final Module<?> m : modules) {
 			menu.add(m.getButton()).row();
 			m.getButton().addListener(new ClickListener() {
 				@Override
@@ -51,6 +51,12 @@ public class EditorLayout extends Layout {
 			}
 		}).expand().fill();
 		stage.addActor(root);
+	}
+
+	private void addModules() {
+		modules.add(new HeroModule());
+		modules.add(new TilesetsModule());
+		modules.add(new AnimationsModule());
 	}
 
 	@Override
