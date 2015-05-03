@@ -35,4 +35,9 @@ public class AnimationDefinition extends Definition {
 	public AnimationDefinition(int id) {
 		this.id = id;
 	}
+
+	/** @return the unique id */
+	public int getId() {
+		return id;
+	}
 }

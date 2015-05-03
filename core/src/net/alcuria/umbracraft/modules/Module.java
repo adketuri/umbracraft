@@ -47,6 +47,15 @@ public abstract class Module<T extends Definition> {
 
 	public abstract void populate(Table content);
 
+	/** A generic populate method. Populates a table with a class's fields which
+	 * may be modified. For ints and string fields, a textfield is created where
+	 * the value of the field is updated when the textfield changes. For boolean
+	 * fields a checkbox is used. Other objects and private fields are not
+	 * displayed.
+	 * @param content the table to update
+	 * @param clazz the class definitions
+	 * @param definition the definition we want to update (when fields change
+	 *        and so on) */
 	public void populate(Table content, final Class<?> clazz, final Definition definition) {
 		try {
 			content.add(new Table() {

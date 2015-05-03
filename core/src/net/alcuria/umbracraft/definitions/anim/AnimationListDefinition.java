@@ -17,4 +17,20 @@ public class AnimationListDefinition extends Definition {
 		}
 		animations.add(new AnimationDefinition(animations.size));
 	}
+
+	public void delete(AnimationDefinition definition) {
+		animations.removeValue(definition, true);
+	}
+
+	public boolean hasId(int idx) {
+		if (animations == null) {
+			return false;
+		}
+		for (int i = 0; i < animations.size; i++) {
+			if (animations.get(i).getId() == idx) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
