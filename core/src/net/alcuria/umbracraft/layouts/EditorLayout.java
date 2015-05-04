@@ -25,7 +25,7 @@ public class EditorLayout extends Layout {
 		modules = new Array<Module>();
 		addModules();
 		stage = new Stage();
-		stage.setDebugAll(true);
+		//stage.setDebugAll(true);
 		Gdx.input.setInputProcessor(stage);
 		Table root = new Table();
 		root.setFillParent(true);

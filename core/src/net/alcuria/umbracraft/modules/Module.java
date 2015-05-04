@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.Definition;
 
 import com.badlogic.gdx.Gdx;
@@ -57,6 +58,21 @@ public abstract class Module<T extends Definition> {
 	 * @param definition the definition we want to update (when fields change
 	 *        and so on) */
 	public void populate(Table content, final Class<?> clazz, final Definition definition) {
+		populate(content, clazz, definition, null, 3);
+	}
+
+	/** A generic populate method. Populates a table with a class's fields which
+	 * may be modified. For ints and string fields, a textfield is created where
+	 * the value of the field is updated when the textfield changes. For boolean
+	 * fields a checkbox is used. Other objects and private fields are not
+	 * displayed.
+	 * @param content the table to update
+	 * @param clazz the class definitions
+	 * @param definition the definition we want to update (when fields change
+	 *        and so on)
+	 * @param listener a generic listener to invoke when a field changes */
+	public void populate(Table content, final Class<?> clazz, final Definition definition, final Listener listener, final int cols) {
+		assert (cols > 0);
 		try {
 			content.add(new Table() {
 				{
@@ -66,7 +82,7 @@ public abstract class Module<T extends Definition> {
 					for (int i = 0; i < fieldList.size(); i++) {
 						final Field field = fieldList.get(i);
 						if (field.getModifiers() != Modifier.PRIVATE && (field.getType().toString().equals("int") || field.getType() == String.class || field.getType().toString().equals("boolean"))) {
-							if (idx % 3 == 2) {
+							if (idx % cols == cols - 1) {
 								add(keyInput(definition, field)).row();
 							} else {
 								add(keyInput(definition, field));
@@ -75,7 +91,7 @@ public abstract class Module<T extends Definition> {
 						}
 					}
 					int size = fieldList.size();
-					while (size % 3 != 0) {
+					while (size % cols != 0) {
 						add();
 						size++;
 					}
@@ -91,7 +107,7 @@ public abstract class Module<T extends Definition> {
 									value = Boolean.valueOf(field.getBoolean(definition));
 								} catch (Exception e) {
 								}
-								final VisCheckBox checkBox = new VisCheckBox(":", value);
+								final VisCheckBox checkBox = new VisCheckBox("", value);
 								checkBox.addListener(new ClickListener() {
 									@Override
 									public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
@@ -127,6 +143,9 @@ public abstract class Module<T extends Definition> {
 												}
 											} else {
 												field.set(definition, textField.getText());
+											}
+											if (listener != null) {
+												listener.invoked();
 											}
 										} catch (IllegalArgumentException e) {
 											e.printStackTrace();

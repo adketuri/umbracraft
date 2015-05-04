@@ -18,7 +18,6 @@ public class AnimationDefinition extends Definition {
 	/** Width of a frame */
 	public int frameWidth;
 	/** An internal identifier */
-	@SuppressWarnings("unused")
 	private int id;
 	/** Whether or not to hold on last frame */
 	public boolean keepLast;
