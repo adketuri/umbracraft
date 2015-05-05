@@ -1,13 +1,13 @@
 package net.alcuria.umbracraft.engine.screens;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.map.Map;
-import net.alcuria.umbracraft.engine.objects.GameObjectManager;
 
 /** All objects live in the World.
  * @author Andrew Keturi */
 public class World implements UmbraScreen {
-	private GameObjectManager objects;
+	private EntityManager objects;
 
 	@Override
 	public void dispose() {
@@ -42,7 +42,7 @@ public class World implements UmbraScreen {
 	@Override
 	public void show() {
 		Map map = new Map();
-		objects = new GameObjectManager(map);
+		objects = new EntityManager(map);
 	}
 
 	@Override

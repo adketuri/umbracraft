@@ -1,9 +1,9 @@
 package net.alcuria.umbracraft;
 
+import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.BaseEvent;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
 import net.alcuria.umbracraft.engine.events.EventListener;
-import net.alcuria.umbracraft.engine.objects.GameObject;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
  * @author Andrew Keturi */
 public class CameraManager implements EventListener {
 	private final OrthographicCamera camera;
-	private GameObject target;
+	private Entity target;
 
 	public CameraManager(OrthographicCamera camera) {
 		this.camera = camera;

@@ -16,6 +16,7 @@ public class Game {
 	private static SpriteBatch batch;
 	private static CameraManager camera;
 	private static Config config;
+	private static Db db;
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
 
@@ -33,6 +34,10 @@ public class Game {
 
 	public static Config config() {
 		return config;
+	}
+
+	public static Db db() {
+		return db;
 	}
 
 	public static void log(String string) {
@@ -64,6 +69,7 @@ public class Game {
 		assets = new AssetManager();
 		camera = new CameraManager(new OrthographicCamera(config.viewWidth, config.viewHeight));
 		batch = new SpriteBatch();
+		db = new Db();
 		publisher = new EventPublisher();
 		// now subscribe
 		Game.publisher().addListener(camera);
@@ -87,6 +93,7 @@ public class Game {
 		if (screen != null) {
 			screen.dispose();
 		}
+		db = null;
 		screen = null;
 		System.gc();
 	}

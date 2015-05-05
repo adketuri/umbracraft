@@ -1,8 +1,8 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.map.Map;
-import net.alcuria.umbracraft.engine.objects.GameObject;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
@@ -29,14 +29,14 @@ public class PhysicsComponent implements BaseComponent {
 	}
 
 	@Override
-	public void render(GameObject object) {
+	public void render(Entity object) {
 		int tileX1 = (int) (object.position.x + width) / Game.config().tileWidth;
 		int tileY = (int) (object.position.y + height + object.velocity.y) / Game.config().tileWidth;
 		debug.draw(Game.batch(), map.getAltitudeAt(tileX1, tileY) + "", -20, 10);
 	}
 
 	@Override
-	public void update(GameObject object) {
+	public void update(Entity object) {
 
 		int tileAltitude = object.altitude / Game.config().tileWidth;
 		// check for collisions

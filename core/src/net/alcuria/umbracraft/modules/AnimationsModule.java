@@ -183,7 +183,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 			@Override
 			public void invoked() {
 				String path = "sprites/animations/" + definition.filename;
-				if (Gdx.files.internal(path).exists()) {
+				if (definition.filename.length() > 0 && Gdx.files.internal(path).exists()) {
 					image.setVisible(true);
 					image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));
 				} else {

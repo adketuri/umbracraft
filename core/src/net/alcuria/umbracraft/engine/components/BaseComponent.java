@@ -1,6 +1,6 @@
 package net.alcuria.umbracraft.engine.components;
 
-import net.alcuria.umbracraft.engine.objects.GameObject;
+import net.alcuria.umbracraft.engine.entities.Entity;
 
 /** A basic component
  * @author Andrew Keturi */
@@ -13,8 +13,8 @@ public interface BaseComponent {
 	public void dispose();
 
 	/** To be called when the component needs to be rendered */
-	public void render(GameObject object);
+	public void render(Entity object);
 
 	/** To be called when the component needs to be updated */
-	public void update(GameObject object);
+	public void update(Entity object);
 }

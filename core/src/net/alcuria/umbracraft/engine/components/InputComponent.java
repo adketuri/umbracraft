@@ -1,7 +1,7 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.engine.objects.GameObject;
+import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -57,7 +57,7 @@ public class InputComponent implements BaseComponent, InputProcessor {
 	}
 
 	@Override
-	public void render(GameObject object) {
+	public void render(Entity object) {
 
 	}
 
@@ -90,7 +90,7 @@ public class InputComponent implements BaseComponent, InputProcessor {
 	}
 
 	@Override
-	public void update(GameObject object) {
+	public void update(Entity object) {
 		object.velocity.x = 0;
 		object.velocity.y = 0;
 		if (Gdx.input.isKeyPressed(Keys.W)) {

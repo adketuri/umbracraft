@@ -30,10 +30,7 @@ public class AnimationPreview extends Image {
 		count++;
 		if (count > definition.frames.get(idx).duration) {
 			count = 0;
-			idx++;
-			if (idx >= definition.frames.size) {
-				idx = 0;
-			}
+			idx = (idx + 1) % definition.frames.size;
 			final AnimationFrameDefinition frame = definition.frames.get(idx);
 			final String path = "sprites/animations/" + definition.filename;
 			if (Gdx.files.internal(path).exists()) {

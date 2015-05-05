@@ -1,4 +1,4 @@
-package net.alcuria.umbracraft.engine.objects;
+package net.alcuria.umbracraft.engine.entities;
 
 import net.alcuria.umbracraft.engine.components.BaseComponent;
 
@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Array;
  * be instantiated as GameObjects with logic separated out in the
  * {@link BaseComponent}.
  * @author Andrew Keturi */
-public class GameObject {
+public class Entity {
 
 	public int altitude;
 	private final Array<BaseComponent> components;
@@ -17,14 +17,14 @@ public class GameObject {
 	public Vector2 position;
 	public Vector2 velocity;
 
-	public GameObject() {
+	public Entity() {
 		components = new Array<BaseComponent>();
 		position = new Vector2();
 		velocity = new Vector2();
 		desiredPosition = new Vector2();
 	}
 
-	public GameObject(BaseComponent... components) {
+	public Entity(BaseComponent... components) {
 		this();
 		for (BaseComponent component : components) {
 			component.create();

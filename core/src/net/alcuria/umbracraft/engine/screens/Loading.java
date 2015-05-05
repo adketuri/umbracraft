@@ -44,6 +44,7 @@ public class Loading implements UmbraScreen {
 		Game.assets().load("tiles/debug.png", Texture.class);
 		Game.assets().load("sprites/andoru.png", Texture.class);
 		Game.assets().load("sprites/shadow.png", Texture.class);
+		Game.assets().load("sprites/animations/animtest.png", Texture.class);
 		Game.assets().load("fonts/message.fnt", BitmapFont.class);
 	}
 
