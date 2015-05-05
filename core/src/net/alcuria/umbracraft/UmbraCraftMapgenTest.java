@@ -1,4 +1,5 @@
 package net.alcuria.umbracraft;
+
 import net.alcuria.umbracraft.layouts.Layout;
 import net.alcuria.umbracraft.layouts.MapGenLayout;
 
@@ -8,6 +9,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.kotcrab.vis.ui.VisUI;
 
+/** Mapgen test
+ * @author Andrew Keturi */
 public class UmbraCraftMapgenTest implements ApplicationListener {
 
 	private SpriteBatch batch;

@@ -4,6 +4,8 @@ import net.alcuria.umbracraft.definitions.hero.HeroDefinition;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+/** The module for heroes.
+ * @author Andrew Keturi */
 public class HeroModule extends Module<HeroDefinition> {
 
 	public HeroModule() {

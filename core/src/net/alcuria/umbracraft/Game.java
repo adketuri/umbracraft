@@ -8,6 +8,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/** Contains everything needed by the Engine.
+ * @author Andrew */
 public class Game {
 
 	private static AssetManager assets;

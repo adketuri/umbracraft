@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
+/** The module for tileset management.
+ * @author Andrew Keturi */
 public class TilesetsModule extends Module<TilesetListDefinition> {
 
 	public TilesetsModule() {

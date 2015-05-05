@@ -4,6 +4,8 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.objects.GameObjectManager;
 
+/** All objects live in the World.
+ * @author Andrew Keturi */
 public class World implements UmbraScreen {
 	private GameObjectManager objects;
 

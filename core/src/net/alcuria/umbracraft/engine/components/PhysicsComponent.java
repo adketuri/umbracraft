@@ -6,6 +6,8 @@ import net.alcuria.umbracraft.engine.objects.GameObject;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
+/** A component to handle collision
+ * @author Andrew Keturi */
 public class PhysicsComponent implements BaseComponent {
 
 	private BitmapFont debug;

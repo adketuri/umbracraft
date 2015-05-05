@@ -28,6 +28,7 @@ public class GameObjectManager {
 		}
 	}
 
+	/** Renders all objects in view. */
 	public void render() {
 		if (gameObjects == null) {
 			return;
@@ -50,6 +51,7 @@ public class GameObjectManager {
 		}
 	}
 
+	/** Updates the state of all objects. */
 	public void update(float delta) {
 		if (gameObjects == null) {
 			return;

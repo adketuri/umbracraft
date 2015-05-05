@@ -2,11 +2,8 @@ package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.engine.objects.GameObject;
 
-/**
- * A basic component
- * @author Andrew Keturi
- *
- */
+/** A basic component
+ * @author Andrew Keturi */
 public interface BaseComponent {
 
 	/** To be called to do any initialization needed for the component */

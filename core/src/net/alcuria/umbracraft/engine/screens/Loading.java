@@ -5,6 +5,8 @@ import net.alcuria.umbracraft.Game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
+/** A screen to load all assets.
+ * @author Andrew Keturi */
 public class Loading implements UmbraScreen {
 
 	@Override
@@ -43,7 +45,6 @@ public class Loading implements UmbraScreen {
 		Game.assets().load("sprites/andoru.png", Texture.class);
 		Game.assets().load("sprites/shadow.png", Texture.class);
 		Game.assets().load("fonts/message.fnt", BitmapFont.class);
-
 	}
 
 	@Override

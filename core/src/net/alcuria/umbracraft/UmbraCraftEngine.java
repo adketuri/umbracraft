@@ -7,6 +7,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.kotcrab.vis.ui.VisUI;
 
+/** The engine.
+ * @author Andrew Keturi */
 public class UmbraCraftEngine implements ApplicationListener {
 	private Game game;
 

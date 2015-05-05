@@ -7,6 +7,8 @@ import net.alcuria.umbracraft.engine.objects.GameObject;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
+/** A glorified wrapper for the {@link OrthographicCamera}
+ * @author Andrew Keturi */
 public class CameraManager implements EventListener {
 	private final OrthographicCamera camera;
 	private GameObject target;
@@ -23,7 +25,7 @@ public class CameraManager implements EventListener {
 	public void onEvent(BaseEvent event) {
 		if (event instanceof CameraTargetEvent) {
 			CameraTargetEvent camEvent = ((CameraTargetEvent) event);
-			target = camEvent.player;
+			target = camEvent.gameObject;
 			Game.log("Set camera target to " + target);
 		}
 	}

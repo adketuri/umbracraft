@@ -23,6 +23,10 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
 
+/** The base class of a module. Modules contain UI to modify {@link Definition}
+ * classes.
+ * @author Andrew Keturi
+ * @param <T> */
 public abstract class Module<T extends Definition> {
 
 	public VisTextButton button;

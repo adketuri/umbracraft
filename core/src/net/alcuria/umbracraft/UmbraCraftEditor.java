@@ -1,7 +1,8 @@
 package net.alcuria.umbracraft;
 
-import net.alcuria.umbracraft.layouts.Layout;
+import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.layouts.EditorLayout;
+import net.alcuria.umbracraft.layouts.Layout;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -9,6 +10,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.kotcrab.vis.ui.VisUI;
 
+/** The editor.
+ * @author Andrew Keturi */
 public class UmbraCraftEditor implements ApplicationListener {
 
 	private SpriteBatch batch;
@@ -17,6 +20,7 @@ public class UmbraCraftEditor implements ApplicationListener {
 	@Override
 	public void create() {
 		VisUI.load();
+		Drawables.init();
 		batch = new SpriteBatch();
 		view = new EditorLayout();
 	}

@@ -7,24 +7,23 @@ import com.badlogic.gdx.utils.Array;
 /** Defines an entire animation.
  * @author Andrew Keturi */
 public class AnimationDefinition extends Definition {
-	/** Number of game frames to delay before updating animation frame */
-	public int delay;
+
+	/** A friendly name */
+	public String name;
 	/** Full internal path to texture */
 	public String filename;
-	/** Height of a frame */
-	public int frameHeight;
 	/** The frames for the animation. */
 	public Array<AnimationFrameDefinition> frames;
 	/** Width of a frame */
-	public int frameWidth;
+	public int width;
+	/** Height of a frame */
+	public int height;
 	/** An internal identifier */
 	private int id;
 	/** Whether or not to hold on last frame */
 	public boolean keepLast;
 	/** Whether or not it loops */
 	public boolean loop;
-	/** A friendly name */
-	public String name;
 
 	/** For serialization */
 	public AnimationDefinition() {

@@ -1,5 +1,7 @@
 package net.alcuria.umbracraft;
 
+/** Configuration settings
+ * @author Andrew Keturi */
 public class Config {
 
 	public final int tilesetWidth = 256;

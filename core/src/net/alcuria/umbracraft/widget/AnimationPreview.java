@@ -28,7 +28,7 @@ public class AnimationPreview extends Image {
 			return;
 		}
 		count++;
-		if (count > definition.delay) {
+		if (count > definition.frames.get(idx).duration) {
 			count = 0;
 			idx++;
 			if (idx >= definition.frames.size) {
@@ -38,7 +38,7 @@ public class AnimationPreview extends Image {
 			final String path = "sprites/animations/" + definition.filename;
 			if (Gdx.files.internal(path).exists()) {
 				Texture texture = new Texture(Gdx.files.internal(path));
-				TextureRegion region = new TextureRegion(texture, frame.x * definition.frameWidth, frame.y * definition.frameHeight, definition.frameWidth, definition.frameHeight);
+				TextureRegion region = new TextureRegion(texture, frame.x * definition.width, frame.y * definition.height, definition.width, definition.height);
 				setDrawable(new TextureRegionDrawable(region));
 			}
 		}

@@ -21,6 +21,8 @@ import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
+/** The module for all the animations.
+ * @author Andrew Keturi */
 public class AnimationsModule extends Module<AnimationListDefinition> {
 
 	private Table currentAnimTable;
@@ -78,7 +80,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				final Image image = new Image();
 				add(image);
 				if (definition.filename != null) {
-					add(new AnimationPreview(definition)).size(definition.frameWidth * 2, definition.frameHeight * 2).pad(30);
+					add(new AnimationPreview(definition)).size(definition.width * 2, definition.height * 2).pad(30);
 					String path = "sprites/animations/" + definition.filename;
 					image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));
 				} else {
@@ -138,9 +140,10 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 					final int idx = i;
 					add(new Table() {
 						{
+							defaults().pad(5, 20, 5, 20);
 							final AnimationFrameDefinition frame = definition.frames.get(idx);
 							final AnimationPreviewFrame image = new AnimationPreviewFrame(definition, frame);
-							add(image).size(definition.frameWidth * 2, definition.frameHeight * 2);
+							add(image).size(definition.width * 2, definition.height * 2);
 							add(new VisLabel("Frame " + (idx + 1)));
 							populate(this, AnimationFrameDefinition.class, frame, new Listener() {
 

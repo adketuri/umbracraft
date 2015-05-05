@@ -1,12 +1,12 @@
 package net.alcuria.umbracraft.layouts;
 
+import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.modules.AnimationsModule;
 import net.alcuria.umbracraft.modules.HeroModule;
 import net.alcuria.umbracraft.modules.Module;
 import net.alcuria.umbracraft.modules.TilesetsModule;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -15,14 +15,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
+/** The top-level screen for the editor. Here, all of the {@link Module} classes
+ * are added to a left nav.
+ * @author Andrew Keturi */
 public class EditorLayout extends Layout {
 
-	private final Table content;
-	private final Array<Module> modules;
-	private final Stage stage;
+	private final Array<Module<?>> modules;
 
 	public EditorLayout() {
-		modules = new Array<Module>();
+		super();
+		modules = new Array<>();
 		addModules();
 		stage = new Stage();
 		//stage.setDebugAll(true);
@@ -42,12 +44,11 @@ public class EditorLayout extends Layout {
 			});
 		}
 		final ScrollPane scroll = new ScrollPane(content);
-		root.add(topnav()).expandX().fill().height(20).row();
+		root.add(topnav()).expandX().fill().height(40).padBottom(10).row();
 		root.add(new Table() {
 			{
 				add(menu);
 				add(scroll).expand().fill();
-
 			}
 		}).expand().fill();
 		stage.addActor(root);
@@ -59,14 +60,10 @@ public class EditorLayout extends Layout {
 		modules.add(new AnimationsModule());
 	}
 
-	@Override
-	public void render(SpriteBatch batch) {
-		stage.draw();
-	}
-
 	private Table topnav() {
 		return new Table() {
 			{
+				setBackground(Drawables.get("menu"));
 				add(new VisTextButton("Save") {
 					{
 						addListener(new ClickListener() {
@@ -81,11 +78,6 @@ public class EditorLayout extends Layout {
 				});
 			}
 		};
-	}
-
-	@Override
-	public void update(float delta) {
-		stage.act();
 	}
 
 }
