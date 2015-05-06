@@ -28,7 +28,7 @@ public class AnimationPreview extends Image {
 			return;
 		}
 		count++;
-		if (count > definition.frames.get(idx).duration) {
+		if (idx >= 0 && idx < definition.frames.size && count > definition.frames.get(idx).duration) {
 			count = 0;
 			idx = (idx + 1) % definition.frames.size;
 			final AnimationFrameDefinition frame = definition.frames.get(idx);

@@ -11,4 +11,13 @@ public class AnimationFrameDefinition extends Definition {
 	public int x;
 	/** The y position of the frame */
 	public int y;
+
+	/** @return a copy of the frame. Sorta hacky but it works for now. */
+	public AnimationFrameDefinition copy() {
+		AnimationFrameDefinition def = new AnimationFrameDefinition();
+		def.duration = duration;
+		def.x = x;
+		def.y = y;
+		return def;
+	}
 }

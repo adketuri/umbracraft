@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -73,7 +74,8 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 	}
 
 	private void createCurrentAnimTable(final Table content, final Table table, final AnimationDefinition definition, final VisTextButton button) {
-		final ScrollPane scroll = new ScrollPane(createFrames(definition));
+		final ScrollPane scroll = new ScrollPane(new Actor());
+		scroll.setWidget(createFrames(scroll, definition));
 
 		table.add(new Table() {
 			{
@@ -110,7 +112,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 					public void clicked(InputEvent event, float x, float y) {
 						definition.frames.add(new AnimationFrameDefinition());
 						scroll.clear();
-						scroll.setWidget(createFrames(definition));
+						scroll.setWidget(createFrames(scroll, definition));
 					}
 				});
 				add(addFrameButton);
@@ -121,7 +123,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 						public void clicked(InputEvent event, float x, float y) {
 							definition.frames.removeIndex(definition.frames.size - 1);
 							scroll.clear();
-							scroll.setWidget(createFrames(definition));
+							scroll.setWidget(createFrames(scroll, definition));
 						}
 					});
 					add(removeFrameButton);
@@ -130,7 +132,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 		});
 	}
 
-	private Table createFrames(final AnimationDefinition definition) {
+	private Table createFrames(final ScrollPane scroll, final AnimationDefinition definition) {
 		return new Table() {
 			{
 				if (definition.frames == null) {
@@ -152,6 +154,35 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 									image.update(definition, frame);
 								}
 							}, 3);
+							add(new VisTextButton("Delete") {
+								{
+									addListener(new ClickListener() {
+										@Override
+										public void clicked(InputEvent event, float x, float y) {
+											if (idx < definition.frames.size && idx >= 0) {
+												definition.frames.removeIndex(idx);
+											}
+											scroll.clear();
+											scroll.setWidget(createFrames(scroll, definition));
+										};
+									});
+								}
+							});
+							add(new VisTextButton("Clone") {
+								{
+									addListener(new ClickListener() {
+										@Override
+										public void clicked(InputEvent event, float x, float y) {
+											if (idx < definition.frames.size && idx >= 0) {
+												definition.frames.insert(idx, definition.frames.get(idx).copy());
+											}
+											scroll.clear();
+											scroll.setWidget(createFrames(scroll, definition));
+										};
+									});
+								}
+							});
+
 						}
 					}).row();
 				}
@@ -190,7 +221,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 					image.setVisible(false);
 				}
 				scroll.clear();
-				scroll.setWidget(createFrames(definition));
+				scroll.setWidget(createFrames(scroll, definition));
 				button.setText(definition.name);
 			}
 
