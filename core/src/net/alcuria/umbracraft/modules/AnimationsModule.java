@@ -27,6 +27,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 public class AnimationsModule extends Module<AnimationListDefinition> {
 
 	private Table currentAnimTable;
+	private Table previewTable;
 
 	public AnimationsModule() {
 		super();
@@ -76,17 +77,18 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 	private void createCurrentAnimTable(final Table content, final Table table, final AnimationDefinition definition, final VisTextButton button) {
 		final ScrollPane scroll = new ScrollPane(new Actor());
 		scroll.setWidget(createFrames(scroll, definition));
-
 		table.add(new Table() {
 			{
 				final Image image = new Image();
 				add(image);
+				add(previewTable = new Table() {
+					{
+						add(new AnimationPreview(definition)).size(definition.width * 2, definition.height * 2).pad(30);
+					}
+				});
 				if (definition.filename != null) {
-					add(new AnimationPreview(definition)).size(definition.width * 2, definition.height * 2).pad(30);
 					String path = "sprites/animations/" + definition.filename;
 					image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));
-				} else {
-					add();
 				}
 				populate(this, AnimationDefinition.class, definition, animationPopulateConfig(image));
 				row();
@@ -121,21 +123,10 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 						definition.frames.add(new AnimationFrameDefinition());
 						scroll.clear();
 						scroll.setWidget(createFrames(scroll, definition));
+						updatePreviewAnimation(definition);
 					}
 				});
-				add(addFrameButton);
-				if (definition.frames != null && definition.frames.size > 0) {
-					final VisTextButton removeFrameButton = new VisTextButton("Remove Frame");
-					removeFrameButton.addListener(new ClickListener() {
-						@Override
-						public void clicked(InputEvent event, float x, float y) {
-							definition.frames.removeIndex(definition.frames.size - 1);
-							scroll.clear();
-							scroll.setWidget(createFrames(scroll, definition));
-						}
-					});
-					add(removeFrameButton);
-				}
+				add(addFrameButton).padBottom(20);
 			}
 		});
 	}
@@ -231,7 +222,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 			@Override
 			public void invoked() {
 				String path = "sprites/animations/" + definition.filename;
-				if (definition.filename.length() > 0 && Gdx.files.internal(path).exists()) {
+				if (definition.filename != null && definition.filename.length() > 0 && Gdx.files.internal(path).exists()) {
 					image.setVisible(true);
 					image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));
 				} else {
@@ -239,9 +230,18 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				}
 				scroll.clear();
 				scroll.setWidget(createFrames(scroll, definition));
+				updatePreviewAnimation(definition);
 				button.setText(definition.name);
 			}
 
 		};
+	}
+
+	private void updatePreviewAnimation(AnimationDefinition definition) {
+		if (definition == null || previewTable == null) {
+			return;
+		}
+		previewTable.clear();
+		previewTable.add(new AnimationPreview(definition)).size(definition.width * 2, definition.height * 2).pad(30);
 	}
 }
