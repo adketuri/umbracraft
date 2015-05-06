@@ -76,14 +76,14 @@ public class TilesetsModule extends Module<TilesetListDefinition> {
 					add();
 					rootDefinition.tiles = new Array<TilesetDefinition>();
 					rootDefinition.tiles.add(new TilesetDefinition());
-					populate(this, TilesetDefinition.class, rootDefinition.tiles.get(0));
+					populate(this, TilesetDefinition.class, rootDefinition.tiles.get(0), new PopulateConfig());
 				} else {
 					for (int i = 0; i < rootDefinition.tiles.size; i++) {
 						final int index = i;
 						add(new Table() {
 							{
 								add(getTilesetPreview(rootDefinition.tiles.get(index)));
-								populate(this, TilesetDefinition.class, rootDefinition.tiles.get(index));
+								populate(this, TilesetDefinition.class, rootDefinition.tiles.get(index), new PopulateConfig());
 							}
 						}).row();
 						WidgetUtils.divider(this);

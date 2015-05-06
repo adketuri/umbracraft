@@ -20,7 +20,7 @@ public class HeroModule extends Module<HeroDefinition> {
 
 	@Override
 	public void populate(Table content) {
-		populate(content, HeroDefinition.class, rootDefinition);
+		populate(content, HeroDefinition.class, rootDefinition, new PopulateConfig());
 	}
 
 }

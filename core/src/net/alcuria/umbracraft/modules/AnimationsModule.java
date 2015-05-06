@@ -88,7 +88,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				} else {
 					add();
 				}
-				populate(this, AnimationDefinition.class, definition, updateButtonListener(image, button, scroll, definition), 1);
+				populate(this, AnimationDefinition.class, definition, animationPopulateConfig(image));
 				row();
 				VisTextButton deleteButton = new VisTextButton("Delete Animation");
 				deleteButton.addListener(new ClickListener() {
@@ -100,6 +100,14 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 					};
 				});
 				add(deleteButton);
+			}
+
+			private PopulateConfig animationPopulateConfig(Image image) {
+				PopulateConfig cfg = new PopulateConfig();
+				cfg.listener = updateButtonListener(image, button, scroll, definition);
+				cfg.cols = 1;
+				cfg.labelWidth = 80;
+				return cfg;
 			}
 		}).row();
 
@@ -147,13 +155,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 							final AnimationPreviewFrame image = new AnimationPreviewFrame(definition, frame);
 							add(image).size(definition.width * 2, definition.height * 2);
 							add(new VisLabel("Frame " + (idx + 1)));
-							populate(this, AnimationFrameDefinition.class, frame, new Listener() {
-
-								@Override
-								public void invoked() {
-									image.update(definition, frame);
-								}
-							}, 3);
+							populate(this, AnimationFrameDefinition.class, frame, frameConfig(image, frame));
 							add(new VisTextButton("Delete") {
 								{
 									addListener(new ClickListener() {
@@ -183,6 +185,21 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 								}
 							});
 
+						}
+
+						private PopulateConfig frameConfig(final AnimationPreviewFrame image, final AnimationFrameDefinition frame) {
+							PopulateConfig cfg = new PopulateConfig();
+							cfg.listener = new Listener() {
+
+								@Override
+								public void invoked() {
+									image.update(definition, frame);
+								}
+							};
+							cfg.cols = 3;
+							cfg.labelWidth = 30;
+							cfg.textFieldWidth = 30;
+							return cfg;
 						}
 					}).row();
 				}

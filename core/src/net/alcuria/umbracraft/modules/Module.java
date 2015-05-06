@@ -29,6 +29,20 @@ import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
  * @param <T> */
 public abstract class Module<T extends Definition> {
 
+	/** A helper class to define layout configurations when populating
+	 * definition.
+	 * @author Andrew Keturi */
+	public static class PopulateConfig {
+		/** Columns for each field */
+		public int cols = 3;
+		/** Width of the label */
+		public int labelWidth = 130;
+		/** A custom listener to invoke when a field changes value */
+		public Listener listener;
+		/** Width of the text fields */
+		public int textFieldWidth = 100;
+	}
+
 	public VisTextButton button;
 	protected T rootDefinition;
 
@@ -60,23 +74,10 @@ public abstract class Module<T extends Definition> {
 	 * @param content the table to update
 	 * @param clazz the class definitions
 	 * @param definition the definition we want to update (when fields change
-	 *        and so on) */
-	public void populate(Table content, final Class<?> clazz, final Definition definition) {
-		populate(content, clazz, definition, null, 3);
-	}
-
-	/** A generic populate method. Populates a table with a class's fields which
-	 * may be modified. For ints and string fields, a textfield is created where
-	 * the value of the field is updated when the textfield changes. For boolean
-	 * fields a checkbox is used. Other objects and private fields are not
-	 * displayed.
-	 * @param content the table to update
-	 * @param clazz the class definitions
-	 * @param definition the definition we want to update (when fields change
 	 *        and so on)
 	 * @param listener a generic listener to invoke when a field changes */
-	public void populate(Table content, final Class<?> clazz, final Definition definition, final Listener listener, final int cols) {
-		assert (cols > 0);
+	public void populate(final Table content, final Class<?> clazz, final Definition definition, final PopulateConfig config) {
+		assert (config.cols > 0);
 		try {
 			content.add(new Table() {
 				{
@@ -86,7 +87,7 @@ public abstract class Module<T extends Definition> {
 					for (int i = 0; i < fieldList.size(); i++) {
 						final Field field = fieldList.get(i);
 						if (field.getModifiers() != Modifier.PRIVATE && (field.getType().toString().equals("int") || field.getType() == String.class || field.getType().toString().equals("boolean"))) {
-							if (idx % cols == cols - 1) {
+							if (idx % config.cols == config.cols - 1) {
 								add(keyInput(definition, field)).row();
 							} else {
 								add(keyInput(definition, field));
@@ -95,7 +96,7 @@ public abstract class Module<T extends Definition> {
 						}
 					}
 					int size = fieldList.size();
-					while (size % cols != 0) {
+					while (size % config.cols != 0) {
 						add();
 						size++;
 					}
@@ -105,7 +106,7 @@ public abstract class Module<T extends Definition> {
 					return new Table() {
 						{
 							if (field.getType().toString().equals("boolean")) {
-								add(new VisLabel(field.getName())).width(130);
+								add(new VisLabel(field.getName())).minWidth(config.labelWidth);
 								boolean value = false;
 								try {
 									value = Boolean.valueOf(field.getBoolean(definition));
@@ -123,10 +124,10 @@ public abstract class Module<T extends Definition> {
 									};
 								});
 								checkBox.align(Align.left);
-								add(checkBox).width(100).expandX().fill().left();
+								add(checkBox).width(config.textFieldWidth).expandX().fill().left();
 
 							} else if (field.getType().toString().equals("int") || field.getType() == String.class) {
-								add(new VisLabel(field.getName())).width(130);
+								add(new VisLabel(field.getName())).minWidth(config.labelWidth);
 								String value;
 								try {
 									value = String.valueOf(field.get(definition));
@@ -148,8 +149,8 @@ public abstract class Module<T extends Definition> {
 											} else {
 												field.set(definition, textField.getText());
 											}
-											if (listener != null) {
-												listener.invoked();
+											if (config.listener != null) {
+												config.listener.invoked();
 											}
 										} catch (IllegalArgumentException e) {
 											e.printStackTrace();
@@ -159,7 +160,7 @@ public abstract class Module<T extends Definition> {
 
 									}
 								});
-								add(textArea).width(100);
+								add(textArea).width(config.textFieldWidth);
 							}
 
 						}
