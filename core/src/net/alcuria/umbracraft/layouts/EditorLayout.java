@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.layouts;
 
+import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.modules.AnimationsModule;
 import net.alcuria.umbracraft.modules.HeroModule;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /** The top-level screen for the editor. Here, all of the {@link Module} classes
@@ -26,7 +28,7 @@ public class EditorLayout extends Layout {
 		super();
 		modules = new Array<>();
 		addModules();
-		stage = new Stage();
+		stage = new Stage(new FitViewport(Config.editorWidth, Config.editorHeight));
 		//stage.setDebugAll(true);
 		Gdx.input.setInputProcessor(stage);
 		Table root = new Table();

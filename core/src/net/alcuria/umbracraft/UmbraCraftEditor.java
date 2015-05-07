@@ -49,8 +49,7 @@ public class UmbraCraftEditor implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-
+		view.resize(width, height);
 	}
 
 	@Override

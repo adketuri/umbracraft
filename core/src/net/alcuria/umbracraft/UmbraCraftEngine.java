@@ -47,7 +47,7 @@ public class UmbraCraftEngine implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
-
+		Game.camera().resize(width, height);
 	}
 
 	@Override

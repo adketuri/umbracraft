@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.engine.map;
 
+import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
@@ -206,10 +207,10 @@ public class Map implements Disposable {
 	private Array<TextureRegion> getRegions(String filename) {
 		final Texture texture = Game.assets().get("tiles/" + filename, Texture.class);
 		Array<TextureRegion> regions = new Array<TextureRegion>();
-		for (int i = 0; i < Math.pow(Game.config().tilesetWidth / Game.config().tileWidth, 2); i++) {
-			final int x = (i * Game.config().tileWidth) % Game.config().tilesetWidth;
-			final int y = (i / Game.config().tileWidth) * Game.config().tileWidth;
-			final int w = Game.config().tileWidth;
+		for (int i = 0; i < Math.pow(Config.tilesetWidth / Config.tileWidth, 2); i++) {
+			final int x = (i * Config.tileWidth) % Config.tilesetWidth;
+			final int y = (i / Config.tileWidth) * Config.tileWidth;
+			final int w = Config.tileWidth;
 			regions.add(new TextureRegion(texture, x, y, w, w));
 		}
 		return regions;
@@ -218,7 +219,7 @@ public class Map implements Disposable {
 	/** Renders every visible layer.
 	 * @param row */
 	public void render(int row) {
-		final int tileSize = Game.config().tileWidth;
+		final int tileSize = Config.tileWidth;
 		for (int k = 0; k < layers.size; k++) {
 			int alt = layers.get(k).alt;
 			final Tile[][] data = layers.get(k).data;

@@ -15,6 +15,11 @@ public abstract class Layout {
 		stage.draw();
 	}
 
+	/** resize the layout */
+	public void resize(int width, int height) {
+		stage.getViewport().update(width, height);
+	}
+
 	/** update the layout */
 	public void update(float delta) {
 		stage.act();

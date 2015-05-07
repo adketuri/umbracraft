@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.desktop;
 
+import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.UmbraCraftEditor;
 import net.alcuria.umbracraft.UmbraCraftEngine;
 
@@ -12,12 +13,12 @@ public class DesktopLauncher {
 
 		boolean editor = true;
 		if (editor) {
-			config.width = 1200;
-			config.height = 780;
+			config.width = Config.editorWidth;
+			config.height = Config.editorHeight;
 			new LwjglApplication(new UmbraCraftEditor(), config);
 		} else {
-			config.width = 640;
-			config.height = 480;
+			config.width = Config.viewWidth;
+			config.height = Config.viewHeight;
 			new LwjglApplication(new UmbraCraftEngine(), config);
 		}
 

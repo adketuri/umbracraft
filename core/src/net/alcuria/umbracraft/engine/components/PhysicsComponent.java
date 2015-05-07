@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.engine.components;
 
+import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.map.Map;
@@ -30,21 +31,21 @@ public class PhysicsComponent implements BaseComponent {
 
 	@Override
 	public void render(Entity object) {
-		int tileX1 = (int) (object.position.x + width) / Game.config().tileWidth;
-		int tileY = (int) (object.position.y + height + object.velocity.y) / Game.config().tileWidth;
+		int tileX1 = (int) (object.position.x + width) / Config.tileWidth;
+		int tileY = (int) (object.position.y + height + object.velocity.y) / Config.tileWidth;
 		debug.draw(Game.batch(), map.getAltitudeAt(tileX1, tileY) + "", -20, 10);
 	}
 
 	@Override
 	public void update(Entity object) {
 
-		int tileAltitude = object.altitude / Game.config().tileWidth;
+		int tileAltitude = object.altitude / Config.tileWidth;
 		// check for collisions
 		if (object.velocity.y > 0) {
 			// NORTH
-			int tileX1 = (int) (object.position.x + width) / Game.config().tileWidth;
-			int tileX2 = (int) (object.position.x) / Game.config().tileWidth;
-			int tileY = (int) (object.position.y + height + object.velocity.y) / Game.config().tileWidth;
+			int tileX1 = (int) (object.position.x + width) / Config.tileWidth;
+			int tileX2 = (int) (object.position.x) / Config.tileWidth;
+			int tileY = (int) (object.position.y + height + object.velocity.y) / Config.tileWidth;
 			if (map.getAltitudeAt(tileX1, tileY) > tileAltitude || map.getAltitudeAt(tileX2, tileY) > tileAltitude) {
 				object.velocity.y = 0;
 				// nudge out if we're stuck
@@ -57,9 +58,9 @@ public class PhysicsComponent implements BaseComponent {
 
 		} else if (object.velocity.y < 0) {
 			// SOUTH
-			int tileX1 = (int) (object.position.x + width) / Game.config().tileWidth;
-			int tileX2 = (int) (object.position.x) / Game.config().tileWidth;
-			int tileY = (int) (object.position.y + object.velocity.y) / Game.config().tileWidth;
+			int tileX1 = (int) (object.position.x + width) / Config.tileWidth;
+			int tileX2 = (int) (object.position.x) / Config.tileWidth;
+			int tileY = (int) (object.position.y + object.velocity.y) / Config.tileWidth;
 			if (map.getAltitudeAt(tileX1, tileY) > tileAltitude || map.getAltitudeAt(tileX2, tileY) > tileAltitude) {
 				object.velocity.y = 0;
 				// nudge out if we're stuck
@@ -73,9 +74,9 @@ public class PhysicsComponent implements BaseComponent {
 
 		if (object.velocity.x > 0) {
 			// RIGHT
-			int tileX = (int) (object.position.x + width + object.velocity.x) / Game.config().tileWidth;
-			int tileY1 = (int) (object.position.y + height + object.velocity.y) / Game.config().tileWidth;
-			int tileY2 = (int) (object.position.y + object.velocity.y) / Game.config().tileWidth;
+			int tileX = (int) (object.position.x + width + object.velocity.x) / Config.tileWidth;
+			int tileY1 = (int) (object.position.y + height + object.velocity.y) / Config.tileWidth;
+			int tileY2 = (int) (object.position.y + object.velocity.y) / Config.tileWidth;
 			if (map.getAltitudeAt(tileX, tileY1) > tileAltitude || map.getAltitudeAt(tileX, tileY2) > tileAltitude) {
 				object.velocity.x = 0;
 				// nudge out if we're stuck
@@ -88,9 +89,9 @@ public class PhysicsComponent implements BaseComponent {
 			}
 		} else if (object.velocity.x < 0) {
 			// LEFT
-			int tileX = (int) (object.position.x + object.velocity.x) / Game.config().tileWidth;
-			int tileY2 = (int) (object.position.y + object.velocity.y) / Game.config().tileWidth;
-			int tileY1 = (int) (object.position.y + height + object.velocity.y) / Game.config().tileWidth;
+			int tileX = (int) (object.position.x + object.velocity.x) / Config.tileWidth;
+			int tileY2 = (int) (object.position.y + object.velocity.y) / Config.tileWidth;
+			int tileY1 = (int) (object.position.y + height + object.velocity.y) / Config.tileWidth;
 			if (map.getAltitudeAt(tileX, tileY1) > tileAltitude || map.getAltitudeAt(tileX, tileY2) > tileAltitude) {
 				object.velocity.x = 0;
 				// nudge out if we're stuck
