@@ -1,4 +1,4 @@
-package net.alcuria.umbracraft.layouts;
+package net.alcuria.umbracraft.editor.layout;
 
 import net.alcuria.umbracraft.mapgen.MapGenerator;
 

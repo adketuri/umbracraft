@@ -1,8 +1,8 @@
 package net.alcuria.umbracraft;
 
 import net.alcuria.umbracraft.editor.Drawables;
-import net.alcuria.umbracraft.layouts.EditorLayout;
-import net.alcuria.umbracraft.layouts.Layout;
+import net.alcuria.umbracraft.editor.layout.EditorLayout;
+import net.alcuria.umbracraft.editor.layout.Layout;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;

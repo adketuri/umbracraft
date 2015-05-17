@@ -1,4 +1,4 @@
-package net.alcuria.umbracraft.layouts;
+package net.alcuria.umbracraft.editor.layout;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;

@@ -1,4 +1,4 @@
-package net.alcuria.umbracraft.modules;
+package net.alcuria.umbracraft.editor.modules;
 
 import net.alcuria.umbracraft.definitions.hero.HeroDefinition;
 

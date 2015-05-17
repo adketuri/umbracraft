@@ -1,11 +1,11 @@
-package net.alcuria.umbracraft.modules;
+package net.alcuria.umbracraft.editor.modules;
 
 import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
-import net.alcuria.umbracraft.widget.AnimationPreview;
-import net.alcuria.umbracraft.widget.AnimationPreviewFrame;
+import net.alcuria.umbracraft.editor.widget.AnimationPreview;
+import net.alcuria.umbracraft.editor.widget.AnimationPreviewFrame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

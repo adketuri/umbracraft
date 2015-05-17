@@ -1,11 +1,11 @@
-package net.alcuria.umbracraft.layouts;
+package net.alcuria.umbracraft.editor.layout;
 
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.editor.Drawables;
-import net.alcuria.umbracraft.modules.AnimationsModule;
-import net.alcuria.umbracraft.modules.HeroModule;
-import net.alcuria.umbracraft.modules.Module;
-import net.alcuria.umbracraft.modules.TilesetsModule;
+import net.alcuria.umbracraft.editor.modules.AnimationsModule;
+import net.alcuria.umbracraft.editor.modules.HeroModule;
+import net.alcuria.umbracraft.editor.modules.Module;
+import net.alcuria.umbracraft.editor.modules.TilesetsModule;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;

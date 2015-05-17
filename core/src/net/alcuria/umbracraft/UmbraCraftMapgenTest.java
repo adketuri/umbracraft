@@ -1,7 +1,7 @@
 package net.alcuria.umbracraft;
 
-import net.alcuria.umbracraft.layouts.Layout;
-import net.alcuria.umbracraft.layouts.MapGenLayout;
+import net.alcuria.umbracraft.editor.layout.Layout;
+import net.alcuria.umbracraft.editor.layout.MapGenLayout;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;

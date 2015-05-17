@@ -1,4 +1,4 @@
-package net.alcuria.umbracraft.widget;
+package net.alcuria.umbracraft.editor.widget;
 
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;

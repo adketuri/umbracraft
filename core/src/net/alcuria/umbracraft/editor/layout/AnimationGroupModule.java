@@ -1,8 +1,8 @@
-package net.alcuria.umbracraft.layouts;
+package net.alcuria.umbracraft.editor.layout;
 
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
-import net.alcuria.umbracraft.modules.Module;
-import net.alcuria.umbracraft.widget.SearchFilterWidget;
+import net.alcuria.umbracraft.editor.modules.Module;
+import net.alcuria.umbracraft.editor.widget.SearchFilterWidget;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;

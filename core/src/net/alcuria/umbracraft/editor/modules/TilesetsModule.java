@@ -1,8 +1,8 @@
-package net.alcuria.umbracraft.modules;
+package net.alcuria.umbracraft.editor.modules;
 
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
-import net.alcuria.umbracraft.widget.WidgetUtils;
+import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
