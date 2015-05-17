@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
 import net.alcuria.umbracraft.editor.widget.AnimationPreview;
 import net.alcuria.umbracraft.editor.widget.AnimationPreviewFrame;
+import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -41,6 +42,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 
 		ScrollPane scroll = new ScrollPane(new Table() {
 			{
+				defaults().expandX().uniformX().fill();
 				if (rootDefinition != null && rootDefinition.animations != null) {
 					for (int i = 0; i < rootDefinition.animations.size; i++) {
 						final AnimationDefinition definition = rootDefinition.animations.get(i);
@@ -71,7 +73,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				add(addButton).padTop(20).padBottom(20).row();
 			}
 		});
-		content.add(scroll).expandY().fill();
+		content.add(scroll).expandY().fill().padLeft(5);
 	}
 
 	private void createCurrentAnimTable(final Table content, final Table table, final AnimationDefinition definition, final VisTextButton button) {
@@ -139,6 +141,9 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				}
 				for (int i = 0; i < definition.frames.size; i++) {
 					final int idx = i;
+					if (idx != 0) {
+						WidgetUtils.divider(this, "blue");
+					}
 					add(new Table() {
 						{
 							defaults().pad(5, 20, 5, 20);

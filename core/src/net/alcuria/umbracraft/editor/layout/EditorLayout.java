@@ -1,7 +1,7 @@
 package net.alcuria.umbracraft.editor.layout;
 
-import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.editor.modules.AnimationGroupModule;
 import net.alcuria.umbracraft.editor.modules.AnimationsModule;
 import net.alcuria.umbracraft.editor.modules.HeroModule;
 import net.alcuria.umbracraft.editor.modules.Module;
@@ -9,12 +9,10 @@ import net.alcuria.umbracraft.editor.modules.TilesetsModule;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /** The top-level screen for the editor. Here, all of the {@link Module} classes
@@ -25,10 +23,8 @@ public class EditorLayout extends Layout {
 	private final Array<Module<?>> modules;
 
 	public EditorLayout() {
-		super();
 		modules = new Array<>();
 		addModules();
-		stage = new Stage(new FitViewport(Config.editorWidth, Config.editorHeight));
 		//stage.setDebugAll(true);
 		Gdx.input.setInputProcessor(stage);
 		Table root = new Table();
@@ -36,6 +32,7 @@ public class EditorLayout extends Layout {
 		final Table menu = new Table();
 		content = new Table();
 		for (final Module<?> m : modules) {
+			menu.defaults().uniformX().expandX().fillX();
 			menu.add(m.getButton()).row();
 			m.getButton().addListener(new ClickListener() {
 				@Override
@@ -49,10 +46,10 @@ public class EditorLayout extends Layout {
 		root.add(topnav()).expandX().fill().height(40).padBottom(10).row();
 		root.add(new Table() {
 			{
-				add(menu);
+				add(menu).expandY().top();
 				add(scroll).expand().fill();
 			}
-		}).expand().fill();
+		}).expand().fill().padLeft(5);
 		stage.addActor(root);
 	}
 

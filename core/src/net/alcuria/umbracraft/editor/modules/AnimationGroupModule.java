@@ -1,7 +1,6 @@
-package net.alcuria.umbracraft.editor.layout;
+package net.alcuria.umbracraft.editor.modules;
 
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
-import net.alcuria.umbracraft.editor.modules.Module;
 import net.alcuria.umbracraft.editor.widget.SearchFilterWidget;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
