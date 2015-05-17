@@ -1,18 +1,20 @@
 package net.alcuria.umbracraft.widget;
 
-import com.badlogic.gdx.graphics.Color;
+import net.alcuria.umbracraft.editor.Drawables;
+
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 /** Some widget utils.
  * @author Andrew Keturi */
 public class WidgetUtils {
 
-	public static void divider(Table table) {
+	public static void divider(Table table, final String drawable) {
+		assert (table != null);
 		table.add(new Table() {
 			{
-				setColor(Color.WHITE);
+				setBackground(Drawables.get(drawable));
 			}
-		}).expandX().fill().height(3).row();
+		}).expandX().fill().height(1).row();
 	}
 
 }

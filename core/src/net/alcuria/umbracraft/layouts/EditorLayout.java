@@ -67,7 +67,7 @@ public class EditorLayout extends Layout {
 	private Table topnav() {
 		return new Table() {
 			{
-				setBackground(Drawables.get("menu"));
+				setBackground(Drawables.get("black"));
 				add(new VisTextButton("Save") {
 					{
 						addListener(new ClickListener() {

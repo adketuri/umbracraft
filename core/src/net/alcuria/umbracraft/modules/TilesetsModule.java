@@ -86,7 +86,7 @@ public class TilesetsModule extends Module<TilesetListDefinition> {
 								populate(this, TilesetDefinition.class, rootDefinition.tiles.get(index), new PopulateConfig());
 							}
 						}).row();
-						WidgetUtils.divider(this);
+						WidgetUtils.divider(this, "yellow");
 					}
 				}
 			}
