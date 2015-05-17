@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /** Contains everything needed by the Engine.
- * @author Andrew */
+ * @author Andrew Keturi */
 public class Game {
 
 	private static AssetManager assets;
@@ -66,7 +66,7 @@ public class Game {
 		db = new Db();
 		publisher = new EventPublisher();
 		// now subscribe
-		Game.publisher().addListener(camera);
+		publisher.addListener(camera);
 	}
 
 	public void dispose() {
@@ -81,6 +81,7 @@ public class Game {
 		if (publisher != null) {
 			publisher.removeAllListeners();
 		}
+		publisher.removeAllListeners();
 		publisher = null;
 		if (screen != null) {
 			screen.dispose();

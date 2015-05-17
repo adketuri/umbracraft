@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Json;
 
 /** A database class to maintain all modules and their contents from disc
  * @author Andrew Keturi */
-public class Db {
+public final class Db {
 
 	private AnimationListDefinition animations;
 
