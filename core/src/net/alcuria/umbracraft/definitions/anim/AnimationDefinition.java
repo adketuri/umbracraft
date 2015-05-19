@@ -38,4 +38,9 @@ public class AnimationDefinition extends Definition {
 	public int getId() {
 		return id;
 	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
 }

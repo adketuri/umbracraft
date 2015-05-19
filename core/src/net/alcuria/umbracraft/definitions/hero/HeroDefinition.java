@@ -8,4 +8,9 @@ public class HeroDefinition extends Definition {
 	public int hp;
 	public int maxLevel;
 	public String name;
+
+	@Override
+	public String getName() {
+		return "Hero";
+	}
 }

@@ -27,4 +27,9 @@ public class AnimationListDefinition extends Definition {
 		}
 		animations.removeValue(definition, true);
 	}
+
+	@Override
+	public String getName() {
+		return "Animation List";
+	}
 }

@@ -20,4 +20,9 @@ public class AnimationFrameDefinition extends Definition {
 		def.y = y;
 		return def;
 	}
+
+	@Override
+	public String getName() {
+		return "AnimationFrame";
+	}
 }

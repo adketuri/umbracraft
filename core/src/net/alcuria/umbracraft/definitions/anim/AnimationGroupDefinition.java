@@ -22,4 +22,9 @@ public class AnimationGroupDefinition extends Definition {
 	AnimationGroupDefinition(int id) {
 		this.id = id;
 	}
+
+	@Override
+	public String getName() {
+		return "Animation Group";
+	}
 }

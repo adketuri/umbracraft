@@ -37,4 +37,9 @@ public class TilesetDefinition extends Definition {
 	public int middleLeftWall;
 	/** The middle segment of the right side of the walls */
 	public int middleRightWall;
+
+	@Override
+	public String getName() {
+		return "Tileset";
+	}
 }

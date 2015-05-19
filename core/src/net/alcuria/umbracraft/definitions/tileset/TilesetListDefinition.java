@@ -8,4 +8,9 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class TilesetListDefinition extends Definition {
 	public Array<TilesetDefinition> tiles;
+
+	@Override
+	public String getName() {
+		return "Tileset List";
+	}
 }
