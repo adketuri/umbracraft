@@ -59,6 +59,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 						add(animButton).row();
 					}
 				}
+				add().expandY().fill().row();
 				VisTextButton addButton = new VisTextButton("Add Animation");
 				addButton.addListener(new ClickListener() {
 
@@ -69,7 +70,17 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 						populate(content);
 					}
 				});
-				add().expandY().fill().row();
+				VisTextButton sort = new VisTextButton("Sort Animations");
+				sort.addListener(new ClickListener() {
+
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						rootDefinition.sort();
+						content.clear();
+						populate(content);
+					}
+				});
+				add(sort).padTop(20).row();
 				add(addButton).padTop(20).padBottom(20).row();
 			}
 		});
@@ -94,7 +105,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				}
 				populate(this, AnimationDefinition.class, definition, animationPopulateConfig(image));
 				row();
-				VisTextButton deleteButton = new VisTextButton("Delete Animation");
+				final VisTextButton deleteButton = new VisTextButton("Delete Animation");
 				deleteButton.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
@@ -103,7 +114,22 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 						populate(content);
 					};
 				});
-				add(deleteButton);
+				final VisTextButton cloneButton = new VisTextButton("Clone Animation");
+				cloneButton.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						rootDefinition.clone(definition);
+						content.clear();
+						populate(content);
+					};
+				});
+				add(new Table() {
+					{
+						add(cloneButton).row();
+						add(deleteButton);
+					}
+				});
+
 			}
 
 			private PopulateConfig animationPopulateConfig(Image image) {
@@ -111,6 +137,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				cfg.listener = updateButtonListener(image, button, scroll, definition);
 				cfg.cols = 1;
 				cfg.labelWidth = 80;
+				cfg.textFieldWidth = 200;
 				return cfg;
 			}
 		}).row();
@@ -192,7 +219,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 									image.update(definition, frame);
 								}
 							};
-							cfg.cols = 3;
+							cfg.cols = 4;
 							cfg.labelWidth = 30;
 							cfg.textFieldWidth = 30;
 							return cfg;

@@ -7,6 +7,8 @@ import net.alcuria.umbracraft.definitions.Definition;
 public class AnimationFrameDefinition extends Definition {
 	/** The duration (in frames) of this frame */
 	public int duration;
+	/** Whether or not to mirror */
+	public boolean mirror;
 	/** The x position of the frame */
 	public int x;
 	/** The y position of the frame */
@@ -18,6 +20,7 @@ public class AnimationFrameDefinition extends Definition {
 		def.duration = duration;
 		def.x = x;
 		def.y = y;
+		def.mirror = mirror;
 		return def;
 	}
 

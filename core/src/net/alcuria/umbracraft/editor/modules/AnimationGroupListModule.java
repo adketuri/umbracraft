@@ -20,9 +20,6 @@ public class AnimationGroupListModule extends ListModule<AnimationGroupDefinitio
 
 	@Override
 	public void create(AnimationGroupDefinition definition, Table content) {
-		//		final SearchFilterWidget search = new SearchFilterWidget(suggestions);
-		//		//rootDefinition.add(new AnimationDefinition());
-		//		//save();
 		PopulateConfig config = new PopulateConfig();
 		ObjectMap<String, Array<String>> suggestions = new ObjectMap<String, Array<String>>();
 		final FileHandle handle = Gdx.files.external("umbracraft/animations.json");
@@ -34,8 +31,15 @@ public class AnimationGroupListModule extends ListModule<AnimationGroupDefinitio
 			}
 			suggestions.put("down", suggestionsStr);
 			suggestions.put("up", suggestionsStr);
+			suggestions.put("right", suggestionsStr);
+			suggestions.put("left", suggestionsStr);
+			suggestions.put("downLeft", suggestionsStr);
+			suggestions.put("downRight", suggestionsStr);
+			suggestions.put("upLeft", suggestionsStr);
+			suggestions.put("upRight", suggestionsStr);
 		}
 		config.cols = 1;
+		config.textFieldWidth = 200;
 		config.suggestions = suggestions;
 		populate(content, AnimationGroupDefinition.class, definition, config);
 	}

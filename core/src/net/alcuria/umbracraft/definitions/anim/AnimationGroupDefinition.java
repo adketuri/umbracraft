@@ -5,14 +5,24 @@ import net.alcuria.umbracraft.definitions.Definition;
 /** Defines a collection of {@link AnimationDefinition} objects
  * @author Andrew Keturi */
 public class AnimationGroupDefinition extends Definition {
-	/** The total number of directions */
-	public int directions;
 	/** The id of the animation facing down */
 	public String down;
+	/** The id of the animation facing downleft */
+	public String downLeft;
+	/** The id of the animation facing downright */
+	public String downReft;
 	/** A unique identifier */
 	private int id;
+	/** The id of the animation facing left */
+	public String left;
 	/** A name */
 	public String name;
+	/** The id of the animation facing right */
+	public String right;
+	/** The id of the animation facing upLeft */
+	public String upLeft;
+	/** The id of the animation facing upRight */
+	public String upRight;
 
 	/** For serialization */
 	public AnimationGroupDefinition() {

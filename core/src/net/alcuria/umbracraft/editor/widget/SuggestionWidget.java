@@ -47,7 +47,9 @@ public class SuggestionWidget {
 		return new Table() {
 			{
 				add(textField).width(width).height(25).expand().fill().row();
-				stack(new Table(), suggestionTable = new Table()).expand().fill().height(25);
+				//stack(new Table(), suggestionTable = new Table()).expand().fill().height(25);
+				add(suggestionTable = new Table()).expand().fill();
+
 			}
 		};
 	}

@@ -15,7 +15,7 @@ public class AnimationDefinition extends Definition {
 	/** Height of a frame */
 	public int height;
 	/** An internal identifier */
-	private int id;
+	private final int id;
 	/** Whether or not to hold on last frame */
 	public boolean keepLast;
 	/** Whether or not the animation loops */
@@ -25,12 +25,30 @@ public class AnimationDefinition extends Definition {
 	/** Width of a frame */
 	public int width;
 
-	/** For serialization */
+	/** This should only be used for deserialization */
 	public AnimationDefinition() {
+		id = 0;
+	}
+
+	/** For serialization
+	 * @param nextId
+	 * @param definition */
+	public AnimationDefinition(AnimationDefinition definition, int id) {
+		filename = definition.filename;
+		frames = new Array<AnimationFrameDefinition>();
+		for (int i = 0; i < definition.frames.size; i++) {
+			frames.add(definition.frames.get(i).copy());
+		}
+		height = definition.height;
+		keepLast = definition.keepLast;
+		loop = definition.loop;
+		name = definition.name + " Copy";
+		width = definition.width;
+		this.id = id;
 	}
 
 	/** Creates a module, setting the ID */
-	AnimationDefinition(int id) {
+	public AnimationDefinition(int id) {
 		this.id = id;
 	}
 

@@ -26,7 +26,7 @@ public class AnimationPreviewFrame extends Image {
 		final String path = "sprites/animations/" + definition.filename;
 		if (definition != null && definition.filename != null && definition.filename.length() > 0 && Gdx.files.internal(path).exists()) {
 			Texture texture = new Texture(Gdx.files.internal(path));
-			TextureRegion region = new TextureRegion(texture, frame.x * definition.width, frame.y * definition.height, definition.width, definition.height);
+			TextureRegion region = new TextureRegion(texture, frame.x * definition.width + (frame.mirror ? definition.width : 0), frame.y * definition.height, frame.mirror ? -definition.width : definition.width, definition.height);
 			setDrawable(new TextureRegionDrawable(region));
 		}
 

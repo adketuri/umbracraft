@@ -61,6 +61,7 @@ public abstract class Module<T extends Definition> {
 
 	public void load(final Class<T> clazz) {
 		Json json = new Json();
+		json.setIgnoreUnknownFields(true);
 		final FileHandle handle = Gdx.files.external("umbracraft/" + getTitle().toLowerCase() + ".json");
 		if (handle.exists()) {
 			rootDefinition = json.fromJson(clazz, handle);
@@ -121,6 +122,9 @@ public abstract class Module<T extends Definition> {
 									public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
 										try {
 											field.setBoolean(definition, checkBox.isChecked());
+											if (config.listener != null) {
+												config.listener.invoked();
+											}
 										} catch (IllegalArgumentException | IllegalAccessException e) {
 											e.printStackTrace();
 										}
@@ -143,6 +147,7 @@ public abstract class Module<T extends Definition> {
 									widget = new SuggestionWidget(config.suggestions.get(field.getName()), config.textFieldWidth);
 									add(widget.getActor()).width(config.textFieldWidth);
 									textField = widget.getTextField();
+									textField.setText(value);
 									final VisTextField tf = textField;
 									widget.addSelectListener(new Listener() {
 
@@ -152,12 +157,13 @@ public abstract class Module<T extends Definition> {
 										}
 
 									});
+									// we really should not be overwriting config's listener. let's pass this in another way.
 									config.listener = widget.getSuggestionPopulateListener();
+
 								} else {
 									textField = new VisTextField(value);
 									add(textField).width(config.textFieldWidth);
 								}
-								final SuggestionWidget finalWidget = widget;
 								textField.setTextFieldListener(new TextFieldListener() {
 
 									@Override
