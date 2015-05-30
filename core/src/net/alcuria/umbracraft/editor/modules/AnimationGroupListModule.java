@@ -1,11 +1,15 @@
 package net.alcuria.umbracraft.editor.modules;
 
+import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
-import net.alcuria.umbracraft.editor.widget.SearchFilterWidget;
+import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
-import com.kotcrab.vis.ui.widget.VisLabel;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public class AnimationGroupListModule extends ListModule<AnimationGroupDefinition> {
 
@@ -16,15 +20,24 @@ public class AnimationGroupListModule extends ListModule<AnimationGroupDefinitio
 
 	@Override
 	public void create(AnimationGroupDefinition definition, Table content) {
-		content.add(new VisLabel("Hello from the grouplistmodule " + ((definition != null && definition.getName() != null) ? definition.getName() : "null")));
-		Array<String> suggestions = new Array<String>();
-		suggestions.add("Amiru");
-		suggestions.add("Amethyst");
-		suggestions.add("Andrew");
-		suggestions.add("America");
-		final SearchFilterWidget search = new SearchFilterWidget(suggestions);
+		//		final SearchFilterWidget search = new SearchFilterWidget(suggestions);
 		//		//rootDefinition.add(new AnimationDefinition());
 		//		//save();
+		PopulateConfig config = new PopulateConfig();
+		ObjectMap<String, Array<String>> suggestions = new ObjectMap<String, Array<String>>();
+		final FileHandle handle = Gdx.files.external("umbracraft/animations.json");
+		if (handle.exists()) {
+			Array<AnimationDefinition> anims = new Json().fromJson(AnimationListDefinition.class, handle).animations;
+			Array<String> suggestionsStr = new Array<String>();
+			for (AnimationDefinition anim : anims) {
+				suggestionsStr.add(anim.name);
+			}
+			suggestions.put("down", suggestionsStr);
+			suggestions.put("up", suggestionsStr);
+		}
+		config.cols = 1;
+		config.suggestions = suggestions;
+		populate(content, AnimationGroupDefinition.class, definition, config);
 	}
 
 	@Override

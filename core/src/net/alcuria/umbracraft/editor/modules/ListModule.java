@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.definitions.ListDefinition;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /** Make this abstract, then have some create method called to populate the
@@ -71,7 +72,7 @@ public abstract class ListModule<T extends Definition> extends Module<ListDefini
 	public void populate(Table content) {
 		content.add(menu = menu()).expandY().fill().padLeft(5).top();
 		view.clear();
-		create(null, view);
+		view.add(new VisLabel("Select an item from the left."));
 		content.add(view).expand().top();
 	}
 }

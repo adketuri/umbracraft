@@ -8,7 +8,7 @@ public class AnimationGroupDefinition extends Definition {
 	/** The total number of directions */
 	public int directions;
 	/** The id of the animation facing down */
-	public int down;
+	public String down;
 	/** A unique identifier */
 	private int id;
 	/** A name */
@@ -25,6 +25,6 @@ public class AnimationGroupDefinition extends Definition {
 
 	@Override
 	public String getName() {
-		return "Animation Group";
+		return name != null ? name : "Untitled";
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.Definition;
+import net.alcuria.umbracraft.editor.widget.SuggestionWidget;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -14,11 +15,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.VisTextArea;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
@@ -39,6 +41,7 @@ public abstract class Module<T extends Definition> {
 		public int labelWidth = 130;
 		/** A custom listener to invoke when a field changes value */
 		public Listener listener;
+		public ObjectMap<String, Array<String>> suggestions;
 		/** Width of the text fields */
 		public int textFieldWidth = 100;
 	}
@@ -134,33 +137,35 @@ public abstract class Module<T extends Definition> {
 								} catch (Exception e) {
 									value = "";
 								}
-								final VisTextArea textArea = new VisTextArea(value);
-								textArea.setTextFieldListener(new TextFieldListener() {
+								VisTextField textField = null;
+								SuggestionWidget widget = null;
+								if (config.suggestions != null && config.suggestions.containsKey(field.getName())) {
+									widget = new SuggestionWidget(config.suggestions.get(field.getName()), config.textFieldWidth);
+									add(widget.getActor()).width(config.textFieldWidth);
+									textField = widget.getTextField();
+									final VisTextField tf = textField;
+									widget.addSelectListener(new Listener() {
+
+										@Override
+										public void invoked() {
+											saveField(field, definition, tf, config);
+										}
+
+									});
+									config.listener = widget.getSuggestionPopulateListener();
+								} else {
+									textField = new VisTextField(value);
+									add(textField).width(config.textFieldWidth);
+								}
+								final SuggestionWidget finalWidget = widget;
+								textField.setTextFieldListener(new TextFieldListener() {
 
 									@Override
 									public void keyTyped(VisTextField textField, char c) {
-										try {
-											if (field.getType().toString().equals("int")) {
-												if (textField.getText().equals("")) {
-													field.setInt(definition, 0);
-												} else {
-													field.setInt(definition, Integer.valueOf(textField.getText()));
-												}
-											} else {
-												field.set(definition, textField.getText());
-											}
-											if (config.listener != null) {
-												config.listener.invoked();
-											}
-										} catch (IllegalArgumentException e) {
-											e.printStackTrace();
-										} catch (IllegalAccessException e) {
-											e.printStackTrace();
-										}
-
+										saveField(field, definition, textField, config);
 									}
 								});
-								add(textArea).width(config.textFieldWidth);
+
 							}
 
 						}
@@ -177,5 +182,28 @@ public abstract class Module<T extends Definition> {
 		json.setOutputType(OutputType.json);
 		String jsonStr = json.prettyPrint(rootDefinition);
 		Gdx.files.external("umbracraft/" + getTitle().toLowerCase() + ".json").writeString(jsonStr, false);
+	}
+
+	public void saveField(Field field, Definition definition, VisTextField textField, PopulateConfig config) {
+		try {
+			if (field.getType().toString().equals("int")) {
+				if (textField.getText().equals("")) {
+					field.setInt(definition, 0);
+				} else {
+					field.setInt(definition, Integer.valueOf(textField.getText()));
+				}
+			} else {
+				field.set(definition, textField.getText());
+			}
+			if (config.listener != null) {
+				config.listener.invoked();
+			}
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NullPointerException npe) {
+			System.out.println("null pointer");
+		}
 	}
 }
