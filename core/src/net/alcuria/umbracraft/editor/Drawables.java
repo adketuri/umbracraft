@@ -11,7 +11,14 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi */
 public class Drawables {
 
+	public static class R {
+		public static final String black = "black";
+		public static final String blue = "blue";
+		public static final String yellow = "yellow";
+	}
+
 	private static ObjectMap<String, TextureRegionDrawable> drawables;
+
 	private static boolean initialized = false;
 
 	/** Gets a drawable from the map
