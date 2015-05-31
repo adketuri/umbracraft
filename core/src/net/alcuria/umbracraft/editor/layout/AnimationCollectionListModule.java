@@ -33,7 +33,7 @@ public class AnimationCollectionListModule extends ListModule<AnimationCollectio
 		if (handle.exists()) {
 			ListDefinition<?> anims = new Json().fromJson(ListDefinition.class, handle);
 			Array<String> suggestionsStr = new Array<String>();
-			for (Definition anim : anims.getDefinitions()) {
+			for (Definition anim : anims.items()) {
 				suggestionsStr.add(anim.getName());
 			}
 			suggestions.put("falling", suggestionsStr);

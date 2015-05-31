@@ -2,6 +2,9 @@ package net.alcuria.umbracraft.definitions;
 
 import com.badlogic.gdx.utils.Array;
 
+/** Defines a list of some Definition. Contains methods to modify that list.
+ * @author Andrew Keturi
+ * @param <T> the type of definition */
 public class ListDefinition<T extends Definition> extends Definition {
 	private Array<T> definitions;
 	private int nextId;
@@ -30,10 +33,6 @@ public class ListDefinition<T extends Definition> extends Definition {
 		return definitions != null ? definitions.get(i) : null;
 	}
 
-	public Array<T> getDefinitions() {
-		return definitions;
-	}
-
 	@Override
 	public String getName() {
 		if (definitions != null && definitions.size > 0) {
@@ -42,6 +41,7 @@ public class ListDefinition<T extends Definition> extends Definition {
 		return "List Definition";
 	}
 
+	/** @return all definitions */
 	public Array<T> items() {
 		return definitions;
 	}

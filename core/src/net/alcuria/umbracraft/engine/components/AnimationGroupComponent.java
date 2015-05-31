@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi */
 public class AnimationGroupComponent implements BaseComponent {
 
+	/** Various animation facing directions
+	 * @author Andrew Keturi */
 	public static enum Direction {
 		DOWN, DOWNLEFT, DOWNRIGHT, LEFT, RIGHT, UP, UPLEFT, UPRIGHT
 	}
@@ -26,8 +28,8 @@ public class AnimationGroupComponent implements BaseComponent {
 	@Override
 	public void create() {
 		if (definition != null) {
-			animations = new ObjectMap<Direction, AnimationComponent>();
 			//FIXME: ugly
+			animations = new ObjectMap<Direction, AnimationComponent>();
 			animations.put(Direction.DOWN, new AnimationComponent(Game.db().anim(definition.down)));
 			animations.put(Direction.LEFT, new AnimationComponent(Game.db().anim(definition.left)));
 			animations.put(Direction.RIGHT, new AnimationComponent(Game.db().anim(definition.right)));
@@ -58,6 +60,7 @@ public class AnimationGroupComponent implements BaseComponent {
 	@Override
 	public void update(Entity object) {
 		Direction currentDirection = lastDirection;
+		// set mask based on velocity of player
 		int mask = 0b0000; // up, down, left, right
 		if (object.velocity.x < 0) {
 			mask = mask ^ 0b0010;
@@ -69,6 +72,7 @@ public class AnimationGroupComponent implements BaseComponent {
 		} else if (object.velocity.y > 0) {
 			mask = mask ^ 0b1000;
 		}
+		// update current facing direction
 		switch (mask) {
 		case 0b0001:
 			currentDirection = Direction.RIGHT;
@@ -95,10 +99,12 @@ public class AnimationGroupComponent implements BaseComponent {
 			currentDirection = Direction.DOWNLEFT;
 			break;
 		}
+		// if it's different, update reference to the current component
 		if (currentDirection != lastDirection) {
 			lastDirection = currentDirection;
 			currentComponent = animations.get(currentDirection);
 		}
+		// update actual current animation
 		currentComponent.update(object);
 	}
 
