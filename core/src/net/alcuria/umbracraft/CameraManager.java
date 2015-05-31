@@ -40,24 +40,10 @@ public class CameraManager implements EventListener {
 
 	public void update() {
 		if (target != null) {
-			if (Math.abs(camera.position.x - target.position.x) > 2) {
-				if (camera.position.x < target.position.x) {
-					camera.translate(2, 0);
-					camera.update();
-				} else if (camera.position.x > target.position.x) {
-					camera.translate(-2, 0);
-					camera.update();
-				}
-			}
-			if (Math.abs(camera.position.y - target.position.y) > 2) {
-				if (camera.position.y < target.position.y) {
-					camera.translate(0, 2);
-					camera.update();
-				} else if (camera.position.y > target.position.y) {
-					camera.translate(0, -2);
-					camera.update();
-				}
-			}
+			float dX = (target.position.x - camera.position.x) / 20f;
+			float dY = (target.position.y - camera.position.y) / 20f;
+			camera.translate(dX, dY);
+			camera.update();
 		}
 	}
 
