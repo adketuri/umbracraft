@@ -164,7 +164,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 		return new Table() {
 			{
 				if (definition.frames == null) {
-					definition.frames = new Array<>();
+					definition.frames = new Array<AnimationFrameDefinition>();
 				}
 				for (int i = 0; i < definition.frames.size; i++) {
 					final int idx = i;

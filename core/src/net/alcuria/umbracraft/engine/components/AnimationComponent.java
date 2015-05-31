@@ -25,7 +25,7 @@ public class AnimationComponent implements BaseComponent {
 	public void create() {
 		if (definition != null && frames == null) {
 			Texture texture = Game.assets().get("sprites/animations/" + definition.filename, Texture.class);
-			frames = new Array<>();
+			frames = new Array<TextureRegion>();
 			for (AnimationFrameDefinition frame : definition.frames) {
 				frames.add(new TextureRegion(new TextureRegion(texture, frame.x * definition.width, frame.y * definition.height, definition.width, definition.height)));
 			}

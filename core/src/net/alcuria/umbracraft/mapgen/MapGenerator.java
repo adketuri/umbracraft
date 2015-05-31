@@ -162,7 +162,7 @@ public class MapGenerator implements InputProcessor {
 		fillPoint(entrance);
 		fillPoint(exit);
 		// create the interval points
-		Array<Point> intervals = new Array<>();
+		Array<Point> intervals = new Array<Point>();
 		for (int i = 0; i < intervalPtSize; i++) {
 			intervals.add(new Point(MathUtils.random(margin, mapW - margin), MathUtils.random(margin, mapH - margin)));
 		}

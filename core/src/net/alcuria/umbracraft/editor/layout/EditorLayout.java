@@ -23,7 +23,7 @@ public class EditorLayout extends Layout {
 	private final Array<Module<?>> modules;
 
 	public EditorLayout() {
-		modules = new Array<>();
+		modules = new Array<Module<?>>();
 		addModules();
 		//stage.setDebugAll(true);
 		Gdx.input.setInputProcessor(stage);
