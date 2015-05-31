@@ -58,6 +58,7 @@ public class EditorLayout extends Layout {
 		modules.add(new TilesetsModule());
 		modules.add(new AnimationsModule());
 		modules.add(new AnimationGroupListModule());
+		modules.add(new AnimationCollectionListModule());
 	}
 
 	private Table topnav() {

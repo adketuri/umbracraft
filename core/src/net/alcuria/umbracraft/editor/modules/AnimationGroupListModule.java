@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
+/** A module to handle groups of animations for the eight directions.
+ * @author Andrew Keturi */
 public class AnimationGroupListModule extends ListModule<AnimationGroupDefinition> {
 
 	@Override

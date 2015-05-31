@@ -6,6 +6,8 @@ import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.utils.ObjectMap;
 
+/** A component used for displaying components in particular directions.
+ * @author Andrew Keturi */
 public class AnimationGroupComponent implements BaseComponent {
 
 	public static enum Direction {

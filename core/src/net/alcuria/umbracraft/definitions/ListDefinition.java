@@ -30,6 +30,10 @@ public class ListDefinition<T extends Definition> extends Definition {
 		return definitions != null ? definitions.get(i) : null;
 	}
 
+	public Array<T> getDefinitions() {
+		return definitions;
+	}
+
 	@Override
 	public String getName() {
 		if (definitions != null && definitions.size > 0) {
@@ -46,4 +50,5 @@ public class ListDefinition<T extends Definition> extends Definition {
 	public int size() {
 		return definitions != null ? definitions.size : 0;
 	}
+
 }
