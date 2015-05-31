@@ -19,6 +19,8 @@ public class AnimationGroupDefinition extends Definition {
 	public String name;
 	/** The id of the animation facing right */
 	public String right;
+	/** The id of the animation facing up */
+	public String up;
 	/** The id of the animation facing upLeft */
 	public String upLeft;
 	/** The id of the animation facing upRight */

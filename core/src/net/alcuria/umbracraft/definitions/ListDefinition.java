@@ -38,6 +38,10 @@ public class ListDefinition<T extends Definition> extends Definition {
 		return "List Definition";
 	}
 
+	public Array<T> items() {
+		return definitions;
+	}
+
 	/** @return the size of the definition list */
 	public int size() {
 		return definitions != null ? definitions.size : 0;

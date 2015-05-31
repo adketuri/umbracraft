@@ -23,7 +23,7 @@ public class AnimationComponent implements BaseComponent {
 
 	@Override
 	public void create() {
-		if (definition != null) {
+		if (definition != null && frames == null) {
 			Texture texture = Game.assets().get("sprites/animations/" + definition.filename, Texture.class);
 			frames = new Array<>();
 			for (AnimationFrameDefinition frame : definition.frames) {
@@ -40,7 +40,8 @@ public class AnimationComponent implements BaseComponent {
 	@Override
 	public void render(Entity object) {
 		if (frames != null) {
-			Game.batch().draw(frames.get(idx), object.position.x, object.position.y);
+			final boolean mirror = definition.frames.get(idx).mirror;
+			Game.batch().draw(frames.get(idx), object.position.x + (mirror ? definition.width : 0), object.position.y, mirror ? -definition.width : definition.width, definition.height);
 		}
 	}
 

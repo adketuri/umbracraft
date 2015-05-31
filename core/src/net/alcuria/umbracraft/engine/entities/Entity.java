@@ -17,6 +17,7 @@ public class Entity {
 	public Vector2 position;
 	public Vector2 velocity;
 
+	/** Creates an entity with no components */
 	public Entity() {
 		components = new Array<BaseComponent>();
 		position = new Vector2();
@@ -24,6 +25,8 @@ public class Entity {
 		desiredPosition = new Vector2();
 	}
 
+	/** Creates an entity with several pre-defined components
+	 * @param components the initial components */
 	public Entity(BaseComponent... components) {
 		this();
 		for (BaseComponent component : components) {
@@ -39,18 +42,22 @@ public class Entity {
 		components.add(component);
 	}
 
+	/** Disposes/kills all components */
 	public void dispose() {
 		for (int i = 0; i < components.size; i++) {
 			components.get(i).dispose();
 		}
 	}
 
+	/** Renders all components */
 	public void render() {
 		for (int i = 0; i < components.size; i++) {
 			components.get(i).render(this);
 		}
 	}
 
+	/** Updates all components
+	 * @param delta time since last update */
 	public void update(float delta) {
 		for (int i = 0; i < components.size; i++) {
 			components.get(i).update(this);
