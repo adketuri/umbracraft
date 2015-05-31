@@ -2,6 +2,7 @@ package net.alcuria.umbracraft;
 
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.definitions.ListDefinition;
+import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
@@ -25,6 +26,7 @@ public final class Db {
 		final ObjectMap<String, Class<? extends Definition>> defs = new ObjectMap<String, Class<? extends Definition>>();
 		defs.put("animations", AnimationListDefinition.class);
 		defs.put("animationgroup", ListDefinition.class);
+		defs.put("animationcollection", ListDefinition.class);
 		// deserialize all definitions
 		Json json = new Json();
 		for (String name : defs.keys()) {
@@ -50,7 +52,22 @@ public final class Db {
 				}
 			}
 		}
-		throw new NullPointerException("Animation not found");
+		throw new NullPointerException("Animation not found: " + name);
+	}
+
+	public AnimationCollectionDefinition animCollection(String name) {
+		if (definitions != null) {
+			for (Definition definition : definitions) {
+				if (definition instanceof ListDefinition<?>) {
+					for (Definition list : ((ListDefinition<?>) definition).items()) {
+						if (list instanceof AnimationCollectionDefinition && ((AnimationCollectionDefinition) list).name != null && ((AnimationCollectionDefinition) list).name.equals(name)) {
+							return (AnimationCollectionDefinition) list;
+						}
+					}
+				}
+			}
+		}
+		throw new NullPointerException("AnimationCollection not found: " + name);
 	}
 
 	public AnimationGroupDefinition animGroup(String name) {
@@ -65,6 +82,6 @@ public final class Db {
 				}
 			}
 		}
-		throw new NullPointerException("Animation not found");
+		throw new NullPointerException("AnimationGroup not found: " + name);
 	}
 }

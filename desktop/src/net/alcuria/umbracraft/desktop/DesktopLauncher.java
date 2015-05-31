@@ -11,7 +11,7 @@ public class DesktopLauncher {
 	public static void main(String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
-		boolean editor = true;
+		boolean editor = false;
 		if (editor) {
 			config.width = Config.editorWidth;
 			config.height = Config.editorHeight;

@@ -50,10 +50,24 @@ public class AnimationGroupComponent implements BaseComponent {
 
 	}
 
+	public Direction getDirection() {
+		return lastDirection;
+	}
+
 	@Override
 	public void render(Entity object) {
 		if (currentComponent != null) {
 			currentComponent.render(object);
+		}
+	}
+
+	public void setDirection(Direction direction) {
+		if (direction == null) {
+			return;
+		}
+		lastDirection = direction;
+		if (animations != null) {
+			currentComponent = animations.get(lastDirection);
 		}
 	}
 

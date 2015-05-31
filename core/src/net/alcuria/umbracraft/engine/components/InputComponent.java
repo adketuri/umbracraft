@@ -95,15 +95,27 @@ public class InputComponent implements BaseComponent, InputProcessor {
 		object.velocity.y = 0;
 		if (Gdx.input.isKeyPressed(Keys.W)) {
 			object.velocity.y = 2;
+			if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D)) {
+				object.velocity.y *= 0.707f;
+			}
 		}
 		if (Gdx.input.isKeyPressed(Keys.A)) {
 			object.velocity.x = -2;
+			if (Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.S)) {
+				object.velocity.x *= 0.707f;
+			}
 		}
 		if (Gdx.input.isKeyPressed(Keys.S)) {
 			object.velocity.y = -2;
+			if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D)) {
+				object.velocity.y *= 0.707f;
+			}
 		}
 		if (Gdx.input.isKeyPressed(Keys.D)) {
 			object.velocity.x = 2;
+			if (Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.S)) {
+				object.velocity.x *= 0.707f;
+			}
 		}
 		//		object.desiredPosition.x = lastTouch.x;
 		//		object.desiredPosition.y = lastTouch.y;

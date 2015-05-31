@@ -1,7 +1,7 @@
 package net.alcuria.umbracraft.engine.entities;
 
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.engine.components.AnimationGroupComponent;
+import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent;
 import net.alcuria.umbracraft.engine.components.InputComponent;
 import net.alcuria.umbracraft.engine.components.PhysicsComponent;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
@@ -23,7 +23,7 @@ public final class EntityCreator {
 		Gdx.input.setInputProcessor(input);
 		player.addComponent(input);
 		player.addComponent(new PhysicsComponent(map));
-		player.addComponent(new AnimationGroupComponent(Game.db().animGroup("Andoru-Walking")));
+		player.addComponent(new AnimationCollectionComponent(Game.db().animCollection("Andoru")));
 		Game.publisher().publish(new CameraTargetEvent(player));
 		return player;
 	}
