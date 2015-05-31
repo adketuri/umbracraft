@@ -15,7 +15,7 @@ public class AnimationDefinition extends Definition {
 	/** Height of a frame */
 	public int height;
 	/** An internal identifier */
-	private final int id;
+	private int id;
 	/** Whether or not to hold on last frame */
 	public boolean keepLast;
 	/** Whether or not the animation loops */
@@ -27,7 +27,6 @@ public class AnimationDefinition extends Definition {
 
 	/** This should only be used for deserialization */
 	public AnimationDefinition() {
-		id = 0;
 	}
 
 	/** For serialization

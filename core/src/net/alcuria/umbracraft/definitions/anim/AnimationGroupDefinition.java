@@ -10,7 +10,7 @@ public class AnimationGroupDefinition extends Definition {
 	/** The id of the animation facing downleft */
 	public String downLeft;
 	/** The id of the animation facing downright */
-	public String downReft;
+	public String downRight;
 	/** A unique identifier */
 	private int id;
 	/** The id of the animation facing left */

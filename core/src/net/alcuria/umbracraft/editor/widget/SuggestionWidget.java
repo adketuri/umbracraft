@@ -54,33 +54,27 @@ public class SuggestionWidget {
 		};
 	}
 
-	/** @return a listener to populate the data */
-	public Listener getSuggestionPopulateListener() {
-		return new Listener() {
-
-			@Override
-			public void invoked() {
-				curSuggestions.clear();
-				if (textField.getText().length() > 0) {
-					for (String s : allSuggestions) {
-						if (s.toLowerCase().contains(textField.getText().toLowerCase())) {
-							curSuggestions.add(s);
-							if (curSuggestions.size >= MAX_SUGGESTIONS) {
-								break;
-							}
-						}
-					}
-				}
-				updateSuggestions();
-			}
-
-		};
-
-	}
-
 	/** @return the {@link VisTextField} */
 	public VisTextField getTextField() {
 		return textField;
+	}
+
+	/** this MUST be called elsewhere to update suggestions, like when a key is
+	 * pressed */
+	public void populateSuggestions() {
+		curSuggestions.clear();
+		if (textField.getText().length() > 0) {
+			for (String s : allSuggestions) {
+				if (s.toLowerCase().contains(textField.getText().toLowerCase())) {
+					curSuggestions.add(s);
+					if (curSuggestions.size >= MAX_SUGGESTIONS) {
+						break;
+					}
+				}
+			}
+		}
+		updateSuggestions();
+
 	}
 
 	/** Called when the field input changes to rebuild the suggestions list */

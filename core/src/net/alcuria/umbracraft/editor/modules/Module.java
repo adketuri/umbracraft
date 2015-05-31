@@ -157,18 +157,20 @@ public abstract class Module<T extends Definition> {
 										}
 
 									});
-									// we really should not be overwriting config's listener. let's pass this in another way.
-									config.listener = widget.getSuggestionPopulateListener();
 
 								} else {
 									textField = new VisTextField(value);
 									add(textField).width(config.textFieldWidth);
 								}
+								final SuggestionWidget w = widget;
 								textField.setTextFieldListener(new TextFieldListener() {
 
 									@Override
 									public void keyTyped(VisTextField textField, char c) {
 										saveField(field, definition, textField, config);
+										if (w != null) {
+											w.populateSuggestions();
+										}
 									}
 								});
 
