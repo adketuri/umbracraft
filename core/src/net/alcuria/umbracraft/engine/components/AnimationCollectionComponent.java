@@ -59,6 +59,7 @@ public class AnimationCollectionComponent implements BaseComponent {
 
 	@Override
 	public void update(Entity object) {
+		//save off last pose and get current pose/direction
 		Pose lastPose = currentPose;
 		if (object.velocity.isZero()) {
 			currentPose = Pose.IDLE;
@@ -66,10 +67,10 @@ public class AnimationCollectionComponent implements BaseComponent {
 			currentPose = Pose.WALKING;
 			currentDirection = currentGroup.getDirection();
 		}
+		// if the pose has updated, update reference to currentGroup and set direction
 		if (currentPose != lastPose) {
 			currentGroup = groups.get(currentPose);
 			currentGroup.setDirection(currentDirection);
-			Game.log("Set direction: " + currentDirection + " Set pose: " + currentPose);
 		} else {
 			currentGroup.update(object);
 		}
