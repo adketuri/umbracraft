@@ -39,7 +39,7 @@ public class PhysicsComponent implements BaseComponent {
 	@Override
 	public void update(Entity object) {
 
-		int tileAltitude = object.altitude / Config.tileWidth;
+		int tileAltitude = (int) (object.position.z / Config.tileWidth);
 		// check for collisions
 		if (object.velocity.y > 0) {
 			// NORTH

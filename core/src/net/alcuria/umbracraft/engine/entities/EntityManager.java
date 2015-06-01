@@ -42,10 +42,10 @@ public class EntityManager {
 
 		// render each row in view, starting from the top
 		int row = y + height;
-		int heroRow = (int) ((gameObjects.get(0).position.y) / Config.tileWidth);
+		int heroRow = (int) ((gameObjects.get(0).position.y + gameObjects.get(0).position.z) / Config.tileWidth);
 		while (row > y - map.getMaxAltitude() * 2) {
 			map.render(row);
-			if (row + gameObjects.get(0).altitude / Config.tileWidth == heroRow) {
+			if (row + (gameObjects.get(0).position.z / Config.tileWidth) == heroRow) {
 				gameObjects.get(0).render();
 			}
 			row--;

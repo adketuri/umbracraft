@@ -2,7 +2,7 @@ package net.alcuria.umbracraft.engine.entities;
 
 import net.alcuria.umbracraft.engine.components.BaseComponent;
 
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 /** A top-level game object. Players, enemies, decorations, and so on, all should
@@ -11,18 +11,18 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class Entity {
 
-	public int altitude;
+	//public int altitude;
 	private final Array<BaseComponent> components;
-	public Vector2 desiredPosition;
-	public Vector2 position;
-	public Vector2 velocity;
+	public Vector3 desiredPosition;
+	public Vector3 position;
+	public Vector3 velocity;
 
 	/** Creates an entity with no components */
 	public Entity() {
 		components = new Array<BaseComponent>();
-		position = new Vector2();
-		velocity = new Vector2();
-		desiredPosition = new Vector2();
+		position = new Vector3();
+		velocity = new Vector3();
+		desiredPosition = new Vector3();
 	}
 
 	/** Creates an entity with several pre-defined components

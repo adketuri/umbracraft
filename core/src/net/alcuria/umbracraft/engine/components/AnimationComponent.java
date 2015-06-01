@@ -41,7 +41,7 @@ public class AnimationComponent implements BaseComponent {
 	public void render(Entity object) {
 		if (frames != null) {
 			final boolean mirror = definition.frames.get(idx).mirror;
-			Game.batch().draw(frames.get(idx), object.position.x + (mirror ? definition.width : 0), object.position.y, mirror ? -definition.width : definition.width, definition.height);
+			Game.batch().draw(frames.get(idx), object.position.x + (mirror ? definition.width : 0), object.position.y + object.position.z, mirror ? -definition.width : definition.width, definition.height);
 		}
 	}
 

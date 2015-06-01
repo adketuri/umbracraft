@@ -11,7 +11,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 public class EngineLauncher {
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-
 		config.width = Config.viewWidth;
 		config.height = Config.viewHeight;
 		new LwjglApplication(new UmbraCraftEngine(), config);

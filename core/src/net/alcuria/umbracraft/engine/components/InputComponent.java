@@ -119,7 +119,7 @@ public class InputComponent implements BaseComponent, InputProcessor {
 		}
 		//		object.desiredPosition.x = lastTouch.x;
 		//		object.desiredPosition.y = lastTouch.y;
-		object.altitude = inputAltitude;
+		object.position.z = inputAltitude;
 	}
 
 }
