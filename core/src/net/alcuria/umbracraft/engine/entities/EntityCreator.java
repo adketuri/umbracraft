@@ -23,6 +23,7 @@ public final class EntityCreator {
 		Gdx.input.setInputProcessor(input);
 		player.addComponent(input);
 		player.addComponent(new PhysicsComponent(map));
+		player.addComponent(new ShadowComponent(map));
 		player.addComponent(new AnimationCollectionComponent(Game.db().animCollection("Andoru")));
 		Game.publisher().publish(new CameraTargetEvent(player));
 		return player;
