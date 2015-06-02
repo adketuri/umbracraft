@@ -51,17 +51,17 @@ public class AnimationCollectionComponent implements BaseComponent {
 	}
 
 	@Override
-	public void render(Entity object) {
+	public void render(Entity entity) {
 		if (currentGroup != null) {
-			currentGroup.render(object);
+			currentGroup.render(entity);
 		}
 	}
 
 	@Override
-	public void update(Entity object) {
+	public void update(Entity entity) {
 		//save off last pose and get current pose/direction
 		Pose lastPose = currentPose;
-		if (object.velocity.x == 0 && object.velocity.y == 0) {
+		if (entity.velocity.x == 0 && entity.velocity.y == 0) {
 			currentPose = Pose.IDLE;
 		} else {
 			currentPose = Pose.WALKING;
@@ -72,7 +72,7 @@ public class AnimationCollectionComponent implements BaseComponent {
 			currentGroup = groups.get(currentPose);
 			currentGroup.setDirection(currentDirection);
 		} else {
-			currentGroup.update(object);
+			currentGroup.update(entity);
 		}
 	}
 

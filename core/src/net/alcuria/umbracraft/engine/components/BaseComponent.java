@@ -13,8 +13,8 @@ public interface BaseComponent {
 	public void dispose();
 
 	/** To be called when the component needs to be rendered */
-	public void render(Entity object);
+	public void render(Entity entity);
 
 	/** To be called when the component needs to be updated */
-	public void update(Entity object);
+	public void update(Entity entity);
 }

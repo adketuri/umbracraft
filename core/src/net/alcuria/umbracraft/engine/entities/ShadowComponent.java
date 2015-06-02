@@ -29,12 +29,12 @@ public class ShadowComponent implements BaseComponent {
 	}
 
 	@Override
-	public void render(Entity object) {
-		Game.batch().draw(shadow, object.position.x, object.position.y - 6 + Config.tileWidth * map.getAltitudeAt((int) object.position.x / Config.tileWidth, (int) object.position.y / Config.tileWidth));
+	public void render(Entity entity) {
+		Game.batch().draw(shadow, entity.position.x, entity.position.y - 6 + Config.tileWidth * map.getAltitudeAt((int) entity.position.x / Config.tileWidth, (int) entity.position.y / Config.tileWidth));
 	}
 
 	@Override
-	public void update(Entity object) {
+	public void update(Entity entity) {
 	}
 
 }

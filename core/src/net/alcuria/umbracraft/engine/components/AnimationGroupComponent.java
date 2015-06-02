@@ -19,7 +19,7 @@ public class AnimationGroupComponent implements BaseComponent {
 	private ObjectMap<Direction, AnimationComponent> animations;
 	private AnimationComponent currentComponent;
 	private final AnimationGroupDefinition definition;
-	private Direction lastDirection;
+	private Direction currentDirection;
 
 	public AnimationGroupComponent(AnimationGroupDefinition definition) {
 		this.definition = definition;
@@ -51,13 +51,13 @@ public class AnimationGroupComponent implements BaseComponent {
 	}
 
 	public Direction getDirection() {
-		return lastDirection;
+		return currentDirection;
 	}
 
 	@Override
-	public void render(Entity object) {
+	public void render(Entity entity) {
 		if (currentComponent != null) {
-			currentComponent.render(object);
+			currentComponent.render(entity);
 		}
 	}
 
@@ -65,61 +65,61 @@ public class AnimationGroupComponent implements BaseComponent {
 		if (direction == null) {
 			return;
 		}
-		lastDirection = direction;
+		currentDirection = direction;
 		if (animations != null) {
-			currentComponent = animations.get(lastDirection);
+			currentComponent = animations.get(currentDirection);
 		}
 	}
 
 	@Override
-	public void update(Entity object) {
-		Direction currentDirection = lastDirection;
+	public void update(Entity entity) {
+		Direction tmpDirection = currentDirection;
 		// set mask based on velocity of player
 		int mask = 0b0000; // up, down, left, right
-		if (object.velocity.x < 0) {
+		if (entity.velocity.x < 0) {
 			mask = mask ^ 0b0010;
-		} else if (object.velocity.x > 0) {
+		} else if (entity.velocity.x > 0) {
 			mask = mask ^ 0b0001;
 		}
-		if (object.velocity.y < 0) {
+		if (entity.velocity.y < 0) {
 			mask = mask ^ 0b0100;
-		} else if (object.velocity.y > 0) {
+		} else if (entity.velocity.y > 0) {
 			mask = mask ^ 0b1000;
 		}
 		// update current facing direction
 		switch (mask) {
 		case 0b0001:
-			currentDirection = Direction.RIGHT;
+			tmpDirection = Direction.RIGHT;
 			break;
 		case 0b0010:
-			currentDirection = Direction.LEFT;
+			tmpDirection = Direction.LEFT;
 			break;
 		case 0b0100:
-			currentDirection = Direction.DOWN;
+			tmpDirection = Direction.DOWN;
 			break;
 		case 0b1000:
-			currentDirection = Direction.UP;
+			tmpDirection = Direction.UP;
 			break;
 		case 0b1010:
-			currentDirection = Direction.UPLEFT;
+			tmpDirection = Direction.UPLEFT;
 			break;
 		case 0b1001:
-			currentDirection = Direction.UPRIGHT;
+			tmpDirection = Direction.UPRIGHT;
 			break;
 		case 0b0101:
-			currentDirection = Direction.DOWNRIGHT;
+			tmpDirection = Direction.DOWNRIGHT;
 			break;
 		case 0b0110:
-			currentDirection = Direction.DOWNLEFT;
+			tmpDirection = Direction.DOWNLEFT;
 			break;
 		}
 		// if it's different, update reference to the current component
-		if (currentDirection != lastDirection) {
-			lastDirection = currentDirection;
-			currentComponent = animations.get(currentDirection);
+		if (tmpDirection != currentDirection) {
+			currentDirection = tmpDirection;
+			currentComponent = animations.get(tmpDirection);
 		}
 		// update actual current animation
-		currentComponent.update(object);
+		currentComponent.update(entity);
 	}
 
 }

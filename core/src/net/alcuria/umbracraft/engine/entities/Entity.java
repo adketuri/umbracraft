@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class Entity {
 
+	// TODO: instead of passing a reference to the entity in our components, do something more sophisticated so all components don't have read/write access to these?
 	private final Array<BaseComponent> components;
 	public Vector3 desiredPosition;
 	public boolean onGround = true;

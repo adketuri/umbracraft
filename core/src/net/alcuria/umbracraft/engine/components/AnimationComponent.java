@@ -38,15 +38,15 @@ public class AnimationComponent implements BaseComponent {
 	}
 
 	@Override
-	public void render(Entity object) {
+	public void render(Entity entity) {
 		if (frames != null) {
 			final boolean mirror = definition.frames.get(idx).mirror;
-			Game.batch().draw(frames.get(idx), object.position.x + (mirror ? definition.width : 0), object.position.y + object.position.z, mirror ? -definition.width : definition.width, definition.height);
+			Game.batch().draw(frames.get(idx), entity.position.x + (mirror ? definition.width : 0), entity.position.y + entity.position.z, mirror ? -definition.width : definition.width, definition.height);
 		}
 	}
 
 	@Override
-	public void update(Entity object) {
+	public void update(Entity entity) {
 		ct++;
 		if (ct > definition.frames.get(idx).duration) {
 			ct = 0;
