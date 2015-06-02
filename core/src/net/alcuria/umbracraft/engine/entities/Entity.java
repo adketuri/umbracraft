@@ -11,9 +11,9 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class Entity {
 
-	//public int altitude;
 	private final Array<BaseComponent> components;
 	public Vector3 desiredPosition;
+	public boolean onGround = true;
 	public Vector3 position;
 	public Vector3 velocity;
 

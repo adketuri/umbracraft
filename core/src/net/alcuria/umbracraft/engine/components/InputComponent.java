@@ -34,13 +34,13 @@ public class InputComponent implements BaseComponent, InputProcessor {
 		switch (character) {
 		case 'z':
 			if (inputAltitude > 0) {
-				inputAltitude -= 16;
+				inputAltitude -= 1;
 			} else {
 				inputAltitude = 0;
 			}
 			return true;
 		case 'x':
-			inputAltitude += 16;
+			inputAltitude += 1;
 			return true;
 		}
 		return false;
@@ -119,7 +119,7 @@ public class InputComponent implements BaseComponent, InputProcessor {
 		}
 		//		object.desiredPosition.x = lastTouch.x;
 		//		object.desiredPosition.y = lastTouch.y;
-		object.position.z = inputAltitude;
+		// object.position.z = inputAltitude;
 	}
 
 }

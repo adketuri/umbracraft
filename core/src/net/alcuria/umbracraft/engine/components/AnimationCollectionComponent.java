@@ -61,7 +61,7 @@ public class AnimationCollectionComponent implements BaseComponent {
 	public void update(Entity object) {
 		//save off last pose and get current pose/direction
 		Pose lastPose = currentPose;
-		if (object.velocity.isZero()) {
+		if (object.velocity.x == 0 && object.velocity.y == 0) {
 			currentPose = Pose.IDLE;
 		} else {
 			currentPose = Pose.WALKING;

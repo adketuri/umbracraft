@@ -10,28 +10,28 @@ import com.badlogic.gdx.utils.Array;
  * accordingly.
  * @author Andrew Keturi */
 public class EntityManager {
-	private final Array<Entity> gameObjects;
+	private final Array<Entity> entities;
 	private final Map map;
 
 	public EntityManager(Map map) {
 		this.map = map;
-		gameObjects = new Array<Entity>();
-		gameObjects.add(EntityCreator.player(map));
+		entities = new Array<Entity>();
+		entities.add(EntityCreator.player(map));
 	}
 
 	public void dispose() {
-		if (gameObjects == null) {
+		if (entities == null) {
 			return;
 		}
 		map.dispose();
-		for (int i = 0; i < gameObjects.size; i++) {
-			gameObjects.get(i).dispose();
+		for (int i = 0; i < entities.size; i++) {
+			entities.get(i).dispose();
 		}
 	}
 
 	/** Renders all objects in view. */
 	public void render() {
-		if (gameObjects == null) {
+		if (entities == null) {
 			return;
 		}
 		// get the visible tiles on the screen
@@ -42,11 +42,11 @@ public class EntityManager {
 
 		// render each row in view, starting from the top
 		int row = y + height;
-		int heroRow = (int) ((gameObjects.get(0).position.y + gameObjects.get(0).position.z) / Config.tileWidth);
+		int heroRow = (int) ((entities.get(0).position.y + entities.get(0).position.z) / Config.tileWidth);
 		while (row > y - map.getMaxAltitude() * 2) {
 			map.render(row);
-			if (row + (gameObjects.get(0).position.z / Config.tileWidth) == heroRow) {
-				gameObjects.get(0).render();
+			if (row + ((int) (entities.get(0).position.z / Config.tileWidth)) == heroRow) {
+				entities.get(0).render();
 			}
 			row--;
 		}
@@ -54,12 +54,12 @@ public class EntityManager {
 
 	/** Updates the state of all objects. */
 	public void update(float delta) {
-		if (gameObjects == null) {
+		if (entities == null) {
 			return;
 		}
 		map.update(delta);
-		for (int i = 0; i < gameObjects.size; i++) {
-			gameObjects.get(i).update(delta);
+		for (int i = 0; i < entities.size; i++) {
+			entities.get(i).update(delta);
 		}
 	}
 }
