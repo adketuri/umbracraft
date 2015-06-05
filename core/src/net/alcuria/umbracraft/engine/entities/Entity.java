@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Array;
  * be instantiated as GameObjects with logic separated out in the
  * {@link BaseComponent}.
  * @author Andrew Keturi */
-public class Entity implements Comparable<Entity> {
+public class Entity implements BaseEntity, Comparable<Entity> {
 
 	// TODO: instead of passing a reference to the entity in our components, do something more sophisticated so all components don't have read/write access to these?
 	private final Array<BaseComponent> components;
@@ -56,6 +56,7 @@ public class Entity implements Comparable<Entity> {
 	}
 
 	/** Renders all components */
+	@Override
 	public void render() {
 		for (int i = 0; i < components.size; i++) {
 			components.get(i).render(this);
@@ -64,7 +65,8 @@ public class Entity implements Comparable<Entity> {
 
 	/** Updates all components
 	 * @param delta time since last update */
-	public void update(float delta) {
+	@Override
+	public void update() {
 		for (int i = 0; i < components.size; i++) {
 			components.get(i).update(this);
 		}

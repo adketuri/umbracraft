@@ -86,7 +86,7 @@ public class EntityManager {
 		}
 		map.update(delta);
 		for (int i = 0; i < entities.size; i++) {
-			entities.get(i).update(delta);
+			entities.get(i).update();
 		}
 	}
 }
