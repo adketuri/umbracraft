@@ -12,11 +12,16 @@ import com.badlogic.gdx.utils.Array;
 public class EntityManager {
 	private final Array<Entity> entities;
 	private final Map map;
+	private final Array<Entity> visibleEntities;
 
 	public EntityManager(Map map) {
 		this.map = map;
+		visibleEntities = new Array<Entity>();
 		entities = new Array<Entity>();
 		entities.add(EntityCreator.player(map));
+		for (int i = 0; i < 100; i++) {
+			entities.add(EntityCreator.dummy(map));
+		}
 	}
 
 	public void dispose() {
@@ -29,6 +34,11 @@ public class EntityManager {
 		}
 	}
 
+	/** gets the row an entity is at for rendering */
+	private int getRow(Entity entity) {
+		return (int) ((entity.position.y + entity.position.z) / Config.tileWidth);
+	}
+
 	/** Renders all objects in view. */
 	public void render() {
 		if (entities == null) {
@@ -39,17 +49,34 @@ public class EntityManager {
 		int y = (int) (Game.camera().getCamera().position.y - Config.viewHeight / 2) / Config.tileWidth;
 		int width = Config.viewWidth / Config.tileWidth;
 		int height = Config.viewHeight / Config.tileWidth;
-
-		// render each row in view, starting from the top
+		// add visible entitities onscreen
+		int added = 0;
 		int row = y + height;
-		int heroRow = (int) ((entities.get(0).position.y + entities.get(0).position.z) / Config.tileWidth);
+		for (int i = 0; i < entities.size; i++) {
+			final int entityRow = getRow(entities.get(i));
+			if (entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= map.getHeight()) {
+				visibleEntities.add(entities.get(i));
+				added++;
+			}
+		}
+		visibleEntities.sort();
+		for (int i = 0; i < visibleEntities.size; i++) {
+			//			Game.log(visibleEntities.get(i).position.y + "");
+		}
+		// render each row in view, starting from the top
+		int rendered = 0;
+		int idx = 0;
 		while (row > y - map.getMaxAltitude() * 2) {
-			map.render(row);
-			if (row + ((int) (entities.get(0).position.z / Config.tileWidth)) == heroRow) {
-				entities.get(0).render();
+			map.render(row, x);
+			while (idx < visibleEntities.size && visibleEntities.get(idx).position.y / Config.tileWidth >= row) {
+				visibleEntities.get(idx).render();
+				idx++;
+				rendered++;
 			}
 			row--;
 		}
+		//		Game.log("entities to render: " + added + " rendered: " + rendered);
+		visibleEntities.clear();
 	}
 
 	/** Updates the state of all objects. */

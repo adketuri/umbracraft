@@ -40,6 +40,7 @@ public class CameraManager implements EventListener {
 
 	public void update() {
 		if (target != null) {
+
 			float dX = (target.position.x - camera.position.x) / 20f;
 			float dY = (target.position.y - camera.position.y) / 20f;
 			camera.translate(dX, dY);

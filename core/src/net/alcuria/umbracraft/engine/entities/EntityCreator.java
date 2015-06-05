@@ -2,18 +2,28 @@ package net.alcuria.umbracraft.engine.entities;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent;
+import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.components.InputComponent;
 import net.alcuria.umbracraft.engine.components.PhysicsComponent;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
 import net.alcuria.umbracraft.engine.map.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 
 /** The EntityCreator is responsible for instantiating various game objects
  * (players, etc) to be used by the {@link EntityManager}. TODO: perhaps read
  * all these entity definitions from a file.
  * @author Andrew Keturi */
 public final class EntityCreator {
+
+	public static Entity dummy(final Map map) {
+		final Entity entity = new Entity(new AnimationComponent(Game.db().anim("Spin")));
+		entity.position.x = MathUtils.random(0, map.getWidth() * 16);
+		entity.position.y = MathUtils.random(0, map.getHeight() * 16);
+		entity.position.z = 5;
+		return entity;
+	}
 
 	/** @param map
 	 * @return A player {@link Entity} */

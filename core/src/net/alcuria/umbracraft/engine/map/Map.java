@@ -65,6 +65,10 @@ public class Map implements Disposable {
 		altMap[10][9] = 4;
 		altMap[9][8] = 4;
 		altMap[9][9] = 4;
+		altMap[10 + 2][8 - 2] = 3;
+		altMap[10 + 2][9 - 2] = 3;
+		altMap[9 + 2][8 - 2] = 3;
+		altMap[9 + 2][9 - 2] = 3;
 		altMap[10 + 4][8] = 2;
 		altMap[10 + 4][9] = 2;
 		altMap[9 + 4][8] = 2;
@@ -190,11 +194,19 @@ public class Map implements Disposable {
 		return getAltitudeAt((int) f, (int) g);
 	}
 
-	public int getAltitudeAt(int i, int j) {
-		if (i >= 0 && i < altMap.length && j >= 0 && j < altMap[0].length) {
-			return altMap[i][j];
+	/** Gets the altitude at some tile coordinates and does bounds checking too!
+	 * @param x x tile
+	 * @param y y tile
+	 * @return */
+	public int getAltitudeAt(int x, int y) {
+		if (x >= 0 && x < altMap.length && y >= 0 && y < altMap[0].length) {
+			return altMap[x][y];
 		}
 		return 0;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 
 	/** @return the tallest altitude on this map */
@@ -216,9 +228,15 @@ public class Map implements Disposable {
 		return regions;
 	}
 
+	public int getWidth() {
+		return width;
+	}
+
 	/** Renders every visible layer.
-	 * @param row */
-	public void render(int row) {
+	 * @param row the map row to render, in tiles
+	 * @param xOffset the camera offset in tiles, to ensure we only render tiles
+	 *        visible in the x axis */
+	public void render(int row, int xOffset) {
 		final int tileSize = Config.tileWidth;
 		for (int k = 0; k < layers.size; k++) {
 			int alt = layers.get(k).alt;
@@ -226,14 +244,12 @@ public class Map implements Disposable {
 			if (row < 0 || row >= altMap[0].length) {
 				return;
 			}
-			if (k > 0 && alt == 0) {
-			}
-			for (int i = 0; i < data.length; i++) {
+			for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth; i < n; i++) {
 				// prevents bottom rows from creeping up during rendering
 				// TODO: make this generic. i think for alts > 0 it will break
-				int rowRenderHeight = alt == 0 ? 0 : altMap[i][row];
+				int rowRenderHeight = alt == 0 ? 0 : getAltitudeAt(i, row);
 				for (int j = 0; j <= rowRenderHeight; j++) {
-					if (row >= 0 && row < data[i].length && data[i][row + j] != null) {
+					if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
 						Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * 16, tileSize, tileSize);
 					}
 				}
