@@ -38,7 +38,7 @@ public class UmbraCraftEngine implements ApplicationListener {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Game.batch().begin();
-		Game.batch().setProjectionMatrix(Game.camera().getCamera().combined);
+		Game.batch().setProjectionMatrix(Game.view().getCamera().combined);
 		if (Game.screen() != null) {
 			Game.screen().render(Gdx.graphics.getDeltaTime());
 		}
@@ -47,7 +47,7 @@ public class UmbraCraftEngine implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
-		Game.camera().resize(width, height);
+		Game.view().resize(width, height);
 	}
 
 	@Override

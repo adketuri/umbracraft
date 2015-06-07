@@ -5,7 +5,6 @@ import net.alcuria.umbracraft.engine.screens.UmbraScreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /** Contains everything needed by the Engine.
@@ -14,7 +13,7 @@ public class Game {
 
 	private static AssetManager assets;
 	private static SpriteBatch batch;
-	private static CameraManager camera;
+	private static ViewManager view;
 	private static Db db;
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
@@ -27,8 +26,8 @@ public class Game {
 		return batch;
 	}
 
-	public static CameraManager camera() {
-		return camera;
+	public static ViewManager view() {
+		return view;
 	}
 
 	public static Db db() {
@@ -61,12 +60,12 @@ public class Game {
 	public Game() {
 		// initialize everything
 		assets = new AssetManager();
-		camera = new CameraManager(new OrthographicCamera(Config.viewWidth, Config.viewHeight));
+		view = new ViewManager();
 		batch = new SpriteBatch();
 		db = new Db();
 		publisher = new EventPublisher();
 		// now subscribe
-		publisher.addListener(camera);
+		publisher.addListener(view);
 	}
 
 	public void dispose() {
@@ -77,7 +76,7 @@ public class Game {
 		if (batch != null) {
 			batch.dispose();
 		}
-		camera = null;
+		view = null;
 		if (publisher != null) {
 			publisher.removeAllListeners();
 		}

@@ -71,7 +71,7 @@ public class InputComponent implements BaseComponent, InputProcessor {
 		lastTouch.x = screenX;
 		lastTouch.y = screenY;
 		lastTouch.z = 0;
-		Game.camera().getCamera().unproject(lastTouch);
+		Game.view().getCamera().unproject(lastTouch);
 		return true;
 	}
 
@@ -80,7 +80,7 @@ public class InputComponent implements BaseComponent, InputProcessor {
 		lastTouch.x = screenX;
 		lastTouch.y = screenY;
 		lastTouch.z = 0;
-		Game.camera().getCamera().unproject(lastTouch);
+		Game.view().getCamera().unproject(lastTouch);
 		return true;
 	}
 

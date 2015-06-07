@@ -45,8 +45,8 @@ public class EntityManager {
 			return;
 		}
 		// get the visible tiles on the screen
-		int x = (int) (Game.camera().getCamera().position.x - Config.viewWidth / 2) / Config.tileWidth;
-		int y = (int) (Game.camera().getCamera().position.y - Config.viewHeight / 2) / Config.tileWidth;
+		int x = (int) (Game.view().getCamera().position.x - Config.viewWidth / 2) / Config.tileWidth;
+		int y = (int) (Game.view().getCamera().position.y - Config.viewHeight / 2) / Config.tileWidth;
 		int width = Config.viewWidth / Config.tileWidth;
 		int height = Config.viewHeight / Config.tileWidth;
 		// add visible entitities onscreen

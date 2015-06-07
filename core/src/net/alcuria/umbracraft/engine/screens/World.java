@@ -5,7 +5,8 @@ import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.hud.HudManager;
 import net.alcuria.umbracraft.engine.map.Map;
 
-/** All objects live in the World.
+/** All objects live in the World. Enitities are rendered, the view unprojects,
+ * and then ui elements are displayed.
  * @author Andrew Keturi */
 public class World implements UmbraScreen {
 	private HudManager manager;
@@ -29,6 +30,7 @@ public class World implements UmbraScreen {
 	@Override
 	public void render(float delta) {
 		objects.render();
+		Game.batch().setProjectionMatrix(Game.view().getUiCamera().combined);
 		manager.render();
 	}
 
@@ -53,6 +55,6 @@ public class World implements UmbraScreen {
 	public void update(float delta) {
 		objects.update(delta);
 		manager.update();
-		Game.camera().update();
+		Game.view().update();
 	}
 }

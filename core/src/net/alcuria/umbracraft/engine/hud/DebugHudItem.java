@@ -20,13 +20,13 @@ public class DebugHudItem implements BaseEntity {
 	@Override
 	public void render() {
 		if (fps != null) {
-			font.draw(Game.batch(), fps, 20, 20);
+			font.draw(Game.batch(), fps, 1, 11);
 		}
 	}
 
 	@Override
 	public void update() {
-		fps = String.valueOf(Gdx.graphics.getFramesPerSecond());
+		fps = String.valueOf(Gdx.graphics.getFramesPerSecond() + " fps");
 	}
 
 }

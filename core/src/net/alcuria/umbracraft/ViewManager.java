@@ -11,18 +11,28 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** A glorified wrapper for the {@link OrthographicCamera}
  * @author Andrew Keturi */
-public class CameraManager implements EventListener {
+public class ViewManager implements EventListener {
 	private final OrthographicCamera camera;
 	private Entity target;
+	private final OrthographicCamera uiCamera;
 	private final Viewport viewport;
 
-	public CameraManager(OrthographicCamera camera) {
-		this.camera = camera;
+	public ViewManager() {
+		camera = new OrthographicCamera(Config.viewWidth, Config.viewHeight);
+		uiCamera = new OrthographicCamera(Config.viewWidth, Config.viewHeight);
+		uiCamera.translate(Config.viewWidth / 2, Config.viewHeight / 2);
+		uiCamera.update();
 		viewport = new FitViewport(Config.viewWidth, Config.viewHeight);
 	}
 
+	/** @return the camera for displaying entities, maps, etc */
 	public OrthographicCamera getCamera() {
 		return camera;
+	}
+
+	/** @return the ui camera for displaying ui elements */
+	public OrthographicCamera getUiCamera() {
+		return uiCamera;
 	}
 
 	@Override
@@ -34,13 +44,16 @@ public class CameraManager implements EventListener {
 		}
 	}
 
+	/** Resizes the viewport
+	 * @param width width of the viewport
+	 * @param height height of the viewport */
 	public void resize(int width, int height) {
 		viewport.update(width, height);
 	}
 
+	/** Updates the camera */
 	public void update() {
 		if (target != null) {
-
 			float dX = (target.position.x - camera.position.x) / 20f;
 			float dY = (target.position.y - camera.position.y) / 20f;
 			camera.translate(dX, dY);
