@@ -11,13 +11,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** A glorified wrapper for the {@link OrthographicCamera}
  * @author Andrew Keturi */
-public class ViewManager implements EventListener {
+public class View implements EventListener {
 	private final OrthographicCamera camera;
 	private Entity target;
 	private final OrthographicCamera uiCamera;
 	private final Viewport viewport;
 
-	public ViewManager() {
+	public View() {
 		camera = new OrthographicCamera(Config.viewWidth, Config.viewHeight);
 		uiCamera = new OrthographicCamera(Config.viewWidth, Config.viewHeight);
 		uiCamera.translate(Config.viewWidth / 2, Config.viewHeight / 2);

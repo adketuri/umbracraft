@@ -13,7 +13,7 @@ public class Game {
 
 	private static AssetManager assets;
 	private static SpriteBatch batch;
-	private static ViewManager view;
+	private static View view;
 	private static Db db;
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
@@ -26,7 +26,7 @@ public class Game {
 		return batch;
 	}
 
-	public static ViewManager view() {
+	public static View view() {
 		return view;
 	}
 
@@ -60,7 +60,7 @@ public class Game {
 	public Game() {
 		// initialize everything
 		assets = new AssetManager();
-		view = new ViewManager();
+		view = new View();
 		batch = new SpriteBatch();
 		db = new Db();
 		publisher = new EventPublisher();
