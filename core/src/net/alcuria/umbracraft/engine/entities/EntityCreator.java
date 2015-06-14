@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.components.InputComponent;
 import net.alcuria.umbracraft.engine.components.PhysicsComponent;
+import net.alcuria.umbracraft.engine.components.ScriptComponent;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
 import net.alcuria.umbracraft.engine.map.Map;
 
@@ -23,6 +24,13 @@ public final class EntityCreator {
 		entity.position.y = MathUtils.random(0, map.getHeight() * 16);
 		entity.position.z = 5;
 		return entity;
+	}
+
+	public static Entity event(Map map) {
+		Entity event = new Entity();
+		event.addComponent(new AnimationComponent(Game.db().anim("Andoru-Up-Walking")));
+		event.addComponent(new ScriptComponent());
+		return event;
 	}
 
 	/** @param map

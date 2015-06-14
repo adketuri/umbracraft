@@ -19,9 +19,10 @@ public class EntityManager {
 		visibleEntities = new Array<Entity>();
 		entities = new Array<Entity>();
 		entities.add(EntityCreator.player(map));
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 5; i++) {
 			entities.add(EntityCreator.dummy(map));
 		}
+		entities.add(EntityCreator.event(map));
 	}
 
 	public void dispose() {
