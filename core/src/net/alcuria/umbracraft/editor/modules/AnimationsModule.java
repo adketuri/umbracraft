@@ -101,7 +101,9 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				});
 				if (definition.filename != null) {
 					String path = "sprites/animations/" + definition.filename;
-					image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));
+					if (Gdx.files.internal(path).exists()) {
+						image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));
+					}
 				}
 				populate(this, AnimationDefinition.class, definition, animationPopulateConfig(image));
 				row();

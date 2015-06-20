@@ -13,7 +13,6 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 
 	// TODO: instead of passing a reference to the entity in our components, do something more sophisticated so all components don't have read/write access to these?
 	private final Array<BaseComponent> components;
-	public Vector3 desiredPosition;
 	public boolean onGround = true;
 	public Vector3 position;
 	public Vector3 velocity;
@@ -23,7 +22,6 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		components = new Array<BaseComponent>();
 		position = new Vector3();
 		velocity = new Vector3();
-		desiredPosition = new Vector3();
 	}
 
 	/** Creates an entity with several pre-defined components

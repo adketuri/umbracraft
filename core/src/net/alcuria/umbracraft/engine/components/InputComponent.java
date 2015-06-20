@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector3;
  * @author Andrew Keturi */
 public class InputComponent implements BaseComponent, InputProcessor {
 	private int inputAltitude = 0;
+	private int keycode = 0;
 	private Vector3 lastTouch;
 
 	@Override
@@ -26,6 +27,10 @@ public class InputComponent implements BaseComponent, InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		if (keycode == Keys.ENTER) {
+			this.keycode = keycode;
+			return true;
+		}
 		return false;
 	}
 
@@ -91,6 +96,7 @@ public class InputComponent implements BaseComponent, InputProcessor {
 
 	@Override
 	public void update(Entity entity) {
+		// update velocity
 		entity.velocity.x = 0;
 		entity.velocity.y = 0;
 		if (Gdx.input.isKeyPressed(Keys.W)) {
@@ -117,9 +123,11 @@ public class InputComponent implements BaseComponent, InputProcessor {
 				entity.velocity.x *= 0.707f;
 			}
 		}
-		//		object.desiredPosition.x = lastTouch.x;
-		//		object.desiredPosition.y = lastTouch.y;
-		// object.position.z = inputAltitude;
+		// broadcast that a key was pressed
+		if (keycode > 0) {
+			Game.publisher().publish(new KeyDownEvent(keycode, entity.position));
+			keycode = 0;
+		}
 	}
 
 }

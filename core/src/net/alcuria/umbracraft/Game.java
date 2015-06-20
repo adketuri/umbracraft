@@ -13,10 +13,10 @@ public class Game {
 
 	private static AssetManager assets;
 	private static SpriteBatch batch;
-	private static View view;
 	private static Db db;
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
+	private static View view;
 
 	public static AssetManager assets() {
 		return assets;
@@ -24,10 +24,6 @@ public class Game {
 
 	public static SpriteBatch batch() {
 		return batch;
-	}
-
-	public static View view() {
-		return view;
 	}
 
 	public static Db db() {
@@ -57,6 +53,10 @@ public class Game {
 		}
 	}
 
+	public static View view() {
+		return view;
+	}
+
 	public Game() {
 		// initialize everything
 		assets = new AssetManager();
@@ -65,7 +65,7 @@ public class Game {
 		db = new Db();
 		publisher = new EventPublisher();
 		// now subscribe
-		publisher.addListener(view);
+		publisher.subscribe(view);
 	}
 
 	public void dispose() {
@@ -80,11 +80,11 @@ public class Game {
 		if (publisher != null) {
 			publisher.removeAllListeners();
 		}
-		publisher.removeAllListeners();
-		publisher = null;
 		if (screen != null) {
 			screen.dispose();
 		}
+		publisher.removeAllListeners();
+		publisher = null;
 		db = null;
 		screen = null;
 		System.gc();

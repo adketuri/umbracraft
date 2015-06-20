@@ -12,12 +12,17 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class ScriptPageDefinition extends Definition {
 
-	public Array<ScriptCommand> eventCommands;
+	public static enum StartCondition {
+		INSTANT, ON_INTERACTION, ON_TOUCH
+	}
+
+	public Array<ScriptCommand> commands;
 	public Direction facing;
 	public AnimationCollectionDefinition graphics;
 	public boolean hidden;
 	public Vector3 position;
 	public Object precondition;
+	public StartCondition start;
 
 	@Override
 	public String getName() {

@@ -28,8 +28,11 @@ public final class EntityCreator {
 
 	public static Entity event(Map map) {
 		Entity event = new Entity();
-		event.addComponent(new AnimationComponent(Game.db().anim("Andoru-Up-Walking")));
+		event.addComponent(new AnimationComponent(Game.db().anim("Chest")));
 		event.addComponent(new ScriptComponent());
+		event.position.x = MathUtils.random(0, 3 * 16);
+		event.position.y = MathUtils.random(0, 1 * 16);
+
 		return event;
 	}
 
