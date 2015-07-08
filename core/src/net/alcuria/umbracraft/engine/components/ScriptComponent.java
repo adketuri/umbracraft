@@ -24,7 +24,7 @@ public class ScriptComponent implements BaseComponent, EventListener {
 	private Vector3 source;
 
 	@Override
-	public void create() {
+	public void create(final Entity entity) {
 		// create a dummy event page for now
 		scriptPage = new ScriptPageDefinition();
 		scriptPage.facing = Direction.DOWN;
@@ -33,9 +33,8 @@ public class ScriptComponent implements BaseComponent, EventListener {
 		scriptPage.position = new Vector3(10, 10, 0);
 		scriptPage.commands = new Array<ScriptCommand>() {
 			{
-				add(Scripts.testEvent("hello 1"));
-				add(Scripts.waitEvent(3));
-				add(Scripts.testEvent("hello 2"));
+				add(Scripts.changeAnim(entity, "ChestAnim"));
+				add(Scripts.showAnim("Player", "Spin"));
 			}
 		};
 		// listen for when a key is pressed
@@ -43,7 +42,7 @@ public class ScriptComponent implements BaseComponent, EventListener {
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose(Entity entity) {
 		Game.publisher().unsubscribe(this);
 	}
 

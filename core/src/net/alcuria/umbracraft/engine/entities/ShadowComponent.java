@@ -20,12 +20,12 @@ public class ShadowComponent implements BaseComponent {
 	}
 
 	@Override
-	public void create() {
+	public void create(Entity entity) {
 		shadow = new TextureRegion(Game.assets().get("sprites/shadow.png", Texture.class), 16, 16);
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose(Entity entity) {
 	}
 
 	@Override

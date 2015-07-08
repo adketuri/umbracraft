@@ -29,7 +29,7 @@ public class AnimationCollectionComponent implements BaseComponent {
 	}
 
 	@Override
-	public void create() {
+	public void create(Entity entity) {
 		if (definition != null) {
 			//FIXME: ugly
 			groups = new ObjectMap<Pose, AnimationGroupComponent>();
@@ -39,14 +39,14 @@ public class AnimationCollectionComponent implements BaseComponent {
 			groups.put(Pose.JUMPING, new AnimationGroupComponent(Game.db().animGroup(definition.jumping)));
 			groups.put(Pose.RUNNING, new AnimationGroupComponent(Game.db().animGroup(definition.running)));
 			for (AnimationGroupComponent anim : groups.values()) {
-				anim.create();
+				anim.create(entity);
 			}
 			currentGroup = groups.get(Pose.IDLE);
 		}
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose(Entity entity) {
 
 	}
 

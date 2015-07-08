@@ -18,15 +18,15 @@ public class AnimationGroupComponent implements BaseComponent {
 
 	private ObjectMap<Direction, AnimationComponent> animations;
 	private AnimationComponent currentComponent;
-	private final AnimationGroupDefinition definition;
 	private Direction currentDirection;
+	private final AnimationGroupDefinition definition;
 
 	public AnimationGroupComponent(AnimationGroupDefinition definition) {
 		this.definition = definition;
 	}
 
 	@Override
-	public void create() {
+	public void create(Entity entity) {
 		if (definition != null) {
 			//FIXME: ugly
 			animations = new ObjectMap<Direction, AnimationComponent>();
@@ -39,14 +39,14 @@ public class AnimationGroupComponent implements BaseComponent {
 			animations.put(Direction.UPLEFT, new AnimationComponent(Game.db().anim(definition.upLeft)));
 			animations.put(Direction.UPRIGHT, new AnimationComponent(Game.db().anim(definition.upRight)));
 			for (AnimationComponent anim : animations.values()) {
-				anim.create();
+				anim.create(entity);
 			}
 			currentComponent = animations.get(Direction.DOWN);
 		}
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose(Entity entity) {
 
 	}
 

@@ -32,7 +32,6 @@ public final class EntityCreator {
 		event.addComponent(new ScriptComponent());
 		event.position.x = MathUtils.random(0, 3 * 16);
 		event.position.y = MathUtils.random(0, 1 * 16);
-
 		return event;
 	}
 
@@ -47,6 +46,7 @@ public final class EntityCreator {
 		player.addComponent(new ShadowComponent(map));
 		player.addComponent(new AnimationCollectionComponent(Game.db().animCollection("Andoru")));
 		Game.publisher().publish(new CameraTargetEvent(player));
+		player.setName("Player");
 		return player;
 	}
 

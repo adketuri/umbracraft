@@ -16,12 +16,12 @@ public class InputComponent implements BaseComponent, InputProcessor {
 	private Vector3 lastTouch;
 
 	@Override
-	public void create() {
+	public void create(Entity entity) {
 		lastTouch = new Vector3();
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose(Entity entity) {
 
 	}
 

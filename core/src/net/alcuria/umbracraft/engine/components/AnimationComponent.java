@@ -22,18 +22,20 @@ public class AnimationComponent implements BaseComponent {
 	}
 
 	@Override
-	public void create() {
+	public void create(Entity entity) {
 		if (definition != null && frames == null) {
+			Game.log("CREATING " + definition.filename);
 			Texture texture = Game.assets().get("sprites/animations/" + definition.filename, Texture.class);
 			frames = new Array<TextureRegion>();
 			for (AnimationFrameDefinition frame : definition.frames) {
 				frames.add(new TextureRegion(new TextureRegion(texture, frame.x * definition.width, frame.y * definition.height, definition.width, definition.height)));
 			}
+			ct = idx = 0;
 		}
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose(Entity entity) {
 
 	}
 
@@ -51,6 +53,9 @@ public class AnimationComponent implements BaseComponent {
 		if (ct > definition.frames.get(idx).duration) {
 			ct = 0;
 			idx = (idx + 1) % definition.frames.size;
+			if (definition.keepLast && idx == 0) {
+				idx = definition.frames.size - 1;
+			}
 		}
 	}
 }

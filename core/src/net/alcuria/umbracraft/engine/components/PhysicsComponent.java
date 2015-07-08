@@ -49,12 +49,12 @@ public class PhysicsComponent implements BaseComponent {
 	}
 
 	@Override
-	public void create() {
+	public void create(Entity entity) {
 		debug = Game.assets().get("fonts/message.fnt", BitmapFont.class);
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose(Entity entity) {
 
 	}
 
