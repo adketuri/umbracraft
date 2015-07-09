@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft;
 
+import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.events.EventPublisher;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
 
@@ -14,6 +15,7 @@ public class Game {
 	private static AssetManager assets;
 	private static SpriteBatch batch;
 	private static Db db;
+	private static EntityManager entities;
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
 	private static View view;
@@ -28,6 +30,10 @@ public class Game {
 
 	public static Db db() {
 		return db;
+	}
+
+	public static EntityManager entities() {
+		return entities;
 	}
 
 	public static void log(String string) {
@@ -63,6 +69,7 @@ public class Game {
 		view = new View();
 		batch = new SpriteBatch();
 		db = new Db();
+		entities = new EntityManager();
 		publisher = new EventPublisher();
 		// now subscribe
 		publisher.subscribe(view);

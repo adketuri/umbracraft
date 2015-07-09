@@ -9,12 +9,12 @@ import net.alcuria.umbracraft.engine.map.Map;
  * and then ui elements are displayed.
  * @author Andrew Keturi */
 public class World implements UmbraScreen {
+	private EntityManager entities;
 	private HudManager manager;
-	private EntityManager objects;
 
 	@Override
 	public void dispose() {
-		objects.dispose();
+		entities.dispose();
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class World implements UmbraScreen {
 
 	@Override
 	public void render(float delta) {
-		objects.render();
+		entities.render();
 		Game.batch().setProjectionMatrix(Game.view().getUiCamera().combined);
 		manager.render();
 	}
@@ -47,13 +47,15 @@ public class World implements UmbraScreen {
 	@Override
 	public void show() {
 		Map map = new Map();
-		objects = new EntityManager(map);
+		//objects = new EntityManager(map);
+		entities = Game.entities();
+		entities.update(map);
 		manager = new HudManager();
 	}
 
 	@Override
 	public void update(float delta) {
-		objects.update(delta);
+		entities.update(delta);
 		manager.update();
 		Game.view().update();
 	}

@@ -10,20 +10,9 @@ import com.badlogic.gdx.utils.Array;
  * accordingly.
  * @author Andrew Keturi */
 public class EntityManager {
-	private final Array<Entity> entities;
-	private final Map map;
-	private final Array<Entity> visibleEntities;
-
-	public EntityManager(Map map) {
-		this.map = map;
-		visibleEntities = new Array<Entity>();
-		entities = new Array<Entity>();
-		entities.add(EntityCreator.player(map));
-		for (int i = 0; i < 5; i++) {
-			entities.add(EntityCreator.dummy(map));
-		}
-		entities.add(EntityCreator.event(map));
-	}
+	private final Array<Entity> entities = new Array<Entity>();
+	private Map map;
+	private final Array<Entity> visibleEntities = new Array<Entity>();
 
 	public void dispose() {
 		if (entities == null) {
@@ -33,6 +22,15 @@ public class EntityManager {
 		for (int i = 0; i < entities.size; i++) {
 			entities.get(i).dispose();
 		}
+	}
+
+	public Entity find(String name) {
+		for (Entity entity : entities) {
+			if (entity.getName() != null && entity.getName().equals(name)) {
+				return entity;
+			}
+		}
+		return null;
 	}
 
 	/** gets the row an entity is at for rendering */
@@ -89,5 +87,16 @@ public class EntityManager {
 		for (int i = 0; i < entities.size; i++) {
 			entities.get(i).update();
 		}
+	}
+
+	public void update(Map map) {
+		this.map = map;
+		visibleEntities.clear();
+		entities.clear();
+		entities.add(EntityCreator.player(map));
+		for (int i = 0; i < 5; i++) {
+			entities.add(EntityCreator.dummy(map));
+		}
+		entities.add(EntityCreator.event(map));
 	}
 }

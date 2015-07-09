@@ -46,7 +46,7 @@ public final class EntityCreator {
 		player.addComponent(new ShadowComponent(map));
 		player.addComponent(new AnimationCollectionComponent(Game.db().animCollection("Andoru")));
 		Game.publisher().publish(new CameraTargetEvent(player));
-		player.setName("Player");
+		player.setName(Entity.PLAYER);
 		return player;
 	}
 

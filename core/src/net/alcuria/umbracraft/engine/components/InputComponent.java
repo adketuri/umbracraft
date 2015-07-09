@@ -2,6 +2,10 @@ package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.engine.events.BaseEvent;
+import net.alcuria.umbracraft.engine.events.EventListener;
+import net.alcuria.umbracraft.engine.events.ScriptEndedEvent;
+import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -10,7 +14,8 @@ import com.badlogic.gdx.math.Vector3;
 
 /** A component specifically for handling object input.
  * @author Andrew Keturi */
-public class InputComponent implements BaseComponent, InputProcessor {
+public class InputComponent implements BaseComponent, InputProcessor, EventListener {
+	private boolean haltInput;
 	private int inputAltitude = 0;
 	private int keycode = 0;
 	private Vector3 lastTouch;
@@ -18,11 +23,12 @@ public class InputComponent implements BaseComponent, InputProcessor {
 	@Override
 	public void create(Entity entity) {
 		lastTouch = new Vector3();
+		Game.publisher().subscribe(this);
 	}
 
 	@Override
 	public void dispose(Entity entity) {
-
+		Game.publisher().unsubscribe(this);
 	}
 
 	@Override
@@ -59,6 +65,22 @@ public class InputComponent implements BaseComponent, InputProcessor {
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		return false;
+	}
+
+	@Override
+	public void onEvent(BaseEvent event) {
+		// check from any started scripts if we should pause input
+		// TODO: probably use a counter here so concurrent events don't get messy
+		if (event instanceof ScriptStartedEvent) {
+			if (((ScriptStartedEvent) event).page.haltInput) {
+				Game.log("Halting input");
+				haltInput = true;
+			}
+		} else if (event instanceof ScriptEndedEvent) {
+			haltInput = false;
+			Game.log("Resuming input");
+		}
+
 	}
 
 	@Override
@@ -99,6 +121,9 @@ public class InputComponent implements BaseComponent, InputProcessor {
 		// update velocity
 		entity.velocity.x = 0;
 		entity.velocity.y = 0;
+		if (haltInput) {
+			return;
+		}
 		if (Gdx.input.isKeyPressed(Keys.W)) {
 			entity.velocity.y = 2;
 			if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D)) {

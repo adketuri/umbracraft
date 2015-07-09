@@ -7,8 +7,10 @@ import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Directio
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.BaseEvent;
 import net.alcuria.umbracraft.engine.events.EventListener;
+import net.alcuria.umbracraft.engine.events.ScriptEndedEvent;
+import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
+import net.alcuria.umbracraft.engine.scripts.Commands;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
-import net.alcuria.umbracraft.engine.scripts.Scripts;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -18,6 +20,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class ScriptComponent implements BaseComponent, EventListener {
 
+	private boolean active = false;
 	private int commandIndex = 0;
 	private boolean pressed = false;
 	private ScriptPageDefinition scriptPage;
@@ -27,14 +30,18 @@ public class ScriptComponent implements BaseComponent, EventListener {
 	public void create(final Entity entity) {
 		// create a dummy event page for now
 		scriptPage = new ScriptPageDefinition();
+		scriptPage.haltInput = true;
 		scriptPage.facing = Direction.DOWN;
 		scriptPage.hidden = false;
 		scriptPage.start = StartCondition.ON_INTERACTION;
 		scriptPage.position = new Vector3(10, 10, 0);
 		scriptPage.commands = new Array<ScriptCommand>() {
 			{
-				add(Scripts.changeAnim(entity, "ChestAnim"));
-				add(Scripts.showAnim("Player", "Spin"));
+				add(Commands.changeAnim(entity, "ChestAnim"));
+				add(Commands.pause(1));
+				add(Commands.showAnim(Entity.PLAYER, "Spin"));
+				add(Commands.pause(1));
+
 			}
 		};
 		// listen for when a key is pressed
@@ -63,7 +70,7 @@ public class ScriptComponent implements BaseComponent, EventListener {
 	 * @param entity the {@link Entity}
 	 * @return true if the vector is close */
 	private boolean touching(Entity entity) {
-		return source != null && source.epsilonEquals(entity.position, 10);
+		return source != null && source.epsilonEquals(entity.position, 15);
 	}
 
 	@Override
@@ -80,6 +87,7 @@ public class ScriptComponent implements BaseComponent, EventListener {
 			case ON_INTERACTION:
 				if (pressed && touching(entity)) {
 					updateScript();
+					scriptPage.start = StartCondition.INSTANT;
 				}
 			default:
 
@@ -93,10 +101,20 @@ public class ScriptComponent implements BaseComponent, EventListener {
 	/** Updates the script, assumes all preconditions are met. (Eg., key has been
 	 * pressed, etc.) */
 	private void updateScript() {
+		// first time starting, publish an event
+		if (!active) {
+			Game.publisher().publish(new ScriptStartedEvent(scriptPage));
+			active = true;
+		}
 		final ScriptCommand script = scriptPage.commands.get(commandIndex);
 		script.update();
 		if (script.isDone()) {
 			commandIndex++;
+		}
+		// check if we're done
+		if (active && commandIndex >= scriptPage.commands.size) {
+			Game.publisher().publish(new ScriptEndedEvent(scriptPage));
+			active = false;
 		}
 	}
 }

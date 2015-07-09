@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class Entity implements BaseEntity, Comparable<Entity> {
 
+	public static final String PLAYER = "Player";
+
 	// TODO: instead of passing a reference to the entity in our components, do something more sophisticated so all components don't have read/write access to these?
 	private final Array<BaseComponent> components;
 	private String name;
