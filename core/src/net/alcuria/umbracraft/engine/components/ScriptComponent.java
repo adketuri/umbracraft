@@ -37,9 +37,8 @@ public class ScriptComponent implements BaseComponent, EventListener {
 		scriptPage.position = new Vector3(10, 10, 0);
 		scriptPage.commands = new Array<ScriptCommand>() {
 			{
-				add(Commands.changeAnim(entity, "ChestAnim"));
-				add(Commands.pause(1));
-				add(Commands.showAnim(Entity.PLAYER, "Spin"));
+				add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
+				add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
 				add(Commands.pause(1));
 
 			}
@@ -102,14 +101,21 @@ public class ScriptComponent implements BaseComponent, EventListener {
 	 * pressed, etc.) */
 	private void updateScript() {
 		// first time starting, publish an event
+		final ScriptCommand script = scriptPage.commands.get(commandIndex);
 		if (!active) {
 			Game.publisher().publish(new ScriptStartedEvent(scriptPage));
 			active = true;
 		}
-		final ScriptCommand script = scriptPage.commands.get(commandIndex);
+		// start the script if necessary
+		if (!script.hasStarted() && !script.isDone()) {
+			script.start();
+		}
+		// update our script
 		script.update();
+		// if its done, increment our index
 		if (script.isDone()) {
 			commandIndex++;
+			Game.log("Incrementing " + commandIndex);
 		}
 		// check if we're done
 		if (active && commandIndex >= scriptPage.commands.size) {

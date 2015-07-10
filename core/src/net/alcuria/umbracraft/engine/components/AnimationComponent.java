@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
@@ -13,9 +14,11 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class AnimationComponent implements BaseComponent {
 
+	private Listener completeListener;
 	private int ct, idx;
 	private final AnimationDefinition definition;
 	private Array<TextureRegion> frames;
+	private boolean played = false;
 
 	public AnimationComponent(AnimationDefinition definition) {
 		this.definition = definition;
@@ -24,7 +27,6 @@ public class AnimationComponent implements BaseComponent {
 	@Override
 	public void create(Entity entity) {
 		if (definition != null && frames == null) {
-			Game.log("CREATING " + definition.filename);
 			Texture texture = Game.assets().get("sprites/animations/" + definition.filename, Texture.class);
 			frames = new Array<TextureRegion>();
 			for (AnimationFrameDefinition frame : definition.frames) {
@@ -47,12 +49,24 @@ public class AnimationComponent implements BaseComponent {
 		}
 	}
 
+	/** Sets a listener to invoke once the animation has run thru. Note, for
+	 * animations with keeplast this should still be invoked.
+	 * @param completeListener the listener */
+	public void setListener(Listener completeListener) {
+		this.completeListener = completeListener;
+	}
+
 	@Override
 	public void update(Entity entity) {
 		ct++;
 		if (ct > definition.frames.get(idx).duration) {
 			ct = 0;
 			idx = (idx + 1) % definition.frames.size;
+			if (idx == 0 && !played && completeListener != null) {
+				Game.log("Marking complete");
+				completeListener.invoked();
+				played = true;
+			}
 			if (definition.keepLast && idx == 0) {
 				idx = definition.frames.size - 1;
 			}

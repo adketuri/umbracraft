@@ -28,6 +28,7 @@ public final class EntityCreator {
 
 	public static Entity event(Map map) {
 		Entity event = new Entity();
+		event.setName("Chest");
 		event.addComponent(new AnimationComponent(Game.db().anim("Chest")));
 		event.addComponent(new ScriptComponent());
 		event.position.x = MathUtils.random(0, 3 * 16);

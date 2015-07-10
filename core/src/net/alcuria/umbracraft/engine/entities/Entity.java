@@ -1,6 +1,5 @@
 package net.alcuria.umbracraft.engine.entities;
 
-import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.components.BaseComponent;
 
@@ -67,7 +66,7 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	public void removeAnimationComponent() {
 		for (BaseComponent component : components) {
 			if (component instanceof AnimationComponent) {
-				Game.log("Removed? " + components.removeValue(component, true));
+				components.removeValue(component, true);
 				return;
 			}
 		}

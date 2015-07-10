@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.scripts;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
@@ -11,27 +12,6 @@ import com.badlogic.gdx.Gdx;
  * such as playing a sound effect or changing an animation.
  * @author Andrew Keturi */
 public class Commands {
-
-	/** Changes the animation of a particular entity
-	 * @param entity the {@link Entity}
-	 * @param anim the {@link AnimationDefinition} name
-	 * @return the {@link ScriptCommand} */
-	public static ScriptCommand changeAnim(final Entity entity, final String anim) {
-		if (entity == null || anim == null) {
-			return log("[ChangeAnim] Parameter is null: entity=" + entity + " anim=" + anim);
-		}
-		return new ScriptCommand() {
-
-			@Override
-			public void update() {
-				entity.removeAnimationComponent();
-				entity.addComponent(new AnimationComponent(Game.db().anim(anim)));
-				Game.log("Updated Components");
-				complete();
-			}
-
-		};
-	}
 
 	/** A script to log a message to stdout
 	 * @param message the message to display
@@ -72,18 +52,40 @@ public class Commands {
 	 * component and adds a new animation component.
 	 * @param name the name of the {@link Entity}
 	 * @param anim the name of the {@link AnimationDefinition}
+	 * @param wait if true wait until anim completes to mark command as complete
+	 * @param removeAfter if true, removes the component upon completion
 	 * @return the {@link ScriptCommand} */
-	public static ScriptCommand showAnim(final String name, final String anim) {
+	public static ScriptCommand showAnim(final String name, final String anim, final boolean wait, final boolean removeAfter) {
 		return new ScriptCommand() {
 
 			@Override
-			public void update() {
+			public void start() {
+				super.start();
 				final Entity entity = Game.entities().find(name);
 				if (entity != null) {
 					entity.removeAnimationComponent();
-					entity.addComponent(new AnimationComponent(Game.db().anim(anim)));
-					complete();
+					final AnimationComponent component = new AnimationComponent(Game.db().anim(anim));
+					entity.addComponent(component);
+					if (wait) {
+						component.setListener(new Listener() {
+
+							@Override
+							public void invoked() {
+								if (removeAfter) {
+									entity.removeAnimationComponent();
+								}
+								complete();
+							}
+						});
+					} else {
+						complete();
+					}
 				}
+			}
+
+			@Override
+			public void update() {
+
 			}
 		};
 	}
