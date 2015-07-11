@@ -41,6 +41,7 @@ public class Loading implements UmbraScreen {
 
 	@Override
 	public void show() {
+		Game.assets().load("debug.png", Texture.class);
 		Game.assets().load("tiles/debug.png", Texture.class);
 		Game.assets().load("sprites/animations/ugly.png", Texture.class);
 		Game.assets().load("sprites/shadow.png", Texture.class);

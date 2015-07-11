@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.engine.entities;
 
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.engine.components.EntityCollisionComponent;
 import net.alcuria.umbracraft.engine.map.Map;
 
 import com.badlogic.gdx.utils.Array;
@@ -93,10 +94,12 @@ public class EntityManager {
 		this.map = map;
 		visibleEntities.clear();
 		entities.clear();
-		entities.add(EntityCreator.player(map));
+		final Entity player = EntityCreator.player(map);
+		entities.add(player);
 		for (int i = 0; i < 5; i++) {
 			entities.add(EntityCreator.dummy(map));
 		}
 		entities.add(EntityCreator.event(map));
+		player.getComponent(EntityCollisionComponent.class).setEntities(entities);
 	}
 }

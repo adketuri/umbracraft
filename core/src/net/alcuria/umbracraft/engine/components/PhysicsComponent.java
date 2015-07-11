@@ -6,7 +6,6 @@ import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Directio
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.map.Map;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /** A component to handle collision
@@ -61,12 +60,22 @@ public class PhysicsComponent implements BaseComponent {
 
 	}
 
+	/** @return the component's height */
+	public int getHeight() {
+		return height;
+	}
+
+	/** @return the component's width */
+	public int getWidth() {
+		return width;
+	}
+
 	@Override
 	public void render(Entity entity) {
 		int tileX1 = (int) (entity.position.x + width) / Config.tileWidth;
 		int tileY = (int) (entity.position.y + height + entity.velocity.y) / Config.tileWidth;
-		debug.draw(Game.batch(), map.getAltitudeAt(tileX1, tileY) + "", 20, 20);
-		Game.batch().draw(Game.assets().get("tiles/debug.png", Texture.class), entity.position.x, entity.position.y, width, height);
+		//debug.draw(Game.batch(), map.getAltitudeAt(tileX1, tileY) + "", 20, 20);
+		//Game.batch().draw(Game.assets().get("debug.png", Texture.class), entity.position.x, entity.position.y, width, height);
 	}
 
 	@Override

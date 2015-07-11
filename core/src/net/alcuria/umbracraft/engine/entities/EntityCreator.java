@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.entities;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
+import net.alcuria.umbracraft.engine.components.EntityCollisionComponent;
 import net.alcuria.umbracraft.engine.components.InputComponent;
 import net.alcuria.umbracraft.engine.components.PhysicsComponent;
 import net.alcuria.umbracraft.engine.components.ScriptComponent;
@@ -23,6 +24,7 @@ public final class EntityCreator {
 		entity.position.x = MathUtils.random(0, map.getWidth() * 16);
 		entity.position.y = MathUtils.random(0, map.getHeight() * 16);
 		entity.position.z = 5;
+		entity.addComponent(new PhysicsComponent(map, 16, 8));
 		return entity;
 	}
 
@@ -33,6 +35,7 @@ public final class EntityCreator {
 		event.addComponent(new ScriptComponent());
 		event.position.x = MathUtils.random(0, 3 * 16);
 		event.position.y = MathUtils.random(0, 1 * 16);
+		event.addComponent(new PhysicsComponent(map, 16, 8));
 		return event;
 	}
 
@@ -43,7 +46,8 @@ public final class EntityCreator {
 		final InputComponent input = new InputComponent();
 		Gdx.input.setInputProcessor(input);
 		player.addComponent(input);
-		player.addComponent(new PhysicsComponent(map, 8, 16));
+		player.addComponent(new PhysicsComponent(map, 16, 8));
+		player.addComponent(new EntityCollisionComponent());
 		player.addComponent(new ShadowComponent(map));
 		player.addComponent(new AnimationCollectionComponent(Game.db().animCollection("Andoru")));
 		Game.publisher().publish(new CameraTargetEvent(player));
