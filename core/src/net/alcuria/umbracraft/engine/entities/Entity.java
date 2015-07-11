@@ -1,6 +1,5 @@
 package net.alcuria.umbracraft.engine.entities;
 
-import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.components.BaseComponent;
 
 import com.badlogic.gdx.math.Vector3;
@@ -57,15 +56,28 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		}
 	}
 
+	/** Gets a component
+	 * @param clazz the component type
+	 * @return the component */
+	public <T extends BaseComponent> T getComponent(Class<T> clazz) {
+		for (int i = 0; i < components.size; i++) {
+			if (clazz.isInstance(components.get(i))) {
+				return (T) components.get(i);
+			}
+		}
+		return null;
+	}
+
 	/** @return the name */
 	public String getName() {
 		return name;
 	}
 
-	/** Removes an animation component */
-	public void removeAnimationComponent() {
+	/** Removes a component
+	 * @param clazz the component type */
+	public void removeComponent(Class<? extends BaseComponent> clazz) {
 		for (BaseComponent component : components) {
-			if (component instanceof AnimationComponent) {
+			if (clazz.isInstance(component)) {
 				components.removeValue(component, true);
 				return;
 			}

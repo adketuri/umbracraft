@@ -63,7 +63,7 @@ public class Commands {
 				super.start();
 				final Entity entity = Game.entities().find(name);
 				if (entity != null) {
-					entity.removeAnimationComponent();
+					entity.removeComponent(AnimationComponent.class);
 					final AnimationComponent component = new AnimationComponent(Game.db().anim(anim));
 					entity.addComponent(component);
 					if (wait) {
@@ -72,7 +72,7 @@ public class Commands {
 							@Override
 							public void invoked() {
 								if (removeAfter) {
-									entity.removeAnimationComponent();
+									entity.removeComponent(AnimationComponent.class);
 								}
 								complete();
 							}

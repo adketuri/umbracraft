@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Directio
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.map.Map;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /** A component to handle collision
@@ -13,11 +14,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 public class PhysicsComponent implements BaseComponent {
 
 	private BitmapFont debug;
-	private final int height = 8, width = 14; //FIXME: don't hardcode
+	private final int height, width;
 	private final Map map;
 
-	public PhysicsComponent(Map map) {
+	public PhysicsComponent(Map map, int width, int height) {
 		this.map = map;
+		this.width = width;
+		this.height = height;
 	}
 
 	private void checkJump(Direction direction, Entity entity) {
@@ -63,6 +66,7 @@ public class PhysicsComponent implements BaseComponent {
 		int tileX1 = (int) (entity.position.x + width) / Config.tileWidth;
 		int tileY = (int) (entity.position.y + height + entity.velocity.y) / Config.tileWidth;
 		debug.draw(Game.batch(), map.getAltitudeAt(tileX1, tileY) + "", 20, 20);
+		Game.batch().draw(Game.assets().get("tiles/debug.png", Texture.class), entity.position.x, entity.position.y, width, height);
 	}
 
 	@Override
