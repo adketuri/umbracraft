@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.BaseEvent;
 import net.alcuria.umbracraft.engine.events.EventListener;
@@ -10,15 +11,20 @@ import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 
 /** A component specifically for handling object input.
  * @author Andrew Keturi */
 public class InputComponent implements BaseComponent, InputProcessor, EventListener {
+	private static final int MARGIN = 4;
+	private AnimationCollectionComponent group;
 	private boolean haltInput;
 	private int inputAltitude = 0;
+	private final Vector3 inspectPos = new Vector3();
 	private int keycode = 0;
 	private Vector3 lastTouch;
+	private MapCollisionComponent physics;
 
 	@Override
 	public void create(Entity entity) {
@@ -35,6 +41,9 @@ public class InputComponent implements BaseComponent, InputProcessor, EventListe
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.ENTER) {
 			this.keycode = keycode;
+			return true;
+		} else if (keycode == Keys.F1) {
+			Game.setDebug(!Game.isDebug());
 			return true;
 		}
 		return false;
@@ -85,7 +94,9 @@ public class InputComponent implements BaseComponent, InputProcessor, EventListe
 
 	@Override
 	public void render(Entity entity) {
-
+		if (Game.isDebug()) {
+			Game.batch().draw(Game.assets().get("debug.png", Texture.class), inspectPos.x, inspectPos.y, 1, 1);
+		}
 	}
 
 	@Override
@@ -148,11 +159,31 @@ public class InputComponent implements BaseComponent, InputProcessor, EventListe
 				entity.velocity.x *= 0.707f;
 			}
 		}
+
 		// broadcast that a key was pressed
 		if (keycode > 0) {
-			Game.publisher().publish(new KeyDownEvent(keycode, entity.position));
+			physics = entity.getComponent(MapCollisionComponent.class);
+			group = entity.getComponent(AnimationCollectionComponent.class);
+			if (physics != null && group != null) {
+				inspectPos.x = entity.position.x + physics.getWidth() / 2;
+				inspectPos.y = entity.position.y + physics.getHeight() / 2;
+				inspectPos.z = entity.position.z;
+				final Direction d = group.getGroup().getDirection();
+				if (d == Direction.UPRIGHT || d == Direction.RIGHT || d == Direction.DOWNRIGHT) {
+					inspectPos.x += physics.getWidth() / 2 + MARGIN;
+				}
+				if (d == Direction.UPLEFT || d == Direction.LEFT || d == Direction.DOWNLEFT) {
+					inspectPos.x -= physics.getWidth() / 2 + MARGIN;
+				}
+				if (d == Direction.UPLEFT || d == Direction.UP || d == Direction.UPRIGHT) {
+					inspectPos.y += physics.getHeight() / 2 + MARGIN;
+				}
+				if (d == Direction.DOWNLEFT || d == Direction.DOWN || d == Direction.DOWNRIGHT) {
+					inspectPos.y -= physics.getHeight() / 2 + MARGIN;
+				}
+				Game.publisher().publish(new KeyDownEvent(keycode, inspectPos));
+			}
 			keycode = 0;
 		}
 	}
-
 }

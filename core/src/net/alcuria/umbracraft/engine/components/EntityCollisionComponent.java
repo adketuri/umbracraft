@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Array;
 
 /** A component for handling when an entity overlaps with another entity. Once
  * all entities are created, {@link EntityCollisionComponent#setEntities(Array)}
- * needs
+ * needs to be called so this component knows about all other entities.
  * @author Andrew Keturi */
 public class EntityCollisionComponent implements BaseComponent {
 
@@ -28,9 +28,12 @@ public class EntityCollisionComponent implements BaseComponent {
 
 	}
 
+	public Rectangle getBounds() {
+		return r1;
+	}
+
 	@Override
 	public void render(Entity entity) {
-
 	}
 
 	/** Sets a reference of the entities.
@@ -44,8 +47,8 @@ public class EntityCollisionComponent implements BaseComponent {
 		for (Entity otherEntity : entities) {
 			// ensure it's another entity and it's on the same z axis
 			if (otherEntity != entity && MathUtils.isEqual(entity.position.z, otherEntity.position.z, 2f)) {
-				PhysicsComponent component = entity.getComponent(PhysicsComponent.class);
-				PhysicsComponent otherComponent = otherEntity.getComponent(PhysicsComponent.class);
+				MapCollisionComponent component = entity.getComponent(MapCollisionComponent.class);
+				MapCollisionComponent otherComponent = otherEntity.getComponent(MapCollisionComponent.class);
 				if (component != null && otherComponent != null) {
 					r1.set(entity.position.x, entity.position.y, component.getWidth(), component.getHeight());
 					r2.set(otherEntity.position.x, otherEntity.position.y, otherComponent.getWidth(), otherComponent.getHeight());

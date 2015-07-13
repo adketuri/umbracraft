@@ -50,6 +50,10 @@ public class AnimationCollectionComponent implements BaseComponent {
 
 	}
 
+	public AnimationGroupComponent getGroup() {
+		return currentGroup;
+	}
+
 	@Override
 	public void render(Entity entity) {
 		if (currentGroup != null) {

@@ -15,6 +15,7 @@ public class Game {
 	private static AssetManager assets;
 	private static SpriteBatch batch;
 	private static Db db;
+	private static boolean debug = false;
 	private static EntityManager entities;
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
@@ -36,6 +37,10 @@ public class Game {
 		return entities;
 	}
 
+	public static boolean isDebug() {
+		return debug;
+	}
+
 	public static void log(String string) {
 		System.out.println(string);
 	}
@@ -46,6 +51,10 @@ public class Game {
 
 	public static UmbraScreen screen() {
 		return screen;
+	}
+
+	public static void setDebug(boolean debug) {
+		Game.debug = debug;
 	}
 
 	public static void setScreen(UmbraScreen screen) {

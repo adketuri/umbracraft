@@ -12,6 +12,8 @@ import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
 import net.alcuria.umbracraft.engine.scripts.Commands;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
@@ -21,10 +23,11 @@ import com.badlogic.gdx.utils.Array;
 public class ScriptComponent implements BaseComponent, EventListener {
 
 	private boolean active = false;
+	private final Rectangle collisionRect = new Rectangle();
 	private int commandIndex = 0;
 	private boolean pressed = false;
 	private ScriptPageDefinition scriptPage;
-	private Vector3 source;
+	private final Vector3 source = new Vector3();
 
 	@Override
 	public void create(final Entity entity) {
@@ -56,7 +59,7 @@ public class ScriptComponent implements BaseComponent, EventListener {
 	public void onEvent(BaseEvent event) {
 		if (event instanceof KeyDownEvent) {
 			pressed = true;
-			source = ((KeyDownEvent) event).source;
+			source.set(((KeyDownEvent) event).source);
 		}
 	}
 
@@ -65,11 +68,19 @@ public class ScriptComponent implements BaseComponent, EventListener {
 
 	}
 
-	/** Checks if two entities are in close proximity, using the source vector
+	/** Checks if two entities are in close proximity, using the source vector.
 	 * @param entity the {@link Entity}
 	 * @return true if the vector is close */
 	private boolean touching(Entity entity) {
-		return source != null && source.epsilonEquals(entity.position, 15);
+		pressed = false;
+		if (MathUtils.isEqual(source.z, entity.position.z)) {
+			MapCollisionComponent collision = entity.getComponent(MapCollisionComponent.class);
+			if (collision != null) {
+				collisionRect.set(entity.position.x, entity.position.y, collision.getWidth(), collision.getHeight());
+				return source != null && collisionRect.contains(source.x, source.y);
+			}
+		}
+		return false;
 	}
 
 	@Override

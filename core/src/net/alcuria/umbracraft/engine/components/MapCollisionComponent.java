@@ -6,17 +6,18 @@ import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Directio
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.map.Map;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
-/** A component to handle collision
+/** A component to handle map collision.
  * @author Andrew Keturi */
-public class PhysicsComponent implements BaseComponent {
+public class MapCollisionComponent implements BaseComponent {
 
 	private BitmapFont debug;
 	private final int height, width;
 	private final Map map;
 
-	public PhysicsComponent(Map map, int width, int height) {
+	public MapCollisionComponent(Map map, int width, int height) {
 		this.map = map;
 		this.width = width;
 		this.height = height;
@@ -74,8 +75,10 @@ public class PhysicsComponent implements BaseComponent {
 	public void render(Entity entity) {
 		int tileX1 = (int) (entity.position.x + width) / Config.tileWidth;
 		int tileY = (int) (entity.position.y + height + entity.velocity.y) / Config.tileWidth;
-		//debug.draw(Game.batch(), map.getAltitudeAt(tileX1, tileY) + "", 20, 20);
-		//Game.batch().draw(Game.assets().get("debug.png", Texture.class), entity.position.x, entity.position.y, width, height);
+		if (Game.isDebug()) {
+			debug.draw(Game.batch(), map.getAltitudeAt(tileX1, tileY) + "", 20, 20);
+			Game.batch().draw(Game.assets().get("debug.png", Texture.class), entity.position.x, entity.position.y, width, height);
+		}
 	}
 
 	@Override

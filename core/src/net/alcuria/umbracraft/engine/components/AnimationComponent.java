@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
-/** A component to display a single animation
+/** A component to display a single animation.
  * @author Andrew Keturi */
 public class AnimationComponent implements BaseComponent {
 
