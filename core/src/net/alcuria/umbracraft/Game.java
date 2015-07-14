@@ -3,6 +3,7 @@ package net.alcuria.umbracraft;
 import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.events.EventPublisher;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
+import net.alcuria.umbracraft.engine.windows.WindowStack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -20,6 +21,7 @@ public class Game {
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
 	private static View view;
+	private static WindowStack windows;
 
 	public static AssetManager assets() {
 		return assets;
@@ -72,6 +74,10 @@ public class Game {
 		return view;
 	}
 
+	public static WindowStack windows() {
+		return windows;
+	}
+
 	public Game() {
 		// initialize everything
 		assets = new AssetManager();
@@ -79,6 +85,7 @@ public class Game {
 		batch = new SpriteBatch();
 		db = new Db();
 		entities = new EntityManager();
+		windows = new WindowStack();
 		publisher = new EventPublisher();
 		// now subscribe
 		publisher.subscribe(view);
@@ -99,6 +106,7 @@ public class Game {
 		if (screen != null) {
 			screen.dispose();
 		}
+		windows.dispose();
 		publisher.removeAllListeners();
 		publisher = null;
 		db = null;
