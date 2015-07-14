@@ -22,7 +22,9 @@ public class ListDefinition<T extends Definition> extends Definition {
 	/** Deletes an item from the list
 	 * @param item the item to delete */
 	public void delete(T item) {
-		// TODO: actually delete :)
+		if (definitions != null) {
+			definitions.removeValue(item, true);
+		}
 	}
 
 	/** Convenience method to fetch a {@link Definition} from the list. May be
@@ -50,5 +52,4 @@ public class ListDefinition<T extends Definition> extends Definition {
 	public int size() {
 		return definitions != null ? definitions.size : 0;
 	}
-
 }

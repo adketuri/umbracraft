@@ -5,7 +5,6 @@ package net.alcuria.umbracraft.definitions;
  * parameters.
  * @author Andrew Keturi */
 public abstract class Definition {
-
 	public int id;
 
 	public abstract String getName();

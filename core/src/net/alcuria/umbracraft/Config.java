@@ -12,9 +12,9 @@ public final class Config {
 	/** The width of a single tile */
 	public static final int tileWidth = 16;
 	/** The viewport height of the engine */
-	public static final int viewHeight = 240;
+	public static final int viewHeight = (int) (900 / 3.5f);
 	/** The viewport width of the engine */
-	public static final int viewWidth = 320;
+	public static final int viewWidth = (int) (1600 / 3.5f);
 
 	private Config() {
 	}
