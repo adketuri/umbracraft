@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author Andrew Keturi */
 public class WindowStack {
 
-	private final ArrayList<Window<WindowLayout>> windows = new ArrayList<>();
+	private final ArrayList<Window> windows = new ArrayList<>();
 
 	/** disposes all assets. etc used by the window stack */
 	public void dispose() {
@@ -15,8 +15,22 @@ public class WindowStack {
 	}
 
 	/** push a new window to the stack */
-	public void push(Window<WindowLayout> window) {
+	public void push(Window window) {
 		windows.add(window);
+	}
+
+	/** renders the stack */
+	public void render() {
+		for (Window<WindowLayout> window : windows) {
+			window.render();
+		}
+	}
+
+	/** updates the stack */
+	public void update() {
+		for (Window<WindowLayout> window : windows) {
+			window.update();
+		}
 	}
 
 }

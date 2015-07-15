@@ -6,4 +6,8 @@ import net.alcuria.umbracraft.engine.windows.Window;
  * @author Andrew Keturi */
 public class MessageWindow extends Window<MessageWindowLayout> {
 
+	public MessageWindow() {
+		super(new MessageWindowLayout());
+	}
+
 }

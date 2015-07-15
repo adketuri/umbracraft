@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.hud.HudManager;
 import net.alcuria.umbracraft.engine.map.Map;
+import net.alcuria.umbracraft.engine.windows.WindowStack;
 
 /** All objects live in the World. Enitities are rendered, the view unprojects,
  * and then ui elements are displayed.
@@ -11,10 +12,12 @@ import net.alcuria.umbracraft.engine.map.Map;
 public class World implements UmbraScreen {
 	private EntityManager entities;
 	private HudManager manager;
+	private WindowStack windows;
 
 	@Override
 	public void dispose() {
 		entities.dispose();
+		windows.dispose();
 	}
 
 	@Override
@@ -32,6 +35,7 @@ public class World implements UmbraScreen {
 		entities.render();
 		Game.batch().setProjectionMatrix(Game.view().getUiCamera().combined);
 		manager.render();
+		windows.render();
 	}
 
 	@Override
@@ -47,10 +51,10 @@ public class World implements UmbraScreen {
 	@Override
 	public void show() {
 		Map map = new Map();
-		//objects = new EntityManager(map);
 		entities = Game.entities();
 		entities.update(map);
 		manager = new HudManager();
+		windows = new WindowStack();
 	}
 
 	@Override
@@ -58,5 +62,6 @@ public class World implements UmbraScreen {
 		entities.update(delta);
 		manager.update();
 		Game.view().update();
+		windows.update();
 	}
 }
