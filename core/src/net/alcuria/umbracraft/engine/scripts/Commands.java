@@ -5,8 +5,12 @@ import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.engine.events.WindowHideEvent;
+import net.alcuria.umbracraft.engine.events.WindowShowEvent;
+import net.alcuria.umbracraft.engine.windows.message.MessageWindow;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 
 /** Contains a collection of commands that, when executed, perform a single task
  * such as playing a sound effect or changing an animation.
@@ -20,9 +24,49 @@ public class Commands {
 		return new ScriptCommand() {
 
 			@Override
+			public void onCompleted() {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onStarted() {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
 			public void update() {
 				Game.log("Update: " + message);
 				complete();
+			}
+		};
+	}
+
+	public static ScriptCommand message(final String message) {
+		return new ScriptCommand() {
+
+			boolean dismissable = false;
+			final MessageWindow window = new MessageWindow(message);
+
+			@Override
+			public void onCompleted() {
+				Game.publisher().publish(new WindowHideEvent(window));
+			}
+
+			@Override
+			public void onStarted() {
+				Game.publisher().publish(new WindowShowEvent(window));
+			}
+
+			@Override
+			public void update() {
+				if (!Gdx.input.isKeyPressed(Keys.ENTER)) {
+					dismissable = true;
+				}
+				if (dismissable && Gdx.input.isKeyJustPressed(Keys.ENTER)) {
+					complete();
+				}
 			}
 		};
 	}
@@ -34,6 +78,16 @@ public class Commands {
 		return new ScriptCommand() {
 
 			float curTime;
+
+			@Override
+			public void onCompleted() {
+
+			}
+
+			@Override
+			public void onStarted() {
+
+			}
 
 			@Override
 			public void update() {
@@ -59,8 +113,13 @@ public class Commands {
 		return new ScriptCommand() {
 
 			@Override
-			public void start() {
-				super.start();
+			public void onCompleted() {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onStarted() {
 				final Entity entity = Game.entities().find(name);
 				if (entity != null) {
 					entity.removeComponent(AnimationComponent.class);
@@ -81,6 +140,7 @@ public class Commands {
 						complete();
 					}
 				}
+
 			}
 
 			@Override

@@ -11,6 +11,7 @@ import net.alcuria.umbracraft.engine.events.ScriptEndedEvent;
 import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
 import net.alcuria.umbracraft.engine.scripts.Commands;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.ScriptCommand.CommandState;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -40,10 +41,10 @@ public class ScriptComponent implements BaseComponent, EventListener {
 		scriptPage.position = new Vector3(10, 10, 0);
 		scriptPage.commands = new Array<ScriptCommand>() {
 			{
-				add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
-				add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
-				add(Commands.pause(1));
-
+				//add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
+				//add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
+				//add(Commands.pause(1));
+				add(Commands.message("Hello, friends!"));
 			}
 		};
 		// listen for when a key is pressed
@@ -102,8 +103,6 @@ public class ScriptComponent implements BaseComponent, EventListener {
 			default:
 
 			}
-		} else {
-
 		}
 
 	}
@@ -116,6 +115,7 @@ public class ScriptComponent implements BaseComponent, EventListener {
 		if (!active) {
 			Game.publisher().publish(new ScriptStartedEvent(scriptPage));
 			active = true;
+			pressed = false;
 		}
 		// start the script if necessary
 		if (!script.hasStarted() && !script.isDone()) {
@@ -130,8 +130,10 @@ public class ScriptComponent implements BaseComponent, EventListener {
 		}
 		// check if we're done
 		if (active && commandIndex >= scriptPage.commands.size) {
-			Game.publisher().publish(new ScriptEndedEvent(scriptPage));
+			commandIndex = 0;
+			script.setState(CommandState.STARTED);
 			active = false;
+			Game.publisher().publish(new ScriptEndedEvent(scriptPage));
 		}
 	}
 }

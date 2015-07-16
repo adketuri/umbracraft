@@ -21,6 +21,7 @@ public final class EntityCreator {
 
 	public static Entity dummy(final Map map) {
 		final Entity entity = new Entity(new AnimationComponent(Game.db().anim("Andoru-Down-Walking")));
+		entity.setName("Dummy");
 		entity.position.x = MathUtils.random(0, map.getWidth() * 16);
 		entity.position.y = MathUtils.random(0, map.getHeight() * 16);
 		entity.position.z = 5;

@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.scripts;
 
-
+/** Any abstract command that is part of a scripted cutscene.
+ * @author Andrew Keturi */
 public abstract class ScriptCommand {
 
 	public static enum CommandState {
@@ -11,6 +12,7 @@ public abstract class ScriptCommand {
 
 	public void complete() {
 		state = CommandState.COMPLETE;
+		onCompleted();
 	}
 
 	/** @return the {@link CommandState} */
@@ -28,8 +30,18 @@ public abstract class ScriptCommand {
 		return state == CommandState.COMPLETE;
 	}
 
-	public void start() {
+	public abstract void onCompleted();
+
+	public abstract void onStarted();
+
+	public void setState(CommandState state) {
+		state = this.state;
+
+	}
+
+	public final void start() {
 		state = CommandState.STARTED;
+		onStarted();
 	}
 
 	public abstract void update();
