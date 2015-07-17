@@ -35,7 +35,7 @@ public abstract class ScriptCommand {
 	public abstract void onStarted();
 
 	public void setState(CommandState state) {
-		state = this.state;
+		this.state = state;
 
 	}
 

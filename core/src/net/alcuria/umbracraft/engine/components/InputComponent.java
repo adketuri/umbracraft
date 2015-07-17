@@ -87,6 +87,7 @@ public class InputComponent implements BaseComponent, InputProcessor, EventListe
 			}
 		} else if (event instanceof ScriptEndedEvent) {
 			haltInput = false;
+			keycode = 0;
 			Game.log("Resuming input");
 		}
 
@@ -182,6 +183,7 @@ public class InputComponent implements BaseComponent, InputProcessor, EventListe
 					inspectPos.y -= physics.getHeight() / 2 + MARGIN;
 				}
 				Game.publisher().publish(new KeyDownEvent(keycode, inspectPos));
+				Game.log("KeyDown");
 			}
 			keycode = 0;
 		}

@@ -69,6 +69,16 @@ public class ScriptComponent implements BaseComponent, EventListener {
 
 	}
 
+	/** Starts a script. should only be called once at the start */
+	private void startScript() {
+		// first time starting, publish an event
+		final ScriptCommand script = scriptPage.commands.get(commandIndex);
+		Game.publisher().publish(new ScriptStartedEvent(scriptPage));
+		active = true;
+		pressed = false;
+		script.start();
+	}
+
 	/** Checks if two entities are in close proximity, using the source vector.
 	 * @param entity the {@link Entity}
 	 * @return true if the vector is close */
@@ -91,17 +101,20 @@ public class ScriptComponent implements BaseComponent, EventListener {
 		}
 		// if we have some pages to execute, see if we can do that
 		if (commandIndex < scriptPage.commands.size) {
-			switch (scriptPage.start) {
-			case INSTANT:
-				updateScript();
-				break;
-			case ON_INTERACTION:
-				if (pressed && touching(entity)) {
-					updateScript();
-					scriptPage.start = StartCondition.INSTANT;
-				}
-			default:
+			if (!active) {
+				switch (scriptPage.start) {
+				case INSTANT:
+					startScript();
+					break;
+				case ON_INTERACTION:
+					if (pressed && touching(entity)) {
+						startScript();
+					}
+				default:
 
+				}
+			} else {
+				updateScript();
 			}
 		}
 
@@ -110,18 +123,8 @@ public class ScriptComponent implements BaseComponent, EventListener {
 	/** Updates the script, assumes all preconditions are met. (Eg., key has been
 	 * pressed, etc.) */
 	private void updateScript() {
-		// first time starting, publish an event
-		final ScriptCommand script = scriptPage.commands.get(commandIndex);
-		if (!active) {
-			Game.publisher().publish(new ScriptStartedEvent(scriptPage));
-			active = true;
-			pressed = false;
-		}
-		// start the script if necessary
-		if (!script.hasStarted() && !script.isDone()) {
-			script.start();
-		}
 		// update our script
+		final ScriptCommand script = scriptPage.commands.get(commandIndex);
 		script.update();
 		// if its done, increment our index
 		if (script.isDone()) {
@@ -129,9 +132,9 @@ public class ScriptComponent implements BaseComponent, EventListener {
 			Game.log("Incrementing " + commandIndex);
 		}
 		// check if we're done
-		if (active && commandIndex >= scriptPage.commands.size) {
+		if (commandIndex >= scriptPage.commands.size) {
 			commandIndex = 0;
-			script.setState(CommandState.STARTED);
+			script.setState(CommandState.NOT_STARTED);
 			active = false;
 			Game.publisher().publish(new ScriptEndedEvent(scriptPage));
 		}
