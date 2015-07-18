@@ -27,6 +27,7 @@ public class MessageWindowLayout extends WindowLayout {
 
 	@Override
 	public void hide(final Listener completeListener) {
+		messageLabel.addAction(Actions.sequence(Actions.delay(0.2f), Actions.parallel(Actions.moveBy(0, -10, 0.2f, Interpolation.pow2In), Actions.alpha(0, 0.2f))));
 		nameTable.addAction(Actions.sequence(Actions.parallel(Actions.alpha(0, 0.2f), Actions.moveBy(-10, 0, 0.2f, Interpolation.pow2Out))));
 		faceImage.addAction(Actions.sequence(Actions.parallel(Actions.alpha(0, 0.2f), Actions.moveBy(-10, 0, 0.2f, Interpolation.pow2Out))));
 		windowBackground.addAction(Actions.sequence(Actions.delay(0.2f), Actions.parallel(Actions.moveBy(0, -10, 0.2f, Interpolation.pow2In), Actions.alpha(0, 0.2f)), Actions.run(new Runnable() {
@@ -75,6 +76,7 @@ public class MessageWindowLayout extends WindowLayout {
 		nameTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.2f), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, 0.2f), Actions.moveBy(10, 0, 0.2f, Interpolation.pow2Out))));
 		faceImage.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.2f), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, 0.2f), Actions.moveBy(10, 0, 0.2f, Interpolation.pow2Out))));
 		windowBackground.addAction(Actions.sequence(Actions.alpha(0), Actions.parallel(Actions.moveBy(0, 10, 0.2f, Interpolation.pow2Out), Actions.alpha(1, 0.2f))));
+		messageLabel.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.3f), Actions.alpha(1, 0.2f)));
 	}
 
 	private Table textTable() {
