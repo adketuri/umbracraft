@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.windows;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.engine.events.BaseEvent;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
@@ -33,9 +34,16 @@ public class WindowStack implements EventListener {
 		}
 	}
 
-	private void pop(Window<?> window) {
+	private void pop(final Window<?> window) {
 		if (window != null) {
-			windows.removeValue(window, true);
+			window.close(new Listener() {
+
+				@Override
+				public void invoke() {
+					windows.removeValue(window, true);
+
+				}
+			});
 		}
 	}
 
@@ -43,6 +51,7 @@ public class WindowStack implements EventListener {
 	public void push(Window<?> window) {
 		if (window != null) {
 			windows.add(window);
+			window.open();
 		}
 	}
 

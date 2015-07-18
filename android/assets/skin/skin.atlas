@@ -1,0 +1,30 @@
+
+skin.png
+size: 64,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ui/bg
+  rotate: false
+  xy: 2, 22
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+ui/frame
+  rotate: false
+  xy: 36, 45
+  size: 9, 9
+  split: 4, 4, 4, 4
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+ui/namePlate
+  rotate: false
+  xy: 2, 2
+  size: 18, 18
+  split: 0, 16, 16, 0
+  pad: -1, -1, 16, 0
+  orig: 18, 18
+  offset: 0, 0
+  index: -1

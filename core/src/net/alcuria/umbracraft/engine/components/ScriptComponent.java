@@ -44,7 +44,9 @@ public class ScriptComponent implements BaseComponent, EventListener {
 				//add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
 				//add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
 				//add(Commands.pause(1));
-				add(Commands.message("Hello, friends!"));
+				add(Commands.message("This is not a mockup. I've finally implemented some simple messageboxes which should comfortably fit three or four lines. What do you think?"));
+				//add(Commands.message("Please, tell me more!"));
+
 			}
 		};
 		// listen for when a key is pressed

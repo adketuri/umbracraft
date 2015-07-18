@@ -46,8 +46,8 @@ public class Commands {
 	public static ScriptCommand message(final String message) {
 		return new ScriptCommand() {
 
-			boolean dismissable = false;
-			final MessageWindow window = new MessageWindow(message);
+			private boolean dismissable = false;
+			private MessageWindow window;
 
 			@Override
 			public void onCompleted() {
@@ -56,6 +56,7 @@ public class Commands {
 
 			@Override
 			public void onStarted() {
+				window = new MessageWindow(message);
 				Game.publisher().publish(new WindowShowEvent(window));
 			}
 
@@ -129,7 +130,7 @@ public class Commands {
 						component.setListener(new Listener() {
 
 							@Override
-							public void invoked() {
+							public void invoke() {
 								if (removeAfter) {
 									entity.removeComponent(AnimationComponent.class);
 								}

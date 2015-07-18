@@ -64,7 +64,7 @@ public class AnimationComponent implements BaseComponent {
 			idx = (idx + 1) % definition.frames.size;
 			if (idx == 0 && !played && completeListener != null) {
 				Game.log("Marking complete");
-				completeListener.invoked();
+				completeListener.invoke();
 				played = true;
 			}
 			if (definition.keepLast && idx == 0) {

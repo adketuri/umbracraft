@@ -1,8 +1,14 @@
 package net.alcuria.umbracraft.editor;
 
+import net.alcuria.umbracraft.Game;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -11,15 +17,9 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi */
 public class Drawables {
 
-	public static class R {
-		public static final String black = "black";
-		public static final String blue = "blue";
-		public static final String yellow = "yellow";
-	}
-
 	private static ObjectMap<String, TextureRegionDrawable> drawables;
-
 	private static boolean initialized = false;
+	private static TextureAtlas skin;
 
 	/** Gets a drawable from the map
 	 * @param name the name of the drawable
@@ -45,7 +45,30 @@ public class Drawables {
 		drawables.put("yellow", new TextureRegionDrawable(new TextureRegion(texture, 1, 0, 1, 1)));
 		drawables.put("blue", new TextureRegionDrawable(new TextureRegion(texture, 2, 0, 1, 1)));
 
+		skin = Game.assets().get("skin/skin.atlas", TextureAtlas.class);
 		initialized = true;
+	}
+
+	public static NinePatchDrawable ninePatch(String region) {
+		final NinePatch patch = skin.createPatch(region);
+		if (patch == null) {
+			throw new NullPointerException("9patch not found: " + region + ". Regions Available: " + skin.getRegions());
+		}
+		return new NinePatchDrawable(patch);
+	}
+
+	/** Gets the skin {@link TextureAtlas}
+	 * @param region the region in the TextureAtlas
+	 * @return a {@link TextureAtlas} */
+	public static TextureRegion skin(String region) {
+		if (!initialized) {
+			init();
+		}
+		final AtlasRegion atlas = skin.findRegion(region);
+		if (atlas == null) {
+			throw new NullPointerException("Region not found: " + region + ". Regions Available: " + skin.getRegions());
+		}
+		return atlas;
 	}
 
 	private Drawables() {

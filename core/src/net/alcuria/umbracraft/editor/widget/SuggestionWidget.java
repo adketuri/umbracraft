@@ -95,7 +95,7 @@ public class SuggestionWidget {
 						public void clicked(InputEvent event, float x, float y) {
 							textField.setText(label.getText().toString());
 							if (selectListener != null) {
-								selectListener.invoked();
+								selectListener.invoke();
 							}
 							suggestionTable.clear();
 						}

@@ -217,7 +217,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 							cfg.listener = new Listener() {
 
 								@Override
-								public void invoked() {
+								public void invoke() {
 									image.update(definition, frame);
 								}
 							};
@@ -254,7 +254,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 		return new Listener() {
 
 			@Override
-			public void invoked() {
+			public void invoke() {
 				String path = "sprites/animations/" + definition.filename;
 				if (definition.filename != null && definition.filename.length() > 0 && Gdx.files.internal(path).exists()) {
 					image.setVisible(true);

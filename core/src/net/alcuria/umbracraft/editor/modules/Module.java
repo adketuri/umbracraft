@@ -123,7 +123,7 @@ public abstract class Module<T extends Definition> {
 										try {
 											field.setBoolean(definition, checkBox.isChecked());
 											if (config.listener != null) {
-												config.listener.invoked();
+												config.listener.invoke();
 											}
 										} catch (IllegalArgumentException | IllegalAccessException e) {
 											e.printStackTrace();
@@ -152,7 +152,7 @@ public abstract class Module<T extends Definition> {
 									widget.addSelectListener(new Listener() {
 
 										@Override
-										public void invoked() {
+										public void invoke() {
 											saveField(field, definition, tf, config);
 										}
 
@@ -204,7 +204,7 @@ public abstract class Module<T extends Definition> {
 				field.set(definition, textField.getText());
 			}
 			if (config.listener != null) {
-				config.listener.invoked();
+				config.listener.invoke();
 			}
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
