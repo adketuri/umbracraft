@@ -41,11 +41,11 @@ public class ScriptComponent implements BaseComponent, EventListener {
 		scriptPage.position = new Vector3(10, 10, 0);
 		scriptPage.commands = new Array<ScriptCommand>() {
 			{
-				//add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
-				//add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
-				//add(Commands.pause(1));
+				add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
+				add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
+				add(Commands.pause(1));
 				add(Commands.message("This is not a mockup. I've finally implemented some simple messageboxes which should comfortably fit three or four lines. Still a work-in-progress, though."));
-				//add(Commands.message("Please, tell me more!"));
+				add(Commands.message("Please, tell me more!"));
 
 			}
 		};
@@ -74,11 +74,9 @@ public class ScriptComponent implements BaseComponent, EventListener {
 	/** Starts a script. should only be called once at the start */
 	private void startScript() {
 		// first time starting, publish an event
-		final ScriptCommand script = scriptPage.commands.get(commandIndex);
 		Game.publisher().publish(new ScriptStartedEvent(scriptPage));
 		active = true;
 		pressed = false;
-		script.start();
 	}
 
 	/** Checks if two entities are in close proximity, using the source vector.
@@ -126,17 +124,27 @@ public class ScriptComponent implements BaseComponent, EventListener {
 	 * pressed, etc.) */
 	private void updateScript() {
 		// update our script
-		final ScriptCommand script = scriptPage.commands.get(commandIndex);
-		script.update();
+		final ScriptCommand command = scriptPage.commands.get(commandIndex);
 		// if its done, increment our index
-		if (script.isDone()) {
+		switch (command.getState()) {
+		case COMPLETE:
 			commandIndex++;
-			Game.log("Incrementing " + commandIndex);
+			break;
+		case NOT_STARTED:
+			command.start();
+			break;
+		case STARTED:
+			command.update();
+			break;
+		default:
+			break;
 		}
-		// check if we're done
+		// check if we're done with all scripts
 		if (commandIndex >= scriptPage.commands.size) {
 			commandIndex = 0;
-			script.setState(CommandState.NOT_STARTED);
+			for (ScriptCommand s : scriptPage.commands) {
+				s.setState(CommandState.NOT_STARTED);
+			}
 			active = false;
 			Game.publisher().publish(new ScriptEndedEvent(scriptPage));
 		}

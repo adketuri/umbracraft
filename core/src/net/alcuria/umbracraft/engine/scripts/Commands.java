@@ -87,7 +87,7 @@ public class Commands {
 
 			@Override
 			public void onStarted() {
-
+				curTime = 0;
 			}
 
 			@Override
@@ -115,8 +115,6 @@ public class Commands {
 
 			@Override
 			public void onCompleted() {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
