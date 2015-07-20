@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.editor.layout;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.modules.AnimationGroupListModule;
 import net.alcuria.umbracraft.editor.modules.AnimationsModule;
+import net.alcuria.umbracraft.editor.modules.AreaListModule;
 import net.alcuria.umbracraft.editor.modules.HeroModule;
 import net.alcuria.umbracraft.editor.modules.Module;
 import net.alcuria.umbracraft.editor.modules.TilesetsModule;
@@ -59,6 +60,7 @@ public class EditorLayout extends Layout {
 		modules.add(new AnimationsModule());
 		modules.add(new AnimationGroupListModule());
 		modules.add(new AnimationCollectionListModule());
+		modules.add(new AreaListModule());
 	}
 
 	private Table topnav() {
