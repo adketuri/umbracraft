@@ -9,12 +9,35 @@ import net.alcuria.umbracraft.editor.widget.AreaNodeWidget.NodeClickHandler;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
+/** The AreaListModule handles displaying UI for all the {@link AreaDefinition}
+ * classes within the editor. The layout consists of a tree display of all the
+ * {@link AreaNodeDefinition} classes in the form of an {@link AreaNodeWidget}
+ * and a popup that appears over the widget when nodes are clicked to edit node
+ * properties.
+ * @author Andrew Keturi */
 public class AreaListModule extends ListModule<AreaDefinition> implements NodeClickHandler {
 
-	private Table popupTable;
+	private AreaDefinition areaDefinition; // keep around a reference to the top-level area definition to make rebuilding trees possible
+	private Table popupTable, widgetTable; // containers for the widget and popup
+
+	/** adds a child to the current definition and rebuilds the
+	 * {@link AreaNodeWidget}
+	 * @param definition the definition to which the child is added */
+	private void addChild(final AreaNodeDefinition definition) {
+		if (definition.children == null) {
+			definition.children = new Array<AreaNodeDefinition>();
+		}
+		AreaNodeDefinition child = new AreaNodeDefinition();
+		child.name = definition.getName() + " Child";
+		definition.children.add(child);
+		widgetTable.clear();
+		widgetTable.add(new AreaNodeWidget(areaDefinition.root, this)).expand().fill();
+		popupTable.clear();
+	}
 
 	@Override
 	public void addListItem() {
@@ -26,20 +49,13 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 		if (definition.root == null) {
 			definition.root = new AreaNodeDefinition();
 			definition.root.name = "Root";
-			/*
-			 * definition.root.children = new Array<AreaNodeDefinition>() { {
-			 * add(new AreaNodeDefinition() { { name = "Child 1"; children = new
-			 * Array<AreaNodeDefinition>() { { add(new AreaNodeDefinition() { {
-			 * name = "Child 1"; children = new Array<AreaNodeDefinition>() { {
-			 * add(new AreaNodeDefinition() { { name = "Child 1"; children = new
-			 * Array<AreaNodeDefinition>() { { } }; } }); add(new
-			 * AreaNodeDefinition() { { name = "Child 2"; } }); } }; } });
-			 * add(new AreaNodeDefinition() { { name = "Child 2"; } }); } }; }
-			 * }); add(new AreaNodeDefinition() { { name = "Child 2"; } }); } };
-			 */
+			definition.root.children = new Array<AreaNodeDefinition>();
 		}
+		areaDefinition = definition;
 		AreaNodeWidget area = new AreaNodeWidget(definition.root, this);
-		content.stack(area, popupTable = new Table()).expand().fill();
+		widgetTable = new Table();
+		widgetTable.add(area).expand().fill();
+		content.stack(widgetTable, popupTable = new Table()).expand().fill();
 	}
 
 	@Override
@@ -53,6 +69,7 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 		popupTable.add(new Table() {
 			{
 				setBackground(Drawables.get("black"));
+				// title
 				add(new Table() {
 					{
 						setBackground(Drawables.get("blue"));
@@ -69,15 +86,31 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 						add(new VisLabel("Editing " + definition.getName())).expand().center();
 					}
 				}).expand().fillX().top().row();
+				// content
 				add(new Table() {
 					{
 						PopulateConfig config = new PopulateConfig();
 						config.cols = 2;
 						populate(this, AreaNodeDefinition.class, definition, config);
 					}
-				}).expand().fill();
+				}).expand().fill().row();
+				// "add child" button
+				add(new Table() {
+					{
+						add(new VisTextButton("Add Child") {
+							{
+								addListener(new ClickListener() {
+									@Override
+									public void clicked(InputEvent event, float x, float y) {
+										addChild(definition);
+									}
+
+								});
+							}
+						});
+					}
+				});
 			}
 		}).expand().fill().size(500, 500);
-	}
-
+	};
 }
