@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -20,9 +21,11 @@ public class AreaNodeWidget extends Table {
 	}
 
 	private final Array<VisTextButton> childrenButtons = new Array<VisTextButton>();
+	private Vector2 dst, src;
 	private final AreaNodeDefinition root;
 	private VisTextButton rootButton;
 	private final ShapeRenderer shapeRenderer = new ShapeRenderer();
+	private final Vector2 tmp = new Vector2(), tmp2 = new Vector2();
 
 	public AreaNodeWidget(final AreaNodeDefinition root, final NodeClickHandler listener) {
 		this.root = root;
@@ -36,7 +39,7 @@ public class AreaNodeWidget extends Table {
 					};
 				});
 			}
-		}).row();
+		}).maxWidth(100).row();
 		add(new Table() {
 			{
 				if (root.children != null) {
@@ -59,10 +62,19 @@ public class AreaNodeWidget extends Table {
 	}
 
 	private void drawConnector(Batch batch) {
+		if (childrenButtons == null) {
+			return;
+		}
 		batch.end();
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(1, 1, 0, 1);
-		shapeRenderer.line(0, 300, 300, 0);
+		tmp.set(rootButton.getWidth() / 2, 0);
+		src = rootButton.localToStageCoordinates(tmp);
+		for (VisTextButton button : childrenButtons) {
+			tmp2.set(button.getWidth() / 2, button.getHeight());
+			dst = button.localToStageCoordinates(tmp2);
+			shapeRenderer.line(src, dst);
+		}
 		shapeRenderer.end();
 		batch.begin();
 	}

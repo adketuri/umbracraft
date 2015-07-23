@@ -24,7 +24,7 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 	private AreaDefinition areaDefinition; // keep around a reference to the top-level area definition to make rebuilding trees possible
 	private Table popupTable, widgetTable; // containers for the widget and popup
 
-	/** adds a child to the current definition and rebuilds the
+	/** adds a child node to the current definition and rebuilds the
 	 * {@link AreaNodeWidget}
 	 * @param definition the definition to which the child is added */
 	private void addChild(final AreaNodeDefinition definition) {
