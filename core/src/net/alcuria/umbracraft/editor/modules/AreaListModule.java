@@ -79,6 +79,8 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 									@Override
 									public void clicked(InputEvent event, float x, float y) {
 										popupTable.clear();
+										widgetTable.clear();
+										widgetTable.add(new AreaNodeWidget(areaDefinition.root, AreaListModule.this)).expand().fill();
 									};
 								});
 							}
