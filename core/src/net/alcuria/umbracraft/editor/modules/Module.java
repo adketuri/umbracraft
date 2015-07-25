@@ -79,7 +79,7 @@ public abstract class Module<T extends Definition> {
 	 * @param clazz the class definitions
 	 * @param definition the definition we want to update (when fields change
 	 *        and so on)
-	 * @param listener a generic listener to invoke when a field changes */
+	 * @param config configuration settings for how the populate is handled */
 	public void populate(final Table content, final Class<?> clazz, final Definition definition, final PopulateConfig config) {
 		assert (config.cols > 0);
 		try {

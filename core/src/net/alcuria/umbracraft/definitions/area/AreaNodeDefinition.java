@@ -8,12 +8,17 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class AreaNodeDefinition extends Definition {
 
+	/** all children nodes for the area */
 	public Array<AreaNodeDefinition> children;
+	/** the area map's height */
 	public int height;
+	/** the area map's variance */
 	public int heightVariance;
+	/** the name of the area map */
 	public String name;
-	public Array<AreaNodeDefinition> parents;
+	/** the area map's width */
 	public int width;
+	/** the aream map's variance (width) */
 	public int widthVariance;
 
 	@Override
