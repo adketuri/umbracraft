@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.editor.modules;
 
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
+import net.alcuria.umbracraft.editor.widget.MapEditorWidget;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -11,10 +12,16 @@ public class MapListModule extends ListModule<MapDefinition> {
 
 	private MapDefinition definition;
 	private Table headerButtons, mapView;
+	private MapEditorWidget mapWidget;
 
 	@Override
 	public void addListItem() {
-		rootDefinition.add(new MapDefinition());
+		final MapDefinition mapDef = new MapDefinition();
+		mapDef.width = 25;
+		mapDef.height = 15;
+		mapDef.name = "New Map";
+		mapDef.createTiles();
+		rootDefinition.add(mapDef);
 	}
 
 	@Override
@@ -40,7 +47,11 @@ public class MapListModule extends ListModule<MapDefinition> {
 	}
 
 	private void refreshMap() {
+		if (mapWidget == null) {
+			mapWidget = new MapEditorWidget(definition);
+		}
 		mapView.clear();
+		mapView.add(mapWidget.getActor());
 	}
 
 }
