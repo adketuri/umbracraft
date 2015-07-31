@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class MapTileWidget extends Table {
 
 	private static TextureRegion side, top, edge;
-	private int altitude = 0;
 	private final MapDefinition definition;
 	private final int i, j;
 
@@ -35,8 +34,7 @@ public class MapTileWidget extends Table {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
-				altitude++;
-				MapTileWidget.this.definition.tiles[i][j].altitude++;
+				MapTileWidget.this.definition.tiles.get(i).get(j).altitude++;
 			}
 
 			@Override
@@ -55,15 +53,16 @@ public class MapTileWidget extends Table {
 	}
 
 	private int alt(int i, int j) {
-		if (i < 0 || i >= definition.tiles.length || j < 0 || j >= definition.tiles[0].length) {
+		if (i < 0 || i >= definition.tiles.size || j < 0 || j >= definition.tiles.get(0).size) {
 			return 0;
 		}
-		return definition.tiles[i][j].altitude;
+		return definition.tiles.get(i).get(j).altitude;
 	}
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
+		int altitude = definition.tiles.get(i).get(j).altitude;
 		// side
 		batch.draw(side, getX(), getY(), getWidth(), getWidth() * altitude);
 		// top
