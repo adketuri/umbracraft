@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MapTileWidget extends Table {
 
-	private static TextureRegion side, top, edge;
+	private static TextureRegion side, top, edge, outline;
 	private final MapDefinition definition;
 	private final int i, j;
 
@@ -26,6 +26,7 @@ public class MapTileWidget extends Table {
 		if (side == null) {
 			Texture skin = new Texture(Gdx.files.internal("editor/skin.png"));
 			side = new TextureRegion(skin, 4, 0, 1, 1);
+			outline = new TextureRegion(skin, 5, 0, 1, 1);
 			edge = new TextureRegion(skin, 2, 0, 1, 1);
 			top = new TextureRegion(skin, 3, 0, 1, 1);
 		}
@@ -66,7 +67,8 @@ public class MapTileWidget extends Table {
 		// side
 		batch.draw(side, getX(), getY(), getWidth(), getWidth() * altitude);
 		// top
-		batch.draw(top, getX(), getY() + altitude * getHeight(), getWidth(), getHeight());
+		batch.draw(outline, getX(), getY() + altitude * getHeight(), getWidth(), getHeight());
+		batch.draw(top, getX() + 1, getY() + altitude * getHeight() + 1, getWidth() - 2, getHeight() - 2);
 		// left edge
 		if (alt(i - 1, j) < alt(i, j)) {
 			batch.draw(edge, getX(), getY() + altitude * getHeight(), 2, getHeight());

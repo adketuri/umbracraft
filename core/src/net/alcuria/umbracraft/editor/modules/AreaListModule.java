@@ -1,15 +1,21 @@
 package net.alcuria.umbracraft.editor.modules;
 
+import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
+import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.widget.AreaNodeWidget;
 import net.alcuria.umbracraft.editor.widget.AreaNodeWidget.NodeClickHandler;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
@@ -93,6 +99,18 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 					{
 						PopulateConfig config = new PopulateConfig();
 						config.cols = 2;
+						config.suggestions = new ObjectMap<String, Array<String>>();
+						config.suggestions.put("mapDefinition", new Array<String>() {
+							{
+								final FileHandle handle = Gdx.files.external("umbracraft/map.json");
+								if (handle.exists()) {
+									Array<MapDefinition> maps = new Json().fromJson(ListDefinition.class, handle).items();
+									for (MapDefinition map : maps) {
+										add(map.name);
+									}
+								}
+							}
+						});
 						populate(this, AreaNodeDefinition.class, definition, config);
 					}
 				}).expand().fill().row();

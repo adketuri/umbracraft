@@ -17,8 +17,8 @@ public class MapListModule extends ListModule<MapDefinition> {
 	@Override
 	public void addListItem() {
 		final MapDefinition mapDef = new MapDefinition();
-		mapDef.width = 25;
-		mapDef.height = 15;
+		mapDef.setWidth(10);
+		mapDef.setHeight(10);
 		mapDef.name = "New Map";
 		mapDef.createTiles();
 		rootDefinition.add(mapDef);

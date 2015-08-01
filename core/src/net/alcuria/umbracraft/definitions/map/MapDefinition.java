@@ -9,13 +9,13 @@ import com.badlogic.gdx.utils.Array;
 public class MapDefinition extends Definition {
 
 	/** the height of the map */
-	public int height;
+	private int height;
 	/** the name of the map */
 	public String name;
 	/** the map tiles */
 	public Array<Array<MapTileDefinition>> tiles;
 	/** the width of the map */
-	public int width;
+	private int width;
 
 	/** Creates the tiles array */
 	public void createTiles() {
@@ -29,9 +29,31 @@ public class MapDefinition extends Definition {
 		}
 	}
 
+	/** @return the map's height */
+	public int getHeight() {
+		return height;
+	}
+
 	@Override
 	public String getName() {
 		return name != null ? name : "Map";
+	}
+
+	/** @return the map's width */
+	public int getWidth() {
+		return width;
+	}
+
+	/** sets the map's height
+	 * @param height the new height */
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	/** sets the map's width
+	 * @param width the new width */
+	public void setWidth(int width) {
+		this.width = width;
 	}
 
 }

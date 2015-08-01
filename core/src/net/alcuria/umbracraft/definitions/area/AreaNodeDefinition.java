@@ -14,6 +14,8 @@ public class AreaNodeDefinition extends Definition {
 	public int height;
 	/** the area map's variance */
 	public int heightVariance;
+	/** the map definition to use */
+	public String mapDefinition;
 	/** the name of the area map */
 	public String name;
 	/** the area map's width */

@@ -16,9 +16,9 @@ public class MapEditorWidget {
 	public Actor getActor() {
 		return new Table() {
 			{
-				for (int j = 0; j < definition.height; j++) {
+				for (int j = 0; j < definition.getHeight(); j++) {
 					Table row = new Table();
-					for (int i = 0; i < definition.width; i++) {
+					for (int i = 0; i < definition.getWidth(); i++) {
 						row.add(new MapTileWidget(i, j, definition)).size(32).pad(0);
 					}
 					add(row).row();
