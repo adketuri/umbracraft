@@ -65,6 +65,12 @@ public abstract class Module<T extends Definition> {
 		final FileHandle handle = Gdx.files.external("umbracraft/" + getTitle().toLowerCase() + ".json");
 		if (handle.exists()) {
 			rootDefinition = json.fromJson(clazz, handle);
+		} else {
+			try {
+				rootDefinition = clazz.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

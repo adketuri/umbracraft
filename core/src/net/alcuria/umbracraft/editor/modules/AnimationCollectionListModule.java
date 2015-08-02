@@ -1,10 +1,9 @@
-package net.alcuria.umbracraft.editor.layout;
+package net.alcuria.umbracraft.editor.modules;
 
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
-import net.alcuria.umbracraft.editor.modules.ListModule;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

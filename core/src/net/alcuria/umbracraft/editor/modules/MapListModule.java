@@ -27,7 +27,6 @@ public class MapListModule extends ListModule<MapDefinition> {
 	@Override
 	public void create(MapDefinition definition, Table content) {
 		this.definition = definition;
-		//		this.definition.createTiles(); //FIXME: shouldnt have to do this to init the tiles.
 		content.add(headerButtons = new Table()).expandX().fill().row();
 		content.add(mapView = new Table()).expand().fill().row();
 		refreshHeader();
@@ -48,9 +47,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 	}
 
 	private void refreshMap() {
-		if (mapWidget == null) {
-			mapWidget = new MapEditorWidget(definition);
-		}
+		mapWidget = new MapEditorWidget(definition);
 		mapView.clear();
 		mapView.add(mapWidget.getActor());
 	}

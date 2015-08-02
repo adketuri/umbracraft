@@ -4,9 +4,11 @@ import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -35,7 +37,12 @@ public class MapTileWidget extends Table {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
-				MapTileWidget.this.definition.tiles.get(i).get(j).altitude++;
+				if (Gdx.input.isKeyPressed(Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+					MapTileWidget.this.definition.tiles.get(i).get(j).altitude--;
+				} else {
+					MapTileWidget.this.definition.tiles.get(i).get(j).altitude++;
+				}
+				MapTileWidget.this.definition.tiles.get(i).get(j).altitude = MathUtils.clamp(MapTileWidget.this.definition.tiles.get(i).get(j).altitude, 0, 10);
 			}
 
 			@Override
