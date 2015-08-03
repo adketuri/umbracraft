@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Json;
@@ -44,7 +45,7 @@ public class Map implements Disposable {
 		tiles.addAll(getRegions(filename));
 
 		// create map from definition
-		final MapDefinition mapDef = Game.db().map("Test");
+		final MapDefinition mapDef = Game.db().map("Andrew");
 		width = mapDef.getWidth();
 		height = mapDef.getHeight();
 		layers = new Array<Layer>();
@@ -106,16 +107,16 @@ public class Map implements Disposable {
 		}
 		// top right down left
 		int mask = 0b0000;
-		if (altContains(i, j + 1) && altMap[i][j + 1] < altitude) {
+		if (getAltitudeAt(i, j + 1) < altitude) {
 			mask = mask ^ 0b1000;
 		}
-		if (altContains(i + 1, j) && altMap[i + 1][j] < altitude) {
+		if (getAltitudeAt(i + 1, j) < altitude) {
 			mask = mask ^ 0b0100;
 		}
-		if (altContains(i, j - 1) && altMap[i][j - 1] < altitude) {
+		if (getAltitudeAt(i, j - 1) < altitude) {
 			mask = mask ^ 0b0010;
 		}
-		if (altContains(i - 1, j) && altMap[i - 1][j] < altitude) {
+		if (getAltitudeAt(i - 1, j) < altitude) {
 			mask = mask ^ 0b0001;
 		}
 		// now to switch on every possibility
@@ -137,24 +138,25 @@ public class Map implements Disposable {
 		case 0b0011:
 			return def.edgeBottomLeft;
 		}
+		//TODO: More cases (0101, 1010, 1111, etc)
 		return 0;
 	}
 
 	private int createWall(int i, int j, int drop, int altitude, int baseAlt) {
 		if (drop == altitude - baseAlt) {
 			// lower walls
-			if (altContains(i - 1, j) && altMap[i - 1][j] < altitude) {
+			if (getAltitudeAt(i - 1, j) < altitude) {
 				return def.bottomLeftWall;
-			} else if (altContains(i + 1, j) && altMap[i + 1][j] < altitude) {
+			} else if (getAltitudeAt(i + 1, j) < altitude) {
 				return def.bottomRightWall;
 			} else {
 				return def.bottomCenterWall;
 			}
 		} else {
 			// upper walls
-			if (altContains(i - 1, j) && altMap[i - 1][j] < altitude) {
+			if (getAltitudeAt(i - 1, j) < altitude) {
 				return def.middleLeftWall;
-			} else if (altContains(i + 1, j) && altMap[i + 1][j] < altitude) {
+			} else if (getAltitudeAt(i + 1, j) < altitude) {
 				return def.middleRightWall;
 			} else {
 				return def.middleCenterWall;
@@ -177,10 +179,10 @@ public class Map implements Disposable {
 	 * @param y y tile
 	 * @return */
 	public int getAltitudeAt(int x, int y) {
-		if (x >= 0 && x < altMap.length && y >= 0 && y < altMap[0].length) {
-			return altMap[x][y];
-		}
-		return 0;
+		// clamp to the size of the map so it's assumed tiles outside the map are the same as edge tiles
+		x = MathUtils.clamp(x, 0, altMap.length - 1);
+		y = MathUtils.clamp(y, 0, altMap[0].length - 1);
+		return altMap[x][y];
 	}
 
 	public int getHeight() {
