@@ -2,13 +2,13 @@ package net.alcuria.umbracraft.engine.map;
 
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.Json;
 public class Map implements Disposable {
 	private final int[][] altMap;
 	private TilesetDefinition def;
-	private final BitmapFont font;
 	private final int height;
 	private final Array<Layer> layers;
 	private final int maxAlt;
@@ -31,7 +30,6 @@ public class Map implements Disposable {
 	private final int width;
 
 	public Map() {
-		font = Game.assets().get("fonts/message.fnt", BitmapFont.class);
 		String filename = "";
 		// json -> object
 		Json json = new Json();
@@ -41,42 +39,22 @@ public class Map implements Disposable {
 			def = definition.tiles.first();
 			filename = def.filename;
 		}
-		// create
+		// create tiles from definition
 		tiles = new Array<TextureRegion>();
 		tiles.addAll(getRegions(filename));
-		width = 20;
-		height = 15;
+
+		// create map from definition
+		final MapDefinition mapDef = Game.db().map("Test");
+		width = mapDef.getWidth();
+		height = mapDef.getHeight();
 		layers = new Array<Layer>();
 		altMap = new int[width][height];
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				altMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).altitude;
+			}
+		}
 
-		//		set dummy alts
-		for (int i = 3; i < 7; i++) {
-			for (int j = 3; j < 7; j++) {
-				altMap[i][j] = 1;
-			}
-		}
-		for (int i = 4; i < 6; i++) {
-			for (int j = 4; j < 6; j++) {
-				altMap[i][j] = 3;
-			}
-		}
-		//---
-		altMap[10][8] = 4;
-		altMap[10][9] = 4;
-		altMap[9][8] = 4;
-		altMap[9][9] = 4;
-		altMap[10 + 2][8 - 2] = 3;
-		altMap[10 + 2][9 - 2] = 3;
-		altMap[9 + 2][8 - 2] = 3;
-		altMap[9 + 2][9 - 2] = 3;
-		altMap[10 + 4][8] = 2;
-		altMap[10 + 4][9] = 2;
-		altMap[9 + 4][8] = 2;
-		altMap[9 + 4][9] = 2;
-		altMap[10 + 8][8] = 1;
-		altMap[10 + 8][9] = 1;
-		altMap[9 + 8][8] = 1;
-		altMap[9 + 8][9] = 1;
 		// create list of all heights
 		Array<Integer> heights = new Array<Integer>();
 		for (int i = 0; i < altMap.length; i++) {
@@ -249,8 +227,13 @@ public class Map implements Disposable {
 				// TODO: make this generic. i think for alts > 0 it will break
 				int rowRenderHeight = alt == 0 ? 0 : getAltitudeAt(i, row);
 				for (int j = 0; j <= rowRenderHeight; j++) {
-					if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
-						Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * 16, tileSize, tileSize);
+					try {
+						if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
+							Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * 16, tileSize, tileSize);
+						}
+					} catch (ArrayIndexOutOfBoundsException e) {
+						//FIXME: Halp
+						//Game.log(i + " " + j + " " + row);
 					}
 				}
 			}
