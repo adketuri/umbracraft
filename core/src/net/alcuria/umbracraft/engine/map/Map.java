@@ -9,6 +9,7 @@ import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
@@ -22,6 +23,7 @@ import com.badlogic.gdx.utils.Json;
 public class Map implements Disposable {
 	private final int[][] altMap;
 	private TilesetDefinition def;
+	private final BitmapFont font;
 	private final int height;
 	private final Array<Layer> layers;
 	private final int maxAlt;
@@ -32,6 +34,7 @@ public class Map implements Disposable {
 
 	public Map() {
 		String filename = "";
+		font = Game.assets().get("fonts/message.fnt", BitmapFont.class);
 		// json -> object
 		Json json = new Json();
 		final FileHandle handle = Gdx.files.external("umbracraft/tilesets.json");
@@ -76,14 +79,14 @@ public class Map implements Disposable {
 			l.data = new Tile[width][height];
 			for (int i = 0; i < altMap.length; i++) {
 				for (int j = 0; j < altMap[0].length; j++) {
-					if (altMap[i][j] >= altitude) {
+					if (getAltitudeAt(i, j) >= altitude) {
 						if (j + altitude >= 0 && j + altitude < altMap[0].length) {
 							l.data[i][j + altitude] = new Tile(createEdge(i, j, altitude), l.alt); // create edge
 							// check if we need to create a wall
 							if (j - 1 >= 0 && j - 1 < altMap[0].length) {
-								int drop = (altitude - altMap[i][j - 1]);
+								int drop = (altitude - getAltitudeAt(i, j - 1));
 								while (drop > 0) {
-									l.data[i][(j + altitude) - drop] = new Tile(createWall(i, j, drop, altitude, altMap[i][j - 1]), l.alt);
+									l.data[i][(j + altitude) - drop] = new Tile(createWall(i, j, drop, altitude, getAltitudeAt(i, j - 1)), l.alt);
 									drop--;
 								}
 							}
@@ -95,10 +98,6 @@ public class Map implements Disposable {
 			lastAlt = l.alt;
 		}
 
-	}
-
-	private boolean altContains(int i, int j) {
-		return i >= 0 && i < altMap.length && j >= 0 && j < altMap[0].length;
 	}
 
 	private int createEdge(int i, int j, int altitude) {
@@ -228,23 +227,24 @@ public class Map implements Disposable {
 				// prevents bottom rows from creeping up during rendering
 				// TODO: make this generic. i think for alts > 0 it will break
 				int rowRenderHeight = alt == 0 ? 0 : getAltitudeAt(i, row);
+
 				for (int j = 0; j <= rowRenderHeight; j++) {
 					try {
 						if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
 							Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * 16, tileSize, tileSize);
 						}
 					} catch (ArrayIndexOutOfBoundsException e) {
-						//FIXME: Halp
+						//FIXME: Halp. someting up with rendering very top and very bottom rows.
 						//Game.log(i + " " + j + " " + row);
 					}
 				}
 			}
 		}
-		//		for (int i = 0; i < altMap.length; i++) {
-		//			for (int j = 0; j < altMap[0].length; j++) {
-		//				font.draw(Game.batch(), String.valueOf(altMap[i][j]), i * tileSize + 6, j * tileSize + 14);
-		//			}
-		//		}
+		for (int i = 0; i < altMap.length; i++) {
+			for (int j = 0; j < altMap[0].length; j++) {
+				font.draw(Game.batch(), String.valueOf(altMap[i][j]), i * tileSize + 6, j * tileSize + 14);
+			}
+		}
 	}
 
 	public void update(float delta) {
