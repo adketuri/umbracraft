@@ -78,17 +78,19 @@ public class Map implements Disposable {
 			l.alt = altitude;
 			l.data = new Tile[width][height];
 			for (int i = 0; i < altMap.length; i++) {
-				for (int j = 0; j < altMap[0].length; j++) {
+				for (int j = -getMaxAltitude(); j < altMap[0].length; j++) {
 					if (getAltitudeAt(i, j) >= altitude) {
-						if (j + altitude >= 0 && j + altitude < altMap[0].length) {
+						if (isInBounds(i, j + altitude)) {
 							l.data[i][j + altitude] = new Tile(createEdge(i, j, altitude), l.alt); // create edge
-							// check if we need to create a wall
-							if (j - 1 >= 0 && j - 1 < altMap[0].length) {
-								int drop = (altitude - getAltitudeAt(i, j - 1));
-								while (drop > 0) {
+						}
+						// check if we need to create a wall
+						if (j - 1 >= 0 && j - 1 < altMap[0].length) {
+							int drop = (altitude - getAltitudeAt(i, j - 1));
+							while (drop > 0) {
+								if (isInBounds(i, (j + altitude) - drop)) {
 									l.data[i][(j + altitude) - drop] = new Tile(createWall(i, j, drop, altitude, getAltitudeAt(i, j - 1)), l.alt);
-									drop--;
 								}
+								drop--;
 							}
 						}
 					}
@@ -169,6 +171,9 @@ public class Map implements Disposable {
 
 	}
 
+	/** @param f
+	 * @param g
+	 * @return the altitude at tile f, g */
 	public float getAltitudeAt(float f, float g) {
 		return getAltitudeAt((int) f, (int) g);
 	}
@@ -184,6 +189,7 @@ public class Map implements Disposable {
 		return altMap[x][y];
 	}
 
+	/** @return the height (not altitude) of the map */
 	public int getHeight() {
 		return height;
 	}
@@ -211,6 +217,10 @@ public class Map implements Disposable {
 		return width;
 	}
 
+	private boolean isInBounds(int i, int j) {
+		return i >= 0 && i < altMap.length && j >= 0 && j < altMap[0].length;
+	}
+
 	/** Renders every visible layer.
 	 * @param row the map row to render, in tiles
 	 * @param xOffset the camera offset in tiles, to ensure we only render tiles
@@ -227,7 +237,6 @@ public class Map implements Disposable {
 				// prevents bottom rows from creeping up during rendering
 				// TODO: make this generic. i think for alts > 0 it will break
 				int rowRenderHeight = alt == 0 ? 0 : getAltitudeAt(i, row);
-
 				for (int j = 0; j <= rowRenderHeight; j++) {
 					try {
 						if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
@@ -235,18 +244,20 @@ public class Map implements Disposable {
 						}
 					} catch (ArrayIndexOutOfBoundsException e) {
 						//FIXME: Halp. someting up with rendering very top and very bottom rows.
-						//Game.log(i + " " + j + " " + row);
+						// Game.log(i + " " + j + " " + row);
 					}
 				}
 			}
 		}
-		for (int i = 0; i < altMap.length; i++) {
-			for (int j = 0; j < altMap[0].length; j++) {
-				font.draw(Game.batch(), String.valueOf(altMap[i][j]), i * tileSize + 6, j * tileSize + 14);
-			}
-		}
+		//		for (int i = 0; i < altMap.length; i++) {
+		//			for (int j = 0; j < altMap[0].length; j++) {
+		//				font.draw(Game.batch(), String.valueOf(altMap[i][j]), i * tileSize + 6, j * tileSize + 14);
+		//			}
+		//		}
 	}
 
+	/** Updates the map
+	 * @param delta the time since the last frame */
 	public void update(float delta) {
 
 	}

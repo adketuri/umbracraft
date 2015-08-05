@@ -60,22 +60,16 @@ public class EntityManager {
 			}
 		}
 		visibleEntities.sort();
-		for (int i = 0; i < visibleEntities.size; i++) {
-			//			Game.log(visibleEntities.get(i).position.y + "");
-		}
 		// render each row in view, starting from the top
-		int rendered = 0;
 		int idx = 0;
 		while (row > y - map.getMaxAltitude() * 2) {
 			map.render(row, x);
 			while (idx < visibleEntities.size && visibleEntities.get(idx).position.y / Config.tileWidth >= row) {
 				visibleEntities.get(idx).render();
 				idx++;
-				rendered++;
 			}
 			row--;
 		}
-		//		Game.log("entities to render: " + added + " rendered: " + rendered);
 		visibleEntities.clear();
 	}
 
