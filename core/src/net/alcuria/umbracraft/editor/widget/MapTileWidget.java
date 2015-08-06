@@ -21,6 +21,7 @@ public class MapTileWidget extends Table {
 	private final MapDefinition definition;
 	private final int i, j;
 
+	//TODO: this still references an old mapDefinition after updating the size
 	public MapTileWidget(int x, int y, final MapDefinition definition) {
 		i = x;
 		j = y;

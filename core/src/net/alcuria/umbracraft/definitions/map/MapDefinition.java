@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.map;
 
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.Definition;
 
 import com.badlogic.gdx.utils.Array;
@@ -19,12 +20,26 @@ public class MapDefinition extends Definition {
 
 	/** Creates the tiles array */
 	public void createTiles() {
-		// TODO: save off an old copy of the tiles (if available) to retain over
+		// save off an old copy of the tiles (if available) to retain over
+		Array<Array<MapTileDefinition>> copy = null;
+		if (tiles != null) {
+			copy = new Array<Array<MapTileDefinition>>();
+			for (int i = 0; i < tiles.size; i++) {
+				copy.insert(i, new Array<MapTileDefinition>(tiles.get(i)));
+			}
+		}
+		Game.log("new size " + width + " " + height);
+		// create the new array
 		tiles = new Array<Array<MapTileDefinition>>();
 		for (int i = 0; i < width; i++) {
 			tiles.insert(i, new Array<MapTileDefinition>());
 			for (int j = 0; j < height; j++) {
-				tiles.get(i).insert(j, new MapTileDefinition());
+				MapTileDefinition oldDefinition = null;
+				if (copy != null && i < copy.size && j < copy.get(0).size) {
+					oldDefinition = copy.get(i).get(j);
+					Game.log(i + " " + j);
+				}
+				tiles.get(i).insert(j, copy != null ? oldDefinition : new MapTileDefinition());
 			}
 		}
 	}
@@ -42,6 +57,15 @@ public class MapDefinition extends Definition {
 	/** @return the map's width */
 	public int getWidth() {
 		return width;
+	}
+
+	/** Resizes the map
+	 * @param width the new width
+	 * @param height the new height */
+	public void resize(int width, int height) {
+		setWidth(width);
+		setHeight(height);
+		createTiles();
 	}
 
 	/** sets the map's height

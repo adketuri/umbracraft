@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class MapEditorWidget {
 
-	private final MapDefinition definition;
+	private MapDefinition definition;
 
 	public MapEditorWidget(MapDefinition definition) {
 		this.definition = definition;
@@ -25,6 +25,10 @@ public class MapEditorWidget {
 				}
 			}
 		};
+	}
+
+	public void setDefinition(MapDefinition definition) {
+		this.definition = definition;
 	}
 
 }
