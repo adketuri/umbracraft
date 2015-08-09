@@ -1,6 +1,5 @@
 package net.alcuria.umbracraft.definitions.map;
 
-import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.Definition;
 
 import com.badlogic.gdx.utils.Array;
@@ -20,26 +19,13 @@ public class MapDefinition extends Definition {
 
 	/** Creates the tiles array */
 	public void createTiles() {
-		// save off an old copy of the tiles (if available) to retain over
-		Array<Array<MapTileDefinition>> copy = null;
-		if (tiles != null) {
-			copy = new Array<Array<MapTileDefinition>>();
-			for (int i = 0; i < tiles.size; i++) {
-				copy.insert(i, new Array<MapTileDefinition>(tiles.get(i)));
-			}
-		}
-		Game.log("new size " + width + " " + height);
 		// create the new array
 		tiles = new Array<Array<MapTileDefinition>>();
 		for (int i = 0; i < width; i++) {
 			tiles.insert(i, new Array<MapTileDefinition>());
 			for (int j = 0; j < height; j++) {
 				MapTileDefinition oldDefinition = null;
-				if (copy != null && i < copy.size && j < copy.get(0).size) {
-					oldDefinition = copy.get(i).get(j);
-					Game.log(i + " " + j);
-				}
-				tiles.get(i).insert(j, copy != null ? oldDefinition : new MapTileDefinition());
+				tiles.get(i).insert(j, new MapTileDefinition());
 			}
 		}
 	}
@@ -63,6 +49,8 @@ public class MapDefinition extends Definition {
 	 * @param width the new width
 	 * @param height the new height */
 	public void resize(int width, int height) {
+		int deltaWidth = width - this.width;
+		int deltaHeight = height - this.height;
 		setWidth(width);
 		setHeight(height);
 		createTiles();
