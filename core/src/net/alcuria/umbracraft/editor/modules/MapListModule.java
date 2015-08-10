@@ -55,6 +55,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 						try {
 							definition.resize(Integer.valueOf(widthField.getText()), Integer.valueOf(heightField.getText()));
 							mapWidget.setDefinition(definition);
+							refreshMap();
 						} catch (Exception e) {
 							Game.log("Error parsing.");
 						}

@@ -71,7 +71,7 @@ public class MapTileWidget extends Table {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
-		int altitude = definition.tiles.get(i).get(j).altitude;
+		int altitude = alt(i, j);
 		// side
 		batch.draw(side, getX(), getY(), getWidth(), getWidth() * altitude);
 		// top

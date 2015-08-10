@@ -24,7 +24,6 @@ public class MapDefinition extends Definition {
 		for (int i = 0; i < width; i++) {
 			tiles.insert(i, new Array<MapTileDefinition>());
 			for (int j = 0; j < height; j++) {
-				MapTileDefinition oldDefinition = null;
 				tiles.get(i).insert(j, new MapTileDefinition());
 			}
 		}
@@ -53,7 +52,37 @@ public class MapDefinition extends Definition {
 		int deltaHeight = height - this.height;
 		setWidth(width);
 		setHeight(height);
-		createTiles();
+		// resize x
+		while (deltaWidth != 0) {
+			if (deltaWidth > 0) {
+				// add width
+				tiles.add(new Array<MapTileDefinition>());
+				for (int j = 0; j < height; j++) {
+					tiles.get(tiles.size - 1).insert(j, new MapTileDefinition());
+				}
+				deltaWidth--;
+			} else {
+				// remove width
+				tiles.pop();
+				deltaWidth++;
+			}
+		}
+		// resize y
+		while (deltaHeight != 0) {
+			if (deltaHeight > 0) {
+				// add height
+				for (int j = 0; j < width; j++) {
+					tiles.get(j).insert(0, new MapTileDefinition());
+				}
+				deltaHeight--;
+			} else {
+				// remove height
+				for (int j = 0; j < width; j++) {
+					tiles.get(j).removeIndex(0);
+				}
+				deltaHeight++;
+			}
+		}
 	}
 
 	/** sets the map's height
