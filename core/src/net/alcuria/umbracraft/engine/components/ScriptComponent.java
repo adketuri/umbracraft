@@ -41,11 +41,11 @@ public class ScriptComponent implements BaseComponent, EventListener {
 		scriptPage.position = new Vector3(10, 10, 0);
 		scriptPage.commands = new Array<ScriptCommand>() {
 			{
-				add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
-				add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
-				add(Commands.pause(1));
-				add(Commands.message("This is not a mockup. I've finally implemented some simple messageboxes which should comfortably fit three or four lines. Still a work-in-progress, though."));
-				add(Commands.message("Please, tell me more!"));
+				add(Commands.teleport("Andrew", 5, 5));
+				//add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
+				//add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
+				//add(Commands.pause(1));
+				//add(Commands.message("This is not a mockup. I've finally implemented some simple messageboxes which should comfortably fit three or four lines. Still a work-in-progress, though."));
 
 			}
 		};

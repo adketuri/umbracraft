@@ -11,6 +11,7 @@ import net.alcuria.umbracraft.engine.windows.message.MessageWindow;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 
 /** Contains a collection of commands that, when executed, perform a single task
  * such as playing a sound effect or changing an animation.
@@ -25,13 +26,11 @@ public class Commands {
 
 			@Override
 			public void onCompleted() {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void onStarted() {
-				// TODO Auto-generated method stub
 
 			}
 
@@ -145,6 +144,48 @@ public class Commands {
 			@Override
 			public void update() {
 
+			}
+		};
+	}
+
+	public static ScriptCommand teleport(String map, int x, int y) {
+		return new ScriptCommand() {
+
+			private final float FADE_TIME = 0.5f;
+			private boolean teleported;
+			private float time;
+
+			@Override
+			public void onCompleted() {
+				teleported = false;
+				time = 0;
+			}
+
+			@Override
+			public void onStarted() {
+				time = 0;
+				teleported = false;
+			}
+
+			@Override
+			public void update() {
+				if (time < FADE_TIME) {
+					final float color = (1 - time / FADE_TIME) * (1 - time / FADE_TIME);
+					Game.batch().setColor(new Color(color, color, color, 1));
+					time += Gdx.graphics.getDeltaTime();
+				} else {
+					final float color = ((time - FADE_TIME) / FADE_TIME) * ((time - FADE_TIME) / FADE_TIME);
+					Game.batch().setColor(new Color(color, color, color, 1));
+					time += Gdx.graphics.getDeltaTime();
+					if (!teleported) {
+						teleported = true;
+						time = FADE_TIME;
+						Game.log("Teleport");
+					}
+					if (time >= 2 * FADE_TIME) {
+						complete();
+					}
+				}
 			}
 		};
 	}
