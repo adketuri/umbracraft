@@ -21,21 +21,24 @@ import com.badlogic.gdx.utils.Json;
  * objects to render the map.
  * @author Andrew Keturi */
 public class Map implements Disposable {
-	private final int[][] altMap;
+	private int[][] altMap;
 	private TilesetDefinition def;
-	private final BitmapFont font;
-	private final int height;
-	private final Array<Layer> layers;
-	private final int maxAlt;
-	private final Array<TextureRegion> tiles;
+	private final BitmapFont font = Game.assets().get("fonts/message.fnt", BitmapFont.class);
+	private int height;
+	private Array<Layer> layers;
+	private int maxAlt;
+	private Array<TextureRegion> tiles;
 	private final int tileSide = 1;
 	private final int tileTop = 2;
-	private final int width;
+	private int width;
 
 	public Map() {
-		String filename = "";
-		font = Game.assets().get("fonts/message.fnt", BitmapFont.class);
+		create();
+	}
+
+	private void create() {
 		// json -> object
+		String filename = "";
 		Json json = new Json();
 		final FileHandle handle = Gdx.files.external("umbracraft/tilesets.json");
 		if (handle.exists()) {
@@ -43,15 +46,15 @@ public class Map implements Disposable {
 			def = definition.tiles.first();
 			filename = def.filename;
 		}
+
 		// create tiles from definition
 		tiles = new Array<TextureRegion>();
 		tiles.addAll(getRegions(filename));
 
-		// create map from definition
+		// create alt map from definition
 		final MapDefinition mapDef = Game.db().map("Andrew");
 		width = mapDef.getWidth();
 		height = mapDef.getHeight();
-		layers = new Array<Layer>();
 		altMap = new int[width][height];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -71,24 +74,24 @@ public class Map implements Disposable {
 		heights.sort();
 		maxAlt = heights.get(heights.size - 1);
 
-		// build the layer
-		int lastAlt = 0;
+		// build the layers
+		layers = new Array<Layer>();
 		for (Integer altitude : heights) {
-			Layer l = new Layer();
-			l.alt = altitude;
-			l.data = new Tile[width][height];
+			Layer layer = new Layer();
+			layer.alt = altitude;
+			layer.data = new Tile[width][height];
 			for (int i = 0; i < altMap.length; i++) {
 				for (int j = -getMaxAltitude(); j < altMap[0].length; j++) {
 					if (getAltitudeAt(i, j) >= altitude) {
 						if (isInBounds(i, j + altitude)) {
-							l.data[i][j + altitude] = new Tile(createEdge(i, j, altitude), l.alt); // create edge
+							layer.data[i][j + altitude] = new Tile(createEdge(i, j, altitude), layer.alt); // create edge
 						}
 						// check if we need to create a wall
 						if (j - 1 >= 0 && j - 1 < altMap[0].length) {
 							int drop = (altitude - getAltitudeAt(i, j - 1));
 							while (drop > 0) {
 								if (isInBounds(i, (j + altitude) - drop)) {
-									l.data[i][(j + altitude) - drop] = new Tile(createWall(i, j, drop, altitude, getAltitudeAt(i, j - 1)), l.alt);
+									layer.data[i][(j + altitude) - drop] = new Tile(createWall(i, j, drop, altitude, getAltitudeAt(i, j - 1)), layer.alt);
 								}
 								drop--;
 							}
@@ -96,10 +99,8 @@ public class Map implements Disposable {
 					}
 				}
 			}
-			layers.add(l);
-			lastAlt = l.alt;
+			layers.add(layer);
 		}
-
 	}
 
 	private int createEdge(int i, int j, int altitude) {
