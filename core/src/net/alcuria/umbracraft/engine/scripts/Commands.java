@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.engine.events.MapChangedEvent;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
 import net.alcuria.umbracraft.engine.windows.message.MessageWindow;
@@ -148,7 +149,7 @@ public class Commands {
 		};
 	}
 
-	public static ScriptCommand teleport(String map, int x, int y) {
+	public static ScriptCommand teleport(final String id, final int x, final int y) {
 		return new ScriptCommand() {
 
 			private final float FADE_TIME = 0.5f;
@@ -180,7 +181,7 @@ public class Commands {
 					if (!teleported) {
 						teleported = true;
 						time = FADE_TIME;
-						Game.log("Teleport");
+						Game.publisher().publish(new MapChangedEvent(id));
 					}
 					if (time >= 2 * FADE_TIME) {
 						complete();

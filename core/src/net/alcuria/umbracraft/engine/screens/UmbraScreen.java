@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
  * @author Andrew Keturi */
 public interface UmbraScreen extends Screen {
 
-	public void update(float delta);
+	/** Updates the screen. */
+	void update(float delta);
 
 }

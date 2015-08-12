@@ -41,7 +41,7 @@ public class ScriptComponent implements BaseComponent, EventListener {
 		scriptPage.position = new Vector3(10, 10, 0);
 		scriptPage.commands = new Array<ScriptCommand>() {
 			{
-				add(Commands.teleport("Andrew", 5, 5));
+				add(Commands.teleport("Test", 5, 5));
 				//add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
 				//add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
 				//add(Commands.pause(1));

@@ -32,11 +32,11 @@ public class Map implements Disposable {
 	private final int tileTop = 2;
 	private int width;
 
-	public Map() {
-		create();
+	public Map(String id) {
+		create(id);
 	}
 
-	private void create() {
+	public void create(String id) {
 		// json -> object
 		String filename = "";
 		Json json = new Json();
@@ -52,7 +52,7 @@ public class Map implements Disposable {
 		tiles.addAll(getRegions(filename));
 
 		// create alt map from definition
-		final MapDefinition mapDef = Game.db().map("Andrew");
+		final MapDefinition mapDef = Game.db().map(id);
 		width = mapDef.getWidth();
 		height = mapDef.getHeight();
 		altMap = new int[width][height];
