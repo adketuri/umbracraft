@@ -1,7 +1,7 @@
 package net.alcuria.umbracraft;
 
 import net.alcuria.umbracraft.engine.entities.Entity;
-import net.alcuria.umbracraft.engine.events.BaseEvent;
+import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
 import net.alcuria.umbracraft.engine.events.EventListener;
 
@@ -36,7 +36,7 @@ public class View implements EventListener {
 	}
 
 	@Override
-	public void onEvent(BaseEvent event) {
+	public void onEvent(Event event) {
 		if (event instanceof CameraTargetEvent) {
 			CameraTargetEvent camEvent = ((CameraTargetEvent) event);
 			target = camEvent.gameObject;

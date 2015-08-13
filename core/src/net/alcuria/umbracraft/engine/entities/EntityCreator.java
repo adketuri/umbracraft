@@ -40,6 +40,16 @@ public final class EntityCreator {
 		return event;
 	}
 
+	public static Entity eventSecond(Map map) {
+		Entity event = new Entity();
+		event.setName("Chest2");
+		event.addComponent(new AnimationComponent(Game.db().anim("Chest")));
+		event.position.x = 16 * 8;
+		event.position.y = 16 * 8;
+		event.addComponent(new MapCollisionComponent(map, 16, 8));
+		return event;
+	}
+
 	/** @param map
 	 * @return A player {@link Entity} */
 	public static Entity player(final Map map) {

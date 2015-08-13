@@ -2,7 +2,7 @@ package net.alcuria.umbracraft.engine.windows;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.Listener;
-import net.alcuria.umbracraft.engine.events.BaseEvent;
+import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
@@ -26,7 +26,7 @@ public class WindowStack implements EventListener {
 	}
 
 	@Override
-	public void onEvent(BaseEvent event) {
+	public void onEvent(Event event) {
 		if (event instanceof WindowShowEvent) {
 			push(((WindowShowEvent) event).window);
 		} else if (event instanceof WindowHideEvent) {

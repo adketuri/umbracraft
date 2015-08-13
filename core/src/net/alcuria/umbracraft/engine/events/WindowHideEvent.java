@@ -2,7 +2,7 @@ package net.alcuria.umbracraft.engine.events;
 
 import net.alcuria.umbracraft.engine.windows.Window;
 
-public class WindowHideEvent extends BaseEvent {
+public class WindowHideEvent extends Event {
 
 	public Window<?> window;
 

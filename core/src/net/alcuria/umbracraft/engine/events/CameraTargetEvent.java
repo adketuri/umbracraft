@@ -5,7 +5,7 @@ import net.alcuria.umbracraft.engine.entities.Entity;
 /** An event published when we want to target the camera at some
  * {@link Entity}
  * @author Andrew */
-public class CameraTargetEvent extends BaseEvent {
+public class CameraTargetEvent extends Event {
 	public Entity gameObject;
 
 	public CameraTargetEvent(Entity gameObject) {

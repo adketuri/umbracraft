@@ -5,7 +5,7 @@ import net.alcuria.umbracraft.engine.windows.WindowStack;
 
 /** An event published to notify the {@link WindowStack} to display a new window.
  * @author Andrew Keturi */
-public class WindowShowEvent extends BaseEvent {
+public class WindowShowEvent extends Event {
 
 	public Window window;
 

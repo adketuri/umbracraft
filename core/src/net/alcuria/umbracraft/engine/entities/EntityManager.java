@@ -94,6 +94,7 @@ public class EntityManager {
 			entities.add(EntityCreator.dummy(map));
 		}
 		entities.add(EntityCreator.event(map));
+		entities.add(EntityCreator.eventSecond(map));
 		player.getComponent(EntityCollisionComponent.class).setEntities(entities);
 	}
 }

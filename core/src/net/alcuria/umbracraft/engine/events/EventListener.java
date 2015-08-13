@@ -5,5 +5,5 @@ package net.alcuria.umbracraft.engine.events;
  * @author Andrew Keturi */
 public interface EventListener {
 
-	public void onEvent(BaseEvent event);
+	public void onEvent(Event event);
 }

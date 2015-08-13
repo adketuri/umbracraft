@@ -3,7 +3,7 @@ package net.alcuria.umbracraft.engine.components;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.entities.Entity;
-import net.alcuria.umbracraft.engine.events.BaseEvent;
+import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.ScriptEndedEvent;
 import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
@@ -77,7 +77,7 @@ public class InputComponent implements BaseComponent, InputProcessor, EventListe
 	}
 
 	@Override
-	public void onEvent(BaseEvent event) {
+	public void onEvent(Event event) {
 		// check from any started scripts if we should pause input
 		// TODO: probably use a counter here so concurrent events don't get messy
 		if (event instanceof ScriptStartedEvent) {

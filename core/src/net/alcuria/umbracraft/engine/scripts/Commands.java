@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
@@ -18,6 +19,32 @@ import com.badlogic.gdx.graphics.Color;
  * such as playing a sound effect or changing an animation.
  * @author Andrew Keturi */
 public class Commands {
+
+	public static ScriptCommand cameraTarget(final String name) {
+		return new ScriptCommand() {
+
+			@Override
+			public void onCompleted() {
+
+			}
+
+			@Override
+			public void onStarted() {
+				Entity entity = Game.entities().find(name);
+				if (entity != null) {
+					Game.publisher().publish(new CameraTargetEvent(entity));
+				} else {
+					Game.log("Entity not found: " + name + ". Cannot target.");
+				}
+				complete();
+			}
+
+			@Override
+			public void update() {
+
+			}
+		};
+	}
 
 	/** A script to log a message to stdout
 	 * @param message the message to display

@@ -5,7 +5,7 @@ import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.StartCondition;
 import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.entities.Entity;
-import net.alcuria.umbracraft.engine.events.BaseEvent;
+import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.ScriptEndedEvent;
 import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
@@ -41,7 +41,10 @@ public class ScriptComponent implements BaseComponent, EventListener {
 		scriptPage.position = new Vector3(10, 10, 0);
 		scriptPage.commands = new Array<ScriptCommand>() {
 			{
-				add(Commands.teleport("Test", 5, 5));
+				add(Commands.cameraTarget("Chest2"));
+				add(Commands.message("That treasure chest looks tasty."));
+				add(Commands.cameraTarget(Entity.PLAYER));
+				//add(Commands.teleport("Test", 5, 5));
 				//add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
 				//add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
 				//add(Commands.pause(1));
@@ -59,7 +62,7 @@ public class ScriptComponent implements BaseComponent, EventListener {
 	}
 
 	@Override
-	public void onEvent(BaseEvent event) {
+	public void onEvent(Event event) {
 		if (event instanceof KeyDownEvent) {
 			pressed = true;
 			source.set(((KeyDownEvent) event).source);
