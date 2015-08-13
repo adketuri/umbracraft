@@ -2,7 +2,7 @@ package net.alcuria.umbracraft.engine.entities;
 
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.engine.components.BaseComponent;
+import net.alcuria.umbracraft.engine.components.Component;
 import net.alcuria.umbracraft.engine.map.Map;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /** A component to display a shadow underneath an entity.
  * @author Andrew Keturi */
-public class ShadowComponent implements BaseComponent {
+public class ShadowComponent implements Component {
 
 	private final Map map;
 	private TextureRegion shadow;

@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
 
 /** A component to display a single animation.
  * @author Andrew Keturi */
-public class AnimationComponent implements BaseComponent {
+public class AnimationComponent implements Component {
 
 	private Listener completeListener;
 	private int ct, idx;

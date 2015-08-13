@@ -16,7 +16,7 @@ import com.badlogic.gdx.math.Vector3;
 
 /** A component specifically for handling object input.
  * @author Andrew Keturi */
-public class InputComponent implements BaseComponent, InputProcessor, EventListener {
+public class InputComponent implements Component, InputProcessor, EventListener {
 	private static final int MARGIN = 4;
 	private AnimationCollectionComponent group;
 	private boolean haltInput;

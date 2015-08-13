@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Array;
  * all entities are created, {@link EntityCollisionComponent#setEntities(Array)}
  * needs to be called so this component knows about all other entities.
  * @author Andrew Keturi */
-public class EntityCollisionComponent implements BaseComponent {
+public class EntityCollisionComponent implements Component {
 
 	private Array<Entity> entities;
 	private final Rectangle r1 = new Rectangle(), r2 = new Rectangle();
