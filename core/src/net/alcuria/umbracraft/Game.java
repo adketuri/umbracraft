@@ -37,6 +37,13 @@ public class Game {
 		return entities;
 	}
 
+	/** Prints an error message to stdout
+	 * @param string the message. */
+	public static void error(String string) {
+		System.err.println(string);
+	}
+
+	/** @return whether or not the game is in debug mode. */
 	public static boolean isDebug() {
 		return debug;
 	}

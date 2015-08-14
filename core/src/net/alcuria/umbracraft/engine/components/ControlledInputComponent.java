@@ -14,9 +14,9 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 
-/** A component specifically for handling object input.
+/** A component specifically for handling object input from the player.
  * @author Andrew Keturi */
-public class InputComponent implements Component, InputProcessor, EventListener {
+public class ControlledInputComponent implements Component, InputProcessor, EventListener {
 	private static final int MARGIN = 4;
 	private AnimationCollectionComponent group;
 	private boolean haltInput;

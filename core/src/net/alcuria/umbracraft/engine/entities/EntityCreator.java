@@ -3,8 +3,9 @@ package net.alcuria.umbracraft.engine.entities;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
+import net.alcuria.umbracraft.engine.components.ControlledInputComponent;
+import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.components.EntityCollisionComponent;
-import net.alcuria.umbracraft.engine.components.InputComponent;
 import net.alcuria.umbracraft.engine.components.MapCollisionComponent;
 import net.alcuria.umbracraft.engine.components.ScriptComponent;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
@@ -37,6 +38,7 @@ public final class EntityCreator {
 		event.position.x = MathUtils.random(0, 3 * 16);
 		event.position.y = MathUtils.random(0, 1 * 16);
 		event.addComponent(new MapCollisionComponent(map, 16, 8));
+		event.addComponent(new DirectedInputComponent());
 		return event;
 	}
 
@@ -54,7 +56,7 @@ public final class EntityCreator {
 	 * @return A player {@link Entity} */
 	public static Entity player(final Map map) {
 		Entity player = new Entity();
-		final InputComponent input = new InputComponent();
+		final ControlledInputComponent input = new ControlledInputComponent();
 		Gdx.input.setInputProcessor(input);
 		player.addComponent(input);
 		player.addComponent(new MapCollisionComponent(map, 16, 8));

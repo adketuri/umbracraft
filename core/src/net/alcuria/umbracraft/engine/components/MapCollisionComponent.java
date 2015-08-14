@@ -83,7 +83,6 @@ public class MapCollisionComponent implements Component {
 
 	@Override
 	public void update(Entity entity) {
-
 		int tileAltitude = (int) (entity.position.z / Config.tileWidth);
 		// check for collisions
 		if (entity.velocity.y > 0) {

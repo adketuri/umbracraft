@@ -1,9 +1,11 @@
 package net.alcuria.umbracraft.engine.scripts;
 
+import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
+import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
@@ -95,6 +97,46 @@ public class Commands {
 				if (dismissable && Gdx.input.isKeyJustPressed(Keys.ENTER)) {
 					complete();
 				}
+			}
+		};
+	}
+
+	/** Moves an entity to a particular pair of <b>tile</b> coordinates. Note,
+	 * the entity must contain a {@link DirectedInputComponent}.
+	 * @param id the entity name
+	 * @param x the x position
+	 * @param y the y position
+	 * @param relative whether or not to use relative positioning
+	 * @return the {@link ScriptCommand} */
+	public static ScriptCommand move(final String id, final int x, final int y, final boolean relative) {
+		return new ScriptCommand() {
+
+			@Override
+			public void onCompleted() {
+
+			}
+
+			@Override
+			public void onStarted() {
+				Entity entity = Game.entities().find(id);
+				if (entity != null) {
+					DirectedInputComponent component = entity.getComponent(DirectedInputComponent.class);
+					if (component != null) {
+						if (relative) {
+							component.setTarget((int) entity.position.x + x * Config.tileWidth, (int) entity.position.y + y * Config.tileWidth);
+						} else {
+							component.setTarget(x * Config.tileWidth, y * Config.tileWidth);
+						}
+					} else {
+						Game.error("Entity has no DirectedInputComponent so it cannot be moved.");
+					}
+				}
+				complete();
+			}
+
+			@Override
+			public void update() {
+
 			}
 		};
 	}
@@ -198,10 +240,12 @@ public class Commands {
 			@Override
 			public void update() {
 				if (time < FADE_TIME) {
+					// fade out
 					final float color = (1 - time / FADE_TIME) * (1 - time / FADE_TIME);
 					Game.batch().setColor(new Color(color, color, color, 1));
 					time += Gdx.graphics.getDeltaTime();
 				} else {
+					// fade in
 					final float color = ((time - FADE_TIME) / FADE_TIME) * ((time - FADE_TIME) / FADE_TIME);
 					Game.batch().setColor(new Color(color, color, color, 1));
 					time += Gdx.graphics.getDeltaTime();
@@ -217,5 +261,8 @@ public class Commands {
 			}
 		};
 	}
+
+	private Commands() {
+	};
 
 }
