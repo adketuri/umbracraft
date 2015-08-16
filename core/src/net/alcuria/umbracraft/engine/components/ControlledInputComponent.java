@@ -78,7 +78,6 @@ public class ControlledInputComponent implements Component, InputProcessor, Even
 
 	@Override
 	public void onEvent(Event event) {
-		// check from any started scripts if we should pause input
 		// TODO: probably use a counter here so concurrent events don't get messy
 		if (event instanceof ScriptStartedEvent) {
 			if (((ScriptStartedEvent) event).page.haltInput) {
