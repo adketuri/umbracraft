@@ -148,10 +148,11 @@ public class MapCollisionComponent implements Component {
 			}
 		}
 		// update position
-		int tileX = (int) (entity.position.x + 5) / Config.tileWidth;
-		int tileY = (int) (entity.position.y + 3) / Config.tileWidth;
+		int tileX = (int) (entity.position.x + 4) / Config.tileWidth;
+		int tileX2 = (int) (entity.position.x + Config.tileWidth - 4) / Config.tileWidth;
+		int tileY = (int) (entity.position.y + height / 2) / Config.tileWidth;
 		entity.position.add(entity.velocity);
-		if (entity.position.z / 16f > map.getAltitudeAt(tileX, tileY)) {
+		if (entity.position.z / 16f > map.getAltitudeAt(tileX, tileY) || entity.position.z / 16f > map.getAltitudeAt(tileX, tileY)) {
 			if (entity.onGround) {
 				checkJump(Direction.DOWNLEFT, entity);
 			}
