@@ -12,14 +12,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 /** A component specifically for handling object input from the player.
  * @author Andrew Keturi */
 public class ControlledInputComponent implements Component, InputProcessor, EventListener {
 	private static final int MARGIN = 4;
+	private static final float MAX_SPEED = 2; // max speed of the entity
+	private static final float MAX_SPEED_TIME = 0.12f; // time entity takes to reach max speed
 	private AnimationCollectionComponent group;
 	private boolean haltInput;
+	private float holdTimeX, holdTimeY;
 	private int inputAltitude = 0;
 	private final Vector3 inspectPos = new Vector3();
 	private int keycode = 0;
@@ -129,36 +133,48 @@ public class ControlledInputComponent implements Component, InputProcessor, Even
 
 	@Override
 	public void update(Entity entity) {
-		// update velocity
-		entity.velocity.x = 0;
-		entity.velocity.y = 0;
 		if (haltInput) {
 			return;
 		}
+		// check which keys are pressed and update velocity accordingly
+		boolean pressingXKey = false;
+		boolean pressingYKey = false;
 		if (Gdx.input.isKeyPressed(Keys.W)) {
-			entity.velocity.y = 2;
+			entity.velocity.y = MAX_SPEED;
 			if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D)) {
 				entity.velocity.y *= 0.707f;
 			}
+			pressingYKey = true;
 		}
 		if (Gdx.input.isKeyPressed(Keys.A)) {
-			entity.velocity.x = -2;
+			entity.velocity.x = -MAX_SPEED;
 			if (Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.S)) {
 				entity.velocity.x *= 0.707f;
 			}
+			pressingXKey = true;
 		}
 		if (Gdx.input.isKeyPressed(Keys.S)) {
-			entity.velocity.y = -2;
+			entity.velocity.y = -MAX_SPEED;
 			if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D)) {
 				entity.velocity.y *= 0.707f;
 			}
+			pressingYKey = true;
 		}
 		if (Gdx.input.isKeyPressed(Keys.D)) {
-			entity.velocity.x = 2;
+			entity.velocity.x = MAX_SPEED;
 			if (Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.S)) {
 				entity.velocity.x *= 0.707f;
 			}
+			pressingXKey = true;
 		}
+
+		// apply any interpolation to the velocity
+		holdTimeX += pressingXKey ? Gdx.graphics.getDeltaTime() : -Gdx.graphics.getDeltaTime();
+		holdTimeX = MathUtils.clamp(holdTimeX, 0, MAX_SPEED_TIME);
+		holdTimeY += pressingYKey ? Gdx.graphics.getDeltaTime() : -Gdx.graphics.getDeltaTime();
+		holdTimeY = MathUtils.clamp(holdTimeY, 0, MAX_SPEED_TIME);
+		entity.velocity.x *= holdTimeX / MAX_SPEED_TIME;
+		entity.velocity.y *= holdTimeY / MAX_SPEED_TIME;
 
 		// broadcast that a key was pressed
 		if (keycode > 0) {
