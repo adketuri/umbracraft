@@ -88,7 +88,7 @@ public class MessageWindowLayout extends WindowLayout {
 				messageLabel = new VisLabel("", new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE));
 				messageLabel.setWrap(true);
 				messageLabel.setAlignment(Align.left);
-				add(messageLabel).expand().bottom().left().size(330, 70).padBottom(16);
+				add(messageLabel).expand().top().size(330, 70).padBottom(16).padTop(6);
 			}
 
 		};
