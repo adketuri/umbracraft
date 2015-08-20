@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.editor.modules.AnimationGroupListModule;
 import net.alcuria.umbracraft.editor.modules.AnimationsModule;
 import net.alcuria.umbracraft.editor.modules.AreaListModule;
 import net.alcuria.umbracraft.editor.modules.ConfigModule;
+import net.alcuria.umbracraft.editor.modules.EntityListModule;
 import net.alcuria.umbracraft.editor.modules.HeroModule;
 import net.alcuria.umbracraft.editor.modules.MapListModule;
 import net.alcuria.umbracraft.editor.modules.Module;
@@ -66,6 +67,8 @@ public class EditorLayout extends Layout {
 		modules.add(new AnimationCollectionListModule());
 		modules.add(new AreaListModule());
 		modules.add(new MapListModule());
+		modules.add(new EntityListModule());
+
 	}
 
 	private Table topnav() {

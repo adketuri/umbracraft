@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisList;
 
@@ -15,7 +16,9 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 
 	@Override
 	public void addListItem() {
-		rootDefinition.add(new EntityDefinition());
+		final EntityDefinition item = new EntityDefinition();
+		item.components = new Array<ComponentDefinition>();
+		rootDefinition.add(item);
 	}
 
 	@Override
@@ -35,6 +38,7 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 
 	private Actor list() {
 		VisList<String> list = new VisList<String>();
+		list.setItems("Hello", "World");
 		return list;
 	}
 
