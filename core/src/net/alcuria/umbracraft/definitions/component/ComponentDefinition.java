@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.component;
 
+import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
@@ -10,7 +11,8 @@ import net.alcuria.umbracraft.engine.entities.ShadowComponent;
 
 /** Defines a simple component.
  * @author Andrew Keturi */
-public class ComponentDefinition {
+public class ComponentDefinition extends Definition {
+
 	/** Defines the {@link AnimationCollectionComponent} for an entity.
 	 * @author Andrew Keturi */
 	public static class AnimationCollectionComponentDefinition extends ComponentDefinition {
@@ -23,6 +25,24 @@ public class ComponentDefinition {
 	public static class AnimationComponentDefinition extends ComponentDefinition {
 		/** The AnimationComponent to use */
 		public String animationComponent;
+	}
+
+	/** An enumeration of all component type definitions.
+	 * @author Andrew Keturi */
+	public static enum ComponentType {
+		ANIM(AnimationComponentDefinition.class), //
+		ANIM_COLLECTION(AnimationCollectionComponentDefinition.class), //
+		DIRECTED_INPUT(DirectedInputComponentDefinition.class), //
+		ENTITY_COLLISION(EntityCollisionComponentDefinition.class), //
+		MAP_COLLISION(MapCollisionComponentDefinition.class), //
+		SCRIPT(ScriptComponentDefinition.class), //
+		SHADOW(ShadowComponentDefinition.class);
+
+		private final Class<? extends Definition> clazz;
+
+		private ComponentType(Class<? extends Definition> clazz) {
+			this.clazz = clazz;
+		}
 	}
 
 	/** Defines the {@link DirectedInputComponent} for an entity. */
@@ -51,4 +71,9 @@ public class ComponentDefinition {
 
 	/** The component name */
 	public String name;
+
+	@Override
+	public String getName() {
+		return name != null ? name : "Component";
+	}
 }
