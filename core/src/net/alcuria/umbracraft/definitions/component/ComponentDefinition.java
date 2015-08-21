@@ -38,9 +38,9 @@ public class ComponentDefinition extends Definition {
 		SCRIPT(ScriptComponentDefinition.class), //
 		SHADOW(ShadowComponentDefinition.class);
 
-		private final Class<? extends Definition> clazz;
+		public final Class<? extends ComponentDefinition> clazz;
 
-		private ComponentType(Class<? extends Definition> clazz) {
+		private ComponentType(Class<? extends ComponentDefinition> clazz) {
 			this.clazz = clazz;
 		}
 	}
