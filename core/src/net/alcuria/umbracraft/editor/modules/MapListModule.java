@@ -3,10 +3,12 @@ package net.alcuria.umbracraft.editor.modules;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.widget.MapEditorWidget;
+import net.alcuria.umbracraft.editor.widget.MapEditorWidget.EditMode;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 
@@ -45,22 +47,47 @@ public class MapListModule extends ListModule<MapDefinition> {
 
 	private void refreshHeader() {
 		headerButtons.clear();
-		headerButtons.add(widthField = new VisTextField(definition.getWidth() + ""));
-		headerButtons.add(heightField = new VisTextField(definition.getHeight() + ""));
-		headerButtons.add(new VisTextButton("Resize") {
+		headerButtons.add(new Table() {
 			{
-				addListener(new ClickListener() {
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						try {
-							definition.resize(Integer.valueOf(widthField.getText()), Integer.valueOf(heightField.getText()));
-							mapWidget.setDefinition(definition);
-							refreshMap();
-						} catch (Exception e) {
-							Game.log("Error parsing.");
-						}
-					};
-				});
+				// resize table
+				defaults().width(50);
+				add(new VisLabel("width"));
+				add(widthField = new VisTextField(definition.getWidth() + ""));
+				add(new VisLabel("height"));
+				add(heightField = new VisTextField(definition.getHeight() + ""));
+				add(new VisTextButton("Resize") {
+					{
+						addListener(new ClickListener() {
+							@Override
+							public void clicked(InputEvent event, float x, float y) {
+								try {
+									definition.resize(Integer.valueOf(widthField.getText()), Integer.valueOf(heightField.getText()));
+									mapWidget.setDefinition(definition);
+									refreshMap();
+								} catch (Exception e) {
+									Game.log("Error parsing.");
+								}
+							};
+						});
+					}
+				}).padLeft(10);
+			}
+		}).row();
+		headerButtons.add(new Table() {
+			{
+				// mode table -- toggles between entity/altitude
+				add(new VisLabel("Current Edit Mode:"));
+				add(new VisTextButton(EditMode.ALTITUDE.toString()) {
+					{
+						addListener(new ClickListener() {
+							@Override
+							public void clicked(InputEvent event, float x, float y) {
+								mapWidget.setEditMode(mapWidget.getEditMode() == EditMode.ALTITUDE ? EditMode.ENTITY : EditMode.ALTITUDE);
+								setText(mapWidget.getEditMode().toString());
+							};
+						});
+					}
+				}).padLeft(10);
 			}
 		}).row();
 		PopulateConfig config = new PopulateConfig();
