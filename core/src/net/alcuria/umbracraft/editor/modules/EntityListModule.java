@@ -1,5 +1,7 @@
 package net.alcuria.umbracraft.editor.modules;
 
+import net.alcuria.umbracraft.definitions.ListDefinition;
+import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
@@ -68,6 +70,7 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 		return new PopulateConfig() {
 			{
 				textFieldWidth = 200;
+				cols = 1;
 				suggestions = new ObjectMap<String, Array<String>>();
 				suggestions.put("animationComponent", new Array<String>() {
 					{
@@ -81,6 +84,18 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 
 					}
 				});
+				suggestions.put("animationCollectionComponent", new Array<String>() {
+					{
+						final FileHandle handle = Gdx.files.external("umbracraft/animationcollection.json");
+						if (handle.exists()) {
+							Array<AnimationCollectionDefinition> anims = new Json().fromJson(ListDefinition.class, handle).items();
+							for (AnimationCollectionDefinition anim : anims) {
+								add(anim.name);
+							}
+						}
+					}
+				});
+
 			}
 		};
 	}
