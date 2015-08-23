@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.definitions.component;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
+import net.alcuria.umbracraft.engine.components.ControlledInputComponent;
 import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.components.EntityCollisionComponent;
 import net.alcuria.umbracraft.engine.components.MapCollisionComponent;
@@ -32,17 +33,23 @@ public class ComponentDefinition extends Definition {
 	public static enum ComponentType {
 		ANIM(AnimationComponentDefinition.class), //
 		ANIM_COLLECTION(AnimationCollectionComponentDefinition.class), //
+		CONTROLLED_INPUT(ControlledInputComponentDefinition.class), //
 		DIRECTED_INPUT(DirectedInputComponentDefinition.class), //
 		ENTITY_COLLISION(EntityCollisionComponentDefinition.class), //
 		MAP_COLLISION(MapCollisionComponentDefinition.class), //
 		SCRIPT(ScriptComponentDefinition.class), //
 		SHADOW(ShadowComponentDefinition.class);
 
+		/** The component type's corresponding {@link ComponentDefinition} */
 		public final Class<? extends ComponentDefinition> clazz;
 
 		private ComponentType(Class<? extends ComponentDefinition> clazz) {
 			this.clazz = clazz;
 		}
+	}
+
+	/** Defines the {@link ControlledInputComponent} for an entity. */
+	public static class ControlledInputComponentDefinition extends ComponentDefinition {
 	}
 
 	/** Defines the {@link DirectedInputComponent} for an entity. */
