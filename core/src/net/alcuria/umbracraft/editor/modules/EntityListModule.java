@@ -11,6 +11,7 @@ import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -41,7 +42,7 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 				for (final ComponentDefinition component : definition.components) {
 					// populate component information
 					defaults().expandX().fill();
-					add(new VisLabel(component.getClass().getSimpleName())).row();
+					add(new VisLabel(formatName(component.getClass().getSimpleName()), Color.YELLOW)).row();
 					add(new Table() {
 						{
 							defaults().expandX().fillX().pad(5);
@@ -63,6 +64,7 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 					WidgetUtils.divider(this, "blue");
 				}
 			}
+
 		};
 	}
 
@@ -109,6 +111,21 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 		content.add(componentTable = new Table()).row();
 		content.add(listTable = new Table());
 		update();
+	}
+
+	/** Makes the name of the definition a little nicer. TODO: if needed again
+	 * move to util class.
+	 * @param name the class definition name
+	 * @return the name without "Definition" and some added whitespace */
+	private CharSequence formatName(String name) {
+		name = name.replaceAll("Definition", "");
+		for (int i = 0; i < name.length(); i++) {
+			if (i != 0 && Character.isUpperCase(name.charAt(i))) {
+				name = name.replace(Character.toString(name.charAt(i)), " " + name.charAt(i));
+				i += 2;
+			}
+		}
+		return name;
 	}
 
 	@Override

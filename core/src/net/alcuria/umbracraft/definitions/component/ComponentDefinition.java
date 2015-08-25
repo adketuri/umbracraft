@@ -46,6 +46,30 @@ public class ComponentDefinition extends Definition {
 		private ComponentType(Class<? extends ComponentDefinition> clazz) {
 			this.clazz = clazz;
 		}
+
+		@Override
+		public String toString() {
+			switch (this) {
+			case ANIM:
+				return "Animation";
+			case ANIM_COLLECTION:
+				return "Animation Collection";
+			case CONTROLLED_INPUT:
+				return "Controlled Input";
+			case DIRECTED_INPUT:
+				return "Directed Input";
+			case ENTITY_COLLISION:
+				return "Entity Collision";
+			case MAP_COLLISION:
+				return "Map Collision";
+			case SCRIPT:
+				return "Script";
+			case SHADOW:
+				return "Shadow";
+			default:
+				return "Unknown";
+			}
+		}
 	}
 
 	/** Defines the {@link ControlledInputComponent} for an entity. */
