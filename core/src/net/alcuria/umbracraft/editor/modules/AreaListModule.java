@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.editor.modules;
 
+import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
@@ -7,6 +8,7 @@ import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.widget.AreaNodeWidget;
 import net.alcuria.umbracraft.editor.widget.AreaNodeWidget.NodeClickHandler;
+import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -16,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /** The AreaListModule handles displaying UI for all the {@link AreaDefinition}
@@ -76,24 +77,7 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 			{
 				setBackground(Drawables.get("black"));
 				// title
-				add(new Table() {
-					{
-						setBackground(Drawables.get("blue"));
-						add(new VisTextButton("X") {
-							{
-								addListener(new ClickListener() {
-									@Override
-									public void clicked(InputEvent event, float x, float y) {
-										popupTable.clear();
-										widgetTable.clear();
-										widgetTable.add(new AreaNodeWidget(areaDefinition.root, AreaListModule.this)).expand().fill();
-									};
-								});
-							}
-						});
-						add(new VisLabel("Editing " + definition.getName())).expand().center();
-					}
-				}).expand().fillX().top().row();
+				WidgetUtils.popupTitle(this, "Editing " + definition.getName(), popupCloseListener());
 				// content
 				add(new Table() {
 					{
@@ -131,6 +115,19 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 					}
 				});
 			}
+
 		}).expand().fill().size(500, 500);
 	};
+
+	private Listener popupCloseListener() {
+		return new Listener() {
+
+			@Override
+			public void invoke() {
+				popupTable.clear();
+				widgetTable.clear();
+				widgetTable.add(new AreaNodeWidget(areaDefinition.root, AreaListModule.this)).expand().fill();
+			}
+		};
+	}
 }
