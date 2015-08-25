@@ -1,7 +1,9 @@
 package net.alcuria.umbracraft.editor.widget;
 
+import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.editor.widget.MapEditorWidget.EditMode;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -15,14 +17,17 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+/** A representation of a single tile on the {@link MapEditorWidget} actor.
+ * Handles updating the {@link MapDefinition} when it is clicked, either by
+ * adjusting the altitude or adding an {@link EntityDefinition}.
+ * @author Andrew Keturi */
 public class MapTileWidget extends Table {
 
 	private static TextureRegion side, top, edge, outline;
 	private final MapDefinition definition;
 	private final int i, j;
 
-	//TODO: this still references an old mapDefinition after updating the size
-	public MapTileWidget(int x, int y, final MapDefinition definition) {
+	public MapTileWidget(int x, int y, final MapDefinition definition, final MapEditorWidget widget) {
 		i = x;
 		j = y;
 		this.definition = definition;
@@ -38,12 +43,18 @@ public class MapTileWidget extends Table {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
-				if (Gdx.input.isKeyPressed(Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
-					MapTileWidget.this.definition.tiles.get(i).get(j).altitude--;
+				if (widget.getEditMode() == EditMode.ALTITUDE) {
+					// adjust altitude
+					if (Gdx.input.isKeyPressed(Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) {
+						MapTileWidget.this.definition.tiles.get(i).get(j).altitude--;
+					} else {
+						MapTileWidget.this.definition.tiles.get(i).get(j).altitude++;
+					}
+					MapTileWidget.this.definition.tiles.get(i).get(j).altitude = MathUtils.clamp(MapTileWidget.this.definition.tiles.get(i).get(j).altitude, 0, 10);
 				} else {
-					MapTileWidget.this.definition.tiles.get(i).get(j).altitude++;
+					// add/edit an entity
+					widget.showEntityPopup(i, j);
 				}
-				MapTileWidget.this.definition.tiles.get(i).get(j).altitude = MathUtils.clamp(MapTileWidget.this.definition.tiles.get(i).get(j).altitude, 0, 10);
 			}
 
 			@Override

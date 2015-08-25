@@ -1,8 +1,12 @@
 package net.alcuria.umbracraft.editor.widget;
 
+import net.alcuria.umbracraft.Listener;
+import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
+import net.alcuria.umbracraft.editor.Drawables;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 /** A widget to display a map with options to edit it based on the
@@ -32,23 +36,43 @@ public class MapEditorWidget {
 
 	private MapDefinition definition;
 	private EditMode editMode = EditMode.ALTITUDE;
+	private Table popupTable;
 
 	public MapEditorWidget(MapDefinition definition) {
 		this.definition = definition;
 	}
 
+	private Listener closeListener() {
+		return new Listener() {
+
+			@Override
+			public void invoke() {
+				popupTable.clear();
+			}
+		};
+	}
+
 	/** @return a new map widget, consisting of several {@link MapTileWidget}
 	 *         classes to represent the current {@link MapDefinition}. */
 	public Actor getActor() {
-		return new Table() {
+		return new Stack() {
 			{
-				for (int j = 0; j < definition.getHeight(); j++) {
-					Table row = new Table();
-					for (int i = 0; i < definition.getWidth(); i++) {
-						row.add(new MapTileWidget(i, j, definition)).size(32).pad(0);
+				add(new Table() {
+					{
+						for (int j = 0; j < definition.getHeight(); j++) {
+							Table row = new Table();
+							for (int i = 0; i < definition.getWidth(); i++) {
+								row.add(new MapTileWidget(i, j, definition, MapEditorWidget.this)).size(32).pad(0);
+							}
+							add(row).row();
+						}
 					}
-					add(row).row();
-				}
+				});
+				add(new Table() {
+					{
+						add(popupTable = new Table()).size(300);
+					}
+				});
 			}
 		};
 	}
@@ -70,6 +94,19 @@ public class MapEditorWidget {
 	 * @param editMode the {@link EditMode} */
 	public void setEditMode(EditMode editMode) {
 		this.editMode = editMode;
+	}
+
+	/** Shows an entity popup for the tile at coordinates i,j
+	 * @param i
+	 * @param j */
+	public void showEntityPopup(int i, int j) {
+		popupTable.clear();
+		popupTable.setBackground(Drawables.get("black"));
+		WidgetUtils.popupTitle(popupTable, "Add/Remove Entity", closeListener());
+		EntityDefinition entity = definition.findEntity(i, j);
+		if (entity != null) {
+			// populate with entity data
+		}
 	}
 
 }
