@@ -1,9 +1,7 @@
 package net.alcuria.umbracraft.definitions.map;
 
 import net.alcuria.umbracraft.definitions.Definition;
-import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 /** Defines a user-created map
@@ -11,9 +9,7 @@ import com.badlogic.gdx.utils.Array;
 public class MapDefinition extends Definition {
 
 	/** The entities on this map */
-	public Array<EntityDefinition> entities;
-	/** The location of all entities */
-	public Array<Vector2> entityLocations;
+	public Array<EntityReferenceDefinition> entities;
 	/** The height of the map */
 	private int height;
 	/** The name of the map */
@@ -33,8 +29,6 @@ public class MapDefinition extends Definition {
 				tiles.get(i).insert(j, new MapTileDefinition());
 			}
 		}
-		// create the entities
-		entities = new Array<EntityDefinition>();
 	}
 
 	/** Finds an entity at the coordinates i,j. Will return <code>null</code> if
@@ -42,13 +36,14 @@ public class MapDefinition extends Definition {
 	 * @param i
 	 * @param j
 	 * @return */
-	public EntityDefinition findEntity(int i, int j) {
-		int idx = 0;
-		for (Vector2 location : entityLocations) {
-			if ((int) location.x == i && (int) location.y == j) {
-				return entities.get(idx);
+	public EntityReferenceDefinition findEntity(int i, int j) {
+		if (entities == null) {
+			entities = new Array<>();
+		}
+		for (EntityReferenceDefinition entity : entities) {
+			if (entity.x == i && entity.y == j) {
+				return entity;
 			}
-			idx++;
 		}
 		return null;
 	}

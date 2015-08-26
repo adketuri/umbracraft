@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.layout.EditorLayout;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -15,6 +16,23 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
  * {@link EditorLayout}.
  * @author Andrew Keturi */
 public class WidgetUtils {
+
+	/** A convenience function that returns a button with an action
+	 * @param text a {@link String} to display on the button
+	 * @param listener the {@link Listener} to invoke on click
+	 * @return the {@link VisTextButton} */
+	public static Actor button(final String text, final Listener listener) {
+		return new VisTextButton(text) {
+			{
+				addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						listener.invoke();
+					};
+				});
+			}
+		};
+	}
 
 	/** Adds a divider to a table
 	 * @param table the {@link Table} to add the divider to

@@ -1,13 +1,22 @@
 package net.alcuria.umbracraft.editor.widget;
 
 import net.alcuria.umbracraft.Listener;
+import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
+import net.alcuria.umbracraft.definitions.map.EntityReferenceDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.editor.modules.MapListModule;
+import net.alcuria.umbracraft.editor.modules.Module.PopulateConfig;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** A widget to display a map with options to edit it based on the
  * {@link EditMode}.
@@ -34,20 +43,28 @@ public class MapEditorWidget {
 
 	}
 
-	private MapDefinition definition;
 	private EditMode editMode = EditMode.ALTITUDE;
+	private Listener listener;
+	private final MapListModule module;
 	private Table popupTable;
 
-	public MapEditorWidget(MapDefinition definition) {
-		this.definition = definition;
+	public MapEditorWidget(MapListModule module) {
+		this.module = module;
 	}
 
-	private Listener closeListener() {
+	public void addPopulateListener(Listener listener) {
+		this.listener = listener;
+	}
+
+	private Listener closeListener(final EntityReferenceDefinition entity) {
 		return new Listener() {
 
 			@Override
 			public void invoke() {
-				popupTable.clear();
+				if (entity == null || entity.name.length() < 1) {
+					module.getDefinition().entities.removeValue(entity, true);
+				}
+				popupTable.setVisible(false);
 			}
 		};
 	}
@@ -59,10 +76,10 @@ public class MapEditorWidget {
 			{
 				add(new Table() {
 					{
-						for (int j = 0; j < definition.getHeight(); j++) {
+						for (int j = 0; j < module.getDefinition().getHeight(); j++) {
 							Table row = new Table();
-							for (int i = 0; i < definition.getWidth(); i++) {
-								row.add(new MapTileWidget(i, j, definition, MapEditorWidget.this)).size(32).pad(0);
+							for (int i = 0; i < module.getDefinition().getWidth(); i++) {
+								row.add(new MapTileWidget(i, j, module.getDefinition(), MapEditorWidget.this)).size(32).pad(0);
 							}
 							add(row).row();
 						}
@@ -82,12 +99,33 @@ public class MapEditorWidget {
 		return editMode;
 	}
 
+	/** @return the {@link PopulateConfig} for showing the entity popup */
+	private PopulateConfig populateConfig() {
+		return new PopulateConfig() {
+			{
+				suggestions = new ObjectMap<String, Array<String>>();
+				suggestions.put("name", new Array<String>() {
+					{
+						final FileHandle handle = Gdx.files.external("umbracraft/entities.json");
+						if (handle.exists()) {
+							Array<EntityDefinition> entities = new Json().fromJson(ListDefinition.class, handle).items();
+							for (EntityDefinition entity : entities) {
+								add(entity.name);
+							}
+						}
+					}
+				});
+				cols = 1;
+			}
+		};
+	}
+
 	/** Sets the definition to use. Call this when it has updated elsewhere.
 	 * (eg., a resize)
 	 * @param definition the {@link MapDefinition} */
-	public void setDefinition(MapDefinition definition) {
-		this.definition = definition;
-	}
+	//	public void setDefinition(MapDefinition definition) {
+	//		this.definition = definition;
+	//	}
 
 	/** Sets the edit mode, which dictates the action to take when a tile is
 	 * clicked.
@@ -100,13 +138,21 @@ public class MapEditorWidget {
 	 * @param i
 	 * @param j */
 	public void showEntityPopup(int i, int j) {
+		popupTable.setVisible(true);
 		popupTable.clear();
 		popupTable.setBackground(Drawables.get("black"));
-		WidgetUtils.popupTitle(popupTable, "Add/Remove Entity", closeListener());
-		EntityDefinition entity = definition.findEntity(i, j);
-		if (entity != null) {
-			// populate with entity data
+		EntityReferenceDefinition entity = module.getDefinition().findEntity(i, j);
+		if (entity == null) {
+			// populate with new data
+			entity = new EntityReferenceDefinition();
+			entity.x = i;
+			entity.y = j;
+			entity.name = "";
+			module.getDefinition().entities.add(entity);
 		}
+		WidgetUtils.popupTitle(popupTable, "Add/Remove Entity " + entity.name, closeListener(entity));
+		module.populate(popupTable, EntityReferenceDefinition.class, entity, populateConfig());
+		popupTable.row();
+		popupTable.add(WidgetUtils.button("Close", closeListener(entity)));
 	}
-
 }

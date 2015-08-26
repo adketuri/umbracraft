@@ -8,6 +8,7 @@ import net.alcuria.umbracraft.editor.widget.MapEditorWidget.EditMode;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
@@ -28,6 +29,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 		mapDef.setHeight(10);
 		mapDef.name = "New Map";
 		mapDef.createTiles();
+		mapDef.entities = new Array<>();
 		rootDefinition.add(mapDef);
 	}
 
@@ -38,6 +40,11 @@ public class MapListModule extends ListModule<MapDefinition> {
 		content.add(mapView = new Table()).expand().fill().row();
 		refreshHeader();
 		refreshMap();
+	}
+
+	/** @return the {@link MapDefinition} */
+	public MapDefinition getDefinition() {
+		return definition;
 	}
 
 	@Override
@@ -62,7 +69,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 							public void clicked(InputEvent event, float x, float y) {
 								try {
 									definition.resize(Integer.valueOf(widthField.getText()), Integer.valueOf(heightField.getText()));
-									mapWidget.setDefinition(definition);
+									//									mapWidget.setDefinition(definition);
 									refreshMap();
 								} catch (Exception e) {
 									Game.log("Error parsing.");
@@ -95,10 +102,10 @@ public class MapListModule extends ListModule<MapDefinition> {
 		populate(headerButtons, MapDefinition.class, definition, config);
 	}
 
+	/** Rebuilds a new {@link MapEditorWidget} */
 	private void refreshMap() {
-		mapWidget = new MapEditorWidget(definition);
+		mapWidget = new MapEditorWidget(this);
 		mapView.clear();
 		mapView.add(mapWidget.getActor());
 	}
-
 }
