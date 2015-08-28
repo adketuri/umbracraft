@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.engine.entities;
 
+import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
 import net.alcuria.umbracraft.engine.components.Component;
 
 import com.badlogic.gdx.math.Vector3;
@@ -42,6 +43,12 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	public void addComponent(Component component) {
 		component.create(this);
 		components.add(component);
+	}
+
+	/** Adds a component from a definition
+	 * @param definition */
+	public void addComponent(ComponentDefinition definition) {
+		addComponent(definition.create());
 	}
 
 	@Override

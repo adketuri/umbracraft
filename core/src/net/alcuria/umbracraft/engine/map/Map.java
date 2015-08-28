@@ -9,7 +9,6 @@ import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
@@ -23,20 +22,18 @@ import com.badlogic.gdx.utils.Json;
 public class Map implements Disposable {
 	private int[][] altMap;
 	private TilesetDefinition def;
-	private final BitmapFont font = Game.assets().get("fonts/message.fnt", BitmapFont.class);
+	//	private final BitmapFont font = Game.assets().get("fonts/message.fnt", BitmapFont.class);
 	private int height;
 	private Array<Layer> layers;
 	private int maxAlt;
+	private String name;
 	private Array<TextureRegion> tiles;
 	private final int tileSide = 1;
 	private final int tileTop = 2;
 	private int width;
 
-	public Map(String id) {
-		create(id);
-	}
-
 	public void create(String id) {
+		name = id;
 		// json -> object
 		String filename = "";
 		Json json = new Json();
@@ -200,6 +197,10 @@ public class Map implements Disposable {
 		return maxAlt;
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	/** Returns an array of texture regions loaded from the tileset
 	 * @param filename */
 	private Array<TextureRegion> getRegions(String filename) {
@@ -228,6 +229,9 @@ public class Map implements Disposable {
 	 *        visible in the x axis */
 	public void render(int row, int xOffset) {
 		final int tileSize = Config.tileWidth;
+		if (layers == null) {
+			return;
+		}
 		for (int k = 0; k < layers.size; k++) {
 			int alt = layers.get(k).alt;
 			final Tile[][] data = layers.get(k).data;

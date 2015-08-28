@@ -2,6 +2,7 @@ package net.alcuria.umbracraft;
 
 import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.events.EventPublisher;
+import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
 
 import com.badlogic.gdx.Gdx;
@@ -17,22 +18,27 @@ public class Game {
 	private static Db db;
 	private static boolean debug = false;
 	private static EntityManager entities;
+	private static Map map;
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
 	private static View view;
 
+	/** @return the {@link AssetManager} */
 	public static AssetManager assets() {
 		return assets;
 	}
 
+	/** @return the {@link SpriteBatch} used to render everything */
 	public static SpriteBatch batch() {
 		return batch;
 	}
 
+	/** @return the {@link Db} */
 	public static Db db() {
 		return db;
 	}
 
+	/** @return the {@link EntityManager} consisting of all of the entities */
 	public static EntityManager entities() {
 		return entities;
 	}
@@ -48,22 +54,36 @@ public class Game {
 		return debug;
 	}
 
+	/** Prints to stdout
+	 * @param string the {@link String} to print */
 	public static void log(String string) {
 		System.out.println(string);
 	}
 
+	/** @return the current active {@link Map} */
+	public static Map map() {
+		return map;
+	}
+
+	/** @return The {@link EventPublisher} for subscribing and and publishing
+	 *         events */
 	public static EventPublisher publisher() {
 		return publisher;
 	}
 
+	/** @return the current {@link UmbraScreen} */
 	public static UmbraScreen screen() {
 		return screen;
 	}
 
+	/** Sets whether or not the game is in debug mode
+	 * @param debug is the game in debug mode? */
 	public static void setDebug(boolean debug) {
 		Game.debug = debug;
 	}
 
+	/** Changes the current screen
+	 * @param screen the {@link UmbraScreen} */
 	public static void setScreen(UmbraScreen screen) {
 		if (Game.screen != null) {
 			Game.screen.hide();
@@ -75,6 +95,7 @@ public class Game {
 		}
 	}
 
+	/** @return the {@link View} for handling cameras and so on. */
 	public static View view() {
 		return view;
 	}
@@ -86,6 +107,7 @@ public class Game {
 		batch = new SpriteBatch();
 		db = new Db();
 		entities = new EntityManager();
+		map = new Map();
 		publisher = new EventPublisher();
 		// now subscribe
 		publisher.subscribe(view);

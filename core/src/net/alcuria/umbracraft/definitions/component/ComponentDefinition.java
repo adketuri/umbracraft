@@ -1,8 +1,10 @@
 package net.alcuria.umbracraft.definitions.component;
 
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
+import net.alcuria.umbracraft.engine.components.Component;
 import net.alcuria.umbracraft.engine.components.ControlledInputComponent;
 import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.components.EntityCollisionComponent;
@@ -12,13 +14,18 @@ import net.alcuria.umbracraft.engine.entities.ShadowComponent;
 
 /** Defines a simple component.
  * @author Andrew Keturi */
-public class ComponentDefinition extends Definition {
+public abstract class ComponentDefinition extends Definition {
 
 	/** Defines the {@link AnimationCollectionComponent} for an entity.
 	 * @author Andrew Keturi */
 	public static class AnimationCollectionComponentDefinition extends ComponentDefinition {
 		/** The AnimationCollectionComponent to use */
 		public String animationCollectionComponent;
+
+		@Override
+		public Component create() {
+			return new AnimationCollectionComponent(Game.db().animCollection(animationCollectionComponent));
+		}
 	}
 
 	/** Defines the {@link AnimationComponent} for an entity.
@@ -26,6 +33,11 @@ public class ComponentDefinition extends Definition {
 	public static class AnimationComponentDefinition extends ComponentDefinition {
 		/** The AnimationComponent to use */
 		public String animationComponent;
+
+		@Override
+		public Component create() {
+			return new AnimationComponent(Game.db().anim(animationComponent));
+		}
 	}
 
 	/** An enumeration of all component type definitions.
@@ -74,14 +86,29 @@ public class ComponentDefinition extends Definition {
 
 	/** Defines the {@link ControlledInputComponent} for an entity. */
 	public static class ControlledInputComponentDefinition extends ComponentDefinition {
+
+		@Override
+		public Component create() {
+			return new ControlledInputComponent();
+		}
 	}
 
 	/** Defines the {@link DirectedInputComponent} for an entity. */
 	public static class DirectedInputComponentDefinition extends ComponentDefinition {
+
+		@Override
+		public Component create() {
+			return new DirectedInputComponent();
+		}
 	}
 
 	/** Defines the {@link EntityCollisionComponent} for an entity. */
 	public static class EntityCollisionComponentDefinition extends ComponentDefinition {
+
+		@Override
+		public Component create() {
+			return new EntityCollisionComponent();
+		}
 	}
 
 	/** Defines the {@link MapCollisionComponent} for an entity. */
@@ -90,18 +117,35 @@ public class ComponentDefinition extends Definition {
 		public int height;
 		/** The width of the collision component */
 		public int width;
+
+		@Override
+		public Component create() {
+			return new MapCollisionComponent(width, height);
+		}
 	}
 
 	/** Defines the {@link ScriptComponent} for an entity. */
 	public static class ScriptComponentDefinition extends ComponentDefinition {
+
+		@Override
+		public Component create() {
+			return new ScriptComponent();
+		}
 	}
 
 	/** Defines the {@link ShadowComponent} for an entity. */
 	public static class ShadowComponentDefinition extends ComponentDefinition {
+
+		@Override
+		public Component create() {
+			return new ShadowComponent();
+		}
 	}
 
 	/** The component name */
 	public String name;
+
+	public abstract Component create();
 
 	@Override
 	public String getName() {

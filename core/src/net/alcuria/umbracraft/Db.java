@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
+import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 
 import com.badlogic.gdx.Gdx;
@@ -27,6 +28,7 @@ public final class Db {
 		defs.put("animations", AnimationListDefinition.class);
 		defs.put("animationgroup", ListDefinition.class);
 		defs.put("animationcollection", ListDefinition.class);
+		defs.put("entities", ListDefinition.class);
 		defs.put("map", ListDefinition.class);
 		// deserialize all definitions
 		Json json = new Json();
@@ -84,6 +86,22 @@ public final class Db {
 			}
 		}
 		throw new NullPointerException("AnimationGroup not found: " + name);
+	}
+
+	public EntityDefinition entity(String name) {
+		if (definitions != null) {
+			for (Definition definition : definitions) {
+				if (definition instanceof ListDefinition<?>) {
+					for (Definition list : ((ListDefinition<?>) definition).items()) {
+						if (list instanceof EntityDefinition && ((EntityDefinition) list).name != null && ((EntityDefinition) list).name.equals(name)) {
+							return (EntityDefinition) list;
+						}
+					}
+				}
+			}
+		}
+		throw new NullPointerException("Entity not found: " + name);
+
 	}
 
 	public MapDefinition map(String name) {

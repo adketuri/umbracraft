@@ -17,10 +17,10 @@ public class MapCollisionComponent implements Component {
 	private final int height, width;
 	private final Map map;
 
-	public MapCollisionComponent(Map map, int width, int height) {
-		this.map = map;
+	public MapCollisionComponent(int width, int height) {
 		this.width = width;
 		this.height = height;
+		map = Game.map();
 	}
 
 	private void checkJump(Direction direction, Entity entity) {

@@ -1,7 +1,6 @@
 package net.alcuria.umbracraft.engine.screens;
 
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
@@ -13,14 +12,13 @@ import net.alcuria.umbracraft.engine.windows.WindowStack;
  * and then ui elements are displayed.
  * @author Andrew Keturi */
 public class World implements UmbraScreen, EventListener {
-	private EntityManager entities;
 	private HudManager manager;
 	private Map map;
 	private WindowStack windows;
 
 	@Override
 	public void dispose() {
-		entities.dispose();
+		Game.entities().dispose();
 		windows.dispose();
 		Game.publisher().unsubscribe(this);
 	}
@@ -45,7 +43,7 @@ public class World implements UmbraScreen, EventListener {
 
 	@Override
 	public void render(float delta) {
-		entities.render();
+		Game.entities().render();
 		Game.batch().setProjectionMatrix(Game.view().getUiCamera().combined);
 		manager.render();
 		windows.render();
@@ -63,17 +61,16 @@ public class World implements UmbraScreen, EventListener {
 
 	@Override
 	public void show() {
-		map = new Map("Andrew");
-		entities = Game.entities();
-		entities.update(map);
 		manager = new HudManager();
 		windows = new WindowStack();
 		Game.publisher().subscribe(this);
+		Game.entities().create();
+		Game.map().create("Andrew");
 	}
 
 	@Override
 	public void update(float delta) {
-		entities.update(delta);
+		Game.entities().update(delta);
 		manager.update();
 		Game.view().update();
 		windows.update();

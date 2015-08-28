@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.engine.components;
 
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -13,7 +14,6 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class EntityCollisionComponent implements Component {
 
-	private Array<Entity> entities;
 	private final Rectangle r1 = new Rectangle(), r2 = new Rectangle();
 	private final Vector2 v1 = new Vector2(), v2 = new Vector2();
 	private final Vector2 v3 = new Vector2();
@@ -36,15 +36,9 @@ public class EntityCollisionComponent implements Component {
 	public void render(Entity entity) {
 	}
 
-	/** Sets a reference of the entities.
-	 * @param entities */
-	public void setEntities(Array<Entity> entities) {
-		this.entities = entities;
-	}
-
 	@Override
 	public void update(Entity entity) {
-		for (Entity otherEntity : entities) {
+		for (Entity otherEntity : Game.entities().get()) {
 			// ensure it's another entity and it's on the same z axis
 			if (otherEntity != entity && MathUtils.isEqual(entity.position.z, otherEntity.position.z, 2f)) {
 				MapCollisionComponent component = entity.getComponent(MapCollisionComponent.class);

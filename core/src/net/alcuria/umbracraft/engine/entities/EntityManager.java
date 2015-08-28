@@ -2,8 +2,11 @@ package net.alcuria.umbracraft.engine.entities;
 
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.engine.components.EntityCollisionComponent;
-import net.alcuria.umbracraft.engine.map.Map;
+import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
+import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
+import net.alcuria.umbracraft.definitions.map.EntityReferenceDefinition;
+import net.alcuria.umbracraft.definitions.map.MapDefinition;
+import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
 
 import com.badlogic.gdx.utils.Array;
 
@@ -12,14 +15,41 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class EntityManager {
 	private final Array<Entity> entities = new Array<Entity>();
-	private Map map;
 	private final Array<Entity> visibleEntities = new Array<Entity>();
+
+	public void create() {
+		visibleEntities.clear();
+		entities.clear();
+		// create entities
+		MapDefinition mapDef = Game.db().map("Andrew");
+		if (mapDef != null && mapDef.entities != null) {
+			for (EntityReferenceDefinition reference : mapDef.entities) {
+				try {
+					Entity entity = new Entity();
+					entity.setName(reference.name);
+					entity.position.x = reference.x * Config.tileWidth;
+					entity.position.y = reference.y * Config.tileWidth;
+					EntityDefinition entityDef = Game.db().entity(reference.name);
+					if (entityDef != null) {
+						for (ComponentDefinition componentDef : entityDef.components) {
+							entity.addComponent(componentDef);
+						}
+					}
+					if (entity.getName().equals(Entity.PLAYER)) { //FIXME: ugleh
+						Game.publisher().publish(new CameraTargetEvent(entity));
+					}
+					entities.add(entity);
+				} catch (Exception e) {
+
+				}
+			}
+		}
+	}
 
 	public void dispose() {
 		if (entities == null) {
 			return;
 		}
-		map.dispose();
 		for (int i = 0; i < entities.size; i++) {
 			entities.get(i).dispose();
 		}
@@ -32,6 +62,10 @@ public class EntityManager {
 			}
 		}
 		return null;
+	}
+
+	public Array<Entity> get() {
+		return entities;
 	}
 
 	/** gets the row an entity is at for rendering */
@@ -54,7 +88,7 @@ public class EntityManager {
 		int row = y + height;
 		for (int i = 0; i < entities.size; i++) {
 			final int entityRow = getRow(entities.get(i));
-			if (entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= map.getHeight()) {
+			if (entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= Game.map().getHeight()) {
 				visibleEntities.add(entities.get(i));
 				added++;
 			}
@@ -62,8 +96,8 @@ public class EntityManager {
 		visibleEntities.sort();
 		// render each row in view, starting from the top
 		int idx = 0;
-		while (row > y - map.getMaxAltitude() * 2) {
-			map.render(row, x);
+		while (row > y - Game.map().getMaxAltitude() * 2) {
+			Game.map().render(row, x);
 			while (idx < visibleEntities.size && visibleEntities.get(idx).position.y / Config.tileWidth >= row) {
 				visibleEntities.get(idx).render();
 				idx++;
@@ -78,23 +112,9 @@ public class EntityManager {
 		if (entities == null) {
 			return;
 		}
-		map.update(delta);
+		Game.map().update(delta);
 		for (int i = 0; i < entities.size; i++) {
 			entities.get(i).update();
 		}
-	}
-
-	public void update(Map map) {
-		this.map = map;
-		visibleEntities.clear();
-		entities.clear();
-		final Entity player = EntityCreator.player(map);
-		entities.add(player);
-		for (int i = 0; i < 5; i++) {
-			entities.add(EntityCreator.dummy(map));
-		}
-		entities.add(EntityCreator.event(map));
-		entities.add(EntityCreator.eventSecond(map));
-		player.getComponent(EntityCollisionComponent.class).setEntities(entities);
 	}
 }
