@@ -24,23 +24,19 @@ public class EntityManager {
 		MapDefinition mapDef = Game.db().map("Andrew");
 		if (mapDef != null && mapDef.entities != null) {
 			for (EntityReferenceDefinition reference : mapDef.entities) {
-				try {
-					Entity entity = new Entity();
-					entity.setName(reference.name);
-					entity.position.x = reference.x * Config.tileWidth;
-					entity.position.y = reference.y * Config.tileWidth;
-					EntityDefinition entityDef = Game.db().entity(reference.name);
-					if (entityDef != null) {
-						for (ComponentDefinition componentDef : entityDef.components) {
-							entity.addComponent(componentDef);
-						}
+				Entity entity = new Entity();
+				entity.setName(reference.name);
+				entity.position.x = reference.x * Config.tileWidth;
+				entity.position.y = reference.y * Config.tileWidth;
+				EntityDefinition entityDef = Game.db().entity(reference.name);
+				if (entityDef != null) {
+					for (ComponentDefinition componentDef : entityDef.components) {
+						entity.addComponent(componentDef);
 					}
 					if (entity.getName().equals(Entity.PLAYER)) { //FIXME: ugleh
 						Game.publisher().publish(new CameraTargetEvent(entity));
 					}
 					entities.add(entity);
-				} catch (Exception e) {
-
 				}
 			}
 		}

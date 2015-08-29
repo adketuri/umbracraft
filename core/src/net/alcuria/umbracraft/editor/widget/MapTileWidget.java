@@ -1,8 +1,16 @@
 package net.alcuria.umbracraft.editor.widget;
 
+import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
+import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
+import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
+import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
+import net.alcuria.umbracraft.definitions.component.ComponentDefinition.AnimationCollectionComponentDefinition;
+import net.alcuria.umbracraft.definitions.component.ComponentDefinition.AnimationComponentDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
+import net.alcuria.umbracraft.definitions.map.EntityReferenceDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.widget.MapEditorWidget.EditMode;
 
 import com.badlogic.gdx.Gdx;
@@ -25,12 +33,14 @@ public class MapTileWidget extends Table {
 
 	private static TextureRegion side, top, edge, outline;
 	private final MapDefinition definition;
+	private AnimationPreview entityPreview;
 	private final int i, j;
 
 	public MapTileWidget(int x, int y, final MapDefinition definition, final MapEditorWidget widget) {
 		i = x;
 		j = y;
 		this.definition = definition;
+		// initialize static textures if needed
 		if (side == null) {
 			Texture skin = new Texture(Gdx.files.internal("editor/skin.png"));
 			side = new TextureRegion(skin, 4, 0, 1, 1);
@@ -38,6 +48,7 @@ public class MapTileWidget extends Table {
 			edge = new TextureRegion(skin, 2, 0, 1, 1);
 			top = new TextureRegion(skin, 3, 0, 1, 1);
 		}
+		updateEntityPreview();
 		setBackground(Drawables.get("blue"));
 		addListener(new ClickListener() {
 			@Override
@@ -72,6 +83,14 @@ public class MapTileWidget extends Table {
 		setTouchable(Touchable.enabled);
 	}
 
+	@Override
+	public void act(float delta) {
+		super.act(delta);
+		if (entityPreview != null) {
+			entityPreview.act(delta);
+		}
+	}
+
 	private int alt(int i, int j) {
 		if (i < 0 || i >= definition.tiles.size || j < 0 || j >= definition.tiles.get(0).size) {
 			return 0;
@@ -88,6 +107,11 @@ public class MapTileWidget extends Table {
 		// top
 		batch.draw(outline, getX(), getY() + altitude * getHeight(), getWidth(), getHeight());
 		batch.draw(top, getX() + 1, getY() + altitude * getHeight() + 1, getWidth() - 2, getHeight() - 2);
+		// entity
+		if (entityPreview != null && entityPreview.getCurrentRegion() != null) {
+			final TextureRegion region = entityPreview.getCurrentRegion();
+			batch.draw(region, getX(), getY() + altitude * getHeight(), region.getRegionWidth() * 2, region.getRegionHeight() * 2);
+		}
 		// left edge
 		if (alt(i - 1, j) < alt(i, j)) {
 			batch.draw(edge, getX(), getY() + altitude * getHeight(), 2, getHeight());
@@ -103,6 +127,50 @@ public class MapTileWidget extends Table {
 		// top edge
 		if (alt(i, j - 1) < alt(i, j)) {
 			batch.draw(edge, getX(), getY() + getHeight() + altitude * getHeight() - 2, getWidth(), 2);
+		}
+	}
+
+	/** This monolithic function is a nightmare but for now it works. It looks
+	 * through the map's entity references, and if it finds an entity at this
+	 * tile, it sees if that entity has an animation or something to render. If
+	 * it has something to render, we initialize entityPreview and the map
+	 * editor gets a nice indicator. */
+	public void updateEntityPreview() {
+		// set a preview image if applicable
+		// first iterate thru the references on this map
+		for (EntityReferenceDefinition reference : definition.entities) {
+			// checking if the reference's coordinates match this tile coordinate
+			if (reference.name != null && reference.x == i && definition.getHeight() - reference.y - 1 == j) {
+				// verify this entity exists in the db
+				EntityDefinition entity = Editor.db().entity(reference.name);
+				if (entity != null) {
+					// find an animation component for the preview image
+					for (ComponentDefinition componentDefinition : entity.components) {
+						if (componentDefinition instanceof AnimationComponentDefinition) {
+							// create the definition from the component
+							AnimationDefinition animDefinition = Editor.db().anim(((AnimationComponentDefinition) componentDefinition).animationComponent);
+							if (animDefinition != null) {
+								entityPreview = new AnimationPreview(animDefinition);
+								break;
+							}
+						} else if (componentDefinition instanceof AnimationCollectionComponentDefinition) {
+							// create the definition from the component
+							AnimationCollectionDefinition animDefinition = Editor.db().animCollection(((AnimationCollectionComponentDefinition) componentDefinition).animationCollectionComponent);
+							if (animDefinition != null) {
+								final AnimationGroupDefinition animGroup = Editor.db().animGroup(animDefinition.idle);
+								if (animGroup != null) {
+									final AnimationDefinition anim = Editor.db().anim(animGroup.down);
+									if (anim != null) {
+										entityPreview = new AnimationPreview(anim);
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+			}
 		}
 	}
 }

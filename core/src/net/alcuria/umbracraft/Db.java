@@ -100,8 +100,7 @@ public final class Db {
 				}
 			}
 		}
-		throw new NullPointerException("Entity not found: " + name);
-
+		return null;
 	}
 
 	public MapDefinition map(String name) {

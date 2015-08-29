@@ -103,7 +103,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 	}
 
 	/** Rebuilds a new {@link MapEditorWidget} */
-	private void refreshMap() {
+	public void refreshMap() {
 		mapWidget = new MapEditorWidget(this);
 		mapView.clear();
 		mapView.add(mapWidget.getActor());

@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 public class AnimationPreview extends Image {
 
 	private int count = 0;
+	private TextureRegion currentRegion;
 	private final AnimationDefinition definition;
 	private int idx = 0;
 
@@ -35,10 +36,14 @@ public class AnimationPreview extends Image {
 			final String path = "sprites/animations/" + definition.filename;
 			if (Gdx.files.internal(path).exists()) {
 				Texture texture = new Texture(Gdx.files.internal(path));
-				TextureRegion region = new TextureRegion(texture, frame.x * definition.width + (frame.mirror ? definition.width : 0), frame.y * definition.height, frame.mirror ? -definition.width : definition.width, definition.height);
-				setDrawable(new TextureRegionDrawable(region));
+				currentRegion = new TextureRegion(texture, frame.x * definition.width + (frame.mirror ? definition.width : 0), frame.y * definition.height, frame.mirror ? -definition.width : definition.width, definition.height);
+				setDrawable(new TextureRegionDrawable(currentRegion));
 			}
 		}
+	}
+
+	public TextureRegion getCurrentRegion() {
+		return currentRegion;
 	}
 
 }

@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft;
 
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.layout.EditorLayout;
 import net.alcuria.umbracraft.editor.layout.Layout;
 
@@ -15,12 +16,14 @@ import com.kotcrab.vis.ui.VisUI;
 public class UmbraCraftEditor implements ApplicationListener {
 
 	private SpriteBatch batch;
+	private Editor editor;
 	private Layout view;
 
 	@Override
 	public void create() {
 		VisUI.load();
 		Drawables.init();
+		editor = new Editor();
 		batch = new SpriteBatch();
 		view = new EditorLayout();
 	}
@@ -33,8 +36,6 @@ public class UmbraCraftEditor implements ApplicationListener {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -54,8 +55,5 @@ public class UmbraCraftEditor implements ApplicationListener {
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
-
 }

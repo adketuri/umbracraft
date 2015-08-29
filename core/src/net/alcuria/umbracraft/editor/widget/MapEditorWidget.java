@@ -43,17 +43,12 @@ public class MapEditorWidget {
 
 	}
 
-	private EditMode editMode = EditMode.ALTITUDE;
-	private Listener listener;
+	private static EditMode editMode = EditMode.ALTITUDE;
 	private final MapListModule module;
 	private Table popupTable;
 
 	public MapEditorWidget(MapListModule module) {
 		this.module = module;
-	}
-
-	public void addPopulateListener(Listener listener) {
-		this.listener = listener;
 	}
 
 	private Listener closeListener(final EntityReferenceDefinition entity) {
@@ -63,8 +58,22 @@ public class MapEditorWidget {
 			public void invoke() {
 				if (entity == null || entity.name.length() < 1) {
 					module.getDefinition().entities.removeValue(entity, true);
+				} else {
+					module.refreshMap();
 				}
 				popupTable.setVisible(false);
+			}
+		};
+	}
+
+	private Listener deleteListener(final EntityReferenceDefinition entity) {
+		return new Listener() {
+
+			@Override
+			public void invoke() {
+				module.getDefinition().entities.removeValue(entity, true);
+				popupTable.setVisible(false);
+				module.refreshMap();
 			}
 		};
 	}
@@ -124,7 +133,7 @@ public class MapEditorWidget {
 	 * clicked.
 	 * @param editMode the {@link EditMode} */
 	public void setEditMode(EditMode editMode) {
-		this.editMode = editMode;
+		MapEditorWidget.editMode = editMode;
 	}
 
 	/** Shows an entity popup for the tile at coordinates i,j
@@ -146,6 +155,9 @@ public class MapEditorWidget {
 		WidgetUtils.popupTitle(popupTable, "Add/Remove Entity " + entity.name, closeListener(entity));
 		module.populate(popupTable, EntityReferenceDefinition.class, entity, populateConfig());
 		popupTable.row();
-		popupTable.add(WidgetUtils.button("Close", closeListener(entity)));
+		final Table buttonTable = new Table();
+		buttonTable.add(WidgetUtils.button("Close", closeListener(entity)));
+		buttonTable.add(WidgetUtils.button("Delete", deleteListener(entity)));
+		popupTable.add(buttonTable).expandX().fill();
 	}
 }

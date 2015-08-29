@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /** Contains everything needed by the Engine.
  * @author Andrew Keturi */
-public class Game {
+public final class Game {
 
 	private static AssetManager assets;
 	private static SpriteBatch batch;
