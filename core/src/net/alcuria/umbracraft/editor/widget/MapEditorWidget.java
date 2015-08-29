@@ -120,13 +120,6 @@ public class MapEditorWidget {
 		};
 	}
 
-	/** Sets the definition to use. Call this when it has updated elsewhere.
-	 * (eg., a resize)
-	 * @param definition the {@link MapDefinition} */
-	//	public void setDefinition(MapDefinition definition) {
-	//		this.definition = definition;
-	//	}
-
 	/** Sets the edit mode, which dictates the action to take when a tile is
 	 * clicked.
 	 * @param editMode the {@link EditMode} */
