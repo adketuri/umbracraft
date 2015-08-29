@@ -53,7 +53,7 @@ public class MapTileWidget extends Table {
 					MapTileWidget.this.definition.tiles.get(i).get(j).altitude = MathUtils.clamp(MapTileWidget.this.definition.tiles.get(i).get(j).altitude, 0, 10);
 				} else {
 					// add/edit an entity
-					widget.showEntityPopup(i, j);
+					widget.showEntityPopup(i, definition.getHeight() - j - 1);
 				}
 			}
 
