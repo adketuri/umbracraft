@@ -98,7 +98,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 			}
 		}).row();
 		PopulateConfig config = new PopulateConfig();
-		config.cols = 10;
+		config.cols = 1;
 		populate(headerButtons, MapDefinition.class, definition, config);
 	}
 

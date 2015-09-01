@@ -10,6 +10,14 @@ public class MapDefinition extends Definition {
 
 	/** The entities on this map */
 	public Array<EntityReferenceDefinition> entities;
+	/** If it has an exit from the east */
+	public boolean hasEastExit;
+	/** If it has an exit from the north */
+	public boolean hasNorthExit;
+	/** If it has an exit from the south */
+	public boolean hasSouthExit;
+	/** If it has an exit from the west */
+	public boolean hasWestExit;
 	/** The height of the map */
 	private int height;
 	/** The name of the map */
