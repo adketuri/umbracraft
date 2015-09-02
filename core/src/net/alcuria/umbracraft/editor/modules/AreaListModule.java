@@ -41,9 +41,7 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 		AreaNodeDefinition child = new AreaNodeDefinition();
 		child.name = definition.getName() + " Child";
 		definition.children.add(child);
-		widgetTable.clear();
-		widgetTable.add(new AreaNodeWidget(areaDefinition.root, this)).expand().fill();
-		popupTable.clear();
+		refresh();
 	}
 
 	@Override
@@ -63,6 +61,17 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 		widgetTable = new Table();
 		widgetTable.add(area).expand().fill();
 		content.stack(widgetTable, popupTable = new Table()).expand().fill();
+	}
+
+	private Listener deleteListener(final AreaNodeDefinition definition) {
+		return new Listener() {
+
+			@Override
+			public void invoke() {
+				areaDefinition.deleteNode(areaDefinition.root, definition);
+				refresh();
+			}
+		};
 	}
 
 	@Override
@@ -98,9 +107,9 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 						populate(this, AreaNodeDefinition.class, definition, config);
 					}
 				}).expand().fill().row();
-				// "add child" button
 				add(new Table() {
 					{
+						// "add child" button
 						add(new VisTextButton("Add Child") {
 							{
 								addListener(new ClickListener() {
@@ -112,7 +121,10 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 								});
 							}
 						});
+						// delete
+						add(WidgetUtils.button("Delete", deleteListener(definition)));
 					}
+
 				});
 			}
 
@@ -129,5 +141,14 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 				widgetTable.add(new AreaNodeWidget(areaDefinition.root, AreaListModule.this)).expand().fill();
 			}
 		};
+	}
+
+	private void refresh() {
+		widgetTable.clear();
+		if (areaDefinition.root == null) {
+			areaDefinition.root = new AreaNodeDefinition();
+		}
+		widgetTable.add(new AreaNodeWidget(areaDefinition.root, this)).expand().fill();
+		popupTable.clear();
 	}
 }
