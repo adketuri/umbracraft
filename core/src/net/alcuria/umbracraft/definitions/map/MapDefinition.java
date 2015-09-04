@@ -1,27 +1,21 @@
 package net.alcuria.umbracraft.definitions.map;
 
 import net.alcuria.umbracraft.definitions.Definition;
+import net.alcuria.umbracraft.definitions.map.TeleportDefinition.TeleportDirection;
 
 import com.badlogic.gdx.utils.Array;
 
 /** Defines a user-created map
  * @author Andrew Keturi */
 public class MapDefinition extends Definition {
-
 	/** The entities on this map */
 	public Array<EntityReferenceDefinition> entities;
-	/** If it has an exit from the east */
-	public boolean hasEastExit;
-	/** If it has an exit from the north */
-	public boolean hasNorthExit;
-	/** If it has an exit from the south */
-	public boolean hasSouthExit;
-	/** If it has an exit from the west */
-	public boolean hasWestExit;
 	/** The height of the map */
 	private int height;
 	/** The name of the map */
 	public String name;
+	/** The teleport locations */
+	public TeleportDefinition teleport;
 	/** The map tiles */
 	public Array<Array<MapTileDefinition>> tiles;
 	/** The width of the map */
@@ -116,6 +110,16 @@ public class MapDefinition extends Definition {
 	 * @param height the new height */
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	/** Sets a teleport node
+	 * @param direction the {@link TeleportDirection}
+	 * @param map a {@link String} representation of the map */
+	public void setTeleport(TeleportDirection direction, String map) {
+		if (teleport == null) {
+			teleport = new TeleportDefinition();
+		}
+		teleport.adjacentMaps.put(direction, map);
 	}
 
 	/** sets the map's width

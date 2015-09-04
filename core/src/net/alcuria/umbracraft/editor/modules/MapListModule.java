@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.editor.modules;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
+import net.alcuria.umbracraft.definitions.map.TeleportDefinition;
 import net.alcuria.umbracraft.editor.widget.MapEditorWidget;
 import net.alcuria.umbracraft.editor.widget.MapEditorWidget.EditMode;
 
@@ -29,6 +30,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 		mapDef.setHeight(10);
 		mapDef.name = "New Map";
 		mapDef.createTiles();
+		mapDef.teleport = new TeleportDefinition();
 		mapDef.entities = new Array<>();
 		rootDefinition.add(mapDef);
 	}
@@ -69,7 +71,6 @@ public class MapListModule extends ListModule<MapDefinition> {
 							public void clicked(InputEvent event, float x, float y) {
 								try {
 									definition.resize(Integer.valueOf(widthField.getText()), Integer.valueOf(heightField.getText()));
-									//									mapWidget.setDefinition(definition);
 									refreshMap();
 								} catch (Exception e) {
 									Game.log("Error parsing.");
