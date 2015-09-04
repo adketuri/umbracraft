@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
+import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 
@@ -86,6 +87,19 @@ public final class Db {
 			}
 		}
 		throw new NullPointerException("AnimationGroup not found: " + name);
+	}
+
+	public ListDefinition<AreaDefinition> areas() {
+		if (definitions != null) {
+			for (Definition definition : definitions) {
+				if (definition instanceof ListDefinition<?>) {
+					if (((ListDefinition) definition).items().first() instanceof AreaDefinition) {
+						return (ListDefinition<AreaDefinition>) definition;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	public EntityDefinition entity(String name) {
