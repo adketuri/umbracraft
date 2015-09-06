@@ -31,6 +31,7 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 	@Override
 	public void addListItem() {
 		final EntityDefinition item = new EntityDefinition();
+		item.name = "New";
 		item.components = new Array<ComponentDefinition>();
 		rootDefinition.add(item);
 	}
@@ -79,8 +80,10 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 						final FileHandle handle = Gdx.files.external("umbracraft/animations.json");
 						if (handle.exists()) {
 							Array<AnimationDefinition> anims = new Json().fromJson(AnimationListDefinition.class, handle).animations;
-							for (AnimationDefinition anim : anims) {
-								add(anim.name);
+							if (anims != null) {
+								for (AnimationDefinition anim : anims) {
+									add(anim.name);
+								}
 							}
 						}
 
@@ -90,8 +93,8 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 					{
 						final FileHandle handle = Gdx.files.external("umbracraft/animationcollection.json");
 						if (handle.exists()) {
-							Array<AnimationCollectionDefinition> anims = new Json().fromJson(ListDefinition.class, handle).items();
-							for (AnimationCollectionDefinition anim : anims) {
+							ObjectMap<String, AnimationCollectionDefinition> anims = new Json().fromJson(ListDefinition.class, handle).items();
+							for (AnimationCollectionDefinition anim : anims.values()) {
 								add(anim.name);
 							}
 						}

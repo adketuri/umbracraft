@@ -3,9 +3,13 @@ package net.alcuria.umbracraft.editor.modules;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.definitions.ListDefinition;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
@@ -39,9 +43,9 @@ public abstract class ListModule<T extends Definition> extends Module<ListDefini
 			{
 
 				defaults().uniformX().fillX().expandX();
-				for (int i = 0; i < rootDefinition.size(); i++) {
-					final int idx = i;
-					final VisTextButton button = new VisTextButton(rootDefinition.get(i).getName());
+				for (Object i : rootDefinition.keys()) {
+					final String idx = (String) i;
+					final VisTextButton button = new VisTextButton(rootDefinition.get(idx).getName());
 					button.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
@@ -74,5 +78,22 @@ public abstract class ListModule<T extends Definition> extends Module<ListDefini
 		view.clear();
 		view.add(new VisLabel("Select an item from the left."));
 		content.add(view).expand().top();
+	}
+
+	@Override
+	public void save() {
+		ObjectMap<String, T> newObjects = new ObjectMap<>();
+		if (rootDefinition.items() == null) {
+			return;
+		}
+		ObjectMap<String, T> oldObjects = rootDefinition.items();
+		for (T item : oldObjects.values()) {
+			newObjects.put(item.getName(), item);
+		}
+		rootDefinition.setItems(newObjects);
+		Json json = new Json();
+		json.setOutputType(OutputType.json);
+		String jsonStr = json.prettyPrint(rootDefinition);
+		Gdx.files.external("umbracraft/" + getTitle().toLowerCase() + ".json").writeString(jsonStr, false);
 	}
 }

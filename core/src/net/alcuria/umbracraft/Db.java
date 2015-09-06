@@ -63,7 +63,7 @@ public final class Db {
 		if (definitions != null) {
 			for (Definition definition : definitions) {
 				if (definition instanceof ListDefinition<?>) {
-					for (Definition list : ((ListDefinition<?>) definition).items()) {
+					for (Definition list : ((ListDefinition<?>) definition).items().values()) {
 						if (list instanceof AnimationCollectionDefinition && ((AnimationCollectionDefinition) list).name != null && ((AnimationCollectionDefinition) list).name.equals(name)) {
 							return (AnimationCollectionDefinition) list;
 						}
@@ -78,7 +78,7 @@ public final class Db {
 		if (definitions != null) {
 			for (Definition definition : definitions) {
 				if (definition instanceof ListDefinition<?>) {
-					for (Definition list : ((ListDefinition<?>) definition).items()) {
+					for (Definition list : ((ListDefinition<?>) definition).items().values()) {
 						if (list instanceof AnimationGroupDefinition && ((AnimationGroupDefinition) list).name != null && ((AnimationGroupDefinition) list).name.equals(name)) {
 							return (AnimationGroupDefinition) list;
 						}
@@ -93,7 +93,7 @@ public final class Db {
 		if (definitions != null) {
 			for (Definition definition : definitions) {
 				if (definition instanceof ListDefinition<?>) {
-					if (((ListDefinition) definition).items().first() instanceof AreaDefinition) {
+					if (((ListDefinition) definition).items().values().next() instanceof AreaDefinition) {
 						return (ListDefinition<AreaDefinition>) definition;
 					}
 				}
@@ -106,7 +106,7 @@ public final class Db {
 		if (definitions != null) {
 			for (Definition definition : definitions) {
 				if (definition instanceof ListDefinition<?>) {
-					for (Definition list : ((ListDefinition<?>) definition).items()) {
+					for (Definition list : ((ListDefinition<?>) definition).items().values()) {
 						if (list instanceof EntityDefinition && ((EntityDefinition) list).name != null && ((EntityDefinition) list).name.equals(name)) {
 							return (EntityDefinition) list;
 						}
@@ -121,7 +121,7 @@ public final class Db {
 		if (definitions != null) {
 			for (Definition definition : definitions) {
 				if (definition instanceof ListDefinition<?>) {
-					for (Definition list : ((ListDefinition<?>) definition).items()) {
+					for (Definition list : ((ListDefinition<?>) definition).items().values()) {
 						if (list instanceof MapDefinition && ((MapDefinition) list).name != null && ((MapDefinition) list).name.equals(name)) {
 							return (MapDefinition) list;
 						}

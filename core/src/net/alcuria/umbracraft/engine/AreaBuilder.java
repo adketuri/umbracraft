@@ -13,7 +13,7 @@ public class AreaBuilder {
 
 	public void build() {
 		areas = new ObjectMap<>();
-		for (AreaDefinition area : Game.db().areas().items()) {
+		for (AreaDefinition area : Game.db().areas().items().values()) {
 			// add each area to the map: key = name, val = BuiltArea
 			//// for each area, start at the root
 			////// if it's defined, set the cardinal directions and build each child

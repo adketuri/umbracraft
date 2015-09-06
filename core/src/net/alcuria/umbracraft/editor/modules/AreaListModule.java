@@ -97,8 +97,8 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 							{
 								final FileHandle handle = Gdx.files.external("umbracraft/map.json");
 								if (handle.exists()) {
-									Array<MapDefinition> maps = new Json().fromJson(ListDefinition.class, handle).items();
-									for (MapDefinition map : maps) {
+									ObjectMap<String, MapDefinition> maps = new Json().fromJson(ListDefinition.class, handle).items();
+									for (MapDefinition map : maps.values()) {
 										add(map.name);
 									}
 								}

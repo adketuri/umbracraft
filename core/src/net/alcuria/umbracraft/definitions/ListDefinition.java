@@ -1,51 +1,59 @@
 package net.alcuria.umbracraft.definitions;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** Defines a list of some Definition. Contains methods to modify that list.
  * @author Andrew Keturi
  * @param <T> the type of definition */
 public class ListDefinition<T extends Definition> extends Definition {
-	private Array<T> definitions;
+	private ObjectMap<String, T> definitions;
 	private int nextId;
 
 	/** Adds an item to the list
 	 * @param item */
 	public void add(T item) {
 		if (definitions == null) {
-			definitions = new Array<T>();
+			definitions = new ObjectMap<>();
 		}
-		item.id = nextId++;
-		definitions.add(item);
+		definitions.put(item.getName(), item);
 	}
 
 	/** Deletes an item from the list
 	 * @param item the item to delete */
 	public void delete(T item) {
-		if (definitions != null) {
-			definitions.removeValue(item, true);
+		if (definitions == null) {
+			return;
 		}
+		definitions.remove(item.getName());
 	}
 
 	/** Convenience method to fetch a {@link Definition} from the list. May be
 	 * <code>null</code> and doesn't do any bounds checking.
 	 * @param i the index
 	 * @return a {@link Definition} */
-	public Definition get(int i) {
-		return definitions != null ? definitions.get(i) : null;
+	public Definition get(String key) {
+		return definitions != null ? definitions.get(key) : null;
 	}
 
 	@Override
 	public String getName() {
-		if (definitions != null && definitions.size > 0) {
-			return definitions.get(0).getName();
-		}
 		return "List Definition";
 	}
 
-	/** @return all definitions */
-	public Array<T> items() {
+	public ObjectMap<String, T> items() {
 		return definitions;
+	}
+
+	public Array<String> keys() {
+		if (definitions == null) {
+			return new Array<String>();
+		}
+		return definitions.keys().toArray();
+	}
+
+	public void setItems(ObjectMap<String, T> items) {
+		this.definitions = items;
 	}
 
 	/** @return the size of the definition list */

@@ -117,8 +117,8 @@ public class MapEditorWidget {
 					{
 						final FileHandle handle = Gdx.files.external("umbracraft/entities.json");
 						if (handle.exists()) {
-							Array<EntityDefinition> entities = new Json().fromJson(ListDefinition.class, handle).items();
-							for (EntityDefinition entity : entities) {
+							ObjectMap<String, EntityDefinition> entities = new Json().fromJson(ListDefinition.class, handle).items();
+							for (EntityDefinition entity : entities.values()) {
 								add(entity.name);
 							}
 						}
