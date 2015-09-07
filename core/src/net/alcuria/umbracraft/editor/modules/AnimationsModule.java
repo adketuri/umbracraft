@@ -44,8 +44,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 			{
 				defaults().expandX().uniformX().fill();
 				if (rootDefinition != null && rootDefinition.animations != null) {
-					for (int i = 0; i < rootDefinition.animations.size; i++) {
-						final AnimationDefinition definition = rootDefinition.animations.get(i);
+					for (final AnimationDefinition definition : rootDefinition.animations.values()) {
 						final VisTextButton animButton = new VisTextButton(definition.name != null ? definition.name : "New Animation");
 						animButton.addListener(new ClickListener() {
 
@@ -70,17 +69,6 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 						populate(content);
 					}
 				});
-				VisTextButton sort = new VisTextButton("Sort Animations");
-				sort.addListener(new ClickListener() {
-
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						rootDefinition.sort();
-						content.clear();
-						populate(content);
-					}
-				});
-				add(sort).padTop(20).row();
 				add(addButton).padTop(20).padBottom(20).row();
 			}
 		});

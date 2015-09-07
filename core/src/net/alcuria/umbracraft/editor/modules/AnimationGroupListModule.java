@@ -26,9 +26,9 @@ public class AnimationGroupListModule extends ListModule<AnimationGroupDefinitio
 		ObjectMap<String, Array<String>> suggestions = new ObjectMap<String, Array<String>>();
 		final FileHandle handle = Gdx.files.external("umbracraft/animations.json");
 		if (handle.exists()) {
-			Array<AnimationDefinition> anims = new Json().fromJson(AnimationListDefinition.class, handle).animations;
+			ObjectMap<String, AnimationDefinition> anims = new Json().fromJson(AnimationListDefinition.class, handle).animations;
 			Array<String> suggestionsStr = new Array<String>();
-			for (AnimationDefinition anim : anims) {
+			for (AnimationDefinition anim : anims.values()) {
 				suggestionsStr.add(anim.name);
 			}
 			suggestions.put("down", suggestionsStr);

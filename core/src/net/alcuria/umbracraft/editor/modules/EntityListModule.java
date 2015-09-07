@@ -79,11 +79,9 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 					{
 						final FileHandle handle = Gdx.files.external("umbracraft/animations.json");
 						if (handle.exists()) {
-							Array<AnimationDefinition> anims = new Json().fromJson(AnimationListDefinition.class, handle).animations;
-							if (anims != null) {
-								for (AnimationDefinition anim : anims) {
-									add(anim.name);
-								}
+							ObjectMap<String, AnimationDefinition> anims = new Json().fromJson(AnimationListDefinition.class, handle).animations;
+							for (AnimationDefinition anim : anims.values()) {
+								add(anim.name);
 							}
 						}
 

@@ -14,8 +14,6 @@ public class AnimationDefinition extends Definition {
 	public Array<AnimationFrameDefinition> frames;
 	/** Height of a frame */
 	public int height;
-	/** An internal identifier */
-	private int id;
 	/** Whether or not to hold on last frame */
 	public boolean keepLast;
 	/** Whether or not the animation loops */
@@ -41,19 +39,12 @@ public class AnimationDefinition extends Definition {
 		height = definition.height;
 		keepLast = definition.keepLast;
 		loop = definition.loop;
-		name = definition.name + " Copy";
+		name = definition.name + " Copy " + id;
 		width = definition.width;
-		this.id = id;
 	}
 
-	/** Creates a module, setting the ID */
 	public AnimationDefinition(int id) {
-		this.id = id;
-	}
-
-	/** @return the unique id */
-	public int getId() {
-		return id;
+		name = "Animation " + id;
 	}
 
 	@Override

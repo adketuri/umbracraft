@@ -28,7 +28,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 		final MapDefinition mapDef = new MapDefinition();
 		mapDef.setWidth(10);
 		mapDef.setHeight(10);
-		mapDef.name = "New Map";
+		mapDef.name = "Map " + rootDefinition.items().size;
 		mapDef.createTiles();
 		mapDef.teleport = new TeleportDefinition();
 		mapDef.entities = new Array<>();

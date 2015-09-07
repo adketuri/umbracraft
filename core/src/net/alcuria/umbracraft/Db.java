@@ -12,7 +12,6 @@ import net.alcuria.umbracraft.definitions.map.MapDefinition;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -20,23 +19,24 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi */
 public final class Db {
 
-	private final Array<Definition> definitions;
+	private final ObjectMap<String, Definition> definitions;
 
 	public Db() {
 		// create the definition map
-		definitions = new Array<Definition>();
-		final ObjectMap<String, Class<? extends Definition>> defs = new ObjectMap<String, Class<? extends Definition>>();
-		defs.put("animations", AnimationListDefinition.class);
-		defs.put("animationgroup", ListDefinition.class);
-		defs.put("animationcollection", ListDefinition.class);
-		defs.put("entities", ListDefinition.class);
-		defs.put("map", ListDefinition.class);
+		final ObjectMap<String, Class<? extends Definition>> classes = new ObjectMap<String, Class<? extends Definition>>();
+		classes.put("animations", AnimationListDefinition.class);
+		classes.put("animationgroup", ListDefinition.class);
+		classes.put("animationcollection", ListDefinition.class);
+		classes.put("entities", ListDefinition.class);
+		classes.put("map", ListDefinition.class);
+		classes.put("areas", ListDefinition.class);
 		// deserialize all definitions
+		definitions = new ObjectMap<>();
 		Json json = new Json();
-		for (String name : defs.keys()) {
+		for (String name : classes.keys()) {
 			final FileHandle handle = Gdx.files.external("umbracraft/" + name + ".json");
 			if (handle.exists()) {
-				definitions.add(json.fromJson(defs.get(name), handle));
+				definitions.put(name, json.fromJson(classes.get(name), handle));
 			}
 		}
 	}
@@ -45,90 +45,49 @@ public final class Db {
 	 * exception if not found.
 	 * @param name the name of the animation definition */
 	public AnimationDefinition anim(String name) {
-		if (definitions != null) {
-			for (Definition definition : definitions) {
-				if (definition instanceof AnimationListDefinition) {
-					for (AnimationDefinition anim : ((AnimationListDefinition) definition).animations) {
-						if (name.equals(anim.name)) {
-							return anim;
-						}
-					}
-				}
-			}
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
 		}
-		throw new NullPointerException("Animation not found: " + name);
+		return ((AnimationListDefinition) definitions.get("animations")).animations.get(name);
 	}
 
 	public AnimationCollectionDefinition animCollection(String name) {
-		if (definitions != null) {
-			for (Definition definition : definitions) {
-				if (definition instanceof ListDefinition<?>) {
-					for (Definition list : ((ListDefinition<?>) definition).items().values()) {
-						if (list instanceof AnimationCollectionDefinition && ((AnimationCollectionDefinition) list).name != null && ((AnimationCollectionDefinition) list).name.equals(name)) {
-							return (AnimationCollectionDefinition) list;
-						}
-					}
-				}
-			}
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
 		}
-		throw new NullPointerException("AnimationCollection not found: " + name);
+		ListDefinition<AnimationCollectionDefinition> definition = (ListDefinition<AnimationCollectionDefinition>) definitions.get("animationcollection");
+		return (AnimationCollectionDefinition) definition.get(name);
 	}
 
 	public AnimationGroupDefinition animGroup(String name) {
-		if (definitions != null) {
-			for (Definition definition : definitions) {
-				if (definition instanceof ListDefinition<?>) {
-					for (Definition list : ((ListDefinition<?>) definition).items().values()) {
-						if (list instanceof AnimationGroupDefinition && ((AnimationGroupDefinition) list).name != null && ((AnimationGroupDefinition) list).name.equals(name)) {
-							return (AnimationGroupDefinition) list;
-						}
-					}
-				}
-			}
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
 		}
-		throw new NullPointerException("AnimationGroup not found: " + name);
+		ListDefinition<AnimationGroupDefinition> definition = (ListDefinition<AnimationGroupDefinition>) definitions.get("animationgroup");
+		return (AnimationGroupDefinition) definition.get(name);
 	}
 
 	public ListDefinition<AreaDefinition> areas() {
-		if (definitions != null) {
-			for (Definition definition : definitions) {
-				if (definition instanceof ListDefinition<?>) {
-					if (((ListDefinition) definition).items().values().next() instanceof AreaDefinition) {
-						return (ListDefinition<AreaDefinition>) definition;
-					}
-				}
-			}
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
 		}
-		return null;
+		ListDefinition<AreaDefinition> definition = (ListDefinition<AreaDefinition>) definitions.get("area");
+		return definition;
 	}
 
 	public EntityDefinition entity(String name) {
-		if (definitions != null) {
-			for (Definition definition : definitions) {
-				if (definition instanceof ListDefinition<?>) {
-					for (Definition list : ((ListDefinition<?>) definition).items().values()) {
-						if (list instanceof EntityDefinition && ((EntityDefinition) list).name != null && ((EntityDefinition) list).name.equals(name)) {
-							return (EntityDefinition) list;
-						}
-					}
-				}
-			}
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
 		}
-		return null;
+		ListDefinition<EntityDefinition> definition = (ListDefinition<EntityDefinition>) definitions.get("entities");
+		return (EntityDefinition) definition.get(name);
 	}
 
 	public MapDefinition map(String name) {
-		if (definitions != null) {
-			for (Definition definition : definitions) {
-				if (definition instanceof ListDefinition<?>) {
-					for (Definition list : ((ListDefinition<?>) definition).items().values()) {
-						if (list instanceof MapDefinition && ((MapDefinition) list).name != null && ((MapDefinition) list).name.equals(name)) {
-							return (MapDefinition) list;
-						}
-					}
-				}
-			}
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
 		}
-		throw new NullPointerException("Map not found: " + name);
+		ListDefinition<MapDefinition> definition = (ListDefinition<MapDefinition>) definitions.get("map");
+		return (MapDefinition) definition.get(name);
 	}
 }
