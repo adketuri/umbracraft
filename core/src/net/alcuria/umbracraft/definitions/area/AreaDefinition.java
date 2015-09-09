@@ -27,6 +27,22 @@ public class AreaDefinition extends Definition {
 		}
 	}
 
+	/** Finds a node by name
+	 * @param startingNode the name of the starting node
+	 * @return */
+	public AreaNodeDefinition find(String startingNode) {
+		if (startingNode != null && root != null && root.name != null) {
+			if (root.name.equals(startingNode)) {
+				return root;
+			} else {
+				for (AreaNodeDefinition node : root.children) {
+					return find(node.name);
+				}
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public String getName() {
 		return name != null ? name : "";

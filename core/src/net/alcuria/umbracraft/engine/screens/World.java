@@ -1,6 +1,9 @@
 package net.alcuria.umbracraft.engine.screens;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.definitions.area.AreaDefinition;
+import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
+import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
@@ -21,6 +24,23 @@ public class World implements UmbraScreen, EventListener {
 		Game.entities().dispose();
 		windows.dispose();
 		Game.publisher().unsubscribe(this);
+	}
+
+	/** Reads in the starting area/node from the db and fetches the
+	 * {@link MapDefinition} name to use.
+	 * @return the starting map name {@link String} */
+	private String getStartingMapName() {
+		final String startingArea = Game.db().config().startingArea;
+		final String startingNode = Game.db().config().startingNode;
+		final AreaDefinition areaDefinition = Game.db().area(startingArea);
+		if (areaDefinition != null) {
+			final AreaNodeDefinition areaNodeDefinition = areaDefinition.find(startingNode);
+			if (areaNodeDefinition != null) {
+				return areaNodeDefinition.mapDefinition;
+			}
+		}
+		Game.error("Starting map was not found");
+		return null;
 	}
 
 	@Override
@@ -65,7 +85,7 @@ public class World implements UmbraScreen, EventListener {
 		windows = new WindowStack();
 		Game.publisher().subscribe(this);
 		Game.entities().create();
-		Game.map().create("Andrew");
+		Game.map().create(getStartingMapName());
 	}
 
 	@Override

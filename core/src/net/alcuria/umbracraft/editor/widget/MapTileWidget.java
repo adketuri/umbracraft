@@ -148,10 +148,13 @@ public class MapTileWidget extends Table {
 					for (ComponentDefinition componentDefinition : entity.components) {
 						if (componentDefinition instanceof AnimationComponentDefinition) {
 							// create the definition from the component
-							AnimationDefinition animDefinition = Editor.db().anim(((AnimationComponentDefinition) componentDefinition).animationComponent);
-							if (animDefinition != null) {
-								entityPreview = new AnimationPreview(animDefinition);
-								break;
+							final AnimationComponentDefinition animationComponentDefinition = (AnimationComponentDefinition) componentDefinition;
+							if (animationComponentDefinition.animationComponent != null) {
+								AnimationDefinition animDefinition = Editor.db().anim(animationComponentDefinition.animationComponent);
+								if (animDefinition != null) {
+									entityPreview = new AnimationPreview(animDefinition);
+									break;
+								}
 							}
 						} else if (componentDefinition instanceof AnimationCollectionComponentDefinition) {
 							// create the definition from the component
