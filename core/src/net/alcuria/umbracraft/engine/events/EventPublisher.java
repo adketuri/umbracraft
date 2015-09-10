@@ -23,7 +23,6 @@ public class EventPublisher {
 
 	public void removeAllListeners() {
 		listeners.clear();
-		Game.log("Cleared.");
 	}
 
 	public void subscribe(EventListener listener) {

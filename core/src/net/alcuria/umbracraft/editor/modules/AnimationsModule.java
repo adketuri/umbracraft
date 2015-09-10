@@ -20,6 +20,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
@@ -234,6 +237,23 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				add(new VisLabel("Select an animation from the left", Color.RED));
 			}
 		}).expand().fill();
+	}
+
+	@Override
+	public void save() {
+		ObjectMap<String, AnimationDefinition> newObjects = new ObjectMap<>();
+		if (rootDefinition.animations == null) {
+			return;
+		}
+		ObjectMap<String, AnimationDefinition> oldObjects = rootDefinition.animations;
+		for (AnimationDefinition item : oldObjects.values()) {
+			newObjects.put(item.getName(), item);
+		}
+		rootDefinition.animations = newObjects;
+		Json json = new Json();
+		json.setOutputType(OutputType.json);
+		String jsonStr = json.prettyPrint(rootDefinition);
+		Gdx.files.external("umbracraft/" + getTitle().toLowerCase() + ".json").writeString(jsonStr, false);
 	}
 
 	/** The listener for updating anything when the {@link AnimationDefinition}

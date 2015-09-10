@@ -84,7 +84,7 @@ public class World implements UmbraScreen, EventListener {
 		manager = new HudManager();
 		windows = new WindowStack();
 		Game.publisher().subscribe(this);
-		Game.entities().create();
+		Game.entities().create(getStartingMapName());
 		Game.map().create(getStartingMapName());
 	}
 
