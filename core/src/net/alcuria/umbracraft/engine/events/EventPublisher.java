@@ -13,24 +13,30 @@ import com.badlogic.gdx.utils.Array;
 public class EventPublisher {
 	Array<EventListener> listeners = new Array<EventListener>();
 
+	/** Publishes an event, notifying all listeners.
+	 * @param event the {@link Event} to publish. */
 	public void publish(Event event) {
-
-		// Notify listeners
 		for (EventListener listener : listeners) {
 			listener.onEvent(event);
 		}
 	}
 
+	/** Removes all listeners. */
 	public void removeAllListeners() {
 		listeners.clear();
 		Game.log("Cleared.");
 	}
 
+	/** Adds an {@link EventListener} to the subscribed list to receive events
+	 * when {@link EventPublisher#publish(Event)} is called.
+	 * @param listener the {@link EventListener} */
 	public void subscribe(EventListener listener) {
 		listeners.add(listener);
 		Game.log("Subscribed. Listener count: " + listeners.size);
 	}
 
+	/** Unsubscribes a single listener.
+	 * @param listener */
 	public void unsubscribe(EventListener listener) {
 		listeners.removeValue(listener, true);
 		Game.log("Unsubscribed. Listener count: " + listeners.size);
