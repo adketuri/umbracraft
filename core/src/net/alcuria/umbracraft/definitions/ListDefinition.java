@@ -7,24 +7,18 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi
  * @param <T> the type of definition */
 public class ListDefinition<T extends Definition> extends Definition {
-	private ObjectMap<String, T> definitions;
+	private ObjectMap<String, T> definitions = new ObjectMap<>();
 	private int nextId;
 
 	/** Adds an item to the list
 	 * @param item */
 	public void add(T item) {
-		if (definitions == null) {
-			definitions = new ObjectMap<>();
-		}
 		definitions.put(item.getName(), item);
 	}
 
 	/** Deletes an item from the list
 	 * @param item the item to delete */
 	public void delete(T item) {
-		if (definitions == null) {
-			return;
-		}
 		definitions.remove(item.getName());
 	}
 
@@ -33,7 +27,7 @@ public class ListDefinition<T extends Definition> extends Definition {
 	 * @param i the index
 	 * @return a {@link Definition} */
 	public Definition get(String key) {
-		return definitions != null ? definitions.get(key) : null;
+		return definitions.get(key);
 	}
 
 	@Override
@@ -58,6 +52,6 @@ public class ListDefinition<T extends Definition> extends Definition {
 
 	/** @return the size of the definition list */
 	public int size() {
-		return definitions != null ? definitions.size : 0;
+		return definitions.size;
 	}
 }
