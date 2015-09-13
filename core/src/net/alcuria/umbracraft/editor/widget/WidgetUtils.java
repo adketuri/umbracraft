@@ -55,6 +55,7 @@ public class WidgetUtils {
 		table.add(new Table() {
 			{
 				setBackground(Drawables.get("blue"));
+				add(new VisLabel(title)).expand().center();
 				add(new VisTextButton("X") {
 					{
 						addListener(new ClickListener() {
@@ -67,7 +68,6 @@ public class WidgetUtils {
 						});
 					}
 				});
-				add(new VisLabel(title)).expand().center();
 			}
 		}).expand().fillX().top().row();
 	}
