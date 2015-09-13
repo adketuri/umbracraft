@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextField;
+import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
 
 /** A {@link VisTextField} with a selectable list of suggestions that appear
  * underneath. Suggestions are passed into the constructor. To add the widget to
@@ -49,7 +50,6 @@ public class SuggestionWidget {
 				add(textField).width(width).height(25).expand().fill().row();
 				//stack(new Table(), suggestionTable = new Table()).expand().fill().height(25);
 				add(suggestionTable = new Table()).expand().fill();
-
 			}
 		};
 	}
@@ -74,7 +74,22 @@ public class SuggestionWidget {
 			}
 		}
 		updateSuggestions();
+	}
 
+	/** Gives the {@link SuggestionWidget} a generic populate method. Does not
+	 * save fields or anything.
+	 * @param listener a {@link Listener} to invoke. May be <code>null</code>. */
+	public void setGenericPopulate(final Listener listener) {
+		textField.setTextFieldListener(new TextFieldListener() {
+
+			@Override
+			public void keyTyped(VisTextField textField, char c) {
+				populateSuggestions();
+				if (listener != null) {
+					listener.invoke();
+				}
+			}
+		});
 	}
 
 	/** Called when the field input changes to rebuild the suggestions list */

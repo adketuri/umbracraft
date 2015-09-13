@@ -107,7 +107,7 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 						});
 						populate(this, AreaNodeDefinition.class, definition, config);
 						row();
-						add(new TeleportSelectorWidget(definition.teleport).getActor());
+						add(new TeleportSelectorWidget(definition).getActor());
 					}
 				}).expand().fill().row();
 				add(new Table() {

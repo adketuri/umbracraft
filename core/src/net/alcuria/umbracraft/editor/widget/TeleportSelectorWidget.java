@@ -4,7 +4,6 @@ import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
 import net.alcuria.umbracraft.definitions.map.TeleportDefinition;
 import net.alcuria.umbracraft.definitions.map.TeleportDefinition.TeleportDirection;
-import net.alcuria.umbracraft.editor.Editor;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
@@ -17,15 +16,15 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
  * @author Andrew Keturi */
 public class TeleportSelectorWidget {
 
+	private final AreaNodeDefinition node;
 	private final Table root = new Table();
 	private final ObjectMap<String, SuggestionWidget> suggestionWidgets = new ObjectMap<>();
-	private final TeleportDefinition teleport;
 
 	/** Initializes the member variables only. Call
 	 * {@link TeleportSelectorWidget#getActor()} to return the actor.
-	 * @param teleport the {@link TeleportDefinition} */
-	public TeleportSelectorWidget(TeleportDefinition teleport) {
-		this.teleport = teleport;
+	 * @param node the {@link AreaNodeDefinition} */
+	public TeleportSelectorWidget(AreaNodeDefinition node) {
+		this.node = node;
 	}
 
 	/** Adds a direction to the list of all available
@@ -37,7 +36,7 @@ public class TeleportSelectorWidget {
 
 			@Override
 			public void invoke() {
-				teleport.adjacentMaps.put(selectBox.getSelected().toString(), textField.getTextField().getText());
+				node.teleport.adjacentMaps.put(selectBox.getSelected().toString(), textField.getTextField().getText());
 				update();
 			}
 		};
@@ -51,7 +50,7 @@ public class TeleportSelectorWidget {
 			@Override
 			public void invoke() {
 				suggestionWidgets.remove(direction);
-				teleport.adjacentMaps.remove(direction.toString());
+				node.teleport.adjacentMaps.remove(direction.toString());
 				update();
 			}
 		};
@@ -64,12 +63,25 @@ public class TeleportSelectorWidget {
 		return root;
 	}
 
+	private Listener saveListener(final String direction) {
+		return new Listener() {
+
+			@Override
+			public void invoke() {
+				node.teleport.adjacentMaps.put(direction, suggestionWidgets.get(direction).getTextField().getText());
+			}
+		};
+	}
+
 	/** @return All suggestions (map names) */
 	private Array<String> suggestions() {
 		Array<String> suggestions = new Array<>();
-		for (String area : Editor.db().areas().keys()) {
-			suggestions.add(area);
+		if (node.children != null) {
+			for (AreaNodeDefinition areaNodeDefinition : node.children) {
+				suggestions.add(areaNodeDefinition.name);
+			}
 		}
+		suggestions.add("Parent");
 		return suggestions;
 	}
 
@@ -78,28 +90,32 @@ public class TeleportSelectorWidget {
 		root.clear();
 		root.add(new Table() {
 			{
-				for (final String direction : teleport.adjacentMaps.keys()) {
+				for (final String direction : node.teleport.adjacentMaps.keys()) {
 					add(new Table() {
 						{
 							// [direction label] [textfield] [close x]
+							defaults().padLeft(10).padRight(10);
 							add(new VisLabel(direction.toString())).width(80);
 							if (!suggestionWidgets.containsKey(direction)) {
-								final SuggestionWidget textField = new SuggestionWidget(suggestions(), 200);
-								suggestionWidgets.put(direction, textField);
+								final SuggestionWidget suggestion = new SuggestionWidget(suggestions(), 200);
+								suggestionWidgets.put(direction, suggestion);
 							}
 							add(suggestionWidgets.get(direction).getActor());
-							if (teleport.adjacentMaps.get(direction.toString()) != null) {
-								suggestionWidgets.get(direction).getTextField().setText(teleport.adjacentMaps.get(direction.toString()));
+							suggestionWidgets.get(direction).setGenericPopulate(saveListener(direction));
+							suggestionWidgets.get(direction).addSelectListener(saveListener(direction));
+							if (node.teleport.adjacentMaps.get(direction.toString()) != null) {
+								suggestionWidgets.get(direction).getTextField().setText(node.teleport.adjacentMaps.get(direction.toString()));
 							}
 							add(WidgetUtils.button("X", deleteListener(direction)));
 						}
 
 					}).row();
 				}
+				add().expand().fill().row();
 				// get all available directions that we haven't already used
 				final Array<TeleportDirection> availableDirections = new Array<>();
 				for (final TeleportDirection direction : TeleportDirection.values()) {
-					if (!teleport.adjacentMaps.containsKey(direction.toString())) {
+					if (!node.teleport.adjacentMaps.containsKey(direction.toString())) {
 						availableDirections.add(direction);
 					}
 				}
@@ -107,18 +123,20 @@ public class TeleportSelectorWidget {
 				if (availableDirections.size > 0) {
 					add(new Table() {
 						{
+							defaults().padLeft(10).padRight(10);
 							final VisSelectBox<TeleportDirection> selectBox = new VisSelectBox<TeleportDirection>();
 							selectBox.setItems(availableDirections);
 							add(selectBox);
-							final SuggestionWidget textField = new SuggestionWidget(suggestions(), 200);
-							add(textField.getActor());
-							add(WidgetUtils.button("Add", addDirectionListener(selectBox, textField)));
+							final SuggestionWidget addSuggestion = new SuggestionWidget(suggestions(), 200);
+							add(addSuggestion.getActor());
+							addSuggestion.setGenericPopulate(null);
+							add(WidgetUtils.button("Add", addDirectionListener(selectBox, addSuggestion)));
 						}
 					}).row();
 				}
 			}
 
-		}).pad(10);
+		}).pad(10).minHeight(110);
 
 	}
 }
