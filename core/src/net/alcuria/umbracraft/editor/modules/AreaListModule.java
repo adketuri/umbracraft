@@ -8,6 +8,7 @@ import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.widget.AreaNodeWidget;
 import net.alcuria.umbracraft.editor.widget.AreaNodeWidget.NodeClickHandler;
+import net.alcuria.umbracraft.editor.widget.TeleportSelectorWidget;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 
 import com.badlogic.gdx.Gdx;
@@ -105,10 +106,13 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 							}
 						});
 						populate(this, AreaNodeDefinition.class, definition, config);
+						row();
+						add(new TeleportSelectorWidget(definition.teleport).getActor());
 					}
 				}).expand().fill().row();
 				add(new Table() {
 					{
+						defaults().pad(10);
 						// "add child" button
 						add(new VisTextButton("Add Child") {
 							{

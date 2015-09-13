@@ -6,7 +6,7 @@ import net.alcuria.umbracraft.Db;
  * @author Andrew Keturi */
 public final class Editor {
 
-	public static Db db;
+	private static Db db;
 
 	/** @return the {@link Db} */
 	public static Db db() {

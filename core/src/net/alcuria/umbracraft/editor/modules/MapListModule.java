@@ -83,7 +83,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 			{
 				// mode table -- toggles between entity/altitude
 				add(new VisLabel("Current Edit Mode:"));
-				add(new VisTextButton(mapWidget.getEditMode().toString()) {
+				add(new VisTextButton(mapWidget != null ? mapWidget.getEditMode().toString() : EditMode.ALTITUDE.toString()) {
 					{
 						addListener(new ClickListener() {
 							@Override

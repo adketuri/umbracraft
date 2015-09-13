@@ -12,6 +12,7 @@ import net.alcuria.umbracraft.definitions.map.MapDefinition;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -89,5 +90,17 @@ public final class Db {
 		}
 		ListDefinition<MapDefinition> definition = (ListDefinition<MapDefinition>) definitions.get("map");
 		return (MapDefinition) definition.get(name);
+	}
+
+	public Array<String> maps() {
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
+		}
+		Array<String> maps = new Array<>();
+		ListDefinition<MapDefinition> definition = (ListDefinition<MapDefinition>) definitions.get("map");
+		for (String name : definition.items().keys()) {
+			maps.add(definition.get(name).getName());
+		}
+		return maps;
 	}
 }
