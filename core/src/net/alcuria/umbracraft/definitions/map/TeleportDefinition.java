@@ -15,7 +15,7 @@ public class TeleportDefinition extends Definition {
 	}
 
 	/** A map of a direction to a particular game map {@link String} */
-	public ObjectMap<TeleportDirection, String> adjacentMaps = new ObjectMap<>();
+	public ObjectMap<String, String> adjacentMaps = new ObjectMap<>();
 
 	@Override
 	public String getName() {

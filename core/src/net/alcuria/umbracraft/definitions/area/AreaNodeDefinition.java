@@ -42,7 +42,7 @@ public class AreaNodeDefinition extends Definition {
 		if (teleport == null) {
 			teleport = new TeleportDefinition();
 		}
-		teleport.adjacentMaps.put(direction, map);
+		teleport.adjacentMaps.put(direction.toString(), map);
 	}
 
 }

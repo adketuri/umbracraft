@@ -18,8 +18,8 @@ import com.kotcrab.vis.ui.widget.VisSelectBox;
 public class TeleportSelectorWidget {
 
 	private final Table root = new Table();
+	private final ObjectMap<String, SuggestionWidget> suggestionWidgets = new ObjectMap<>();
 	private final TeleportDefinition teleport;
-	private final ObjectMap<TeleportDirection, SuggestionWidget> textFields = new ObjectMap<>();
 
 	/** Initializes the member variables only. Call
 	 * {@link TeleportSelectorWidget#getActor()} to return the actor.
@@ -37,7 +37,7 @@ public class TeleportSelectorWidget {
 
 			@Override
 			public void invoke() {
-				teleport.adjacentMaps.put(selectBox.getSelected(), textField.getTextField().getText());
+				teleport.adjacentMaps.put(selectBox.getSelected().toString(), textField.getTextField().getText());
 				update();
 			}
 		};
@@ -45,12 +45,13 @@ public class TeleportSelectorWidget {
 
 	/** @param direction the {@link TeleportDefinition} to delete
 	 * @return the listener to invoke when a row is deleted. */
-	private Listener deleteListener(final TeleportDirection direction) {
+	private Listener deleteListener(final String direction) {
 		return new Listener() {
 
 			@Override
 			public void invoke() {
-				textFields.remove(direction);
+				suggestionWidgets.remove(direction);
+				teleport.adjacentMaps.remove(direction.toString());
 				update();
 			}
 		};
@@ -65,7 +66,11 @@ public class TeleportSelectorWidget {
 
 	/** @return All suggestions (map names) */
 	private Array<String> suggestions() {
-		return Editor.db().maps();
+		Array<String> suggestions = new Array<>();
+		for (String area : Editor.db().areas().keys()) {
+			suggestions.add(area);
+		}
+		return suggestions;
 	}
 
 	/** Updates the widget, clearing and rebuilding the rows. */
@@ -73,18 +78,18 @@ public class TeleportSelectorWidget {
 		root.clear();
 		root.add(new Table() {
 			{
-				for (final TeleportDirection direction : teleport.adjacentMaps.keys()) {
+				for (final String direction : teleport.adjacentMaps.keys()) {
 					add(new Table() {
 						{
 							// [direction label] [textfield] [close x]
-							add(new VisLabel(direction.toString()));
-							if (!textFields.containsKey(direction)) {
+							add(new VisLabel(direction.toString())).width(80);
+							if (!suggestionWidgets.containsKey(direction)) {
 								final SuggestionWidget textField = new SuggestionWidget(suggestions(), 200);
-								textFields.put(direction, textField);
+								suggestionWidgets.put(direction, textField);
 							}
-							add(textFields.get(direction).getActor());
-							if (teleport.adjacentMaps.get(direction) != null) {
-								textFields.get(direction).getTextField().setText(teleport.adjacentMaps.get(direction));
+							add(suggestionWidgets.get(direction).getActor());
+							if (teleport.adjacentMaps.get(direction.toString()) != null) {
+								suggestionWidgets.get(direction).getTextField().setText(teleport.adjacentMaps.get(direction.toString()));
 							}
 							add(WidgetUtils.button("X", deleteListener(direction)));
 						}
@@ -94,7 +99,7 @@ public class TeleportSelectorWidget {
 				// get all available directions that we haven't already used
 				final Array<TeleportDirection> availableDirections = new Array<>();
 				for (final TeleportDirection direction : TeleportDirection.values()) {
-					if (!teleport.adjacentMaps.containsKey(direction)) {
+					if (!teleport.adjacentMaps.containsKey(direction.toString())) {
 						availableDirections.add(direction);
 					}
 				}
@@ -113,7 +118,7 @@ public class TeleportSelectorWidget {
 				}
 			}
 
-		});
+		}).pad(10);
 
 	}
 }
