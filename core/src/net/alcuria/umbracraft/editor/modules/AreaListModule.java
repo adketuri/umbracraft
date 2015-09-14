@@ -47,16 +47,23 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 
 	@Override
 	public void addListItem() {
-		rootDefinition.add(new AreaDefinition());
+		final AreaDefinition area = new AreaDefinition();
+		area.name = "Area " + (rootDefinition.size() + 1);
+		rootDefinition.add(area);
 	}
 
 	@Override
-	public void create(AreaDefinition definition, Table content) {
+	public void create(final AreaDefinition definition, Table content) {
 		if (definition.root == null) {
 			definition.root = new AreaNodeDefinition();
 			definition.root.name = "Root";
 			definition.root.children = new Array<AreaNodeDefinition>();
 		}
+		content.add(new Table() {
+			{
+				populate(this, AreaDefinition.class, definition, new PopulateConfig());
+			}
+		}).row();
 		areaDefinition = definition;
 		AreaNodeWidget area = new AreaNodeWidget(definition.root, this);
 		widgetTable = new Table();

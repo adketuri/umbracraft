@@ -17,11 +17,11 @@ public class EntityManager {
 	private final Array<Entity> entities = new Array<Entity>();
 	private final Array<Entity> visibleEntities = new Array<Entity>();
 
-	public void create() {
+	public void create(final String mapName) {
 		visibleEntities.clear();
 		entities.clear();
 		// create entities
-		MapDefinition mapDef = Game.db().map("Andrew");
+		MapDefinition mapDef = Game.db().map(mapName);
 		if (mapDef != null && mapDef.entities != null) {
 			for (EntityReferenceDefinition reference : mapDef.entities) {
 				Entity entity = new Entity();
@@ -39,6 +39,8 @@ public class EntityManager {
 					entities.add(entity);
 				}
 			}
+		} else {
+			Game.error("Map not found: " + mapName);
 		}
 	}
 

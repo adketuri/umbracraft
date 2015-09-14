@@ -7,6 +7,7 @@ import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaDefinition;
+import net.alcuria.umbracraft.definitions.config.ConfigDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 
@@ -30,6 +31,7 @@ public final class Db {
 		classes.put("entities", ListDefinition.class);
 		classes.put("map", ListDefinition.class);
 		classes.put("areas", ListDefinition.class);
+		classes.put("configuration", ConfigDefinition.class);
 		// deserialize all definitions
 		definitions = new ObjectMap<>();
 		Json json = new Json();
@@ -67,12 +69,24 @@ public final class Db {
 		return (AnimationGroupDefinition) definition.get(name);
 	}
 
+	public AreaDefinition area(final String name) {
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
+		}
+		ListDefinition<AreaDefinition> definition = (ListDefinition<AreaDefinition>) definitions.get("areas");
+		return (AreaDefinition) definition.get(name);
+	}
+
 	public ListDefinition<AreaDefinition> areas() {
 		if (definitions == null) {
 			throw new NullPointerException("Definitions not initialized");
 		}
 		ListDefinition<AreaDefinition> definition = (ListDefinition<AreaDefinition>) definitions.get("areas");
 		return definition;
+	}
+
+	public ConfigDefinition config() {
+		return (ConfigDefinition) definitions.get("configuration");
 	}
 
 	public EntityDefinition entity(String name) {

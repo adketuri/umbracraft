@@ -24,7 +24,6 @@ public class EventPublisher {
 	/** Removes all listeners. */
 	public void removeAllListeners() {
 		listeners.clear();
-		Game.log("Cleared.");
 	}
 
 	/** Adds an {@link EventListener} to the subscribed list to receive events

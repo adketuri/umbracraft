@@ -204,6 +204,9 @@ public class Map implements Disposable {
 	/** Returns an array of texture regions loaded from the tileset
 	 * @param filename */
 	private Array<TextureRegion> getRegions(String filename) {
+		if (filename == null) {
+			throw new NullPointerException("Tileset filename is null");
+		}
 		final Texture texture = Game.assets().get("tiles/" + filename, Texture.class);
 		Array<TextureRegion> regions = new Array<TextureRegion>();
 		for (int i = 0; i < Math.pow(Config.tilesetWidth / Config.tileWidth, 2); i++) {
