@@ -14,12 +14,14 @@ import net.alcuria.umbracraft.engine.windows.WindowStack;
 public class World implements UmbraScreen, EventListener {
 	private HudManager hud;
 	private Map map;
+	private Teleporter teleporter;
 	private WindowStack windows;
 
 	@Override
 	public void dispose() {
 		Game.entities().dispose();
 		windows.dispose();
+		teleporter.dispose();
 		Game.publisher().unsubscribe(this);
 	}
 
@@ -63,9 +65,11 @@ public class World implements UmbraScreen, EventListener {
 	public void show() {
 		hud = new HudManager();
 		windows = new WindowStack();
+		teleporter = new Teleporter();
 		Game.publisher().subscribe(this);
 		Game.entities().create(WorldUtils.getStartingMapName());
 		Game.map().create(WorldUtils.getStartingMapName());
+		Game.areas().create();
 	}
 
 	@Override
@@ -74,5 +78,6 @@ public class World implements UmbraScreen, EventListener {
 		hud.update();
 		Game.view().update();
 		windows.update();
+		teleporter.update();
 	}
 }

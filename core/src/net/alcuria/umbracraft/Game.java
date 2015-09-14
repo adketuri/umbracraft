@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft;
 
+import net.alcuria.umbracraft.engine.AreaBuilder;
 import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.events.EventPublisher;
 import net.alcuria.umbracraft.engine.map.Map;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * @author Andrew Keturi */
 public final class Game {
 
+	private static AreaBuilder areas;
 	private static AssetManager assets;
 	private static SpriteBatch batch;
 	private static Db db;
@@ -22,6 +24,10 @@ public final class Game {
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
 	private static View view;
+
+	public static AreaBuilder areas() {
+		return areas;
+	}
 
 	/** @return the {@link AssetManager} */
 	public static AssetManager assets() {
@@ -109,6 +115,7 @@ public final class Game {
 		entities = new EntityManager();
 		map = new Map();
 		publisher = new EventPublisher();
+		areas = new AreaBuilder();
 		// now subscribe
 		publisher.subscribe(view);
 	}
@@ -127,6 +134,9 @@ public final class Game {
 		}
 		if (screen != null) {
 			screen.dispose();
+		}
+		if (areas != null) {
+			areas.dispose();
 		}
 		publisher.removeAllListeners();
 		publisher = null;

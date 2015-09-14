@@ -16,7 +16,7 @@ public final class WorldUtils {
 		final String startingNode = Game.db().config().startingNode;
 		final AreaDefinition areaDefinition = Game.db().area(startingArea);
 		if (areaDefinition != null) {
-			final AreaNodeDefinition areaNodeDefinition = areaDefinition.find(startingNode);
+			final AreaNodeDefinition areaNodeDefinition = areaDefinition.find(areaDefinition.root, startingNode);
 			if (areaNodeDefinition != null) {
 				return areaNodeDefinition.mapDefinition;
 			}
