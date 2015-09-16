@@ -50,6 +50,9 @@ public class Map implements Disposable {
 
 		// create alt map from definition
 		final MapDefinition mapDef = Game.db().map(id);
+		if (mapDef == null) {
+			throw new NullPointerException("Map not found: " + id);
+		}
 		width = mapDef.getWidth();
 		height = mapDef.getHeight();
 		altMap = new int[width][height];

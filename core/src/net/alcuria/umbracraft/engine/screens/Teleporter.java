@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.screens;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.definitions.map.TeleportDefinition.TeleportDirection;
 import net.alcuria.umbracraft.engine.AreaBuilder;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
@@ -18,6 +19,10 @@ public class Teleporter {
 		player = null;
 	}
 
+	private void teleport(TeleportDirection direction) {
+		Game.areas().changeNode(direction);
+	}
+
 	/** Update stuff */
 	public void update() {
 		if (player == null) {
@@ -27,6 +32,11 @@ public class Teleporter {
 			areaBuilder = Game.areas();
 		}
 		if (player.position.x < 0) {
+			if (Game.areas().hasTeleportAt(TeleportDirection.WEST)) {
+				teleport(TeleportDirection.WEST);
+			} else {
+				player.position.x = 0;
+			}
 		}
 	}
 

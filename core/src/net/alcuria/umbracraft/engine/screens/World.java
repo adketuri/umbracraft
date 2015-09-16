@@ -69,7 +69,7 @@ public class World implements UmbraScreen, EventListener {
 		Game.publisher().subscribe(this);
 		Game.entities().create(WorldUtils.getStartingMapName());
 		Game.map().create(WorldUtils.getStartingMapName());
-		Game.areas().create();
+		Game.areas().setAreaAndNode(Game.db().config().startingArea, Game.db().config().startingNode);
 	}
 
 	@Override
