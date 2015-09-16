@@ -81,7 +81,6 @@ public class TeleportSelectorWidget {
 				suggestions.add(areaNodeDefinition.name);
 			}
 		}
-		suggestions.add("Parent");
 		return suggestions;
 	}
 

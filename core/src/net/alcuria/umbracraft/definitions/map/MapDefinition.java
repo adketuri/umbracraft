@@ -7,6 +7,8 @@ import com.badlogic.gdx.utils.Array;
 /** Defines a user-created map
  * @author Andrew Keturi */
 public class MapDefinition extends Definition {
+	/** Where on the map we enter from the four cardinal directions */
+	public int eastX, eastY, northX, northY, southX, southY, westX, westY;
 	/** The entities on this map */
 	public Array<EntityReferenceDefinition> entities;
 	/** The height of the map */
