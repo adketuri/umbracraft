@@ -24,6 +24,7 @@ public class Teleporter {
 
 	private void teleport(TeleportDirection direction) {
 		Game.areas().changeNode(direction);
+		Game.view().focus();
 	}
 
 	/** Update stuff */

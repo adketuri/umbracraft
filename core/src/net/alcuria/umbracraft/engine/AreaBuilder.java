@@ -6,18 +6,14 @@ import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
 import net.alcuria.umbracraft.definitions.map.TeleportDefinition.TeleportDirection;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonWriter.OutputType;
-import com.badlogic.gdx.utils.ObjectMap;
-
 /** Builds areas/maps from the definitions for use in the engine.
  * @author Andrew Keturi */
 public class AreaBuilder {
-	private static final String FILENAME = "built";
-	private ObjectMap<String, BuiltArea> areas;
 	private String currentArea, currentNode;
 
+	/** Changes a node, updating the current map. Does not check if the direction
+	 * is valid.
+	 * @param direction */
 	public void changeNode(TeleportDirection direction) {
 		final AreaDefinition area = Game.db().area(currentArea);
 		if (area.root == null || area.root.teleport == null) {
@@ -65,33 +61,15 @@ public class AreaBuilder {
 		setAreaAndNode(currentArea, adjacentNodeName); //FIXME: area changes?
 	}
 
-	public void create() {
-		areas = new ObjectMap<>();
-		for (AreaDefinition area : Game.db().areas().items().values()) {
-			Game.log(area.name);
-			for (AreaNodeDefinition node : area.getNodes()) {
-				Game.log("  " + node.name);
-				areas.put(area.name + "/" + node.name, new BuiltArea(area, node));
-			}
-		}
-		for (BuiltArea area : areas.values()) {
-			area.setTeleports(this);
-		}
-		Game.log("Done");
-		Json json = new Json();
-		json.setOutputType(OutputType.json);
-		String jsonStr = json.prettyPrint(areas);
-		Gdx.files.external("umbracraft/" + FILENAME + ".json").writeString(jsonStr, false);
-	}
-
 	public void dispose() {
 
 	}
 
-	public BuiltArea getNode(String area, String node) {
-		return areas.get(area + "/" + node);
-	}
-
+	/** Determines if from the current node the player is able to teleport in a
+	 * particular direction.
+	 * @param direction the {@link TeleportDirection} the player is trying to
+	 *        teleport to
+	 * @return <code>true</code> if a direction exists. */
 	public boolean hasTeleportAt(TeleportDirection direction) {
 		final AreaDefinition area = Game.db().area(currentArea);
 		if (area.root == null || area.root.teleport == null) {
@@ -115,14 +93,9 @@ public class AreaBuilder {
 		return true; // has a standard teleport to children
 	}
 
-	public void load() {
-
-	}
-
-	public void save() {
-
-	}
-
+	/** Updates the current area and node
+	 * @param area
+	 * @param node */
 	public void setAreaAndNode(String area, String node) {
 		currentArea = area;
 		currentNode = node;

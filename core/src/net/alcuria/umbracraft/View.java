@@ -1,8 +1,8 @@
 package net.alcuria.umbracraft;
 
 import net.alcuria.umbracraft.engine.entities.Entity;
-import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
+import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -23,6 +23,14 @@ public class View implements EventListener {
 		uiCamera.translate(Config.viewWidth / 2, Config.viewHeight / 2);
 		uiCamera.update();
 		viewport = new FitViewport(Config.viewWidth, Config.viewHeight);
+	}
+
+	/** Immediately focuses the camera to its target */
+	public void focus() {
+		float dX = (target.position.x - camera.position.x);
+		float dY = (target.position.y - camera.position.y);
+		camera.translate(dX, dY);
+		camera.update();
 	}
 
 	/** @return the camera for displaying entities, maps, etc */
