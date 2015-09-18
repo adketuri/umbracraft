@@ -24,32 +24,40 @@ public class AreaBuilder {
 			throw new NullPointerException("Area does not have node/teleports");
 		}
 		final AreaNodeDefinition currentNodeDefinition = area.find(area.root, currentNode);
-		final String adjacentNodeName = currentNodeDefinition.teleport.adjacentMaps.get(direction.toString());
+		String adjacentNodeName = currentNodeDefinition.teleport.adjacentMaps.get(direction.toString());
+		AreaNodeDefinition adjacentNode = null;
 		if (adjacentNodeName == null) {
-			throw new NullPointerException("Adjacent node not found for: " + area.root.name);
-		}
-		final AreaNodeDefinition adjacentNode = area.find(area.root, adjacentNodeName);
-		if (adjacentNode == null) {
-			throw new NullPointerException("Adjacent node " + adjacentNodeName + " could not be found in tree " + area.root.name);
+			// no adjacent maps, but we need a reference to the parent here to see if teleporting back is possible
+			final AreaNodeDefinition parentDefinition = area.findParent(area.root, currentNode);
+			final String adjacentOppositeNode = parentDefinition.teleport.adjacentMaps.get(direction.opposite().toString());
+			if (adjacentOppositeNode != null && adjacentOppositeNode.equals(currentNode)) {
+				adjacentNode = area.find(area.root, parentDefinition.name);
+				adjacentNodeName = parentDefinition.name;
+			} else {
+				throw new NullPointerException("Adjacent node " + adjacentNodeName + " could not be found in tree " + area.root.name);
+			}
+		} else {
+			// teleport found in children so go for that
+			adjacentNode = area.find(area.root, adjacentNodeName);
 		}
 		Game.map().create(adjacentNode.mapDefinition);
 		int newX = 0, newY = 0;
 		switch (direction) {
 		case EAST:
-			newX = Game.db().map(adjacentNode.mapDefinition).eastX * 16;
-			newY = Game.db().map(adjacentNode.mapDefinition).eastY * 16;
+			newX = Game.db().map(adjacentNode.mapDefinition).westX * 16;
+			newY = Game.db().map(adjacentNode.mapDefinition).westY * 16;
 			break;
 		case SOUTH:
-			newX = Game.db().map(adjacentNode.mapDefinition).southX * 16;
-			newY = Game.db().map(adjacentNode.mapDefinition).southY * 16;
-			break;
-		case NORTH:
 			newX = Game.db().map(adjacentNode.mapDefinition).northX * 16;
 			newY = Game.db().map(adjacentNode.mapDefinition).northY * 16;
 			break;
+		case NORTH:
+			newX = Game.db().map(adjacentNode.mapDefinition).southX * 16;
+			newY = Game.db().map(adjacentNode.mapDefinition).southY * 16;
+			break;
 		case WEST:
-			newX = Game.db().map(adjacentNode.mapDefinition).westX * 16;
-			newY = Game.db().map(adjacentNode.mapDefinition).westY * 16;
+			newX = Game.db().map(adjacentNode.mapDefinition).eastX * 16;
+			newY = Game.db().map(adjacentNode.mapDefinition).eastY * 16;
 			break;
 		}
 		Game.entities().find(Entity.PLAYER).position.x = newX;
@@ -91,11 +99,20 @@ public class AreaBuilder {
 		}
 		final AreaNodeDefinition currentNodeDefinition = area.find(area.root, currentNode);
 		final String adjacentNodeName = currentNodeDefinition.teleport.adjacentMaps.get(direction.toString());
-		// TODO: we need a reference to the parent here to teleport back
 		if (adjacentNodeName == null) {
-			return false; // no teleport at direction
+			// no adjacent maps, but we need a reference to the parent here to see if teleporting back is possible
+			final AreaNodeDefinition parentDefinition = area.findParent(area.root, currentNode);
+			if (parentDefinition != null && parentDefinition.teleport != null && parentDefinition.teleport.adjacentMaps != null) {
+				final String adjacentOppositeNode = parentDefinition.teleport.adjacentMaps.get(direction.opposite().toString());
+				if (adjacentOppositeNode != null && adjacentOppositeNode.equals(currentNode)) {
+					return true; // teleport found!
+				} else {
+					return false; // no node found coming from parent, no path
+				}
+			}
+			return false;
 		}
-		return true; // has teleport
+		return true; // has a standard teleport to children
 	}
 
 	public void load() {

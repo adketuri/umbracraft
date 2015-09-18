@@ -51,7 +51,33 @@ public class AreaDefinition extends Definition {
 				return rootNode;
 			} else if (rootNode.children != null) {
 				for (AreaNodeDefinition childNode : rootNode.children) {
-					return find(childNode, target);
+					AreaNodeDefinition child = find(childNode, target);
+					if (child != null) {
+						return child;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	/** Finds a node's parent by name, recursively inspecting children from the
+	 * root
+	 * @param rootNode the starting node
+	 * @param target the parent we're looking for
+	 * @return */
+	public AreaNodeDefinition findParent(AreaNodeDefinition rootNode, String target) {
+		if (rootNode != null && rootNode.name != null) {
+			if (rootNode.children != null) {
+				for (AreaNodeDefinition childNode : rootNode.children) {
+					if (childNode.name.equals(target)) {
+						return rootNode;
+					} else {
+						AreaNodeDefinition parent = find(childNode, target);
+						if (parent != null) {
+							return parent;
+						}
+					}
 				}
 			}
 		}
