@@ -43,6 +43,11 @@ public class View implements EventListener {
 		return uiCamera;
 	}
 
+	/** @return the {@link Viewport} */
+	public Viewport getViewport() {
+		return viewport;
+	}
+
 	@Override
 	public void onEvent(Event event) {
 		if (event instanceof CameraTargetEvent) {

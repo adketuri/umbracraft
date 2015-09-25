@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
 import net.alcuria.umbracraft.engine.manager.hud.HudManager;
+import net.alcuria.umbracraft.engine.manager.input.OnscreenInputManager;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.windows.WindowStack;
 
@@ -13,6 +14,7 @@ import net.alcuria.umbracraft.engine.windows.WindowStack;
  * @author Andrew Keturi */
 public class World implements UmbraScreen, EventListener {
 	private HudManager hud;
+	private OnscreenInputManager in;
 	private Map map;
 	private Teleporter teleporter;
 	private WindowStack windows;
@@ -48,6 +50,7 @@ public class World implements UmbraScreen, EventListener {
 		Game.entities().render();
 		Game.batch().setProjectionMatrix(Game.view().getUiCamera().combined);
 		hud.render();
+		in.render();
 		windows.render();
 	}
 
@@ -64,6 +67,7 @@ public class World implements UmbraScreen, EventListener {
 	@Override
 	public void show() {
 		hud = new HudManager();
+		in = new OnscreenInputManager();
 		windows = new WindowStack();
 		teleporter = new Teleporter();
 		Game.publisher().subscribe(this);
@@ -76,6 +80,7 @@ public class World implements UmbraScreen, EventListener {
 	public void update(float delta) {
 		Game.entities().update(delta);
 		hud.update();
+		in.update();
 		Game.view().update();
 		windows.update();
 		teleporter.update();
