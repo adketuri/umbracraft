@@ -4,7 +4,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
-import net.alcuria.umbracraft.engine.hud.HudManager;
+import net.alcuria.umbracraft.engine.manager.hud.HudManager;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.windows.WindowStack;
 

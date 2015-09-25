@@ -1,7 +1,7 @@
-package net.alcuria.umbracraft.engine.hud;
+package net.alcuria.umbracraft.engine.manager.hud;
 
-import net.alcuria.umbracraft.engine.Manager;
 import net.alcuria.umbracraft.engine.entities.BaseEntity;
+import net.alcuria.umbracraft.engine.manager.Manager;
 
 /** Manages an array of hud items and renders/updates them
  * @author Andrew Keturi */

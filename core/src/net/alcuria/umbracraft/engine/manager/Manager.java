@@ -1,4 +1,4 @@
-package net.alcuria.umbracraft.engine;
+package net.alcuria.umbracraft.engine.manager;
 
 import net.alcuria.umbracraft.engine.entities.BaseEntity;
 

@@ -1,4 +1,4 @@
-package net.alcuria.umbracraft.engine.hud;
+package net.alcuria.umbracraft.engine.manager.hud;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.BaseEntity;
