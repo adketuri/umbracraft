@@ -4,10 +4,7 @@ import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
-import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -21,13 +18,13 @@ import com.badlogic.gdx.utils.Json;
  * @author Andrew Keturi */
 public class Map implements Disposable {
 	private int[][] altMap;
-	private TilesetDefinition def;
 	//	private final BitmapFont font = Game.assets().get("fonts/message.fnt", BitmapFont.class);
 	private int height;
 	private Array<Layer> layers;
 	private int maxAlt;
 	private String name;
 	private Array<TextureRegion> tiles;
+	private TilesetDefinition tilesetDefinition;
 	private final int tileSide = 1;
 	private final int tileTop = 2;
 	private int width;
@@ -35,14 +32,9 @@ public class Map implements Disposable {
 	public void create(String id) {
 		name = id;
 		// json -> object
-		String filename = "";
 		Json json = new Json();
-		final FileHandle handle = Gdx.files.external("umbracraft/tilesets.json");
-		if (handle.exists()) {
-			TilesetListDefinition definition = json.fromJson(TilesetListDefinition.class, handle);
-			def = definition.tiles.first();
-			filename = def.filename;
-		}
+		tilesetDefinition = Game.db().tileset(0);
+		String filename = tilesetDefinition.filename;
 
 		// create tiles from definition
 		tiles = new Array<TextureRegion>();
@@ -104,7 +96,7 @@ public class Map implements Disposable {
 	}
 
 	private int createEdge(int i, int j, int altitude) {
-		if (def == null) {
+		if (tilesetDefinition == null) {
 			return 0;
 		}
 		// top right down left
@@ -124,21 +116,21 @@ public class Map implements Disposable {
 		// now to switch on every possibility
 		switch (mask) {
 		case 0b0001:
-			return def.edgeLeft;
+			return tilesetDefinition.edgeLeft;
 		case 0b0010:
-			return def.edgeBottom;
+			return tilesetDefinition.edgeBottom;
 		case 0b0100:
-			return def.edgeRight;
+			return tilesetDefinition.edgeRight;
 		case 0b1000:
-			return def.edgeTop;
+			return tilesetDefinition.edgeTop;
 		case 0b1100:
-			return def.edgeTopRight;
+			return tilesetDefinition.edgeTopRight;
 		case 0b1001:
-			return def.edgeTopLeft;
+			return tilesetDefinition.edgeTopLeft;
 		case 0b0110:
-			return def.edgeBottomRight;
+			return tilesetDefinition.edgeBottomRight;
 		case 0b0011:
-			return def.edgeBottomLeft;
+			return tilesetDefinition.edgeBottomLeft;
 		}
 		//TODO: More cases (0101, 1010, 1111, etc)
 		return 0;
@@ -148,20 +140,20 @@ public class Map implements Disposable {
 		if (drop == altitude - baseAlt) {
 			// lower walls
 			if (getAltitudeAt(i - 1, j) < altitude) {
-				return def.bottomLeftWall;
+				return tilesetDefinition.bottomLeftWall;
 			} else if (getAltitudeAt(i + 1, j) < altitude) {
-				return def.bottomRightWall;
+				return tilesetDefinition.bottomRightWall;
 			} else {
-				return def.bottomCenterWall;
+				return tilesetDefinition.bottomCenterWall;
 			}
 		} else {
 			// upper walls
 			if (getAltitudeAt(i - 1, j) < altitude) {
-				return def.middleLeftWall;
+				return tilesetDefinition.middleLeftWall;
 			} else if (getAltitudeAt(i + 1, j) < altitude) {
-				return def.middleRightWall;
+				return tilesetDefinition.middleRightWall;
 			} else {
-				return def.middleCenterWall;
+				return tilesetDefinition.middleCenterWall;
 			}
 		}
 	}
@@ -210,14 +202,16 @@ public class Map implements Disposable {
 		if (filename == null) {
 			throw new NullPointerException("Tileset filename is null");
 		}
-		final Texture texture = Game.assets().get("tiles/" + filename, Texture.class);
 		Array<TextureRegion> regions = new Array<TextureRegion>();
+		//		if (Game.assets().containsAsset("tiles/" + filename)) {
+		final Texture texture = Game.assets().get("tiles/" + filename, Texture.class);
 		for (int i = 0; i < Math.pow(Config.tilesetWidth / Config.tileWidth, 2); i++) {
 			final int x = (i * Config.tileWidth) % Config.tilesetWidth;
 			final int y = (i / Config.tileWidth) * Config.tileWidth;
 			final int w = Config.tileWidth;
 			regions.add(new TextureRegion(texture, x, y, w, w));
 		}
+		//		}
 		return regions;
 	}
 
@@ -251,7 +245,7 @@ public class Map implements Disposable {
 				for (int j = 0; j <= rowRenderHeight; j++) {
 					try {
 						if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
-							Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * 16, tileSize, tileSize);
+							Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
 						}
 					} catch (ArrayIndexOutOfBoundsException e) {
 						//FIXME: Halp. someting up with rendering very top and very bottom rows.

@@ -10,6 +10,8 @@ import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.config.ConfigDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
+import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
+import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -32,6 +34,8 @@ public final class Db {
 		classes.put("map", ListDefinition.class);
 		classes.put("areas", ListDefinition.class);
 		classes.put("configuration", ConfigDefinition.class);
+		classes.put("tilesets", TilesetListDefinition.class);
+
 		// deserialize all definitions
 		definitions = new ObjectMap<>();
 		Json json = new Json();
@@ -39,6 +43,13 @@ public final class Db {
 			final FileHandle handle = Gdx.files.external("umbracraft/" + name + ".json");
 			if (handle.exists()) {
 				definitions.put(name, json.fromJson(classes.get(name), handle));
+			} else {
+				final FileHandle internalHandle = Gdx.files.internal("db/" + name + ".json");
+				if (internalHandle.exists()) {
+					definitions.put(name, json.fromJson(classes.get(name), internalHandle));
+				} else {
+					throw new NullPointerException("Definition file is missing: " + name);
+				}
 			}
 		}
 	}
@@ -103,5 +114,10 @@ public final class Db {
 		}
 		ListDefinition<MapDefinition> definition = (ListDefinition<MapDefinition>) definitions.get("map");
 		return (MapDefinition) definition.get(name);
+	}
+
+	public TilesetDefinition tileset(int i) {
+		TilesetListDefinition listDef = (TilesetListDefinition) definitions.get("tilesets");
+		return listDef.tiles.get(i);
 	}
 }
