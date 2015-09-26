@@ -66,14 +66,14 @@ public class World implements UmbraScreen, EventListener {
 
 	@Override
 	public void show() {
-		hud = new HudManager();
-		in = new OnscreenInputManager();
 		windows = new WindowStack();
 		teleporter = new Teleporter();
 		Game.publisher().subscribe(this);
 		Game.entities().create(WorldUtils.getStartingMapName());
 		Game.map().create(WorldUtils.getStartingMapName());
 		Game.areas().setAreaAndNode(Game.db().config().startingArea, Game.db().config().startingNode);
+		hud = new HudManager();
+		in = new OnscreenInputManager();
 	}
 
 	@Override

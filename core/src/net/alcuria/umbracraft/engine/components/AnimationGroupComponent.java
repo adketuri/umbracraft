@@ -76,14 +76,15 @@ public class AnimationGroupComponent implements Component {
 		Direction tmpDirection = currentDirection;
 		// set mask based on velocity of player
 		int mask = 0b0000; // up, down, left, right
-		if (entity.velocity.x < 0) {
+		final float tolerance = 0.5f;
+		if (entity.velocity.x < -tolerance) {
 			mask = mask ^ 0b0010;
-		} else if (entity.velocity.x > 0) {
+		} else if (entity.velocity.x > tolerance) {
 			mask = mask ^ 0b0001;
 		}
-		if (entity.velocity.y < 0) {
+		if (entity.velocity.y < -tolerance) {
 			mask = mask ^ 0b0100;
-		} else if (entity.velocity.y > 0) {
+		} else if (entity.velocity.y > tolerance) {
 			mask = mask ^ 0b1000;
 		}
 		// update current facing direction
