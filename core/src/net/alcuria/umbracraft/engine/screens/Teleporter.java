@@ -9,7 +9,7 @@ import net.alcuria.umbracraft.engine.entities.Entity;
 
 /** The teleporter is responsible for determining when the player entity reaches
  * the edge of a map, finding the appropriate map to teleport her to, and
- * notifying the {@link World} that we want to change maps.
+ * notifying the {@link WorldScreen} that we want to change maps.
  * @author Andrew Keturi */
 public class Teleporter {
 

@@ -1,9 +1,7 @@
 package net.alcuria.umbracraft.desktop;
 
 import net.alcuria.umbracraft.Config;
-import net.alcuria.umbracraft.UmbraCraftEngine;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 /** Launches the game engine
@@ -13,6 +11,6 @@ public class EngineLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = Config.viewWidth;
 		config.height = Config.viewHeight;
-		new LwjglApplication(new UmbraCraftEngine(), config);
+		throw new UnsupportedOperationException();
 	}
 }

@@ -12,7 +12,7 @@ import net.alcuria.umbracraft.engine.windows.WindowStack;
 /** All objects live in the World. Enitities are rendered, the view unprojects,
  * and then ui elements are displayed.
  * @author Andrew Keturi */
-public class World implements UmbraScreen, EventListener {
+public class WorldScreen implements UmbraScreen, EventListener {
 	private HudManager hud;
 	private OnscreenInputManager in;
 	private Map map;

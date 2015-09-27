@@ -1,6 +1,6 @@
 package net.alcuria.umbracraft;
 
-import net.alcuria.umbracraft.engine.screens.Loading;
+import net.alcuria.umbracraft.engine.screens.UmbraScreen;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -9,14 +9,14 @@ import com.kotcrab.vis.ui.VisUI;
 
 /** The engine.
  * @author Andrew Keturi */
-public class UmbraCraftEngine implements ApplicationListener {
+public abstract class UmbraCraftApplication implements ApplicationListener {
 	private Game game;
 
 	@Override
 	public void create() {
 		VisUI.load();
 		game = new Game();
-		Game.setScreen(new Loading());
+		Game.setScreen(getFirstScreen());
 	}
 
 	@Override
@@ -24,6 +24,8 @@ public class UmbraCraftEngine implements ApplicationListener {
 		VisUI.dispose();
 		game.dispose();
 	}
+
+	public abstract UmbraScreen getFirstScreen();
 
 	@Override
 	public void pause() {

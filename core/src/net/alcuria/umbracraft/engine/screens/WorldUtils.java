@@ -5,7 +5,7 @@ import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 
-/** A collection of utility functions for the {@link World}
+/** A collection of utility functions for the {@link WorldScreen}
  * @author Andrew Keturi */
 public final class WorldUtils {
 	/** Reads in the starting area/node from the db and fetches the

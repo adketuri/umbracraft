@@ -1,27 +1,41 @@
 
 skin.png
-size: 64,64
+size: 256,64
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 ui/bg
   rotate: false
-  xy: 2, 22
+  xy: 64, 30
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 ui/frame
   rotate: false
-  xy: 36, 45
+  xy: 130, 53
   size: 9, 9
   split: 4, 4, 4, 4
   orig: 9, 9
   offset: 0, 0
   index: -1
-ui/namePlate
+ui/joyBack
   rotate: false
   xy: 2, 2
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1
+ui/joyNub
+  rotate: false
+  xy: 98, 32
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+ui/namePlate
+  rotate: false
+  xy: 64, 10
   size: 18, 18
   split: 0, 16, 16, 0
   pad: -1, -1, 16, 0
