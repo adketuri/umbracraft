@@ -84,17 +84,23 @@ public class View implements EventListener {
 		this.target = target;
 	}
 
-	/** Updates the camera */
+	/** Updates the camera, moving towards a target if it exists and honoring any
+	 * map boundaries if present. */
 	public void update() {
+		boolean moved = false;
 		if (target != null) {
 			float dX = (target.position.x - camera.position.x) / 20f;
 			float dY = (target.position.y - camera.position.y) / 20f;
 			camera.translate(dX, dY);
-			if (bounds != null) {
-				if (camera.position.x < bounds.x) {
-					camera.translate(bounds.x - camera.position.x, bounds.y - camera.position.y);
-				}
+			moved = dX != 0 || dY != 0;
+		}
+		if (bounds != null) {
+			if (camera.position.x < bounds.x) {
+				camera.translate(bounds.x - camera.position.x, bounds.y - camera.position.y);
+				moved = true;
 			}
+		}
+		if (moved) {
 			camera.update();
 		}
 	}
