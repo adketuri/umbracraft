@@ -6,12 +6,14 @@ import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** A glorified wrapper for the {@link OrthographicCamera}
  * @author Andrew Keturi */
 public class View implements EventListener {
+	private Rectangle bounds;
 	private final OrthographicCamera camera;
 	private Entity target;
 	private final OrthographicCamera uiCamera;
@@ -64,12 +66,35 @@ public class View implements EventListener {
 		viewport.update(width, height);
 	}
 
+	/** Sets the boundaries of the camera. The camera will do its best to honor
+	 * the boundaries set here; however, if the boundaries are too small the
+	 * view will focus on the center of the region. When set, the camera will
+	 * not translate beyond the rectangle's x/y from the bottom/left and x+w/y+h
+	 * from the top right.
+	 * @param bounds a {@link Rectangle} describing the boundaries of the image. */
+	public void setBounds(Rectangle bounds) {
+		this.bounds = bounds;
+		this.bounds.x += Config.viewWidth / 2;
+		this.bounds.y += Config.viewHeight / 2;
+	}
+
+	/** Sets a target for the camera to follow.
+	 * @param target */
+	public void setTarget(Entity target) {
+		this.target = target;
+	}
+
 	/** Updates the camera */
 	public void update() {
 		if (target != null) {
 			float dX = (target.position.x - camera.position.x) / 20f;
 			float dY = (target.position.y - camera.position.y) / 20f;
 			camera.translate(dX, dY);
+			if (bounds != null) {
+				if (camera.position.x < bounds.x) {
+					camera.translate(bounds.x - camera.position.x, bounds.y - camera.position.y);
+				}
+			}
 			camera.update();
 		}
 	}

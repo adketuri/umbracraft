@@ -17,6 +17,10 @@ public class EntityManager {
 	private final Array<Entity> entities = new Array<Entity>();
 	private final Array<Entity> visibleEntities = new Array<Entity>();
 
+	public void add(Entity entity) {
+		entities.add(entity);
+	}
+
 	public void create(final String mapName) {
 		visibleEntities.clear();
 		entities.clear();
