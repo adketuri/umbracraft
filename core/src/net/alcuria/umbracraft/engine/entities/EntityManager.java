@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.entities;
 
 import net.alcuria.umbracraft.Config;
+import net.alcuria.umbracraft.Db;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
@@ -17,10 +18,16 @@ public class EntityManager {
 	private final Array<Entity> entities = new Array<Entity>();
 	private final Array<Entity> visibleEntities = new Array<Entity>();
 
+	/** Adds an entity to the manager. If create is called afterwards this entity
+	 * will probably be gone.
+	 * @param entity the {@link Entity} */
 	public void add(Entity entity) {
 		entities.add(entity);
 	}
 
+	/** Takes as input the name of a map in the {@link Db} and creates all
+	 * entities and their components for that map. Clears any existing entities.
+	 * @param mapName the map id {@link String} */
 	public void create(final String mapName) {
 		visibleEntities.clear();
 		entities.clear();
