@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.editor.modules.AnimationCollectionListModule;
 import net.alcuria.umbracraft.editor.modules.AnimationGroupListModule;
 import net.alcuria.umbracraft.editor.modules.AnimationsModule;
 import net.alcuria.umbracraft.editor.modules.AreaListModule;
+import net.alcuria.umbracraft.editor.modules.BattleAnimationGroupListModule;
 import net.alcuria.umbracraft.editor.modules.ConfigModule;
 import net.alcuria.umbracraft.editor.modules.EntityListModule;
 import net.alcuria.umbracraft.editor.modules.HeroModule;
@@ -68,6 +69,7 @@ public class EditorLayout extends Layout {
 		modules.add(new AreaListModule());
 		modules.add(new MapListModule());
 		modules.add(new EntityListModule());
+		modules.add(new BattleAnimationGroupListModule());
 
 	}
 
