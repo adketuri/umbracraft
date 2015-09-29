@@ -96,7 +96,17 @@ public class View implements EventListener {
 		}
 		if (bounds != null) {
 			if (camera.position.x < bounds.x) {
-				camera.translate(bounds.x - camera.position.x, bounds.y - camera.position.y);
+				camera.translate(bounds.x - camera.position.x, 0);
+				moved = true;
+			} else if (camera.position.x > bounds.width - Config.viewWidth / 2) {
+				camera.translate(bounds.width - Config.viewWidth / 2 - camera.position.x, 0);
+				moved = true;
+			}
+			if (camera.position.y < bounds.y) {
+				camera.translate(0, bounds.y - camera.position.y);
+				moved = true;
+			} else if (camera.position.y > bounds.height - Config.viewHeight / 2) {
+				camera.translate(0, bounds.height - Config.viewHeight / 2 - camera.position.y);
 				moved = true;
 			}
 		}
