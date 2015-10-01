@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class EntityManager {
 	private final Array<Entity> entities = new Array<Entity>();
+	private int mapHeight;
 	private final Array<Entity> visibleEntities = new Array<Entity>();
 
 	/** Adds an entity to the manager. If create is called afterwards this entity
@@ -33,6 +34,7 @@ public class EntityManager {
 		entities.clear();
 		// create entities
 		MapDefinition mapDef = Game.db().map(mapName);
+		mapHeight = mapDef.getHeight();
 		if (mapDef != null && mapDef.entities != null) {
 			for (EntityReferenceDefinition reference : mapDef.entities) {
 				Entity entity = new Entity();
@@ -97,7 +99,7 @@ public class EntityManager {
 		int row = y + height;
 		for (int i = 0; i < entities.size; i++) {
 			final int entityRow = getRow(entities.get(i));
-			if (entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= Game.map().getHeight()) {
+			if (entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= mapHeight) {
 				visibleEntities.add(entities.get(i));
 				added++;
 			}
@@ -114,6 +116,12 @@ public class EntityManager {
 			row--;
 		}
 		visibleEntities.clear();
+	}
+
+	/** Sets the height of the map, for rendering. This should be in pixels.
+	 * @param height height of the map */
+	public void setRenderHeight(int height) {
+		mapHeight = height;
 	}
 
 	/** Updates the state of all objects. */
