@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.engine.entities;
 
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
 import net.alcuria.umbracraft.engine.components.Component;
 
@@ -14,7 +15,6 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 
 	public static final String PLAYER = "Player";
 
-	// TODO: instead of passing a reference to the entity in our components, do something more sophisticated so all components don't have read/write access to these?
 	private final Array<Component> components;
 	private String name;
 	public boolean onGround = true;
@@ -36,6 +36,13 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 			component.create(this);
 			this.components.add(component);
 		}
+	}
+
+	/** Creates an entity with no components and a given name
+	 * @param name the name {@link String} */
+	public Entity(String name) {
+		this();
+		this.name = name;
 	}
 
 	/** Adds a single component after instantiation
@@ -102,6 +109,17 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	/** @param name the name to set */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/** Sets the position vector equal to the value of another vector
+	 * @param position a {@link Vector3} */
+	public void setPosition(Vector3 position) {
+		if (position == null) {
+			Game.error("position is null");
+			return;
+		}
+		this.position.x = position.x;
+		this.position.y = position.y;
 	}
 
 	/** Updates all components
