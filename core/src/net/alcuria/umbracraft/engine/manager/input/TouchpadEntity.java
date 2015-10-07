@@ -97,7 +97,7 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor {
 		touch.y = screenY;
 		touch.z = 0;
 		Game.view().getViewport().unproject(touch);
-		if (touch.x < 0 || touch.x > Config.viewWidth || touch.y < 0 || touch.y > Config.viewHeight) {
+		if (touchpad.isTouched() || touch.x < 0 || touch.x > Config.viewWidth || touch.y < 0 || touch.y > Config.viewHeight) {
 			return true;
 		} else {
 			touchpad.addAction(Actions.alpha(0f, 0.2f, Interpolation.pow2In));
