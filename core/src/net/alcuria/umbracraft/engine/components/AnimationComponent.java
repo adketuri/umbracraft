@@ -18,6 +18,7 @@ public class AnimationComponent implements Component {
 	private int ct, idx;
 	private final AnimationDefinition definition;
 	private Array<TextureRegion> frames;
+	private boolean mirrorAll;
 	private boolean played = false;
 
 	public AnimationComponent(AnimationDefinition definition) {
@@ -44,7 +45,7 @@ public class AnimationComponent implements Component {
 	@Override
 	public void render(Entity entity) {
 		if (frames != null) {
-			final boolean mirror = definition.frames.get(idx).mirror;
+			final boolean mirror = mirrorAll ? !definition.frames.get(idx).mirror : definition.frames.get(idx).mirror;
 			Game.batch().draw(frames.get(idx), entity.position.x + (mirror ? definition.width : 0), entity.position.y + entity.position.z, mirror ? -definition.width : definition.width, definition.height);
 		}
 	}
@@ -54,6 +55,12 @@ public class AnimationComponent implements Component {
 	 * @param completeListener the listener */
 	public void setListener(Listener completeListener) {
 		this.completeListener = completeListener;
+	}
+
+	/** Set to true to flip all x images in the definition
+	 * @param mirrorAll whether or not to flip all */
+	public void setMirrorAll(boolean mirrorAll) {
+		this.mirrorAll = mirrorAll;
 	}
 
 	@Override
