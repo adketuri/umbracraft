@@ -7,6 +7,7 @@ import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
 
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Array;
 
 /** Contains a stack of {@link Window} classes with operations to add or remove
@@ -23,6 +24,13 @@ public class WindowStack implements EventListener {
 	/** disposes all assets. etc used by the window stack */
 	public void dispose() {
 		Game.publisher().unsubscribe(this);
+	}
+
+	public InputProcessor getStage() {
+		if (windows != null && windows.get(0) != null) {
+			return windows.get(0).layout.stage;
+		}
+		throw new NullPointerException("Window not yet created. No stage for you.");
 	}
 
 	@Override

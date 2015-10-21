@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.events.EventPublisher;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
+import net.alcuria.umbracraft.party.Party;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -21,10 +22,12 @@ public final class Game {
 	private static boolean debug = false;
 	private static EntityManager entities;
 	private static Map map;
+	private static Party party;
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
 	private static View view;
 
+	/** @return the {@link AreaBuilder} */
 	public static AreaBuilder areas() {
 		return areas;
 	}
@@ -71,6 +74,11 @@ public final class Game {
 		return map;
 	}
 
+	/** @return the current {@link Party} */
+	public static Party party() {
+		return party;
+	}
+
 	/** @return The {@link EventPublisher} for subscribing and and publishing
 	 *         events */
 	public static EventPublisher publisher() {
@@ -107,7 +115,7 @@ public final class Game {
 	}
 
 	public Game() {
-		// initialize everything
+		// initialize everything. Order matters (iirc).
 		assets = new AssetManager();
 		view = new View();
 		batch = new SpriteBatch();
