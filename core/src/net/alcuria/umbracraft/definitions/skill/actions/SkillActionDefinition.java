@@ -9,13 +9,13 @@ import com.badlogic.gdx.math.Vector3;
  * @author Andrew Keturi */
 public abstract class SkillActionDefinition {
 
-	public abstract void start();
+	public abstract void start(Entity entity, Vector3 start, Vector3 target);
 
 	/** Updates the entity. TODO: should we have this elsewhere and keep the
 	 * definition purely for data?
 	 * @param entity the entity to update
 	 * @param target coordinates of the skill's target cell
 	 * @param stepCompleteListener called when a step is done */
-	public abstract void update(Entity entity, Vector3 target, Listener stepCompleteListener);
+	public abstract void update(Entity entity, Listener stepCompleteListener);
 
 }
