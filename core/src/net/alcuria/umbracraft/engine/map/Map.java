@@ -177,9 +177,13 @@ public class Map implements Disposable {
 	 * @return */
 	public int getAltitudeAt(int x, int y) {
 		// clamp to the size of the map so it's assumed tiles outside the map are the same as edge tiles
-		x = MathUtils.clamp(x, 0, altMap.length - 1);
-		y = MathUtils.clamp(y, 0, altMap[0].length - 1);
-		return altMap[x][y];
+		try {
+			x = MathUtils.clamp(x, 0, altMap.length - 1);
+			y = MathUtils.clamp(y, 0, altMap[0].length - 1);
+			return altMap[x][y];
+		} catch (NullPointerException npe) {
+			return 0;
+		}
 	}
 
 	/** @return the height (not altitude) of the map */

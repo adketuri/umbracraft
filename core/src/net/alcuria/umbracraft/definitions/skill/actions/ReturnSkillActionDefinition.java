@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector3;
 
 public class ReturnSkillActionDefinition extends SkillActionDefinition {
 	private final float duration = 0.5f;
+	private final float gravity = 0.43f / 2;
+	private float leapAccel = 6.1f / 2;
 	private final Vector3 start = new Vector3(), target = new Vector3();
 	private float timer;
 
@@ -26,12 +28,18 @@ public class ReturnSkillActionDefinition extends SkillActionDefinition {
 	public void update(Entity entity, Listener stepCompleteListener) {
 		Game.log("Update Return");
 		if (timer < duration) {
-			entity.position.x = start.x + ((target.x - start.x) * Interpolation.pow2Out.apply(timer / duration));
-			entity.position.y = start.y + ((target.y - start.y) * Interpolation.pow2Out.apply(timer / duration));
+			entity.position.x = start.x + ((target.x - start.x) * Interpolation.linear.apply(timer / duration));
+			entity.position.y = start.y + ((target.y - start.y) * Interpolation.linear.apply(timer / duration));
+			entity.position.z += leapAccel;
+			leapAccel -= gravity;
+			if (entity.position.z < 0) {
+				entity.position.z = 0;
+			}
 			timer += Gdx.graphics.getDeltaTime();
 			if (timer >= duration) {
 				entity.position.x = target.x;
 				entity.position.y = target.y;
+				entity.position.z = 0;
 				stepCompleteListener.invoke();
 			}
 		}

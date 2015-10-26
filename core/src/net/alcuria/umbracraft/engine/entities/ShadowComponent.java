@@ -24,7 +24,8 @@ public class ShadowComponent implements Component {
 
 	@Override
 	public void render(Entity entity) {
-		Game.batch().draw(shadow, entity.position.x, entity.position.y - 6 + Config.tileWidth * Game.map().getAltitudeAt((int) entity.position.x / Config.tileWidth, (int) entity.position.y / Config.tileWidth));
+		final int altitude = Game.map() == null ? 0 : Game.map().getAltitudeAt((int) entity.position.x / Config.tileWidth, (int) entity.position.y / Config.tileWidth);
+		Game.batch().draw(shadow, entity.position.x, entity.position.y - 6 + Config.tileWidth * altitude);
 	}
 
 	@Override
