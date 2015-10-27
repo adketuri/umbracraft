@@ -1,6 +1,5 @@
 package net.alcuria.umbracraft.definitions.skill.actions;
 
-import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
@@ -17,7 +16,6 @@ public class ReturnSkillActionDefinition extends SkillActionDefinition {
 
 	@Override
 	public void start(Entity entity, Vector3 start, Vector3 target) {
-		Game.log("Start Return");
 		this.start.set(entity.position);
 		this.target.set(start);
 		timer = 0;
@@ -26,7 +24,6 @@ public class ReturnSkillActionDefinition extends SkillActionDefinition {
 
 	@Override
 	public void update(Entity entity, Listener stepCompleteListener) {
-		Game.log("Update Return");
 		if (timer < duration) {
 			entity.position.x = start.x + ((target.x - start.x) * Interpolation.linear.apply(timer / duration));
 			entity.position.y = start.y + ((target.y - start.y) * Interpolation.linear.apply(timer / duration));
