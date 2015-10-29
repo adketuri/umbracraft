@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class AnimationComponent implements Component {
 
+	private float alpha = 1;
 	private Listener completeListener;
 	private int ct, idx;
 	private final AnimationDefinition definition;
@@ -46,8 +48,22 @@ public class AnimationComponent implements Component {
 	public void render(Entity entity) {
 		if (frames != null) {
 			final boolean mirror = mirrorAll ? !definition.frames.get(idx).mirror : definition.frames.get(idx).mirror;
+			if (alpha != 1) {
+				Game.batch().flush();
+				Game.batch().setColor(1, 1, 1, alpha);
+			}
 			Game.batch().draw(frames.get(idx), entity.position.x + (mirror ? definition.width : 0), entity.position.y + entity.position.z, mirror ? -definition.width : definition.width, definition.height);
+			if (alpha != 1) {
+				Game.batch().flush();
+				Game.batch().setColor(Color.WHITE);
+			}
 		}
+	}
+
+	/** Sets the alpha of the animation when rendering
+	 * @param alpha the alpha, from 0 -1 (inclusive) */
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
 	}
 
 	/** Sets a listener to invoke once the animation has run thru. Note, for
@@ -70,7 +86,6 @@ public class AnimationComponent implements Component {
 			ct = 0;
 			idx = (idx + 1) % definition.frames.size;
 			if (idx == 0 && !played && completeListener != null) {
-				Game.log("calling listener");
 				completeListener.invoke();
 				played = true;
 			}
