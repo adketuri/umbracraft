@@ -24,7 +24,7 @@ public class BattleAnimationGroupListModule extends ListModule<BattleAnimationGr
 	public void create(BattleAnimationGroupDefinition definition, Table content) {
 		PopulateConfig config = new PopulateConfig();
 		ObjectMap<String, Array<String>> suggestions = new ObjectMap<String, Array<String>>();
-		final FileHandle handle = Gdx.files.external("umbracraft/battle_animations.json");
+		final FileHandle handle = Gdx.files.external("umbracraft/animations.json");
 		if (handle.exists()) {
 			ObjectMap<String, AnimationDefinition> anims = new Json().fromJson(AnimationListDefinition.class, handle).animations;
 			Array<String> suggestionsStr = new Array<String>();

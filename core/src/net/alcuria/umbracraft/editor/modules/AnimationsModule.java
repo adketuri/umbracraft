@@ -90,7 +90,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 						add(new AnimationPreview(definition)).size(definition.width * 2, definition.height * 2).pad(30);
 					}
 				});
-				if (definition.filename != null) {
+				if (definition.filename != null && definition.filename.length() > 0) {
 					String path = "sprites/animations/" + definition.filename;
 					if (Gdx.files.internal(path).exists()) {
 						image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));

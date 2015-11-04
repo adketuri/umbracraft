@@ -96,6 +96,14 @@ public final class Db {
 		return definition;
 	}
 
+	public AnimationGroupDefinition battleAnimGroup(String name) {
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
+		}
+		ListDefinition<AnimationGroupDefinition> definition = (ListDefinition<AnimationGroupDefinition>) definitions.get("battleanimationgroup");
+		return (AnimationGroupDefinition) definition.get(name);
+	}
+
 	public ConfigDefinition config() {
 		return (ConfigDefinition) definitions.get("configuration");
 	}
@@ -120,4 +128,5 @@ public final class Db {
 		TilesetListDefinition listDef = (TilesetListDefinition) definitions.get("tilesets");
 		return listDef.tiles.get(i);
 	}
+
 }

@@ -15,12 +15,14 @@ public class BattleAnimationGroupDefinition extends Definition {
 	public String hurt;
 	/** The idle animation */
 	public String idle;
+	/** The name */
+	public String name;
 	/** The moving towards animation */
 	public String towards;
 
 	@Override
 	public String getName() {
-		return "Battle Animation";
+		return name != null ? name : "Untitled";
 	}
 
 }
