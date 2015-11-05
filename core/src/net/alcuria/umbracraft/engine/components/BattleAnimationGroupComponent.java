@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.anim.BattleAnimationGroupDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** A component to handle simple battle animations. Contrary to the
@@ -22,6 +23,8 @@ public class BattleAnimationGroupComponent implements Component {
 	private ObjectMap<BattlePose, AnimationComponent> animations;
 	private AnimationComponent currentComponent;
 	private final BattleAnimationGroupDefinition definition;
+	private boolean isMirrored;
+	private Vector2 origin = new Vector2();
 
 	/** @param definition the {@link BattleAnimationGroupDefinition} from the
 	 *        database. */
@@ -42,6 +45,8 @@ public class BattleAnimationGroupComponent implements Component {
 			animations.put(BattlePose.RETURN, new AnimationComponent(Game.db().anim(definition.away)));
 			for (AnimationComponent anim : animations.values()) {
 				anim.create(entity);
+				anim.setMirrorAll(isMirrored);
+				anim.setOrigin(origin);
 			}
 			currentComponent = animations.get(BattlePose.IDLE);
 		}
@@ -57,6 +62,22 @@ public class BattleAnimationGroupComponent implements Component {
 		if (currentComponent != null) {
 			currentComponent.render(entity);
 		}
+	}
+
+	/** Sets whether or not to mirror all animations
+	 * @param isMirrored */
+	public void setMirrorAll(boolean isMirrored) {
+		this.isMirrored = isMirrored;
+		if (animations != null) {
+			for (AnimationComponent anim : animations.values()) {
+				anim.setMirrorAll(isMirrored);
+			}
+			currentComponent.setMirrorAll(isMirrored);
+		}
+	}
+
+	public void setOrigin(Vector2 origin) {
+		this.origin = origin;
 	}
 
 	/** Sets the current pose to render for this component. Be sure

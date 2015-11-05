@@ -9,6 +9,7 @@ import net.alcuria.umbracraft.engine.entities.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 /** A component to display a single animation.
@@ -21,6 +22,7 @@ public class AnimationComponent implements Component {
 	private final AnimationDefinition definition;
 	private Array<TextureRegion> frames;
 	private boolean mirrorAll;
+	private final Vector2 origin = new Vector2();
 	private boolean played = false;
 
 	public AnimationComponent(AnimationDefinition definition) {
@@ -52,7 +54,7 @@ public class AnimationComponent implements Component {
 				Game.batch().flush();
 				Game.batch().setColor(1, 1, 1, alpha);
 			}
-			Game.batch().draw(frames.get(idx), entity.position.x + (mirror ? definition.width : 0), entity.position.y + entity.position.z, mirror ? -definition.width : definition.width, definition.height);
+			Game.batch().draw(frames.get(idx), entity.position.x + (mirror ? definition.width : 0) - origin.x, entity.position.y + entity.position.z - origin.y, mirror ? -definition.width : definition.width, definition.height);
 			if (alpha != 1) {
 				Game.batch().flush();
 				Game.batch().setColor(Color.WHITE);
@@ -77,6 +79,14 @@ public class AnimationComponent implements Component {
 	 * @param mirrorAll whether or not to flip all */
 	public void setMirrorAll(boolean mirrorAll) {
 		this.mirrorAll = mirrorAll;
+	}
+
+	/** Sets the rendering origin of the sprite
+	 * @param origin the new origin {@link Vector2} to use. Member fields are
+	 *        set rather than tracking a pointer. */
+	public void setOrigin(Vector2 origin) {
+		this.origin.x = origin.x;
+		this.origin.y = origin.y;
 	}
 
 	@Override

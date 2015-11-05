@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
+import net.alcuria.umbracraft.definitions.anim.BattleAnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.config.ConfigDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
@@ -29,6 +30,7 @@ public final class Db {
 		final ObjectMap<String, Class<? extends Definition>> classes = new ObjectMap<String, Class<? extends Definition>>();
 		classes.put("animations", AnimationListDefinition.class);
 		classes.put("animationgroup", ListDefinition.class);
+		classes.put("battleanimationgroup", ListDefinition.class);
 		classes.put("animationcollection", ListDefinition.class);
 		classes.put("entities", ListDefinition.class);
 		classes.put("map", ListDefinition.class);
@@ -96,12 +98,12 @@ public final class Db {
 		return definition;
 	}
 
-	public AnimationGroupDefinition battleAnimGroup(String name) {
+	public BattleAnimationGroupDefinition battleAnimGroup(String name) {
 		if (definitions == null) {
 			throw new NullPointerException("Definitions not initialized");
 		}
-		ListDefinition<AnimationGroupDefinition> definition = (ListDefinition<AnimationGroupDefinition>) definitions.get("battleanimationgroup");
-		return (AnimationGroupDefinition) definition.get(name);
+		ListDefinition<BattleAnimationGroupDefinition> definition = (ListDefinition<BattleAnimationGroupDefinition>) definitions.get("battleanimationgroup");
+		return (BattleAnimationGroupDefinition) definition.get(name);
 	}
 
 	public ConfigDefinition config() {
