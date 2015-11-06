@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.anim.BattleAnimationGroupDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -23,6 +24,8 @@ public class BattleAnimationGroupComponent implements Component {
 	private ObjectMap<BattlePose, AnimationComponent> animations;
 	private AnimationComponent currentComponent;
 	private final BattleAnimationGroupDefinition definition;
+	private BattlePose delayPose;
+	private float delaySeconds = 0;
 	private boolean isMirrored;
 	private Vector2 origin = new Vector2();
 
@@ -64,6 +67,16 @@ public class BattleAnimationGroupComponent implements Component {
 		}
 	}
 
+	/** Delays for some time before changing the pose. Calls are not queued;
+	 * calling this multiple times before the pose has changed will cancel any
+	 * prior calls scheduled.
+	 * @param delaySeconds the time in seconds to wait before changing the pose
+	 * @param pose the pose to change to after some time has passed */
+	public void setDelayedPose(float delaySeconds, BattlePose delayPose) {
+		this.delaySeconds = delaySeconds;
+		this.delayPose = delayPose;
+	}
+
 	/** Sets whether or not to mirror all animations
 	 * @param isMirrored */
 	public void setMirrorAll(boolean isMirrored) {
@@ -93,6 +106,13 @@ public class BattleAnimationGroupComponent implements Component {
 	public void update(Entity entity) {
 		if (currentComponent != null) {
 			currentComponent.update(entity);
+		}
+		if (delaySeconds > 0) {
+			delaySeconds -= Gdx.graphics.getDeltaTime();
+			if (delaySeconds <= 0 && delayPose != null) {
+				setPose(delayPose);
+				delayPose = null;
+			}
 		}
 	}
 }

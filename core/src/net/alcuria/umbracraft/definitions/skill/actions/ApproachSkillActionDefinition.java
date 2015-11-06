@@ -12,11 +12,22 @@ public class ApproachSkillActionDefinition extends SkillActionDefinition {
 	private final float duration = 0.5f;
 	private final Vector3 start = new Vector3(), target = new Vector3();
 	private float timer;
+	private final int x, y;
+
+	/** @param x an X offset, relative to the allied players on the right side
+	 * @param y a Y offset */
+	public ApproachSkillActionDefinition(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 
 	@Override
 	public void start(Entity entity, Vector3 start, Vector3 target) {
+		final boolean isPlayer = entity.getName().contains("p");
 		this.start.set(entity.position);
 		this.target.set(target);
+		this.target.x += isPlayer ? x : -x;
+		this.target.y += y;
 		timer = 0;
 	}
 
