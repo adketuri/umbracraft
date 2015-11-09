@@ -7,9 +7,9 @@ import net.alcuria.umbracraft.engine.windows.WindowStack;
  * @author Andrew Keturi */
 public class WindowShowEvent extends Event {
 
-	public Window window;
+	public Window<?> window;
 
-	public WindowShowEvent(Window window) {
+	public WindowShowEvent(final Window<?> window) {
 		this.window = window;
 	}
 }

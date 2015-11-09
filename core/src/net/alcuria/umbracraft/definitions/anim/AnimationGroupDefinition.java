@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.definitions.Definition;
 
 /** Defines a collection of {@link AnimationDefinition} objects
  * @author Andrew Keturi */
+@SuppressWarnings("unused")
 public class AnimationGroupDefinition extends Definition {
 	/** The id of the animation facing down */
 	public String down;
