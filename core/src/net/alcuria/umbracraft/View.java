@@ -18,6 +18,7 @@ public class View implements EventListener {
 	private Entity target;
 	private final OrthographicCamera uiCamera;
 	private final Viewport viewport;
+	private final Viewport worldViewport;
 
 	public View() {
 		camera = new OrthographicCamera(Config.viewWidth, Config.viewHeight);
@@ -25,6 +26,8 @@ public class View implements EventListener {
 		uiCamera.translate(Config.viewWidth / 2, Config.viewHeight / 2);
 		uiCamera.update();
 		viewport = new FitViewport(Config.viewWidth, Config.viewHeight);
+		worldViewport = new FitViewport(Config.viewWidth, Config.viewHeight);
+		worldViewport.setCamera(camera);
 	}
 
 	/** Immediately focuses the camera to its target */
@@ -48,6 +51,11 @@ public class View implements EventListener {
 	/** @return the {@link Viewport} */
 	public Viewport getViewport() {
 		return viewport;
+	}
+
+	/** @return the {@link Viewport} of the world */
+	public Viewport getWorldViewport() {
+		return worldViewport;
 	}
 
 	@Override
