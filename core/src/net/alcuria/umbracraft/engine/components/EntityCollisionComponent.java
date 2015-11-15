@@ -38,7 +38,7 @@ public class EntityCollisionComponent implements Component {
 
 	@Override
 	public void update(Entity entity) {
-		for (Entity otherEntity : Game.entities().get()) {
+		for (Entity otherEntity : Game.entities().getEntities()) {
 			// ensure it's another entity and it's on the same z axis
 			if (otherEntity != entity && MathUtils.isEqual(entity.position.z, otherEntity.position.z, 2f)) {
 				MapCollisionComponent component = entity.getComponent(MapCollisionComponent.class);

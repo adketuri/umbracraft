@@ -11,7 +11,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * @author Andrew Keturi */
 public class ShadowComponent implements Component {
 
+	private static final int WIDTH = 16, HEIGHT = 16;
 	private TextureRegion shadow;
+	private final int xOffset, yOffset;
+
+	public ShadowComponent() {
+		this(0, 0);
+	}
+
+	public ShadowComponent(int x, int y) {
+		xOffset = x;
+		yOffset = y;
+	}
 
 	@Override
 	public void create(Entity entity) {
@@ -25,7 +36,7 @@ public class ShadowComponent implements Component {
 	@Override
 	public void render(Entity entity) {
 		final int altitude = Game.map() == null ? 0 : Game.map().getAltitudeAt((int) entity.position.x / Config.tileWidth, (int) entity.position.y / Config.tileWidth);
-		Game.batch().draw(shadow, entity.position.x, entity.position.y - 6 + Config.tileWidth * altitude);
+		Game.batch().draw(shadow, entity.position.x - WIDTH / 2 + xOffset, entity.position.y - HEIGHT / 2 + yOffset + Config.tileWidth * altitude);
 	}
 
 	@Override

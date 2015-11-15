@@ -54,6 +54,7 @@ public class AnimationComponent implements Component {
 				Game.batch().flush();
 				Game.batch().setColor(1, 1, 1, alpha);
 			}
+			//Game.batch().draw(frames.get(0), entity.position.x - origin.x, entity.position.y - origin.y);
 			Game.batch().draw(frames.get(idx), entity.position.x + (mirror ? definition.width : 0) - origin.x, entity.position.y + entity.position.z - origin.y, mirror ? -definition.width : definition.width, definition.height);
 			if (alpha != 1) {
 				Game.batch().flush();

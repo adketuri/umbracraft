@@ -57,6 +57,7 @@ public class EntityManager {
 		}
 	}
 
+	/** Dispose all entities, freeing up any resources. */
 	public void dispose() {
 		if (entities == null) {
 			return;
@@ -66,6 +67,12 @@ public class EntityManager {
 		}
 	}
 
+	/** Finds an entity with the given name. Entities may have the same name, but
+	 * the first one added to the {@link EntityManager} will be returned. If no
+	 * entity is found with the given name, <code>null</code> is returned.
+	 * @param name the name {@link String}
+	 * @return the {@link Entity} with the given name, or <code>null</code> if
+	 *         none is found */
 	public Entity find(String name) {
 		for (Entity entity : entities) {
 			if (entity.getName() != null && entity.getName().equals(name)) {
@@ -75,7 +82,8 @@ public class EntityManager {
 		return null;
 	}
 
-	public Array<Entity> get() {
+	/** @return all entities in the {@link EntityManager} */
+	public Array<Entity> getEntities() {
 		return entities;
 	}
 
