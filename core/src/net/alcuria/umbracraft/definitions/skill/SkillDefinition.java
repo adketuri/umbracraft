@@ -16,8 +16,10 @@ public class SkillDefinition extends Definition {
 	public Array<SkillActionDefinition> actions;
 	@Tooltip("The multiplier of the base damage")
 	public float damageMultiplier;
-	@Tooltip("The cost to use the skill, in EP")
-	public int epCost;
+	@Tooltip("The EP generated (positive) or EP taken (negative) to use the skill")
+	public int ep;
+	@Tooltip("A multiplier to the focus generated. Makes certain skills more or less likely to draw enemy attention.")
+	public float focusMultiplier;
 	@Tooltip("The icon to use for the skill")
 	public String iconId;
 	@Tooltip("The name of the skill")
