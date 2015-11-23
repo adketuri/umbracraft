@@ -31,7 +31,7 @@ public class Drawables {
 		if (drawables.containsKey(name)) {
 			return drawables.get(name);
 		}
-		throw new IllegalArgumentException("No drawable found with name: " + name);
+		throw new IllegalArgumentException("No drawable found with name: " + name + ". Drawables Available: " + drawables.toString());
 	}
 
 	/** Call to initialize all the drawables. */
