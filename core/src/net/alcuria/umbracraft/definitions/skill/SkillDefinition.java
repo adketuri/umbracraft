@@ -16,6 +16,8 @@ public class SkillDefinition extends Definition {
 	public Array<SkillActionDefinition> actions;
 	@Tooltip("The multiplier of the base damage")
 	public float damageMultiplier;
+	@Tooltip("A description of the skill to show in-battle")
+	public String description;
 	@Tooltip("The EP generated (positive) or EP taken (negative) to use the skill")
 	public int ep;
 	@Tooltip("A multiplier to the focus generated. Makes certain skills more or less likely to draw enemy attention.")
