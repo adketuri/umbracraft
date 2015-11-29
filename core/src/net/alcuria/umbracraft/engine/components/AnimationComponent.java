@@ -63,6 +63,11 @@ public class AnimationComponent implements Component {
 		}
 	}
 
+	public void reset() {
+		ct = idx = 0;
+		played = false;
+	}
+
 	/** Sets the alpha of the animation when rendering
 	 * @param alpha the alpha, from 0 -1 (inclusive) */
 	public void setAlpha(float alpha) {

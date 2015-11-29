@@ -99,6 +99,7 @@ public class BattleAnimationGroupComponent implements Component {
 	public void setPose(BattlePose pose) {
 		if (currentComponent != null) {
 			currentComponent = animations.get(pose);
+			currentComponent.reset();
 		}
 	}
 
