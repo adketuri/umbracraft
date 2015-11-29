@@ -43,7 +43,7 @@ public final class Db {
 		Json json = new Json();
 		for (String name : classes.keys()) {
 			final FileHandle handle = Gdx.files.external("umbracraft/" + name + ".json");
-			if (handle.exists()) {
+			if (handle.exists() && Game.isDebug()) {
 				definitions.put(name, json.fromJson(classes.get(name), handle));
 			} else {
 				final FileHandle internalHandle = Gdx.files.internal("db/" + name + ".json");
@@ -64,6 +64,7 @@ public final class Db {
 			throw new NullPointerException("Definitions not initialized");
 		}
 		return ((AnimationListDefinition) definitions.get("animations")).animations.get(name);
+
 	}
 
 	public AnimationCollectionDefinition animCollection(String name) {

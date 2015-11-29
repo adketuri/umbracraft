@@ -19,7 +19,7 @@ public final class Game {
 	private static AssetManager assets;
 	private static SpriteBatch batch;
 	private static Db db;
-	private static boolean debug = false;
+	private static boolean debug = true;
 	private static EntityManager entities;
 	private static Map map;
 	private static Party party;

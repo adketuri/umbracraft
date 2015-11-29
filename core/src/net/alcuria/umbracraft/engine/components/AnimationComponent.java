@@ -31,7 +31,7 @@ public class AnimationComponent implements Component {
 
 	@Override
 	public void create(Entity entity) {
-		if (definition != null && frames == null) {
+		if (definition != null) {
 			Texture texture = Game.assets().get("sprites/animations/" + definition.filename, Texture.class);
 			frames = new Array<TextureRegion>();
 			for (AnimationFrameDefinition frame : definition.frames) {
