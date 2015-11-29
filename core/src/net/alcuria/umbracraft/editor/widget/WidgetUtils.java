@@ -46,6 +46,14 @@ public class WidgetUtils {
 		}).expandX().fill().height(1).row();
 	}
 
+	public static Actor pad(final Actor actor, final int padding) {
+		return new Table() {
+			{
+				add(actor).pad(padding);
+			}
+		};
+	}
+
 	/** Adds a popup-style title to a table
 	 * @param table the {@link Table} that gets the popup title
 	 * @param title a {@link String} to display on the title
