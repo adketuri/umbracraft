@@ -36,6 +36,8 @@ public class AreaBuilder {
 			// teleport found in children so go for that
 			adjacentNode = area.find(area.root, adjacentNodeName);
 		}
+
+		// create the map, get the starting coordinates
 		Game.map().create(adjacentNode.mapDefinition);
 		int newX = 0, newY = 0;
 		switch (direction) {
@@ -56,8 +58,20 @@ public class AreaBuilder {
 			newY = Game.db().map(adjacentNode.mapDefinition).eastY * 16;
 			break;
 		}
-		Game.entities().find(Entity.PLAYER).position.x = newX;
-		Game.entities().find(Entity.PLAYER).position.y = newY;
+		// keep a reference to the player around in case after creating the entities there no longer is a PLAYER entity
+		final Entity player = Game.entities().find(Entity.PLAYER);
+
+		// add all map-specific entities to the map
+		Game.entities().dispose();
+		Game.entities().create(adjacentNode.mapDefinition);
+		if (Game.entities().find(Entity.PLAYER) == null) {
+			// add back our reference to the player
+			Game.entities().add(player);
+		}
+		// set the player back
+		Game.entities().find(Entity.PLAYER).position.set(newX, newY, player.position.z);
+
+		// TODO: add global and area-specific entities
 		setAreaAndNode(currentArea, adjacentNodeName); //FIXME: area changes?
 	}
 

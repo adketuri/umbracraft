@@ -25,6 +25,7 @@ public class Teleporter {
 	private void teleport(TeleportDirection direction) {
 		Game.areas().changeNode(direction);
 		Game.view().focus();
+		player = Game.entities().find(Entity.PLAYER);
 	}
 
 	/** Update stuff */
@@ -41,29 +42,31 @@ public class Teleporter {
 		if (areaBuilder == null) {
 			areaBuilder = Game.areas();
 		}
-		if (player.position.x < 0) {
-			if (Game.areas().hasTeleportAt(TeleportDirection.WEST)) {
-				teleport(TeleportDirection.WEST);
-			} else {
-				player.position.x = 0;
-			}
-		} else if (player.position.x + playerWidth > Game.map().getWidth() * Config.tileWidth) {
-			if (Game.areas().hasTeleportAt(TeleportDirection.EAST)) {
-				teleport(TeleportDirection.EAST);
-			} else {
-				player.position.x = Game.map().getWidth() * Config.tileWidth - playerWidth;
-			}
-		} else if (player.position.y + playerHeight > Game.map().getHeight() * Config.tileWidth) {
-			if (Game.areas().hasTeleportAt(TeleportDirection.NORTH)) {
-				teleport(TeleportDirection.NORTH);
-			} else {
-				player.position.y = Game.map().getHeight() * Config.tileWidth - playerHeight;
-			}
-		} else if (player.position.y < 0) {
-			if (Game.areas().hasTeleportAt(TeleportDirection.SOUTH)) {
-				teleport(TeleportDirection.SOUTH);
-			} else {
-				player.position.y = 0;
+		if (player != null) {
+			if (player.position.x < 0) {
+				if (Game.areas().hasTeleportAt(TeleportDirection.WEST)) {
+					teleport(TeleportDirection.WEST);
+				} else {
+					player.position.x = 0;
+				}
+			} else if (player.position.x + playerWidth > Game.map().getWidth() * Config.tileWidth) {
+				if (Game.areas().hasTeleportAt(TeleportDirection.EAST)) {
+					teleport(TeleportDirection.EAST);
+				} else {
+					player.position.x = Game.map().getWidth() * Config.tileWidth - playerWidth;
+				}
+			} else if (player.position.y + playerHeight > Game.map().getHeight() * Config.tileWidth) {
+				if (Game.areas().hasTeleportAt(TeleportDirection.NORTH)) {
+					teleport(TeleportDirection.NORTH);
+				} else {
+					player.position.y = Game.map().getHeight() * Config.tileWidth - playerHeight;
+				}
+			} else if (player.position.y < 0) {
+				if (Game.areas().hasTeleportAt(TeleportDirection.SOUTH)) {
+					teleport(TeleportDirection.SOUTH);
+				} else {
+					player.position.y = 0;
+				}
 			}
 		}
 	}
