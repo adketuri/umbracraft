@@ -22,6 +22,26 @@ import com.badlogic.gdx.graphics.Color;
  * @author Andrew Keturi */
 public class Commands {
 
+	public static ScriptCommand battle() {
+		return new ScriptCommand() {
+
+			@Override
+			public void onCompleted() {
+
+			}
+
+			@Override
+			public void onStarted() {
+				Game.battle().start();
+			}
+
+			@Override
+			public void update() {
+				complete();
+			}
+		};
+	}
+
 	public static ScriptCommand cameraTarget(final String name) {
 		return new ScriptCommand() {
 

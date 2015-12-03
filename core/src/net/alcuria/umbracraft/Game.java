@@ -18,6 +18,7 @@ public final class Game {
 	private static AreaBuilder areas;
 	private static AssetManager assets;
 	private static SpriteBatch batch;
+	private static Battle battle;
 	private static Db db;
 	private static boolean debug = false;
 	private static EntityManager entities;
@@ -25,6 +26,7 @@ public final class Game {
 	private static Party party;
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
+
 	private static View view;
 
 	/** @return the {@link AreaBuilder} */
@@ -40,6 +42,15 @@ public final class Game {
 	/** @return the {@link SpriteBatch} used to render everything */
 	public static SpriteBatch batch() {
 		return batch;
+	}
+
+	/** @return the {@link Battle} used to trigger battles. The battle must be
+	 *         initialized and set first, otherwise an exception will be thrown. */
+	public static Battle battle() {
+		if (battle == null) {
+			throw new NullPointerException("Battle has not been initialized");
+		}
+		return battle;
 	}
 
 	/** @return the {@link Db} */
@@ -88,6 +99,11 @@ public final class Game {
 	/** @return the current {@link UmbraScreen} */
 	public static UmbraScreen screen() {
 		return screen;
+	}
+
+	/** Sets the battle type */
+	public static void setBattle(Battle battle) {
+		Game.battle = battle;
 	}
 
 	/** Sets whether or not the game is in debug mode

@@ -41,10 +41,11 @@ public class ScriptComponent implements Component, EventListener {
 		scriptPage.position = new Vector3(10, 10, 0);
 		scriptPage.commands = new Array<ScriptCommand>() {
 			{
-				add(Commands.cameraTarget("Chest2"));
-				add(Commands.message("That treasure chest looks tasty."));
-				add(Commands.cameraTarget(Entity.PLAYER));
-				add(Commands.move("Chest", 2, 2, true));
+				add(Commands.message("Start a battle"));
+				add(Commands.battle());
+				//add(Commands.cameraTarget("Chest2"));
+				//add(Commands.cameraTarget(Entity.PLAYER));
+				//add(Commands.move("Chest", 2, 2, true));
 				//add(Commands.teleport("Test", 5, 5));
 				//add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
 				//add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
