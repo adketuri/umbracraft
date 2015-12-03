@@ -14,6 +14,7 @@ import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
@@ -43,7 +44,7 @@ public final class Db {
 		Json json = new Json();
 		for (String name : classes.keys()) {
 			final FileHandle handle = Gdx.files.external("umbracraft/" + name + ".json");
-			if (handle.exists() && Game.isDebug()) {
+			if (handle.exists() && Gdx.app.getType() == ApplicationType.Desktop) {
 				definitions.put(name, json.fromJson(classes.get(name), handle));
 			} else {
 				final FileHandle internalHandle = Gdx.files.internal("db/" + name + ".json");

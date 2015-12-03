@@ -79,6 +79,8 @@ public class ScriptComponent implements Component, EventListener {
 	private void startScript() {
 		// first time starting, publish an event
 		Game.publisher().publish(new ScriptStartedEvent(scriptPage));
+		// halt player movement
+		Game.entities().find(Entity.PLAYER).velocity.set(0, 0, 0);
 		active = true;
 		pressed = false;
 	}

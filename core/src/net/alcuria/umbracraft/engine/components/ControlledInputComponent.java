@@ -11,7 +11,6 @@ import net.alcuria.umbracraft.engine.events.TouchpadCreatedEvent;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -19,16 +18,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 
 /** A component specifically for handling object input from the player.
  * @author Andrew Keturi */
-public class ControlledInputComponent implements Component, InputProcessor, EventListener {
+public class ControlledInputComponent implements Component, EventListener {
 	private static final int MARGIN = 4;
 	private static final float MAX_SPEED = 2; // max speed of the entity
 	private static final float MAX_SPEED_TIME = 0.12f; // time entity takes to reach max speed
 	private AnimationCollectionComponent group;
 	private boolean haltInput;
 	private float holdTimeX, holdTimeY;
-	private int inputAltitude = 0;
+	private final int inputAltitude = 0;
 	private final Vector3 inspectPos = new Vector3();
-	private int keycode = 0;
 	private Vector3 lastTouch;
 	private MapCollisionComponent physics;
 	private Touchpad touchpad;
@@ -45,45 +43,6 @@ public class ControlledInputComponent implements Component, InputProcessor, Even
 	}
 
 	@Override
-	public boolean keyDown(int keycode) {
-		if (keycode == Keys.ENTER) {
-			this.keycode = keycode;
-			return true;
-		} else if (keycode == Keys.F1) {
-			Game.setDebug(!Game.isDebug());
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-		switch (character) {
-		case 'z':
-			if (inputAltitude > 0) {
-				inputAltitude -= 1;
-			} else {
-				inputAltitude = 0;
-			}
-			return true;
-		case 'x':
-			inputAltitude += 1;
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
-	}
-
-	@Override
 	public void onEvent(Event event) {
 		// TODO: probably use a counter here so concurrent events don't get messy
 		if (event instanceof ScriptStartedEvent) {
@@ -93,7 +52,6 @@ public class ControlledInputComponent implements Component, InputProcessor, Even
 			}
 		} else if (event instanceof ScriptEndedEvent) {
 			haltInput = false;
-			keycode = 0;
 			Game.log("Resuming input");
 		} else if (event instanceof TouchpadCreatedEvent) {
 			touchpad = ((TouchpadCreatedEvent) event).touchpad;
@@ -106,34 +64,6 @@ public class ControlledInputComponent implements Component, InputProcessor, Even
 		if (Game.isDebug()) {
 			Game.batch().draw(Game.assets().get("debug.png", Texture.class), inspectPos.x, inspectPos.y, 1, 1);
 		}
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		lastTouch.x = screenX;
-		lastTouch.y = screenY;
-		lastTouch.z = 0;
-		Game.view().getCamera().unproject(lastTouch);
-		return true;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		lastTouch.x = screenX;
-		lastTouch.y = screenY;
-		lastTouch.z = 0;
-		Game.view().getCamera().unproject(lastTouch);
-		return true;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
 	}
 
 	@Override
@@ -191,8 +121,10 @@ public class ControlledInputComponent implements Component, InputProcessor, Even
 
 		}
 
-		// broadcast that a key was pressed
-		if (keycode > 0) {
+		if (Gdx.input.isKeyJustPressed(Keys.F1)) {
+			Game.setDebug(!Game.isDebug());
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
 			physics = entity.getComponent(MapCollisionComponent.class);
 			group = entity.getComponent(AnimationCollectionComponent.class);
 			if (physics != null && group != null) {
@@ -212,10 +144,9 @@ public class ControlledInputComponent implements Component, InputProcessor, Even
 				if (d == Direction.DOWNLEFT || d == Direction.DOWN || d == Direction.DOWNRIGHT) {
 					inspectPos.y -= physics.getHeight() / 2 + MARGIN;
 				}
-				Game.publisher().publish(new KeyDownEvent(keycode, inspectPos));
-				Game.log("KeyDown");
+				Game.log("Pressed Enter, publishing KeyDownEvent");
+				Game.publisher().publish(new KeyDownEvent(Keys.ENTER, inspectPos));
 			}
-			keycode = 0;
 		}
 	}
 }
