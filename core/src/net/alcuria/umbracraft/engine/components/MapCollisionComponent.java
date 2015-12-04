@@ -16,6 +16,7 @@ public class MapCollisionComponent implements Component {
 	private BitmapFont debug;
 	private final int height, width;
 	private final Map map;
+	private boolean onGround;
 
 	public MapCollisionComponent(int width, int height) {
 		this.width = width;
@@ -45,8 +46,8 @@ public class MapCollisionComponent implements Component {
 			break;
 		}
 		// check if the altitude in front of the player is just one tile up or there is a drop
-		if ((map.getAltitudeAt(x, y) - 1 == z || map.getAltitudeAt(x, y) < z) && entity.onGround) {
-			entity.onGround = false;
+		if ((map.getAltitudeAt(x, y) - 1 == z || map.getAltitudeAt(x, y) < z) && onGround) {
+			onGround = false;
 			entity.velocity.z = 5;
 		}
 	}
@@ -153,13 +154,13 @@ public class MapCollisionComponent implements Component {
 		int tileY = (int) (entity.position.y + height / 2) / Config.tileWidth;
 		entity.position.add(entity.velocity);
 		if (entity.position.z / 16f > map.getAltitudeAt(tileX, tileY) || entity.position.z / 16f > map.getAltitudeAt(tileX, tileY)) {
-			if (entity.onGround) {
+			if (onGround) {
 				checkJump(Direction.DOWNLEFT, entity);
 			}
-			entity.onGround = false;
+			onGround = false;
 			entity.velocity.z -= 0.5f;
 		} else {
-			entity.onGround = true;
+			onGround = true;
 			entity.velocity.z = 0;
 			entity.position.z = map.getAltitudeAt(tileX, tileY) * Config.tileWidth;
 		}

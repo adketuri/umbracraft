@@ -8,18 +8,16 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 /** A top-level game object. Players, enemies, decorations, and so on, all should
- * be instantiated as GameObjects with logic separated out in the
- * {@link Component}.
+ * be instantiated as Entities with logic separated out in the {@link Component}
+ * objects.
  * @author Andrew Keturi */
 public class Entity implements BaseEntity, Comparable<Entity> {
 
 	public static final String PLAYER = "Player";
 
 	private final Array<Component> components;
-	private String name;
-	public boolean onGround = true;
-	public Vector3 position;
-	public Vector3 velocity;
+	private String name, tag;
+	public Vector3 position, velocity;
 
 	/** Creates an entity with no components */
 	public Entity() {
@@ -43,6 +41,15 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	public Entity(String name) {
 		this();
 		this.name = name;
+	}
+
+	/** Creates an entity with no components and a given name + tag
+	 * @param name the name {@link String}
+	 * @param tag the tag {@link String} */
+	public Entity(String name, String tag) {
+		this();
+		this.name = name;
+		this.tag = tag;
 	}
 
 	/** Adds a single component after instantiation
@@ -70,8 +77,9 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		}
 	}
 
-	/** Gets a component
-	 * @param clazz the component type
+	/** Gets a component. Returns <code>null</code> if the component is not
+	 * present. Be sure to check the return value before making assumptions.
+	 * @param clazz the {@link Component} type
 	 * @return the component */
 	public <T extends Component> T getComponent(Class<T> clazz) {
 		for (int i = 0; i < components.size; i++) {
@@ -87,7 +95,12 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		return name;
 	}
 
-	/** Removes a component
+	/** @return the tag */
+	public String getTag() {
+		return tag;
+	}
+
+	/** Removes a component from the entity
 	 * @param clazz the component type */
 	public void removeComponent(Class<? extends Component> clazz) {
 		for (Component component : components) {
@@ -122,8 +135,12 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		this.position.y = position.y;
 	}
 
-	/** Updates all components
-	 * @param delta time since last update */
+	/** @param tag the tag to set */
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	/** Updates all components */
 	@Override
 	public void update() {
 		for (int i = 0; i < components.size; i++) {
