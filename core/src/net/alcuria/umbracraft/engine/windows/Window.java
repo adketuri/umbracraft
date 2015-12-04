@@ -16,6 +16,11 @@ public abstract class Window<T extends WindowLayout> {
 		layout.hide(listener);
 	}
 
+	/** called to dispose any resources */
+	public void dispose() {
+
+	}
+
 	/** callback after the window has closed */
 	public abstract void onClose();
 

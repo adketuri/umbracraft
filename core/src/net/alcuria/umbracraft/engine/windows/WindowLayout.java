@@ -21,7 +21,6 @@ public abstract class WindowLayout {
 		stage = new Stage(new FitViewport(Config.viewWidth, Config.viewHeight));
 		stage.addActor(root);
 		root.add(content).expand().fill();
-		//		create();
 	}
 
 	/** override to hide/close the window. listener must be called after any

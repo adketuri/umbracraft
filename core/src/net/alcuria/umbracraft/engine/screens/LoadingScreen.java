@@ -51,7 +51,7 @@ public abstract class LoadingScreen implements UmbraScreen {
 	@Override
 	public void update(float delta) {
 		if (Game.assets().update()) {
-			Game.setScreen(getNextScreen());
+			Game.setScreen(getNextScreen(), true);
 		}
 	}
 

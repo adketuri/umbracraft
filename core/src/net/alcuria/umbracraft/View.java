@@ -30,6 +30,11 @@ public class View implements EventListener {
 		worldViewport.setCamera(camera);
 	}
 
+	/** Immediately clears any bounds set by {@link View#setBounds(Rectangle)} */
+	public void clearBounds() {
+		bounds = null;
+	}
+
 	/** Immediately focuses the camera to its target */
 	public void focus() {
 		float dX = (target.position.x - camera.position.x);
@@ -84,6 +89,7 @@ public class View implements EventListener {
 		this.bounds = bounds;
 		this.bounds.x += Config.viewWidth / 2;
 		this.bounds.y += Config.viewHeight / 2;
+		update();
 	}
 
 	/** Sets a target for the camera to follow.

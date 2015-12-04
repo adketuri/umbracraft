@@ -13,11 +13,22 @@ import net.alcuria.umbracraft.engine.windows.WindowStack;
  * and then ui elements are displayed.
  * @author Andrew Keturi */
 public class WorldScreen implements UmbraScreen, EventListener {
-	private HudManager hud;
-	private OnscreenInputManager in;
+	private final HudManager hud;
+	private final OnscreenInputManager in;
 	private Map map;
-	private Teleporter teleporter;
-	private WindowStack windows;
+	private final Teleporter teleporter;
+	private final WindowStack windows;
+
+	public WorldScreen() {
+		windows = new WindowStack();
+		teleporter = new Teleporter();
+		Game.publisher().subscribe(this);
+		Game.entities().create(WorldUtils.getStartingMapName());
+		Game.map().create(WorldUtils.getStartingMapName());
+		Game.areas().setAreaAndNode(Game.db().config().startingArea, Game.db().config().startingNode);
+		hud = new HudManager();
+		in = new OnscreenInputManager();
+	}
 
 	@Override
 	public void dispose() {
@@ -66,14 +77,7 @@ public class WorldScreen implements UmbraScreen, EventListener {
 
 	@Override
 	public void show() {
-		windows = new WindowStack();
-		teleporter = new Teleporter();
-		Game.publisher().subscribe(this);
-		Game.entities().create(WorldUtils.getStartingMapName());
-		Game.map().create(WorldUtils.getStartingMapName());
-		Game.areas().setAreaAndNode(Game.db().config().startingArea, Game.db().config().startingNode);
-		hud = new HudManager();
-		in = new OnscreenInputManager();
+
 	}
 
 	@Override

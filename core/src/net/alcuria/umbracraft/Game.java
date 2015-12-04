@@ -26,7 +26,6 @@ public final class Game {
 	private static Party party;
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
-
 	private static View view;
 
 	/** @return the {@link AreaBuilder} */
@@ -113,15 +112,19 @@ public final class Game {
 	}
 
 	/** Changes the current screen
-	 * @param screen the {@link UmbraScreen} */
-	public static void setScreen(UmbraScreen screen) {
-		if (Game.screen != null) {
-			Game.screen.hide();
+	 * @param newScreen the {@link UmbraScreen}
+	 * @param dispose if <code>true</code>, dispose after hiding old screen */
+	public static void setScreen(UmbraScreen newScreen, boolean dispose) {
+		if (screen != null) {
+			screen.hide();
+			if (dispose) {
+				screen.dispose();
+			}
 		}
-		Game.screen = screen;
-		if (Game.screen != null) {
-			Game.screen.show();
-			Game.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		screen = newScreen;
+		if (screen != null) {
+			screen.show();
+			screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		}
 	}
 
@@ -140,6 +143,7 @@ public final class Game {
 		map = new Map();
 		publisher = new EventPublisher();
 		areas = new AreaBuilder();
+
 		// now subscribe
 		publisher.subscribe(view);
 	}

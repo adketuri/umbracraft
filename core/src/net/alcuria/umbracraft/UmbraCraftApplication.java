@@ -16,7 +16,7 @@ public abstract class UmbraCraftApplication implements ApplicationListener {
 	public void create() {
 		VisUI.load();
 		game = new Game();
-		Game.setScreen(getFirstScreen());
+		Game.setScreen(getFirstScreen(), false);
 	}
 
 	@Override

@@ -23,6 +23,9 @@ public class WindowStack implements EventListener {
 
 	/** disposes all assets. etc used by the window stack */
 	public void dispose() {
+		for (Window<?> window : windows) {
+			window.dispose();
+		}
 		Game.publisher().unsubscribe(this);
 	}
 
@@ -43,6 +46,7 @@ public class WindowStack implements EventListener {
 	}
 
 	private void pop(final Window<?> window) {
+		Game.log("popping " + window);
 		if (window != null) {
 			window.close(new Listener() {
 
@@ -58,6 +62,7 @@ public class WindowStack implements EventListener {
 	/** push a new window to the stack */
 	public void push(Window<?> window) {
 		if (window != null) {
+			Game.log("pushing " + window);
 			windows.add(window);
 			window.open();
 		}
@@ -68,6 +73,10 @@ public class WindowStack implements EventListener {
 		for (Window<?> window : windows) {
 			window.render();
 		}
+	}
+
+	public int size() {
+		return windows.size;
 	}
 
 	/** updates the stack */
