@@ -100,6 +100,15 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		return tag;
 	}
 
+	/** A helper function to determine if this Entity is tagged with a particular
+	 * {@link String}. A match is returned if and only if the tags are both non
+	 * null and match (via String comparison).
+	 * @param tag a {@link String} to check
+	 * @return <code>true</code> if the entity has this tag */
+	public boolean isTagged(String tag) {
+		return tag != null && this.tag != null && this.tag.equals(tag);
+	}
+
 	/** Removes a component from the entity
 	 * @param clazz the component type */
 	public void removeComponent(Class<? extends Component> clazz) {
