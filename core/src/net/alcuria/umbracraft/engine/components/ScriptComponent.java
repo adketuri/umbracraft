@@ -42,7 +42,9 @@ public class ScriptComponent implements Component, EventListener {
 		scriptPage.commands = new Array<ScriptCommand>() {
 			{
 				add(Commands.message("Start a battle"));
+				add(Commands.pause(0.4f));
 				add(Commands.battle());
+				add(Commands.message("You're done!"));
 				//add(Commands.cameraTarget("Chest2"));
 				//add(Commands.cameraTarget(Entity.PLAYER));
 				//add(Commands.move("Chest", 2, 2, true));

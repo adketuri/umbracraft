@@ -42,19 +42,19 @@ public class AreaBuilder {
 		int newX = 0, newY = 0;
 		switch (direction) {
 		case EAST:
-			newX = Game.db().map(adjacentNode.mapDefinition).westX * 16;
+			newX = Game.db().map(adjacentNode.mapDefinition).westX * 16 + 12;
 			newY = Game.db().map(adjacentNode.mapDefinition).westY * 16;
 			break;
 		case SOUTH:
 			newX = Game.db().map(adjacentNode.mapDefinition).northX * 16;
-			newY = Game.db().map(adjacentNode.mapDefinition).northY * 16;
+			newY = Game.db().map(adjacentNode.mapDefinition).northY * 16 - 12;
 			break;
 		case NORTH:
 			newX = Game.db().map(adjacentNode.mapDefinition).southX * 16;
-			newY = Game.db().map(adjacentNode.mapDefinition).southY * 16;
+			newY = Game.db().map(adjacentNode.mapDefinition).southY * 16 + 12;
 			break;
 		case WEST:
-			newX = Game.db().map(adjacentNode.mapDefinition).eastX * 16;
+			newX = Game.db().map(adjacentNode.mapDefinition).eastX * 16 - 12;
 			newY = Game.db().map(adjacentNode.mapDefinition).eastY * 16;
 			break;
 		}

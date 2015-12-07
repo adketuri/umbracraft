@@ -43,29 +43,30 @@ public class Teleporter {
 			areaBuilder = Game.areas();
 		}
 		if (player != null) {
-			if (player.position.x < 0) {
+			if (player.position.x - playerWidth / 2 < 0) {
 				if (Game.areas().hasTeleportAt(TeleportDirection.WEST)) {
 					teleport(TeleportDirection.WEST);
 				} else {
-					player.position.x = 0;
+					player.position.x = playerWidth / 2;
 				}
-			} else if (player.position.x + playerWidth > Game.map().getWidth() * Config.tileWidth) {
+			} else if (player.position.x + playerWidth / 2 > Game.map().getWidth() * Config.tileWidth) {
 				if (Game.areas().hasTeleportAt(TeleportDirection.EAST)) {
 					teleport(TeleportDirection.EAST);
 				} else {
-					player.position.x = Game.map().getWidth() * Config.tileWidth - playerWidth;
+					player.position.x = Game.map().getWidth() * Config.tileWidth - playerWidth / 2;
 				}
-			} else if (player.position.y + playerHeight > Game.map().getHeight() * Config.tileWidth) {
+			}
+			if (player.position.y + playerHeight / 2 > Game.map().getHeight() * Config.tileWidth) {
 				if (Game.areas().hasTeleportAt(TeleportDirection.NORTH)) {
 					teleport(TeleportDirection.NORTH);
 				} else {
-					player.position.y = Game.map().getHeight() * Config.tileWidth - playerHeight;
+					player.position.y = Game.map().getHeight() * Config.tileWidth - playerHeight / 2;
 				}
-			} else if (player.position.y < 0) {
+			} else if (player.position.y - playerHeight / 2 < 0) {
 				if (Game.areas().hasTeleportAt(TeleportDirection.SOUTH)) {
 					teleport(TeleportDirection.SOUTH);
 				} else {
-					player.position.y = 0;
+					player.position.y = playerHeight / 2;
 				}
 			}
 		}

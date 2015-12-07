@@ -17,7 +17,6 @@ public class MapCollisionComponent implements Component {
 	private final int height, width;
 	private final Map map;
 	private boolean onGround;
-	float x, y;
 
 	public MapCollisionComponent(int width, int height) {
 		this.width = width;
@@ -52,8 +51,6 @@ public class MapCollisionComponent implements Component {
 		default:
 			break;
 		}
-		x = nearX;
-		y = nearY;
 		nearX /= Config.tileWidth;
 		nearY /= Config.tileWidth;
 		farX /= Config.tileWidth;
@@ -99,8 +96,6 @@ public class MapCollisionComponent implements Component {
 		if (Game.isDebug()) {
 			debug.draw(Game.batch(), map.getAltitudeAt(tileX1, tileY) + "", width, height);
 			Game.batch().draw(Game.assets().get("debug.png", Texture.class), entity.position.x - width / 2, entity.position.y - height / 2, width, height);
-			debug.draw(Game.batch(), map.getAltitudeAt(x, y) + "", 4, 4);
-
 		}
 	}
 
@@ -174,10 +169,9 @@ public class MapCollisionComponent implements Component {
 		int tileX = (int) (entity.position.x) / Config.tileWidth;
 		int tileY = (int) (entity.position.y) / Config.tileWidth;
 		entity.position.add(entity.velocity);
-		if (entity.position.z / Config.tileWidth > map.getAltitudeAt(tileX, tileY) || entity.position.z / Config.tileWidth > map.getAltitudeAt(tileX, tileY)) {
-			//			if (onGround) {
-			//				checkJump(Direction.DOWNLEFT, entity);
-			//			}
+
+		// check for falling or placement
+		if (entity.position.z / Config.tileWidth > map.getAltitudeAt(tileX, tileY)) {
 			onGround = false;
 			entity.velocity.z -= 0.5f;
 		} else {
@@ -185,5 +179,26 @@ public class MapCollisionComponent implements Component {
 			entity.velocity.z = 0;
 			entity.position.z = map.getAltitudeAt(tileX, tileY) * Config.tileWidth;
 		}
+
+		// check if we're STILL inside a wall, and if so gently nudge out
+		if (entity.velocity.z <= 0) {
+			// north/south
+			int tileY1 = (int) (entity.position.y + height / 2) / Config.tileWidth;
+			int tileY2 = (int) (entity.position.y - height / 2) / Config.tileWidth;
+			if (map.getAltitudeAt(tileX, tileY1) > map.getAltitudeAt(tileX, tileY)) {
+				entity.position.y -= 0.75f;
+			} else if (map.getAltitudeAt(tileX, tileY2) > map.getAltitudeAt(tileX, tileY)) {
+				entity.position.y += 0.75f;
+			}
+			// east/west
+			int tileX1 = (int) (entity.position.x + width / 2) / Config.tileWidth;
+			int tileX2 = (int) (entity.position.x - width / 2) / Config.tileWidth;
+			if (map.getAltitudeAt(tileX1, tileY) > map.getAltitudeAt(tileX, tileY)) {
+				entity.position.x -= 1f;
+			} else if (map.getAltitudeAt(tileX2, tileY) > map.getAltitudeAt(tileX, tileY)) {
+				entity.position.x += 1f;
+			}
+		}
+
 	}
 }
