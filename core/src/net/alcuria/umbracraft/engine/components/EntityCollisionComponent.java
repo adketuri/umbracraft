@@ -3,9 +3,10 @@ package net.alcuria.umbracraft.engine.components;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 /** A component for handling when an entity overlaps with another entity. Once
@@ -15,8 +16,6 @@ import com.badlogic.gdx.utils.Array;
 public class EntityCollisionComponent implements Component {
 
 	private final Rectangle r1 = new Rectangle(), r2 = new Rectangle();
-	private final Vector2 v1 = new Vector2(), v2 = new Vector2();
-	private final Vector2 v3 = new Vector2();
 
 	@Override
 	public void create(Entity entity) {
@@ -34,6 +33,11 @@ public class EntityCollisionComponent implements Component {
 
 	@Override
 	public void render(Entity entity) {
+		if (Game.isDebug()) {
+			Game.batch().setColor(Color.RED);
+			Game.batch().draw(Game.assets().get("debug.png", Texture.class), r1.x, r1.y, r1.width, r1.height);
+			Game.batch().setColor(Color.WHITE);
+		}
 	}
 
 	@Override
@@ -43,9 +47,10 @@ public class EntityCollisionComponent implements Component {
 			if (otherEntity != entity && MathUtils.isEqual(entity.position.z, otherEntity.position.z, 2f)) {
 				MapCollisionComponent component = entity.getComponent(MapCollisionComponent.class);
 				MapCollisionComponent otherComponent = otherEntity.getComponent(MapCollisionComponent.class);
+				// only check a collision if both entities have an EntityCollisionComponent
 				if (component != null && otherComponent != null) {
-					r1.set(entity.position.x, entity.position.y, component.getWidth(), component.getHeight());
-					r2.set(otherEntity.position.x, otherEntity.position.y, otherComponent.getWidth(), otherComponent.getHeight());
+					r1.set(entity.position.x - component.getWidth() / 2, entity.position.y - component.getHeight() / 2, component.getWidth(), component.getHeight());
+					r2.set(otherEntity.position.x - otherComponent.getWidth() / 2, otherEntity.position.y - otherComponent.getHeight() / 2, otherComponent.getWidth(), otherComponent.getHeight());
 					if (r1.overlaps(r2)) {
 						// determine the magnitude of overlap for both x and y
 						float overlapX = Math.min(Math.abs(r2.x + r2.width - r1.x), Math.abs(r1.x + r1.width - r2.x));
