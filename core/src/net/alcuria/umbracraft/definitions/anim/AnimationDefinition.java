@@ -20,6 +20,10 @@ public class AnimationDefinition extends Definition {
 	public boolean loop;
 	/** A friendly name */
 	public String name;
+	/** Origin x */
+	public int originX;
+	/** Origin y */
+	public int originY;
 	/** Width of a frame */
 	public int width;
 

@@ -68,7 +68,7 @@ public class View implements EventListener {
 		if (event instanceof CameraTargetEvent) {
 			CameraTargetEvent camEvent = ((CameraTargetEvent) event);
 			target = camEvent.gameObject;
-			Game.log("Set camera target to " + target);
+			Game.log("Set camera target to " + target.getName());
 		}
 	}
 

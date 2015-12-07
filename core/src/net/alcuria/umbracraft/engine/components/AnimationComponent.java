@@ -37,6 +37,8 @@ public class AnimationComponent implements Component {
 			for (AnimationFrameDefinition frame : definition.frames) {
 				frames.add(new TextureRegion(new TextureRegion(texture, frame.x * definition.width, frame.y * definition.height, definition.width, definition.height)));
 			}
+			origin.x = definition.originX;
+			origin.y = definition.originY;
 			ct = idx = 0;
 		}
 	}

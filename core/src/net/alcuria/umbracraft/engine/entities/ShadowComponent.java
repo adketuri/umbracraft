@@ -26,7 +26,7 @@ public class ShadowComponent implements Component {
 
 	@Override
 	public void create(Entity entity) {
-		shadow = new TextureRegion(Game.assets().get("sprites/shadow.png", Texture.class), 16, 16);
+		shadow = new TextureRegion(Game.assets().get("sprites/shadow.png", Texture.class), 16, 6);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class ShadowComponent implements Component {
 	@Override
 	public void render(Entity entity) {
 		final int altitude = Game.map() == null ? 0 : Game.map().getAltitudeAt((int) entity.position.x / Config.tileWidth, (int) entity.position.y / Config.tileWidth);
-		Game.batch().draw(shadow, entity.position.x - WIDTH / 2 + xOffset, entity.position.y - HEIGHT / 2 + yOffset + Config.tileWidth * altitude);
+		Game.batch().draw(shadow, entity.position.x - WIDTH / 2 + xOffset, entity.position.y - HEIGHT / 2 + yOffset + 2 + Config.tileWidth * altitude);
 	}
 
 	@Override

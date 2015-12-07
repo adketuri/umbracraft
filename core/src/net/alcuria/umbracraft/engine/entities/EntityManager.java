@@ -104,13 +104,11 @@ public class EntityManager {
 		int width = Config.viewWidth / Config.tileWidth;
 		int height = Config.viewHeight / Config.tileWidth;
 		// add visible entitities onscreen
-		int added = 0;
 		int row = y + height;
 		for (int i = 0; i < entities.size; i++) {
 			final int entityRow = getRow(entities.get(i));
 			if (entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= mapHeight) {
 				visibleEntities.add(entities.get(i));
-				added++;
 			}
 		}
 		visibleEntities.sort();
@@ -118,7 +116,7 @@ public class EntityManager {
 		int idx = 0;
 		while (row > y - Game.map().getMaxAltitude() * 2) {
 			Game.map().render(row, x);
-			while (idx < visibleEntities.size && visibleEntities.get(idx).position.y / Config.tileWidth >= row) {
+			while (idx < visibleEntities.size && (visibleEntities.get(idx).position.y - 4) / Config.tileWidth >= row) {
 				visibleEntities.get(idx).render();
 				idx++;
 			}

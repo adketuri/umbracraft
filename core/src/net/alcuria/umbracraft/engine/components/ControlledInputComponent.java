@@ -22,18 +22,15 @@ public class ControlledInputComponent implements Component, EventListener {
 	private static final int MARGIN = 4;
 	private static final float MAX_SPEED = 2; // max speed of the entity
 	private static final float MAX_SPEED_TIME = 0.12f; // time entity takes to reach max speed
+	private static Touchpad touchpad; // FIXME: this is static because I'm lazy and there's an edge case where you re-enter your starting map and it creates a new ControlledInputComponent so this reference is lost
 	private AnimationCollectionComponent group;
 	private boolean haltInput;
 	private float holdTimeX, holdTimeY;
-	private final int inputAltitude = 0;
 	private final Vector3 inspectPos = new Vector3();
-	private Vector3 lastTouch;
 	private MapCollisionComponent physics;
-	private Touchpad touchpad;
 
 	@Override
 	public void create(Entity entity) {
-		lastTouch = new Vector3();
 		Game.publisher().subscribe(this);
 	}
 
@@ -55,6 +52,7 @@ public class ControlledInputComponent implements Component, EventListener {
 			Game.log("Resuming input");
 		} else if (event instanceof TouchpadCreatedEvent) {
 			touchpad = ((TouchpadCreatedEvent) event).touchpad;
+			Game.log("Set touchpad");
 		}
 
 	}

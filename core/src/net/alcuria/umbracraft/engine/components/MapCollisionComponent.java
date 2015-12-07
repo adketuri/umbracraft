@@ -17,6 +17,7 @@ public class MapCollisionComponent implements Component {
 	private final int height, width;
 	private final Map map;
 	private boolean onGround;
+	float x, y;
 
 	public MapCollisionComponent(int width, int height) {
 		this.width = width;
@@ -25,28 +26,47 @@ public class MapCollisionComponent implements Component {
 	}
 
 	private void checkJump(Direction direction, Entity entity) {
+		final float len = Math.abs(entity.velocity.x) + Math.abs(entity.velocity.y);
+		if (len < 1.5f) {
+			return;
+		}
 		// get the tile coordinates of the entity
-		float x = (entity.position.x + width / 2) / 16;
-		float y = (entity.position.y + height / 2) / 16;
+		float nearX = (entity.position.x);
+		float farX = (entity.position.x);
+		float nearY = (entity.position.y);
+		float farY = (entity.position.y);
 		float z = entity.position.z / 16;
 		switch (direction) {
 		case UP:
-			y += 0.5f;
+			farY += 14;
 			break;
 		case DOWN:
-			y -= 0.5f;
+			farY -= 14;
 			break;
 		case LEFT:
-			x -= 0.6f;
+			farX -= 14;
 			break;
 		case RIGHT:
-			x += 0.6f;
+			farX += 14;
 			break;
 		default:
 			break;
 		}
-		// check if the altitude in front of the player is just one tile up or there is a drop
-		if ((map.getAltitudeAt(x, y) - 1 == z || map.getAltitudeAt(x, y) < z) && onGround) {
+		x = nearX;
+		y = nearY;
+		nearX /= Config.tileWidth;
+		nearY /= Config.tileWidth;
+		farX /= Config.tileWidth;
+		farY /= Config.tileWidth;
+
+		// check for jumping from a higher to lower altitude
+		if (map.getAltitudeAt(nearX, nearY) < z && onGround) {
+			onGround = false;
+			entity.velocity.z = 5;
+		}
+
+		// check if the altitude in front of the player is just one tile up
+		if ((map.getAltitudeAt(farX, farY) - 1 == z) && onGround) {
 			onGround = false;
 			entity.velocity.z = 5;
 		}
@@ -77,8 +97,10 @@ public class MapCollisionComponent implements Component {
 		int tileX1 = (int) (entity.position.x + width) / Config.tileWidth;
 		int tileY = (int) (entity.position.y + height + entity.velocity.y) / Config.tileWidth;
 		if (Game.isDebug()) {
-			debug.draw(Game.batch(), map.getAltitudeAt(tileX1, tileY) + "", 20, 20);
-			Game.batch().draw(Game.assets().get("debug.png", Texture.class), entity.position.x, entity.position.y, width, height);
+			debug.draw(Game.batch(), map.getAltitudeAt(tileX1, tileY) + "", width, height);
+			Game.batch().draw(Game.assets().get("debug.png", Texture.class), entity.position.x - width / 2, entity.position.y - height / 2, width, height);
+			debug.draw(Game.batch(), map.getAltitudeAt(x, y) + "", 4, 4);
+
 		}
 	}
 
@@ -88,9 +110,9 @@ public class MapCollisionComponent implements Component {
 		// check for collisions
 		if (entity.velocity.y > 0) {
 			// NORTH
-			int tileX1 = (int) (entity.position.x + width) / Config.tileWidth;
-			int tileX2 = (int) (entity.position.x) / Config.tileWidth;
-			int tileY = (int) (entity.position.y + height + entity.velocity.y) / Config.tileWidth;
+			int tileX1 = (int) (entity.position.x + width / 2) / Config.tileWidth;
+			int tileX2 = (int) (entity.position.x - width / 2) / Config.tileWidth;
+			int tileY = (int) (entity.position.y + height / 2 + entity.velocity.y) / Config.tileWidth;
 			if (map.getAltitudeAt(tileX1, tileY) > tileAltitude || map.getAltitudeAt(tileX2, tileY) > tileAltitude) {
 				entity.velocity.y = 0;
 				// nudge out if we're stuck
@@ -99,13 +121,13 @@ public class MapCollisionComponent implements Component {
 				} else if (map.getAltitudeAt(tileX2, tileY) <= tileAltitude && entity.velocity.x == 0) {
 					entity.velocity.x -= 2f;
 				}
-				checkJump(Direction.UP, entity);
 			}
+			checkJump(Direction.UP, entity);
 		} else if (entity.velocity.y < 0) {
 			// SOUTH
-			int tileX1 = (int) (entity.position.x + width) / Config.tileWidth;
-			int tileX2 = (int) (entity.position.x) / Config.tileWidth;
-			int tileY = (int) (entity.position.y + entity.velocity.y) / Config.tileWidth;
+			int tileX1 = (int) (entity.position.x + width / 2) / Config.tileWidth;
+			int tileX2 = (int) (entity.position.x - width / 2) / Config.tileWidth;
+			int tileY = (int) (entity.position.y - height / 2 + entity.velocity.y) / Config.tileWidth;
 			if (map.getAltitudeAt(tileX1, tileY) > tileAltitude || map.getAltitudeAt(tileX2, tileY) > tileAltitude) {
 				entity.velocity.y = 0;
 				// nudge out if we're stuck
@@ -114,14 +136,14 @@ public class MapCollisionComponent implements Component {
 				} else if (map.getAltitudeAt(tileX2, tileY) <= tileAltitude && entity.velocity.x == 0) {
 					entity.velocity.x -= 2f;
 				}
-				checkJump(Direction.DOWN, entity);
 			}
+			checkJump(Direction.DOWN, entity);
 		}
 		if (entity.velocity.x > 0) {
 			// RIGHT
-			int tileX = (int) (entity.position.x + width + entity.velocity.x) / Config.tileWidth;
-			int tileY1 = (int) (entity.position.y + height + entity.velocity.y) / Config.tileWidth;
-			int tileY2 = (int) (entity.position.y + entity.velocity.y) / Config.tileWidth;
+			int tileX = (int) (entity.position.x + width / 2 + entity.velocity.x) / Config.tileWidth;
+			int tileY1 = (int) (entity.position.y + height / 2 + entity.velocity.y) / Config.tileWidth;
+			int tileY2 = (int) (entity.position.y - height / 2 + entity.velocity.y) / Config.tileWidth;
 			if (map.getAltitudeAt(tileX, tileY1) > tileAltitude || map.getAltitudeAt(tileX, tileY2) > tileAltitude) {
 				entity.velocity.x = 0;
 				// nudge out if we're stuck
@@ -130,13 +152,13 @@ public class MapCollisionComponent implements Component {
 				} else if (map.getAltitudeAt(tileX, tileY2) <= tileAltitude && entity.velocity.y == 0) {
 					entity.velocity.y -= 2f;
 				}
-				checkJump(Direction.RIGHT, entity);
 			}
+			checkJump(Direction.RIGHT, entity);
 		} else if (entity.velocity.x < 0) {
 			// LEFT
-			int tileX = (int) (entity.position.x + entity.velocity.x) / Config.tileWidth;
-			int tileY2 = (int) (entity.position.y + entity.velocity.y) / Config.tileWidth;
-			int tileY1 = (int) (entity.position.y + height + entity.velocity.y) / Config.tileWidth;
+			int tileX = (int) (entity.position.x - width / 2 + entity.velocity.x) / Config.tileWidth;
+			int tileY2 = (int) (entity.position.y - height / 2 + entity.velocity.y) / Config.tileWidth;
+			int tileY1 = (int) (entity.position.y + height / 2 + entity.velocity.y) / Config.tileWidth;
 			if (map.getAltitudeAt(tileX, tileY1) > tileAltitude || map.getAltitudeAt(tileX, tileY2) > tileAltitude) {
 				entity.velocity.x = 0;
 				// nudge out if we're stuck
@@ -145,18 +167,17 @@ public class MapCollisionComponent implements Component {
 				} else if (map.getAltitudeAt(tileX, tileY2) <= tileAltitude && entity.velocity.y == 0) {
 					entity.velocity.y -= 2f;
 				}
-				checkJump(Direction.LEFT, entity);
 			}
+			checkJump(Direction.LEFT, entity);
 		}
 		// update position
-		int tileX = (int) (entity.position.x + 4) / Config.tileWidth;
-		int tileX2 = (int) (entity.position.x + Config.tileWidth - 4) / Config.tileWidth;
-		int tileY = (int) (entity.position.y + height / 2) / Config.tileWidth;
+		int tileX = (int) (entity.position.x) / Config.tileWidth;
+		int tileY = (int) (entity.position.y) / Config.tileWidth;
 		entity.position.add(entity.velocity);
-		if (entity.position.z / 16f > map.getAltitudeAt(tileX, tileY) || entity.position.z / 16f > map.getAltitudeAt(tileX, tileY)) {
-			if (onGround) {
-				checkJump(Direction.DOWNLEFT, entity);
-			}
+		if (entity.position.z / Config.tileWidth > map.getAltitudeAt(tileX, tileY) || entity.position.z / Config.tileWidth > map.getAltitudeAt(tileX, tileY)) {
+			//			if (onGround) {
+			//				checkJump(Direction.DOWNLEFT, entity);
+			//			}
 			onGround = false;
 			entity.velocity.z -= 0.5f;
 		} else {

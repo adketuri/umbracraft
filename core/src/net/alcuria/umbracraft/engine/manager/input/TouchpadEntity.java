@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 public class TouchpadEntity extends OnscreenInput implements InputProcessor {
 
 	private static final int SIZE = 60;
+	private int pointer = -1;
 	private final Stage stage;
 	private final Vector3 touch = new Vector3();
 	private final Touchpad touchpad;
@@ -78,6 +79,7 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor {
 		touch.x = screenX;
 		touch.y = screenY;
 		touch.z = 0;
+		this.pointer = pointer;
 		Game.view().getViewport().unproject(touch);
 		if (touch.x < Config.viewWidth * 0.6f && touch.y < Config.viewHeight * 0.6f) {
 			touchpad.setBounds(touch.x - SIZE / 2, touch.y - SIZE / 2, 60, 60);
@@ -97,7 +99,7 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor {
 		touch.y = screenY;
 		touch.z = 0;
 		Game.view().getViewport().unproject(touch);
-		if (touchpad.isTouched() || touch.x < 0 || touch.x > Config.viewWidth || touch.y < 0 || touch.y > Config.viewHeight) {
+		if (this.pointer != pointer || touch.x < 0 || touch.x > Config.viewWidth || touch.y < 0 || touch.y > Config.viewHeight) {
 			return true;
 		} else {
 			touchpad.addAction(Actions.alpha(0f, 0.2f, Interpolation.pow2In));
