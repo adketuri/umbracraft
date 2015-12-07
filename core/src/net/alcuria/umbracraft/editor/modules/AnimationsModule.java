@@ -30,8 +30,10 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
  * @author Andrew Keturi */
 public class AnimationsModule extends Module<AnimationListDefinition> {
 
+	private final Array<VisTextButton> buttons = new Array<VisTextButton>();
 	private Table currentAnimTable;
 	private Table previewTable;
+	private final Array<AnimationDefinition> sortedDefinitions = new Array<AnimationDefinition>();
 
 	public AnimationsModule() {
 		super();
@@ -42,12 +44,25 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 	}
 
 	private void addAnimationList(final Table content) {
-
+		buttons.clear();
 		ScrollPane scroll = new ScrollPane(new Table() {
 			{
 				defaults().expandX().uniformX().fill();
 				if (rootDefinition != null && rootDefinition.animations != null) {
+					// add all definitions to a new list
+					sortedDefinitions.clear();
 					for (final AnimationDefinition definition : rootDefinition.animations.values()) {
+						sortedDefinitions.add(definition);
+					}
+					// sort the list
+					sortedDefinitions.sort();
+					// now display the list
+					String heading = null;
+					for (final AnimationDefinition definition : sortedDefinitions) {
+						if (definition.tag != null && !definition.tag.equals(heading)) {
+							heading = definition.tag;
+							add(new VisLabel(definition.tag)).row();
+						}
 						final VisTextButton animButton = new VisTextButton(definition.name != null ? definition.name : "New Animation");
 						animButton.addListener(new ClickListener() {
 
@@ -55,10 +70,16 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 							public void clicked(InputEvent event, float x, float y) {
 								currentAnimTable.clear();
 								createCurrentAnimTable(content, currentAnimTable, definition, animButton);
+								// highlight
+								for (VisTextButton a : buttons) {
+									a.getLabel().setColor(Color.WHITE);
+								}
+								animButton.getLabel().setColor(Color.YELLOW);
 							}
 
 						});
 						add(animButton).row();
+						buttons.add(animButton);
 					}
 				}
 				add().expandY().fill().row();

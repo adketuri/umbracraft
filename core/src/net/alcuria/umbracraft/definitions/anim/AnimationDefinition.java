@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Array;
 
 /** Defines an entire animation.
  * @author Andrew Keturi */
-public class AnimationDefinition extends Definition {
+public class AnimationDefinition extends Definition implements Comparable<AnimationDefinition> {
 
 	/** Full internal path to texture */
 	public String filename;
@@ -24,14 +24,17 @@ public class AnimationDefinition extends Definition {
 	public int originX;
 	/** Origin y */
 	public int originY;
+	/** A tag for the animation to help with sorting */
+	public String tag = "";
 	/** Width of a frame */
 	public int width;
 
-	/** This should only be used for deserialization */
+	/** Uused for serialization */
 	public AnimationDefinition() {
 	}
 
-	/** For serialization
+	/** Creates an {@link AnimationDefinition} from an existing animation, by
+	 * making a copy
 	 * @param nextId
 	 * @param definition */
 	public AnimationDefinition(AnimationDefinition definition, int id) {
@@ -45,10 +48,21 @@ public class AnimationDefinition extends Definition {
 		loop = definition.loop;
 		name = definition.name + " Copy " + id;
 		width = definition.width;
+		originX = definition.originX;
+		originY = definition.originY;
+		tag = definition.tag;
 	}
 
 	public AnimationDefinition(int id) {
 		name = "Animation " + id;
+	}
+
+	@Override
+	public int compareTo(AnimationDefinition other) {
+		if (tag.equals(other.tag)) {
+			return name.compareTo(other.name);
+		}
+		return tag.compareTo(other.tag);
 	}
 
 	@Override
