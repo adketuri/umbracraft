@@ -3,9 +3,13 @@ package net.alcuria.umbracraft.editor.widget;
 import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.editor.Drawables;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
@@ -22,6 +26,9 @@ public class SuggestionWidget {
 	private static final int MAX_SUGGESTIONS = 20;
 	private final Array<String> allSuggestions;
 	private final Array<String> curSuggestions;
+	private final Array<Label> highlightLabels = new Array<Label>();
+	private final Array<Table> highlightTables = new Array<Table>();
+	private int highlightIndex = -1;
 	private Listener selectListener;
 	private Table suggestionTable;
 	private VisTextField textField;
@@ -48,8 +55,35 @@ public class SuggestionWidget {
 		return new Table() {
 			{
 				add(textField).width(width).height(25).expand().fill().row();
-				//stack(new Table(), suggestionTable = new Table()).expand().fill().height(25);
-				add(suggestionTable = new Table()).expand().fill();
+				add(suggestionTable = new Table() {
+					@Override
+					public void act(float delta) {
+						if (Gdx.input.isKeyJustPressed(Keys.DOWN)) {
+							if (highlightIndex < curSuggestions.size - 1) {
+								highlightIndex++;
+							}
+						}
+						if (Gdx.input.isKeyJustPressed(Keys.UP)) {
+							if (highlightIndex > 0) {
+								highlightIndex--;
+							}
+						}
+						if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
+							if (highlightIndex >= 0 && highlightIndex < highlightLabels.size) {
+								onSelection(highlightLabels.get(highlightIndex));
+							}
+						}
+						for (int i = 0; i < highlightLabels.size; i++) {
+							if (i == highlightIndex) {
+								highlightLabels.get(i).setColor(0, 0, 0, 1);
+								highlightTables.get(i).setBackground(Drawables.get("yellow"));
+							} else {
+								highlightLabels.get(i).setColor(1, 1, 1, 1);
+								highlightTables.get(i).setBackground(Drawables.get("blue"));
+							}
+						}
+					};
+				}).expand().fill();
 			}
 		};
 	}
@@ -57,6 +91,14 @@ public class SuggestionWidget {
 	/** @return the {@link VisTextField} */
 	public VisTextField getTextField() {
 		return textField;
+	}
+
+	private void onSelection(final Label label) {
+		textField.setText(label.getText().toString());
+		if (selectListener != null) {
+			selectListener.invoke();
+		}
+		suggestionTable.clear();
 	}
 
 	/** this MUST be called elsewhere to update suggestions, like when a key is
@@ -95,11 +137,16 @@ public class SuggestionWidget {
 	/** Called when the field input changes to rebuild the suggestions list */
 	private void updateSuggestions() {
 		suggestionTable.clear();
-		for (String str : curSuggestions) {
-			final VisLabel label = new VisLabel(str);
+		highlightLabels.clear();
+		highlightTables.clear();
+		for (int i = 0; i < curSuggestions.size; i++) {
+			final VisLabel label = new VisLabel(curSuggestions.get(i));
 			label.setAlignment(Align.left);
+			final int idx = i;
 			suggestionTable.add(new Table() {
 				{
+					highlightLabels.add(label);
+					highlightTables.add(this);
 					WidgetUtils.divider(this, "black");
 					add(label).expand().fill().padLeft(5);
 					setTouchable(Touchable.enabled);
@@ -108,29 +155,19 @@ public class SuggestionWidget {
 
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
-							textField.setText(label.getText().toString());
-							if (selectListener != null) {
-								selectListener.invoke();
-							}
-							suggestionTable.clear();
+							onSelection(label);
 						}
 
 						@Override
 						public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-							label.setColor(0, 0, 0, 1);
-							setBackground(Drawables.get("yellow"));
+							highlightIndex = idx;
 						}
 
-						@Override
-						public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-							label.setColor(1, 1, 1, 1);
-							setBackground(Drawables.get("blue"));
-
-						}
 					});
 				}
 			}).expandX().fill().height(30).row();
 		}
+		highlightIndex = MathUtils.clamp(highlightIndex, 0, highlightLabels.size - 1);
 		suggestionTable.add().expand().fill();
 	}
 }

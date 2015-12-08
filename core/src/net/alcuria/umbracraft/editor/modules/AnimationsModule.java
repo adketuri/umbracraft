@@ -150,6 +150,16 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				PopulateConfig cfg = new PopulateConfig();
 				cfg.listener = updateButtonListener(image, button, scroll, definition);
 				cfg.cols = 1;
+				cfg.suggestions = new ObjectMap<String, Array<String>>();
+				cfg.suggestions.put("tag", new Array<String>() {
+					{
+						for (AnimationDefinition def : rootDefinition.animations.values()) {
+							if (!contains(def.tag, false)) {
+								add(def.tag);
+							}
+						}
+					}
+				});
 				cfg.labelWidth = 80;
 				cfg.textFieldWidth = 200;
 				return cfg;
