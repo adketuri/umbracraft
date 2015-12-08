@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
+import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.widget.AnimationPreview;
 import net.alcuria.umbracraft.editor.widget.AnimationPreviewFrame;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
@@ -12,7 +13,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -32,7 +32,9 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 
 	private final Array<VisTextButton> buttons = new Array<VisTextButton>();
 	private Table currentAnimTable;
+	private final ObjectMap<String, Boolean> expandedTags = new ObjectMap<String, Boolean>();
 	private Table previewTable;
+	private final Table scroll = new Table();
 	private final Array<AnimationDefinition> sortedDefinitions = new Array<AnimationDefinition>();
 
 	public AnimationsModule() {
@@ -61,7 +63,12 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 					for (final AnimationDefinition definition : sortedDefinitions) {
 						if (definition.tag != null && !definition.tag.equals(heading)) {
 							heading = definition.tag;
-							add(new VisLabel(definition.tag)).row();
+							add(new Table() {
+								{
+									add(new VisLabel(definition.tag)).expandX();
+									add(WidgetUtils.button("-", onExpandCollapse())).size(15);
+								}
+							}).expandX().row();
 						}
 						final VisTextButton animButton = new VisTextButton(definition.name != null ? definition.name : "New Animation");
 						animButton.addListener(new ClickListener() {
@@ -100,8 +107,6 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 	}
 
 	private void createCurrentAnimTable(final Table content, final Table table, final AnimationDefinition definition, final VisTextButton button) {
-		final ScrollPane scroll = new ScrollPane(new Actor());
-		scroll.setWidget(createFrames(scroll, definition));
 		table.add(new Table() {
 			{
 				final Image image = new Image();
@@ -165,8 +170,9 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				return cfg;
 			}
 		}).row();
-
-		table.add(scroll).expandY().fill().row();
+		scroll.clear();
+		scroll.add(createFrames(scroll, definition));
+		table.add(scroll).row();
 		table.add(new Table() {
 			{
 				final VisTextButton addFrameButton = new VisTextButton("Add Frame");
@@ -175,16 +181,16 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 					public void clicked(InputEvent event, float x, float y) {
 						definition.frames.add(new AnimationFrameDefinition());
 						scroll.clear();
-						scroll.setWidget(createFrames(scroll, definition));
+						scroll.add(createFrames(scroll, definition));
 						updatePreviewAnimation(definition);
 					}
 				});
 				add(addFrameButton).padBottom(20);
 			}
-		});
+		}).expandY().top();
 	}
 
-	private Table createFrames(final ScrollPane scroll, final AnimationDefinition definition) {
+	private Table createFrames(final Table scroll, final AnimationDefinition definition) {
 		return new Table() {
 			{
 				if (definition.frames == null) {
@@ -212,7 +218,8 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 												definition.frames.removeIndex(idx);
 											}
 											scroll.clear();
-											scroll.setWidget(createFrames(scroll, definition));
+											scroll.add(createFrames(scroll, definition));
+
 										};
 									});
 								}
@@ -226,7 +233,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 												definition.frames.insert(idx, definition.frames.get(idx).copy());
 											}
 											scroll.clear();
-											scroll.setWidget(createFrames(scroll, definition));
+											scroll.add(createFrames(scroll, definition));
 										};
 									});
 								}
@@ -250,7 +257,11 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 						}
 					}).row();
 				}
-				add().expand().fill().row();
+				add(new Table() {
+					{
+						setBackground(Drawables.get("blue"));
+					}
+				}).expand().fill().row();
 			}
 		};
 	}
@@ -258,6 +269,16 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 	@Override
 	public String getTitle() {
 		return "Animations";
+	}
+
+	private Listener onExpandCollapse() {
+		return new Listener() {
+
+			@Override
+			public void invoke() {
+
+			}
+		};
 	}
 
 	@Override
@@ -289,7 +310,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 
 	/** The listener for updating anything when the {@link AnimationDefinition}
 	 * changes */
-	private Listener updateButtonListener(final Image image, final VisTextButton button, final ScrollPane scroll, final AnimationDefinition definition) {
+	private Listener updateButtonListener(final Image image, final VisTextButton button, final Table scroll, final AnimationDefinition definition) {
 		return new Listener() {
 
 			@Override
@@ -302,7 +323,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 					image.setVisible(false);
 				}
 				scroll.clear();
-				scroll.setWidget(createFrames(scroll, definition));
+				scroll.add(createFrames(scroll, definition));
 				updatePreviewAnimation(definition);
 				button.setText(definition.name);
 			}
