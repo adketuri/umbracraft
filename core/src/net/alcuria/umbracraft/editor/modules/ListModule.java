@@ -13,8 +13,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
-/** Make this abstract, then have some create method called to populate the
- * content
+/** A module to display a generic list of some definition types.
  * @author Andrew Keturi
  * @param <T> */
 public abstract class ListModule<T extends Definition> extends Module<ListDefinition> {
@@ -31,8 +30,12 @@ public abstract class ListModule<T extends Definition> extends Module<ListDefini
 		view = new Table();
 	}
 
+	/** Adds an item to the list of definitions. */
 	public abstract void addListItem();
 
+	/** Creates the ui in the right pane
+	 * @param definition the definition to use
+	 * @param content the {@link Table} containing the content */
 	public abstract void create(T definition, Table content);
 
 	@Override

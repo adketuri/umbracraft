@@ -11,9 +11,11 @@ import net.alcuria.umbracraft.editor.modules.EntityListModule;
 import net.alcuria.umbracraft.editor.modules.HeroModule;
 import net.alcuria.umbracraft.editor.modules.MapListModule;
 import net.alcuria.umbracraft.editor.modules.Module;
+import net.alcuria.umbracraft.editor.modules.ScriptListModule;
 import net.alcuria.umbracraft.editor.modules.TilesetsModule;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -26,12 +28,12 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
  * @author Andrew Keturi */
 public class EditorLayout extends Layout {
 
+	private boolean debug = false;
 	private final Array<Module<?>> modules;
 
 	public EditorLayout() {
 		modules = new Array<Module<?>>();
 		addModules();
-		//stage.setDebugAll(true);
 		Gdx.input.setInputProcessor(stage);
 		Table root = new Table();
 		root.setFillParent(true);
@@ -69,8 +71,8 @@ public class EditorLayout extends Layout {
 		modules.add(new AreaListModule());
 		modules.add(new MapListModule());
 		modules.add(new EntityListModule());
+		modules.add(new ScriptListModule());
 		modules.add(new BattleAnimationGroupListModule());
-
 	}
 
 	private Table topnav() {
@@ -91,6 +93,15 @@ public class EditorLayout extends Layout {
 				});
 			}
 		};
+	}
+
+	@Override
+	public void update(float delta) {
+		super.update(delta);
+		if (Gdx.input.isKeyJustPressed(Keys.F1)) {
+			debug = !debug;
+			stage.setDebugAll(debug);
+		}
 	}
 
 }

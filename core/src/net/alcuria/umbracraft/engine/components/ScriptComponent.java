@@ -3,7 +3,6 @@ package net.alcuria.umbracraft.engine.components;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.StartCondition;
-import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
@@ -35,10 +34,7 @@ public class ScriptComponent implements Component, EventListener {
 		// create a dummy event page for now
 		scriptPage = new ScriptPageDefinition();
 		scriptPage.haltInput = true;
-		scriptPage.facing = Direction.DOWN;
-		scriptPage.hidden = false;
 		scriptPage.start = StartCondition.ON_INTERACTION;
-		scriptPage.position = new Vector3(10, 10, 0);
 		scriptPage.commands = new Array<ScriptCommand>() {
 			{
 				add(Commands.message("Start a battle"));
