@@ -1,5 +1,8 @@
 package net.alcuria.umbracraft.editor.modules;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
@@ -30,9 +33,11 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
  * @author Andrew Keturi */
 public class AnimationsModule extends Module<AnimationListDefinition> {
 
+	private final Table animationListContents = new Table();
 	private final Array<VisTextButton> buttons = new Array<VisTextButton>();
 	private Table currentAnimTable;
-	private final ObjectMap<String, Boolean> expandedTags = new ObjectMap<String, Boolean>();
+	private final Set<String> expandedTags = new HashSet<String>();
+	private String highlightedButton;
 	private Table previewTable;
 	private final Table scroll = new Table();
 	private final Array<AnimationDefinition> sortedDefinitions = new Array<AnimationDefinition>();
@@ -47,62 +52,8 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 
 	private void addAnimationList(final Table content) {
 		buttons.clear();
-		ScrollPane scroll = new ScrollPane(new Table() {
-			{
-				defaults().expandX().uniformX().fill();
-				if (rootDefinition != null && rootDefinition.animations != null) {
-					// add all definitions to a new list
-					sortedDefinitions.clear();
-					for (final AnimationDefinition definition : rootDefinition.animations.values()) {
-						sortedDefinitions.add(definition);
-					}
-					// sort the list
-					sortedDefinitions.sort();
-					// now display the list
-					String heading = null;
-					for (final AnimationDefinition definition : sortedDefinitions) {
-						if (definition.tag != null && !definition.tag.equals(heading)) {
-							heading = definition.tag;
-							add(new Table() {
-								{
-									add(new VisLabel(definition.tag)).expandX();
-									add(WidgetUtils.button("-", onExpandCollapse())).size(15);
-								}
-							}).expandX().row();
-						}
-						final VisTextButton animButton = new VisTextButton(definition.name != null ? definition.name : "New Animation");
-						animButton.addListener(new ClickListener() {
-
-							@Override
-							public void clicked(InputEvent event, float x, float y) {
-								currentAnimTable.clear();
-								createCurrentAnimTable(content, currentAnimTable, definition, animButton);
-								// highlight
-								for (VisTextButton a : buttons) {
-									a.getLabel().setColor(Color.WHITE);
-								}
-								animButton.getLabel().setColor(Color.YELLOW);
-							}
-
-						});
-						add(animButton).row();
-						buttons.add(animButton);
-					}
-				}
-				add().expandY().fill().row();
-				VisTextButton addButton = new VisTextButton("Add Animation");
-				addButton.addListener(new ClickListener() {
-
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						rootDefinition.add();
-						content.clear();
-						populate(content);
-					}
-				});
-				add(addButton).padTop(20).padBottom(20).row();
-			}
-		});
+		ScrollPane scroll = new ScrollPane(animationListContents);
+		updateAnimationList(content);
 		content.add(scroll).expandY().fill().padLeft(5);
 	}
 
@@ -271,12 +222,17 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 		return "Animations";
 	}
 
-	private Listener onExpandCollapse() {
+	private Listener onExpandCollapse(final Table content, final String tag) {
 		return new Listener() {
 
 			@Override
 			public void invoke() {
-
+				if (expandedTags.contains(tag)) {
+					expandedTags.remove(tag);
+				} else {
+					expandedTags.add(tag);
+				}
+				updateAnimationList(content);
 			}
 		};
 	}
@@ -308,6 +264,66 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 		Gdx.files.external("umbracraft/" + getTitle().toLowerCase() + ".json").writeString(jsonStr, false);
 	}
 
+	private void updateAnimationList(final Table content) {
+		animationListContents.clear();
+		animationListContents.add(new Table() {
+			{
+				defaults().expandX().uniformX().fill();
+				if (rootDefinition != null && rootDefinition.animations != null) {
+					// add all definitions to a new list
+					sortedDefinitions.clear();
+					for (final AnimationDefinition definition : rootDefinition.animations.values()) {
+						sortedDefinitions.add(definition);
+					}
+					// sort the list
+					sortedDefinitions.sort();
+					// now display the list
+					String heading = null;
+					for (final AnimationDefinition definition : sortedDefinitions) {
+						if (definition.tag != null && !definition.tag.equals(heading)) {
+							heading = definition.tag;
+							add(new Table() {
+								{
+									add(new VisLabel(definition.tag)).expandX();
+									add(WidgetUtils.button(expandedTags.contains(definition.tag) ? "-" : "+", onExpandCollapse(content, definition.tag))).size(15);
+								}
+							}).expandX().width(200).row();
+						}
+						if (expandedTags.contains(definition.tag)) {
+							final VisTextButton animButton = new VisTextButton(definition.name != null ? definition.name : "New Animation");
+							animButton.addListener(new ClickListener() {
+
+								@Override
+								public void clicked(InputEvent event, float x, float y) {
+									currentAnimTable.clear();
+									createCurrentAnimTable(content, currentAnimTable, definition, animButton);
+									highlightedButton = definition.name;
+									updateHighlighted();
+								}
+
+							});
+							add(animButton).row();
+							buttons.add(animButton);
+						}
+					}
+				}
+				add().expandY().fill().row();
+				VisTextButton addButton = new VisTextButton("Add Animation");
+				addButton.addListener(new ClickListener() {
+
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						rootDefinition.add();
+						content.clear();
+						populate(content);
+					}
+				});
+				add(addButton).padTop(20).padBottom(20).row();
+			}
+		}).expandY().fillY();
+		updateHighlighted();
+	}
+
 	/** The listener for updating anything when the {@link AnimationDefinition}
 	 * changes */
 	private Listener updateButtonListener(final Image image, final VisTextButton button, final Table scroll, final AnimationDefinition definition) {
@@ -329,6 +345,17 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 			}
 
 		};
+	}
+
+	private void updateHighlighted() {
+		if (highlightedButton == null) {
+			return;
+		}
+		// highlight
+		for (VisTextButton a : buttons) {
+			String text = a.getLabel().getText().toString();
+			a.getLabel().setColor(highlightedButton.equals(text) ? Color.YELLOW : Color.WHITE);
+		}
 	}
 
 	private void updatePreviewAnimation(AnimationDefinition definition) {

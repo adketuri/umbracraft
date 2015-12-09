@@ -55,6 +55,7 @@ public class AnimationDefinition extends Definition implements Comparable<Animat
 
 	public AnimationDefinition(int id) {
 		name = "Animation " + id;
+		tag = "!New";
 	}
 
 	@Override
