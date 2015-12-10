@@ -17,6 +17,8 @@ public class ScriptPageDefinition extends Definition {
 	public Array<ScriptCommand> commands;
 	/** Whether or not to halt player input on touch */
 	public boolean haltInput;
+	/** A name for the page */
+	public String name;
 	/** The precondition of this event page */
 	public Object precondition;
 	/** How the event starts */
@@ -24,7 +26,7 @@ public class ScriptPageDefinition extends Definition {
 
 	@Override
 	public String getName() {
-		return "Page";
+		return name != null ? name : "Untitled";
 	}
 
 }
