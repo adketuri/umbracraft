@@ -7,6 +7,7 @@ import net.alcuria.umbracraft.editor.layout.EditorLayout;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -21,7 +22,7 @@ public class WidgetUtils {
 	 * @param text a {@link String} to display on the button
 	 * @param listener the {@link Listener} to invoke on click
 	 * @return the {@link VisTextButton} */
-	public static Actor button(final String text, final Listener listener) {
+	public static TextButton button(final String text, final Listener listener) {
 		return new VisTextButton(text) {
 			{
 				addListener(new ClickListener() {

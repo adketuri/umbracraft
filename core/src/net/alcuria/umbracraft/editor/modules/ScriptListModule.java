@@ -4,16 +4,20 @@ import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.StartCondition;
+import net.alcuria.umbracraft.editor.widget.ScriptCommandsWidget;
 import net.alcuria.umbracraft.editor.widget.ScriptPreconditionsWidget;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Array;
 
 /** A module for displaying and editing scripts.
  * @author Andrew Keturi */
 public class ScriptListModule extends ListModule<ScriptDefinition> {
 
+	private final ScriptCommandsWidget commandsWidget = new ScriptCommandsWidget();
 	private ScriptPageDefinition currentPage;
 	private final Table headerTable = new Table(), preconditionsTable = new Table(), commandsTable = new Table();
 	private final ScriptPreconditionsWidget preconditionsWidget = new ScriptPreconditionsWidget();
@@ -66,6 +70,21 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 		return "Scripts";
 	}
 
+	private Listener removePageListener() {
+		return new Listener() {
+
+			@Override
+			public void invoke() {
+				if (script.pages.size > 1) {
+					script.pages.removeValue(currentPage, true);
+					currentPage = script.pages.first();
+					updateHeader();
+				}
+				updateHeader();
+			}
+		};
+	}
+
 	private Listener setPageListener(final ScriptPageDefinition page) {
 		return new Listener() {
 
@@ -74,22 +93,27 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 				currentPage = page;
 				updateCommands();
 				updatePreconditions();
+				updateHeader();
 			}
 		};
 	}
 
 	private void updateCommands() {
 		commandsTable.clear();
-		commandsTable.add().expand().fill();
+		commandsTable.add(commandsWidget.getActor()).expand().fill();
+		commandsWidget.setPage(currentPage);
 	}
 
 	private void updateHeader() {
 		headerTable.clear();
 		headerTable.defaults().pad(5);
 		for (final ScriptPageDefinition page : script.pages) {
-			headerTable.add(WidgetUtils.button(page.name, setPageListener(page)));
+			final TextButton pageButton = WidgetUtils.button(page.name, setPageListener(page));
+			pageButton.getLabel().setColor(page == currentPage ? Color.YELLOW : Color.WHITE);
+			headerTable.add(pageButton);
 		}
 		headerTable.add(WidgetUtils.button("+", addPageListener()));
+		headerTable.add(WidgetUtils.button("-", removePageListener()));
 	}
 
 	private void updatePreconditions() {
