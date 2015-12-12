@@ -29,7 +29,7 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 		script.name = "Script " + rootDefinition.size();
 		script.pages = new Array<ScriptPageDefinition>();
 		final ScriptPageDefinition page = new ScriptPageDefinition();
-		page.start = StartCondition.ON_INTERACTION;
+		page.startCondition = StartCondition.ON_INTERACTION;
 		page.name = "Untitled";
 		script.pages.add(page);
 		rootDefinition.add(script);
@@ -41,7 +41,7 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 			@Override
 			public void invoke() {
 				final ScriptPageDefinition page = new ScriptPageDefinition();
-				page.start = StartCondition.ON_INTERACTION;
+				page.startCondition = StartCondition.ON_INTERACTION;
 				page.name = "Untitled " + (script.pages.size + 1);
 				script.pages.add(page);
 				updateHeader();

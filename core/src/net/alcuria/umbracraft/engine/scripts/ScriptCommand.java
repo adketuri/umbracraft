@@ -8,11 +8,17 @@ public abstract class ScriptCommand {
 		COMPLETE, NOT_STARTED, STARTED
 	}
 
+	private ScriptCommand next;
 	private CommandState state = CommandState.NOT_STARTED;
 
 	public void complete() {
 		state = CommandState.COMPLETE;
 		onCompleted();
+	}
+
+	/** @return the next command in the list */
+	public ScriptCommand getNext() {
+		return next;
 	}
 
 	/** @return the {@link CommandState} */
@@ -33,6 +39,17 @@ public abstract class ScriptCommand {
 	public abstract void onCompleted();
 
 	public abstract void onStarted();
+
+	/** Sets the next command, effectively adding a child command.
+	 * @param command the {@link ScriptCommand} */
+	public void setNext(ScriptCommand command) {
+		if (next == null) {
+			next = command;
+		} else {
+			next.setNext(command);
+		}
+
+	}
 
 	public void setState(CommandState state) {
 		this.state = state;

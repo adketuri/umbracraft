@@ -15,7 +15,6 @@ import net.alcuria.umbracraft.engine.scripts.ScriptCommand.CommandState;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 
 /** A component for handling scripted events, such as cutscenes. Consists of a
  * {@link ScriptPageDefinition} that is read and updated accordingly.
@@ -24,7 +23,7 @@ public class ScriptComponent implements Component, EventListener {
 
 	private boolean active = false;
 	private final Rectangle collisionRect = new Rectangle();
-	private int commandIndex = 0;
+	private ScriptCommand currentCommand;
 	private boolean pressed = false;
 	private ScriptPageDefinition scriptPage;
 	private final Vector3 source = new Vector3();
@@ -34,25 +33,28 @@ public class ScriptComponent implements Component, EventListener {
 		// create a dummy event page for now
 		scriptPage = new ScriptPageDefinition();
 		scriptPage.haltInput = true;
-		scriptPage.start = StartCondition.ON_INTERACTION;
-		scriptPage.commands = new Array<ScriptCommand>() {
-			{
-				add(Commands.message("Start a battle"));
-				add(Commands.pause(0.4f));
-				add(Commands.battle());
-				add(Commands.message("You're done!"));
-				//add(Commands.cameraTarget("Chest2"));
-				//add(Commands.cameraTarget(Entity.PLAYER));
-				//add(Commands.move("Chest", 2, 2, true));
-				//add(Commands.teleport("Test", 5, 5));
-				//add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
-				//add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
-				//add(Commands.pause(1));
-				//add(Commands.message("This is not a mockup. I've finally implemented some simple messageboxes which should comfortably fit three or four lines. Still a work-in-progress, though."));
-
-			}
-		};
-		// listen for when a key is pressed
+		scriptPage.startCondition = StartCondition.ON_INTERACTION;
+		scriptPage.addCommand(Commands.message("Start a battle"));
+		scriptPage.addCommand(Commands.pause(0.4f));
+		scriptPage.addCommand(Commands.message("All done!"));
+		//		scriptPage.commands = new Array<ScriptCommand>() {
+		//			{
+		//				add(Commands.message("Start a battle"));
+		//				add(Commands.pause(0.4f));
+		//				add(Commands.battle());
+		//				add(Commands.message("You're done!"));
+		//				//add(Commands.cameraTarget("Chest2"));
+		//				//add(Commands.cameraTarget(Entity.PLAYER));
+		//				//add(Commands.move("Chest", 2, 2, true));
+		//				//add(Commands.teleport("Test", 5, 5));
+		//				//add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
+		//				//add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
+		//				//add(Commands.pause(1));
+		//				//add(Commands.message("This is not a mockup. I've finally implemented some simple messageboxes which should comfortably fit three or four lines. Still a work-in-progress, though."));
+		//
+		//			}
+		//		};
+		// listen for a key press
 		Game.publisher().subscribe(this);
 	}
 
@@ -76,10 +78,10 @@ public class ScriptComponent implements Component, EventListener {
 
 	/** Starts a script. should only be called once at the start */
 	private void startScript() {
-		// first time starting, publish an event
 		Game.publisher().publish(new ScriptStartedEvent(scriptPage));
 		// halt player movement
 		Game.entities().find(Entity.PLAYER).velocity.set(0, 0, 0);
+		currentCommand = scriptPage.command;
 		active = true;
 		pressed = false;
 	}
@@ -101,26 +103,21 @@ public class ScriptComponent implements Component, EventListener {
 
 	@Override
 	public void update(Entity entity) {
-		if (commandIndex < 0) {
-			throw new IllegalStateException("Command index cannot be < 0");
-		}
 		// if we have some pages to execute, see if we can do that
-		if (commandIndex < scriptPage.commands.size) {
-			if (!active) {
-				switch (scriptPage.start) {
-				case INSTANT:
+		if (!active) {
+			switch (scriptPage.startCondition) {
+			case INSTANT:
+				startScript();
+				break;
+			case ON_INTERACTION:
+				if (pressed && touching(entity)) {
 					startScript();
-					break;
-				case ON_INTERACTION:
-					if (pressed && touching(entity)) {
-						startScript();
-					}
-				default:
-
 				}
-			} else {
-				updateScript();
+			default:
+
 			}
+		} else {
+			updateScript();
 		}
 
 	}
@@ -128,28 +125,23 @@ public class ScriptComponent implements Component, EventListener {
 	/** Updates the script, assumes all preconditions are met. (Eg., key has been
 	 * pressed, etc.) */
 	private void updateScript() {
-		// update our script
-		final ScriptCommand command = scriptPage.commands.get(commandIndex);
 		// if its done, increment our index
-		switch (command.getState()) {
+		switch (currentCommand.getState()) {
 		case COMPLETE:
-			commandIndex++;
+			currentCommand.setState(CommandState.NOT_STARTED);
+			currentCommand = currentCommand.getNext();
 			break;
 		case NOT_STARTED:
-			command.start();
+			currentCommand.start();
 			break;
 		case STARTED:
-			command.update();
+			currentCommand.update();
 			break;
 		default:
 			break;
 		}
 		// check if we're done with all scripts
-		if (commandIndex >= scriptPage.commands.size) {
-			commandIndex = 0;
-			for (ScriptCommand s : scriptPage.commands) {
-				s.setState(CommandState.NOT_STARTED);
-			}
+		if (currentCommand == null) {
 			active = false;
 			Game.publisher().publish(new ScriptEndedEvent(scriptPage));
 		}
