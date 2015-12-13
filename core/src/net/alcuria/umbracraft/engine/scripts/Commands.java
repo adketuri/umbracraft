@@ -26,6 +26,11 @@ public class Commands {
 		return new ScriptCommand() {
 
 			@Override
+			public String getName() {
+				return "battle";
+			}
+
+			@Override
 			public void onCompleted() {
 
 			}
@@ -44,6 +49,11 @@ public class Commands {
 
 	public static ScriptCommand cameraTarget(final String name) {
 		return new ScriptCommand() {
+
+			@Override
+			public String getName() {
+				return "camera";
+			}
 
 			@Override
 			public void onCompleted() {
@@ -68,11 +78,41 @@ public class Commands {
 		};
 	}
 
+	public static ScriptCommand empty() {
+		return new ScriptCommand() {
+
+			@Override
+			public String getName() {
+				return "empty";
+			}
+
+			@Override
+			public void onCompleted() {
+
+			}
+
+			@Override
+			public void onStarted() {
+
+			}
+
+			@Override
+			public void update() {
+
+			}
+		};
+	}
+
 	/** A script to log a message to stdout
 	 * @param message the message to display
 	 * @return the {@link ScriptCommand} */
 	public static ScriptCommand log(final String message) {
 		return new ScriptCommand() {
+
+			@Override
+			public String getName() {
+				return "log";
+			}
 
 			@Override
 			public void onCompleted() {
@@ -97,6 +137,11 @@ public class Commands {
 
 			private boolean dismissable = false;
 			private MessageWindow window;
+
+			@Override
+			public String getName() {
+				return "message: '" + message + "'";
+			}
 
 			@Override
 			public void onCompleted() {
@@ -130,6 +175,11 @@ public class Commands {
 	 * @return the {@link ScriptCommand} */
 	public static ScriptCommand move(final String id, final int x, final int y, final boolean relative) {
 		return new ScriptCommand() {
+
+			@Override
+			public String getName() {
+				return "move";
+			}
 
 			@Override
 			public void onCompleted() {
@@ -170,6 +220,11 @@ public class Commands {
 			float curTime;
 
 			@Override
+			public String getName() {
+				return "pause";
+			}
+
+			@Override
 			public void onCompleted() {
 
 			}
@@ -201,6 +256,11 @@ public class Commands {
 	 * @return the {@link ScriptCommand} */
 	public static ScriptCommand showAnim(final String name, final String anim, final boolean wait, final boolean removeAfter) {
 		return new ScriptCommand() {
+
+			@Override
+			public String getName() {
+				return "showAnim";
+			}
 
 			@Override
 			public void onCompleted() {
@@ -244,6 +304,11 @@ public class Commands {
 			private final float FADE_TIME = 0.5f;
 			private boolean teleported;
 			private float time;
+
+			@Override
+			public String getName() {
+				return "teleport";
+			}
 
 			@Override
 			public void onCompleted() {

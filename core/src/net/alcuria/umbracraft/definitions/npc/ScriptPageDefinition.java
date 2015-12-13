@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.npc;
 
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 
@@ -22,18 +23,32 @@ public class ScriptPageDefinition extends Definition {
 	/** How the event starts */
 	public StartCondition startCondition;
 
-	/** Adds a new command to the tree */
 	public void addCommand(ScriptCommand command) {
 		if (this.command == null) {
 			this.command = command;
 		} else {
-			this.command.setNext(command);
+			this.command.add(command);
 		}
 	}
 
 	@Override
 	public String getName() {
 		return name != null ? name : "Untitled";
+	}
+
+	public ScriptCommand getParent(ScriptCommand start, ScriptCommand child) {
+		if (start == null) {
+			return null;
+		} else if (start.getNext() == child) {
+			Game.log("Found parent: " + start.getName());
+			return start;
+		} else {
+			return getParent(start.getNext(), child);
+		}
+	}
+
+	public void printCommands() {
+		command.print();
 	}
 
 }
