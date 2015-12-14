@@ -3,7 +3,6 @@ package net.alcuria.umbracraft.editor.widget;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 
@@ -17,16 +16,6 @@ public class ScriptCommandsWidget {
 	private ScriptPageDefinition currentPage;
 	private ScriptCommandWidget widget;
 
-	private Listener closePopup() {
-		return new Listener() {
-
-			@Override
-			public void invoke() {
-				commandEntry.clear();
-			}
-		};
-	}
-
 	public Actor getActor() {
 		return content;
 	}
@@ -37,21 +26,8 @@ public class ScriptCommandsWidget {
 		commandEntry.clear();
 		selected.clear();
 		content.stack(commandList, commandEntry).expandX().fill();
-		widget = new ScriptCommandWidget(commandList, page, page.command, showPopup());
+		widget = new ScriptCommandWidget(commandList, commandEntry, page, page.command);
 		widget.addActor();
-	}
-
-	private Listener showPopup() {
-		return new Listener() {
-
-			@Override
-			public void invoke() {
-				selected.clear();
-				commandEntry.clear();
-				WidgetUtils.popupTitle(commandEntry, "Add Command", closePopup());
-				//setPage(currentPage);
-			}
-		};
 	}
 
 }

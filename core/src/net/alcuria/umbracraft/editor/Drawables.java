@@ -41,6 +41,7 @@ public class Drawables {
 		}
 		Texture texture = new Texture(Gdx.files.internal("editor/skin.png"));
 		drawables = new ObjectMap<String, TextureRegionDrawable>();
+		drawables.put("transparent", new TextureRegionDrawable(new TextureRegion(texture, 0, 0, 0, 0)));
 		drawables.put("black", new TextureRegionDrawable(new TextureRegion(texture, 0, 0, 1, 1)));
 		drawables.put("yellow", new TextureRegionDrawable(new TextureRegion(texture, 1, 0, 1, 1)));
 		drawables.put("blue", new TextureRegionDrawable(new TextureRegion(texture, 2, 0, 1, 1)));

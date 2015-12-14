@@ -17,16 +17,15 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 public class ScriptCommandWidget extends Module<ScriptCommand> {
 
 	private final ScriptCommand command;
-	private final Table content;
+	private final Table content, popup;
 	private ScriptCommandWidget nextWidget;
 	private final ScriptPageDefinition page;
-	private final Listener showPopup;
 
-	public ScriptCommandWidget(Table content, ScriptPageDefinition page, ScriptCommand command, Listener showPopup) {
+	public ScriptCommandWidget(Table content, Table popup, ScriptPageDefinition page, ScriptCommand command) {
 		this.command = command;
+		this.popup = popup;
 		this.page = page;
 		this.content = content;
-		this.showPopup = showPopup;
 	}
 
 	public void addActor() {
@@ -55,7 +54,14 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 							//								// no parent, this new command now becomes the HEAD
 							//								page.command = newCommand;
 							//							}
-							showPopup.invoke();
+							//showPopup.invoke();
+							ScriptCommandsWidget.selected.clear();
+							popup.setVisible(true);
+							popup.clear();
+							WidgetUtils.popupTitle(popup, "Add Command", closePopup());
+							popup.setBackground(Drawables.get("black"));
+							populate(popup, command.getClass(), command, new PopulateConfig());
+							//setPage(currentPage);
 						}
 					};
 				});
@@ -71,14 +77,24 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 
 		}).expandX().fill().row();
 		if (command != null) {
-			nextWidget = new ScriptCommandWidget(content, page, command.getNext(), showPopup);
+			nextWidget = new ScriptCommandWidget(content, popup, page, command.getNext());
 			nextWidget.addActor();
 		}
 	}
 
+	private Listener closePopup() {
+		return new Listener() {
+
+			@Override
+			public void invoke() {
+				popup.setVisible(false);
+			}
+		};
+	}
+
 	@Override
 	public String getTitle() {
-		return "Commands";
+		return "Title";
 	}
 
 	@Override

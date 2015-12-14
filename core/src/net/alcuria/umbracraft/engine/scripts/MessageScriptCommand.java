@@ -15,7 +15,7 @@ import com.badlogic.gdx.Input.Keys;
 public class MessageScriptCommand extends ScriptCommand {
 
 	private boolean dismissable = false;
-	private final String message;
+	public String message;
 	private MessageWindow window;
 
 	public MessageScriptCommand(final String message) {
