@@ -7,7 +7,7 @@ import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.StartConditio
 import net.alcuria.umbracraft.editor.widget.ScriptCommandsWidget;
 import net.alcuria.umbracraft.editor.widget.ScriptPreconditionsWidget;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
-import net.alcuria.umbracraft.engine.scripts.Commands;
+import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -32,11 +32,10 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 		final ScriptPageDefinition page = new ScriptPageDefinition();
 		page.startCondition = StartCondition.ON_INTERACTION;
 		page.name = "Untitled";
-		page.command = Commands.message("first");
-		page.command.add(Commands.message("second"));
-		page.command.getNext().add(Commands.message("third"));
-		page.command.getNext().getNext().add(Commands.message("fourth"));
-
+		page.command = new MessageScriptCommand("first");
+		page.command.add(new MessageScriptCommand("second"));
+		page.command.getNext().add(new MessageScriptCommand("third"));
+		page.command.getNext().getNext().add(new MessageScriptCommand("fourth"));
 		script.pages.add(page);
 		rootDefinition.add(script);
 	}

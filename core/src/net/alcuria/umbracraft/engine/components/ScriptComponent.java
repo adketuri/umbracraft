@@ -8,7 +8,8 @@ import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.ScriptEndedEvent;
 import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
-import net.alcuria.umbracraft.engine.scripts.Commands;
+import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.PauseScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand.CommandState;
 
@@ -34,9 +35,9 @@ public class ScriptComponent implements Component, EventListener {
 		scriptPage = new ScriptPageDefinition();
 		scriptPage.haltInput = true;
 		scriptPage.startCondition = StartCondition.ON_INTERACTION;
-		scriptPage.addCommand(Commands.message("Start a battle"));
-		scriptPage.addCommand(Commands.pause(0.4f));
-		scriptPage.addCommand(Commands.message("All done!"));
+		scriptPage.addCommand(new MessageScriptCommand("Start a battle"));
+		scriptPage.addCommand(new PauseScriptCommand(0.4f));
+		scriptPage.addCommand(new MessageScriptCommand("All done!"));
 		//		scriptPage.commands = new Array<ScriptCommand>() {
 		//			{
 		//				add(Commands.message("Start a battle"));

@@ -1,16 +1,31 @@
 package net.alcuria.umbracraft.editor.widget;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
+import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class ScriptCommandsWidget {
 
-	private final Table content = new Table();
+	public static final Set<ScriptCommand> selected = new HashSet<ScriptCommand>();
+	private final Table content = new Table(), commandList = new Table(), commandEntry = new Table();
 	private ScriptPageDefinition currentPage;
 	private ScriptCommandWidget widget;
+
+	private Listener closePopup() {
+		return new Listener() {
+
+			@Override
+			public void invoke() {
+				commandEntry.clear();
+			}
+		};
+	}
 
 	public Actor getActor() {
 		return content;
@@ -18,19 +33,23 @@ public class ScriptCommandsWidget {
 
 	public void setPage(final ScriptPageDefinition page) {
 		currentPage = page;
-		content.clear();
-		content.defaults().expandX().fill();
-		widget = new ScriptCommandWidget(content, page, page.command, updateListener());
+		commandList.clear();
+		commandEntry.clear();
+		selected.clear();
+		content.stack(commandList, commandEntry).expandX().fill();
+		widget = new ScriptCommandWidget(commandList, page, page.command, showPopup());
 		widget.addActor();
-
 	}
 
-	private Listener updateListener() {
+	private Listener showPopup() {
 		return new Listener() {
 
 			@Override
 			public void invoke() {
-				setPage(currentPage);
+				selected.clear();
+				commandEntry.clear();
+				WidgetUtils.popupTitle(commandEntry, "Add Command", closePopup());
+				//setPage(currentPage);
 			}
 		};
 	}

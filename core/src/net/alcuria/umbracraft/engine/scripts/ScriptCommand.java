@@ -1,8 +1,10 @@
 package net.alcuria.umbracraft.engine.scripts;
 
+import net.alcuria.umbracraft.definitions.Definition;
+
 /** Any abstract command that is part of a scripted cutscene.
  * @author Andrew Keturi */
-public abstract class ScriptCommand {
+public abstract class ScriptCommand extends Definition {
 
 	public static enum CommandState {
 		COMPLETE, NOT_STARTED, STARTED

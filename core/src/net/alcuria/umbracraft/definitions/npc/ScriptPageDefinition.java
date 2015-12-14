@@ -23,6 +23,7 @@ public class ScriptPageDefinition extends Definition {
 	/** How the event starts */
 	public StartCondition startCondition;
 
+	//FIXME: temp
 	public void addCommand(ScriptCommand command) {
 		if (this.command == null) {
 			this.command = command;
@@ -36,6 +37,10 @@ public class ScriptPageDefinition extends Definition {
 		return name != null ? name : "Untitled";
 	}
 
+	/** Gets the parent of a particular {@link ScriptCommand}
+	 * @param start
+	 * @param child
+	 * @return */
 	public ScriptCommand getParent(ScriptCommand start, ScriptCommand child) {
 		if (start == null) {
 			return null;
