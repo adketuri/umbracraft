@@ -8,7 +8,7 @@ import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
  * @author Andrew Keturi */
 public class CameraTargetScriptCommand extends ScriptCommand {
 
-	private final String name;
+	public String name;
 
 	public CameraTargetScriptCommand(final String name) {
 		this.name = name;

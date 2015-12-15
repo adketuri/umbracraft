@@ -6,6 +6,8 @@ import net.alcuria.umbracraft.Game;
  * @author Andrew Keturi */
 public class BattleScriptCommand extends ScriptCommand {
 
+	public String id;
+
 	@Override
 	public String getName() {
 		return "Battle:";

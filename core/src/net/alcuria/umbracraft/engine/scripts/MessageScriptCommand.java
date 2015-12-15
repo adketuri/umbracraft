@@ -18,6 +18,9 @@ public class MessageScriptCommand extends ScriptCommand {
 	public String message;
 	private MessageWindow window;
 
+	public MessageScriptCommand() {
+	}
+
 	public MessageScriptCommand(final String message) {
 		this.message = message;
 	}

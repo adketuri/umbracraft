@@ -5,7 +5,8 @@ import net.alcuria.umbracraft.Game;
 /** A {@link ScriptCommand} to simply log some message to the console.
  * @author Andrew Keturi */
 public class LogScriptCommand extends ScriptCommand {
-	private final String message;
+
+	public String message;
 
 	/** @param message the message to be displayed using {@link Game#log(String)} */
 	public LogScriptCommand(final String message) {

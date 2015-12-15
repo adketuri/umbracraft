@@ -5,8 +5,8 @@ import com.badlogic.gdx.Gdx;
 /** Pauses script execution for some amount of seconds
  * @author Andrew Keturi */
 public class PauseScriptCommand extends ScriptCommand {
-	float curTime;
-	private final float time;
+	private float curTime;
+	public float time;
 
 	public PauseScriptCommand(float time) {
 		this.time = time;

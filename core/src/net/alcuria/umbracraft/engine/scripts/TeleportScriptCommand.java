@@ -11,8 +11,7 @@ import com.badlogic.gdx.graphics.Color;
 public class TeleportScriptCommand extends ScriptCommand {
 
 	private final float FADE_TIME = 0.5f;
-	private final String id;
-
+	public String id;
 	private boolean teleported;
 	private float time;
 

@@ -10,9 +10,9 @@ import net.alcuria.umbracraft.engine.entities.Entity;
  * @author Andrew Andrew Keturi */
 public class MoveScriptCommand extends ScriptCommand {
 
-	private final String id;
-	private final boolean relative;
-	private final int x, y;
+	public String id;
+	public boolean relative;
+	public int x, y;
 
 	/** @param id the entity name
 	 * @param x the x position

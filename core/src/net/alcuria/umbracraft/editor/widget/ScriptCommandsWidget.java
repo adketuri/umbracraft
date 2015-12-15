@@ -20,13 +20,17 @@ public class ScriptCommandsWidget {
 		return content;
 	}
 
+	public void setPage() {
+		setPage(currentPage);
+	}
+
 	public void setPage(final ScriptPageDefinition page) {
 		currentPage = page;
 		commandList.clear();
 		commandEntry.clear();
 		selected.clear();
 		content.stack(commandList, commandEntry).expandX().fill();
-		widget = new ScriptCommandWidget(commandList, commandEntry, page, page.command);
+		widget = new ScriptCommandWidget(this, commandList, commandEntry, page, page.command);
 		widget.addActor();
 	}
 

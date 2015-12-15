@@ -12,8 +12,8 @@ import net.alcuria.umbracraft.engine.entities.Entity;
  * @author Andrew Keturi */
 public class ShowAnimationScriptCommand extends ScriptCommand {
 
-	private final String name, anim;
-	private final boolean wait, removeAfter;
+	public String name, anim;
+	public boolean wait, removeAfter;
 
 	/** @param name the name of the {@link Entity}
 	 * @param anim the name of the {@link AnimationDefinition}
