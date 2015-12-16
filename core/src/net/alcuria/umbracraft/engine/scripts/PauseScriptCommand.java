@@ -8,13 +8,16 @@ public class PauseScriptCommand extends ScriptCommand {
 	private float curTime;
 	public float time;
 
+	public PauseScriptCommand() {
+	}
+
 	public PauseScriptCommand(float time) {
 		this.time = time;
 	}
 
 	@Override
 	public String getName() {
-		return "pause";
+		return "Pause: " + time;
 	}
 
 	@Override

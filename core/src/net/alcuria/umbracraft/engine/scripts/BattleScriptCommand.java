@@ -8,6 +8,10 @@ public class BattleScriptCommand extends ScriptCommand {
 
 	public String id;
 
+	public BattleScriptCommand() {
+
+	}
+
 	@Override
 	public String getName() {
 		return "Battle:";

@@ -14,6 +14,9 @@ public class MoveScriptCommand extends ScriptCommand {
 	public boolean relative;
 	public int x, y;
 
+	public MoveScriptCommand() {
+	}
+
 	/** @param id the entity name
 	 * @param x the x position
 	 * @param y the y position

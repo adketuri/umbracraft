@@ -15,6 +15,8 @@ import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ShowAnimationScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.TeleportScriptCommand;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -25,7 +27,6 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextField;
 
 public class ScriptCommandWidget extends Module<ScriptCommand> {
-
 	public static enum Commands {
 		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), //
 		MOVE("Move", MoveScriptCommand.class), PAUSE("Pause", PauseScriptCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class);
@@ -73,13 +74,15 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 
 	}
 
+	private static boolean consumed = false;
+
 	private ScriptCommand command, newCommand;
-	private final ScriptCommandsWidget commandsWidget;
+	private final ScriptPageWidget commandsWidget;
 	private final Table content, popup, popupFields = new Table();
 	private ScriptCommandWidget nextWidget;
 	private final ScriptPageDefinition page;
 
-	public ScriptCommandWidget(ScriptCommandsWidget commandsWidget, Table content, Table popup, ScriptPageDefinition page, ScriptCommand command) {
+	public ScriptCommandWidget(ScriptPageWidget commandsWidget, Table content, Table popup, ScriptPageDefinition page, ScriptCommand command) {
 		this.command = command;
 		this.popup = popup;
 		this.page = page;
@@ -98,23 +101,25 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						ScriptCommandsWidget.selected.clear();
-						ScriptCommandsWidget.selected.add(command);
+						ScriptPageWidget.selected.clear();
+						ScriptPageWidget.selected.add(command);
 						if (getTapCount() > 1) {
-							Game.log("double click");
+							// insert new command above this
 							popup.setVisible(true);
 							popup.clear();
 							popupFields.clear();
-							WidgetUtils.popupTitle(popup, "Add Command", closePopup());
 							popup.setBackground(Drawables.get("black"));
-							SuggestionWidget suggestionsWidget = new SuggestionWidget(Commands.getAll(), 100);
-							popup.add(suggestionsWidget.getActor()).row();
+							WidgetUtils.popupTitle(popup, "Add Command", closePopup());
+							final SuggestionWidget suggestionsWidget = new SuggestionWidget(Commands.getAll(), 100);
+							popup.add(new Table() {
+								{
+									add(new VisLabel("Enter Command:"));
+									add(suggestionsWidget.getActor());
+								}
+							}).row();
 							suggestionsWidget.addSelectListener(commandSelected(suggestionsWidget.getTextField()));
 							suggestionsWidget.setGenericPopulate(commandSelected(suggestionsWidget.getTextField()));
-							if (command != null) {
-								//suggestionsWidget.getTextField().setText("Commands...");
-							}
-							popup.add(popupFields).row();
+							popup.add(popupFields).expand().fill().row();
 						}
 					}
 
@@ -125,8 +130,42 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			@Override
 			public void act(float delta) {
 				super.act(delta);
-				setBackground(ScriptCommandsWidget.selected.contains(command) ? Drawables.get("yellow") : Drawables.get("black"));
-				label.setColor(ScriptCommandsWidget.selected.contains(command) ? Color.BLACK : Color.WHITE);
+				if (consumed && !Gdx.input.isKeyPressed(Keys.DOWN)) {
+					consumed = false;
+				}
+				setBackground(ScriptPageWidget.selected.contains(command) ? Drawables.get("yellow") : Drawables.get("black"));
+				label.setColor(ScriptPageWidget.selected.contains(command) ? Color.BLACK : Color.WHITE);
+
+				if (command != null && ScriptPageWidget.selected.contains(command)) {
+					if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
+
+					} else if (Gdx.input.isKeyJustPressed(Keys.DEL) || Gdx.input.isKeyJustPressed(Keys.BACKSPACE)) {
+						Game.log("deleting...");
+						final ScriptCommand next = command.getNext();
+						final ScriptCommand parent = page.getParent(page.command, command);
+						if (parent != null) {
+							parent.setNext(next);
+						} else {
+							// no parent, this new command now becomes the HEAD
+							page.command = next;
+						}
+						commandsWidget.setPage();
+					} else if (Gdx.input.isKeyJustPressed(Keys.UP)) {
+						Game.log("pressed up");
+						final ScriptCommand parent = page.getParent(page.command, command);
+						if (parent != null) {
+							ScriptPageWidget.selected.clear();
+							ScriptPageWidget.selected.add(parent);
+						}
+					} else if (Gdx.input.isKeyJustPressed(Keys.DOWN) && !consumed) {
+						consumed = true;
+						if (command.getNext() != null) {
+							Game.log("pressed down " + command != null ? command.getName() : "");
+							ScriptPageWidget.selected.clear();
+							ScriptPageWidget.selected.add(command.getNext());
+						}
+					}
+				}
 			}
 
 		}).expandX().fill().row();
@@ -182,6 +221,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 						newCommand = localCommand.getCommandInstance();
 					}
 					populate(popupFields, localCommand.getCommandClass(), newCommand, new PopulateConfig());
+					popupFields.row();
 					popupFields.add(WidgetUtils.button("Create", commandCreated()));
 				} else {
 					popupFields.clear();

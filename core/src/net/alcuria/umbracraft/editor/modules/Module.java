@@ -96,7 +96,7 @@ public abstract class Module<T extends Definition> {
 					fieldList.addAll(Arrays.asList(clazz.getDeclaredFields()));
 					for (int i = 0; i < fieldList.size(); i++) {
 						final Field field = fieldList.get(i);
-						if (field.getModifiers() != Modifier.PRIVATE && (field.getType().toString().equals("int") || field.getType() == String.class || field.getType().toString().equals("boolean"))) {
+						if (field.getModifiers() != Modifier.PRIVATE && (field.getType().toString().equals("int") || field.getType().toString().equals("float") || field.getType() == String.class || field.getType().toString().equals("boolean"))) {
 							if (idx % config.cols == config.cols - 1) {
 								add(keyInput(definition, field)).row();
 							} else {
@@ -139,7 +139,7 @@ public abstract class Module<T extends Definition> {
 								checkBox.align(Align.left);
 								add(checkBox).width(config.textFieldWidth).expandX().fill().left();
 
-							} else if (field.getType().toString().equals("int") || field.getType() == String.class) {
+							} else if (field.getType().toString().equals("int") || field.getType().toString().equals("float") || field.getType() == String.class) {
 								add(new VisLabel(field.getName())).minWidth(config.labelWidth);
 								String value;
 								try {
@@ -205,6 +205,12 @@ public abstract class Module<T extends Definition> {
 					field.setInt(definition, 0);
 				} else {
 					field.setInt(definition, Integer.valueOf(textField.getText()));
+				}
+			} else if (field.getType().toString().equals("float")) {
+				if (textField.getText().equals("")) {
+					field.setFloat(definition, 0);
+				} else {
+					field.setFloat(definition, Float.valueOf(textField.getText()));
 				}
 			} else {
 				field.set(definition, textField.getText());

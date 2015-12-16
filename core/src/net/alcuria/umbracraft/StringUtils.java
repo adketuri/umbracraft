@@ -6,6 +6,9 @@ public class StringUtils {
 
 	/** truncates a string, appending ellipses if it's too long. */
 	public static String truncate(String string, int length) {
+		if (string == null) {
+			return "";
+		}
 		return string.length() < length ? string : string.substring(0, length) + "...";
 	}
 

@@ -4,7 +4,7 @@ import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.StartCondition;
-import net.alcuria.umbracraft.editor.widget.ScriptCommandsWidget;
+import net.alcuria.umbracraft.editor.widget.ScriptPageWidget;
 import net.alcuria.umbracraft.editor.widget.ScriptPreconditionsWidget;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand;
@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class ScriptListModule extends ListModule<ScriptDefinition> {
 
-	private final ScriptCommandsWidget commandsWidget = new ScriptCommandsWidget();
+	private final ScriptPageWidget commandsWidget = new ScriptPageWidget();
 	private ScriptPageDefinition currentPage;
 	private final Table headerTable = new Table(), preconditionsTable = new Table(), commandsTable = new Table();
 	private final ScriptPreconditionsWidget preconditionsWidget = new ScriptPreconditionsWidget();
@@ -61,10 +61,11 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 		content.add(headerTable).expandX().row();
 		content.add(new Table() {
 			{
-				add(preconditionsTable).width(200).expand().fill();
+				add(preconditionsTable).width(200).expand().fillX().top();
 				add(commandsTable).width(600).expand().top().left();
+
 			}
-		}).expand().fill();
+		}).expand().fill().minHeight(400);
 		updateHeader();
 		updatePreconditions();
 		updateCommands();
@@ -123,7 +124,7 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 
 	private void updatePreconditions() {
 		preconditionsTable.clear();
-		preconditionsTable.add(preconditionsWidget.getActor());
+		preconditionsTable.add(preconditionsWidget.getActor()).expandX().fill();
 		preconditionsWidget.setPage(currentPage);
 	}
 }

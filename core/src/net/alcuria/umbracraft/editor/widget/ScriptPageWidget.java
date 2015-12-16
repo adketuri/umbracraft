@@ -9,14 +9,18 @@ import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-public class ScriptCommandsWidget {
+public class ScriptPageWidget {
 
 	public static final Set<ScriptCommand> selected = new HashSet<ScriptCommand>();
-	private final Table content = new Table(), commandList = new Table(), commandEntry = new Table();
+	private Table content, commandList, commandEntry;
 	private ScriptPageDefinition currentPage;
 	private ScriptCommandWidget widget;
 
 	public Actor getActor() {
+		if (content == null) {
+			content = new Table();
+			content.stack(commandList = new Table(), commandEntry = new Table()).minHeight(500).expand().top().fillX().row();
+		}
 		return content;
 	}
 
@@ -29,9 +33,10 @@ public class ScriptCommandsWidget {
 		commandList.clear();
 		commandEntry.clear();
 		selected.clear();
-		content.stack(commandList, commandEntry).expandX().fill();
 		widget = new ScriptCommandWidget(this, commandList, commandEntry, page, page.command);
 		widget.addActor();
+		commandList.row();
+		commandList.add().expand().fill();
 	}
 
 }

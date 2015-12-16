@@ -10,6 +10,9 @@ public class CameraTargetScriptCommand extends ScriptCommand {
 
 	public String name;
 
+	public CameraTargetScriptCommand() {
+	}
+
 	public CameraTargetScriptCommand(final String name) {
 		this.name = name;
 	}

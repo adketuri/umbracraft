@@ -15,6 +15,9 @@ public class ShowAnimationScriptCommand extends ScriptCommand {
 	public String name, anim;
 	public boolean wait, removeAfter;
 
+	public ShowAnimationScriptCommand() {
+	}
+
 	/** @param name the name of the {@link Entity}
 	 * @param anim the name of the {@link AnimationDefinition}
 	 * @param wait if true wait until anim completes to mark command as complete

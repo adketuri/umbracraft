@@ -8,6 +8,9 @@ public class LogScriptCommand extends ScriptCommand {
 
 	public String message;
 
+	public LogScriptCommand() {
+	}
+
 	/** @param message the message to be displayed using {@link Game#log(String)} */
 	public LogScriptCommand(final String message) {
 		this.message = message;
