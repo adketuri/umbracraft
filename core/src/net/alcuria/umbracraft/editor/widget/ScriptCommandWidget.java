@@ -50,7 +50,20 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			};
 		}
 
+		/** Given a {@link ScriptCommand}, gets the {@link String} representation
+		 * @param command a {@link ScriptCommand}
+		 * @return the {@link String} name */
+		public static String getNameFrom(ScriptCommand command) {
+			for (Commands c : Commands.values()) {
+				if (c.clazz == command.getClass()) {
+					return c.name;
+				}
+			}
+			return null;
+		}
+
 		private Class<?> clazz;
+
 		private String name;
 
 		private Commands(String name, Class<?> clazz) {
@@ -66,7 +79,6 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			try {
 				return (ScriptCommand) clazz.newInstance();
 			} catch (InstantiationException | IllegalAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return null;
@@ -74,7 +86,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 
 	}
 
-	private static boolean consumed = false;
+	private static boolean consumedDown = false;
 
 	private ScriptCommand command, newCommand;
 	private final ScriptPageWidget commandsWidget;
@@ -104,22 +116,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 						ScriptPageWidget.selected.clear();
 						ScriptPageWidget.selected.add(command);
 						if (getTapCount() > 1) {
-							// insert new command above this
-							popup.setVisible(true);
-							popup.clear();
-							popupFields.clear();
-							popup.setBackground(Drawables.get("black"));
-							WidgetUtils.popupTitle(popup, "Add Command", closePopup());
-							final SuggestionWidget suggestionsWidget = new SuggestionWidget(Commands.getAll(), 100);
-							popup.add(new Table() {
-								{
-									add(new VisLabel("Enter Command:"));
-									add(suggestionsWidget.getActor());
-								}
-							}).row();
-							suggestionsWidget.addSelectListener(commandSelected(suggestionsWidget.getTextField()));
-							suggestionsWidget.setGenericPopulate(commandSelected(suggestionsWidget.getTextField()));
-							popup.add(popupFields).expand().fill().row();
+							createPopup("Insert Command", null);
 						}
 					}
 
@@ -130,17 +127,25 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			@Override
 			public void act(float delta) {
 				super.act(delta);
-				if (consumed && !Gdx.input.isKeyPressed(Keys.DOWN)) {
-					consumed = false;
+				// without this, weird stuff happens with multiple down keys triggering. okay.
+				if (consumedDown && !Gdx.input.isKeyPressed(Keys.DOWN)) {
+					consumedDown = false;
 				}
+
+				// update bg based on this widget's selected state
 				setBackground(ScriptPageWidget.selected.contains(command) ? Drawables.get("yellow") : Drawables.get("black"));
 				label.setColor(ScriptPageWidget.selected.contains(command) ? Color.BLACK : Color.WHITE);
 
-				if (command != null && ScriptPageWidget.selected.contains(command)) {
+				// handle keys
+				if (command != null && ScriptPageWidget.selected.contains(command) && !popup.isVisible()) {
 					if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
-
+						Game.log("Editing...");
+						createPopup("Edit Command", Commands.getNameFrom(command));
+						populate(popupFields, command.getClass(), command, new PopulateConfig());
+						popupFields.row();
+						popupFields.add(WidgetUtils.button("Update", commandUpdated()));
 					} else if (Gdx.input.isKeyJustPressed(Keys.DEL) || Gdx.input.isKeyJustPressed(Keys.BACKSPACE)) {
-						Game.log("deleting...");
+						Game.log("Deleting...");
 						final ScriptCommand next = command.getNext();
 						final ScriptCommand parent = page.getParent(page.command, command);
 						if (parent != null) {
@@ -151,16 +156,16 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 						}
 						commandsWidget.setPage();
 					} else if (Gdx.input.isKeyJustPressed(Keys.UP)) {
-						Game.log("pressed up");
+						Game.log("Pressed up");
 						final ScriptCommand parent = page.getParent(page.command, command);
 						if (parent != null) {
 							ScriptPageWidget.selected.clear();
 							ScriptPageWidget.selected.add(parent);
 						}
-					} else if (Gdx.input.isKeyJustPressed(Keys.DOWN) && !consumed) {
-						consumed = true;
+					} else if (Gdx.input.isKeyJustPressed(Keys.DOWN) && !consumedDown) {
+						consumedDown = true;
 						if (command.getNext() != null) {
-							Game.log("pressed down " + command != null ? command.getName() : "");
+							Game.log("Pressed down, " + command != null ? command.getName() : "");
 							ScriptPageWidget.selected.clear();
 							ScriptPageWidget.selected.add(command.getNext());
 						}
@@ -230,6 +235,42 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			}
 
 		};
+	}
+
+	private Listener commandUpdated() {
+		return new Listener() {
+
+			@Override
+			public void invoke() {
+				// update
+				popup.setVisible(false);
+				commandsWidget.setPage();
+			}
+		};
+	}
+
+	private void createPopup(final String title, final String defCommand) {
+		popup.setVisible(true);
+		popup.clear();
+		popupFields.clear();
+		popup.setBackground(Drawables.get("black"));
+		WidgetUtils.popupTitle(popup, title, closePopup());
+		final SuggestionWidget suggestionsWidget = new SuggestionWidget(Commands.getAll(), 130);
+		popup.add(new Table() {
+			{
+				add(new VisLabel("Enter Command:"));
+				add(suggestionsWidget.getActor());
+				if (defCommand != null) {
+					suggestionsWidget.getTextField().setText(defCommand);
+				}
+				if (title.contains("Edit")) { // lol dw bout it
+					suggestionsWidget.getTextField().setDisabled(true);
+				}
+			}
+		}).row();
+		suggestionsWidget.addSelectListener(commandSelected(suggestionsWidget.getTextField()));
+		suggestionsWidget.setGenericPopulate(commandSelected(suggestionsWidget.getTextField()));
+		popup.add(popupFields).expand().fill().row();
 	}
 
 	@Override
