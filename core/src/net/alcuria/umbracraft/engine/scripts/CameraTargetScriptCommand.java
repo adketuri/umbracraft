@@ -1,14 +1,20 @@
 package net.alcuria.umbracraft.engine.scripts;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.definitions.ListDefinition;
+import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
+import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
+
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** A {@link ScriptCommand} to target the camera to a particular entity.
  * @author Andrew Keturi */
 public class CameraTargetScriptCommand extends ScriptCommand {
 
-	public String name;
+	public String name = "";
 
 	public CameraTargetScriptCommand() {
 	}
@@ -20,6 +26,22 @@ public class CameraTargetScriptCommand extends ScriptCommand {
 	@Override
 	public String getName() {
 		return "Camera Target: " + name;
+	}
+
+	@Override
+	public ObjectMap<String, Array<String>> getSuggestions() {
+		return new ObjectMap<String, Array<String>>() {
+			{
+				put("name", new Array<String>() {
+					{
+						final ListDefinition<EntityDefinition> entities = Editor.db().entities();
+						for (String key : entities.keys()) {
+							add(entities.get(key).getName());
+						}
+					}
+				});
+			}
+		};
 	}
 
 	@Override

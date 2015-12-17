@@ -5,13 +5,15 @@ import net.alcuria.umbracraft.engine.events.MapChangedEvent;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** A {@link ScriptCommand} to teleport a user to another map
  * @author Andrew Keturi */
 public class TeleportScriptCommand extends ScriptCommand {
 
 	private final float FADE_TIME = 0.5f;
-	public String id;
+	public String id = "";
 	private boolean teleported;
 	private float time;
 
@@ -22,6 +24,12 @@ public class TeleportScriptCommand extends ScriptCommand {
 	@Override
 	public String getName() {
 		return "teleport";
+	}
+
+	@Override
+	public ObjectMap<String, Array<String>> getSuggestions() {
+		//TODO: id field
+		return null;
 	}
 
 	@Override

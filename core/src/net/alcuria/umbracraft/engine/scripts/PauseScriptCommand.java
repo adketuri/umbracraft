@@ -1,6 +1,8 @@
 package net.alcuria.umbracraft.engine.scripts;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** Pauses script execution for some amount of seconds
  * @author Andrew Keturi */
@@ -18,6 +20,11 @@ public class PauseScriptCommand extends ScriptCommand {
 	@Override
 	public String getName() {
 		return "Pause: " + time;
+	}
+
+	@Override
+	public ObjectMap<String, Array<String>> getSuggestions() {
+		return null;
 	}
 
 	@Override

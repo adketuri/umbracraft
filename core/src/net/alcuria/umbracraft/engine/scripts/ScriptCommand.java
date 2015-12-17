@@ -2,10 +2,18 @@ package net.alcuria.umbracraft.engine.scripts;
 
 import net.alcuria.umbracraft.definitions.Definition;
 
-/** Any abstract command that is part of a scripted cutscene.
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+
+/** Any command that is part of a scripted cutscene. This is an extension of
+ * {@link Definition} so public fields in implementing classes will be
+ * serialized. Additionally, there are some implementation details in this
+ * implementing ScriptCommands (for now).
  * @author Andrew Keturi */
 public abstract class ScriptCommand extends Definition {
 
+	/** The current state of the command as it is being executed.
+	 * @author Andrew Keturi */
 	public static enum CommandState {
 		COMPLETE, NOT_STARTED, STARTED
 	}
@@ -34,6 +42,7 @@ public abstract class ScriptCommand extends Definition {
 	}
 
 	/** @return A human-readable name {@link String} */
+	@Override
 	public abstract String getName();
 
 	/** @return the next command in the list */
@@ -45,6 +54,10 @@ public abstract class ScriptCommand extends Definition {
 	public CommandState getState() {
 		return state;
 	}
+
+	/** @return the suggestions hash, where the key is a field name eg, "id", and
+	 *         the value is an array of suggestions. */
+	public abstract ObjectMap<String, Array<String>> getSuggestions();
 
 	/** @return true if the command has started */
 	public boolean hasStarted() {

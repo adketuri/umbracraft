@@ -2,15 +2,21 @@ package net.alcuria.umbracraft.engine.scripts;
 
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.definitions.ListDefinition;
+import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
+import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
+
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** Moves an entity to a particular pair of <b>tile</b> coordinates. Note, the
  * entity must contain a {@link DirectedInputComponent}.
  * @author Andrew Andrew Keturi */
 public class MoveScriptCommand extends ScriptCommand {
 
-	public String id;
+	public String id = "";
 	public boolean relative;
 	public int x, y;
 
@@ -30,7 +36,23 @@ public class MoveScriptCommand extends ScriptCommand {
 
 	@Override
 	public String getName() {
-		return "move";
+		return String.format("Move: %s to (%d, %d, %s)", id, x, y, relative ? "relative" : "absolute");
+	}
+
+	@Override
+	public ObjectMap<String, Array<String>> getSuggestions() {
+		return new ObjectMap<String, Array<String>>() {
+			{
+				put("id", new Array<String>() {
+					{
+						final ListDefinition<EntityDefinition> entities = Editor.db().entities();
+						for (String key : entities.keys()) {
+							add(entities.get(key).getName());
+						}
+					}
+				});
+			}
+		};
 	}
 
 	@Override

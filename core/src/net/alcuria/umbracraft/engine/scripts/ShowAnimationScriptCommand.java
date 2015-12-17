@@ -6,13 +6,16 @@ import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+
 /** Given an {@link Entity} name and the name of an {@link AnimationDefinition},
  * this script removes an existing animation component and adds a new animation
  * component.
  * @author Andrew Keturi */
 public class ShowAnimationScriptCommand extends ScriptCommand {
 
-	public String name, anim;
+	public String name = "", anim = "";
 	public boolean wait, removeAfter;
 
 	public ShowAnimationScriptCommand() {
@@ -32,6 +35,12 @@ public class ShowAnimationScriptCommand extends ScriptCommand {
 	@Override
 	public String getName() {
 		return "Show Animation: " + name;
+	}
+
+	@Override
+	public ObjectMap<String, Array<String>> getSuggestions() {
+		//TODO: name and anim fields
+		return null;
 	}
 
 	@Override

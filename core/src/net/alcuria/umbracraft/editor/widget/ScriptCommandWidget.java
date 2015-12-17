@@ -141,7 +141,9 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 					if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 						Game.log("Editing...");
 						createPopup("Edit Command", Commands.getNameFrom(command));
-						populate(popupFields, command.getClass(), command, new PopulateConfig());
+						final PopulateConfig config = new PopulateConfig();
+						config.suggestions = command.getSuggestions();
+						populate(popupFields, command.getClass(), command, config);
 						popupFields.row();
 						popupFields.add(WidgetUtils.button("Update", commandUpdated()));
 					} else if (Gdx.input.isKeyJustPressed(Keys.DEL) || Gdx.input.isKeyJustPressed(Keys.BACKSPACE)) {
@@ -197,7 +199,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			public void invoke() {
 				// insertion
 				newCommand.setNext(command);
-				Game.log(page.command + "");
+				Game.log(page.command.getName() + " inserting");
 				final ScriptCommand parent = page.getParent(page.command, command);
 				if (parent != null) {
 					parent.setNext(newCommand);
@@ -208,32 +210,6 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				popup.setVisible(false);
 				commandsWidget.setPage();
 			}
-		};
-	}
-
-	private Listener commandSelected(final VisTextField textField) {
-		return new Listener() {
-
-			@Override
-			public void invoke() {
-				// see if we have a real command
-				Game.log(textField.getText() + "");
-				Commands localCommand = Commands.from(textField.getText());
-				if (localCommand != null) {
-					popupFields.clear();
-					if (newCommand == null) {
-						Game.log("Setting new command");
-						newCommand = localCommand.getCommandInstance();
-					}
-					populate(popupFields, localCommand.getCommandClass(), newCommand, new PopulateConfig());
-					popupFields.row();
-					popupFields.add(WidgetUtils.button("Create", commandCreated()));
-				} else {
-					popupFields.clear();
-					command = null;
-				}
-			}
-
 		};
 	}
 
@@ -268,9 +244,42 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				}
 			}
 		}).row();
-		suggestionsWidget.addSelectListener(commandSelected(suggestionsWidget.getTextField()));
-		suggestionsWidget.setGenericPopulate(commandSelected(suggestionsWidget.getTextField()));
+		suggestionsWidget.addSelectListener(createPopupFields(suggestionsWidget.getTextField()));
+		suggestionsWidget.setGenericPopulate(createPopupFields(suggestionsWidget.getTextField()));
 		popup.add(popupFields).expand().fill().row();
+	}
+
+	private Listener createPopupFields(final VisTextField textField) {
+		return new Listener() {
+			private String last = "";
+
+			@Override
+			public void invoke() {
+				// see if we should really repopulate
+				if (!last.equals(textField.getText())) {
+					Game.log("Command changed. Attempting rebuild.");
+					// see if we have a real command
+					Commands localCommand = Commands.from(textField.getText());
+					if (localCommand != null) {
+						popupFields.clear();
+						if (newCommand == null) {
+							Game.log("Setting new command");
+							newCommand = localCommand.getCommandInstance();
+						}
+						final PopulateConfig config = new PopulateConfig();
+						config.suggestions = newCommand.getSuggestions();
+						populate(popupFields, localCommand.getCommandClass(), newCommand, config);
+						popupFields.row();
+						popupFields.add(WidgetUtils.button("Create", commandCreated()));
+					} else {
+						popupFields.clear();
+						command = null;
+					}
+				}
+				last = textField.getText();
+			}
+
+		};
 	}
 
 	@Override

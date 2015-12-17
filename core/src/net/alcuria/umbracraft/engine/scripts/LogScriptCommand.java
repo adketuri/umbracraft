@@ -2,11 +2,14 @@ package net.alcuria.umbracraft.engine.scripts;
 
 import net.alcuria.umbracraft.Game;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+
 /** A {@link ScriptCommand} to simply log some message to the console.
  * @author Andrew Keturi */
 public class LogScriptCommand extends ScriptCommand {
 
-	public String message;
+	public String message = "";
 
 	public LogScriptCommand() {
 	}
@@ -19,6 +22,11 @@ public class LogScriptCommand extends ScriptCommand {
 	@Override
 	public String getName() {
 		return "Log: '" + message + "'";
+	}
+
+	@Override
+	public ObjectMap<String, Array<String>> getSuggestions() {
+		return null;
 	}
 
 	@Override

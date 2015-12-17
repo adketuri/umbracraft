@@ -112,6 +112,14 @@ public final class Db {
 		return (ConfigDefinition) definitions.get("configuration");
 	}
 
+	public ListDefinition<EntityDefinition> entities() {
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
+		}
+		return (ListDefinition<EntityDefinition>) definitions.get("entities");
+
+	}
+
 	public EntityDefinition entity(String name) {
 		if (definitions == null) {
 			throw new NullPointerException("Definitions not initialized");

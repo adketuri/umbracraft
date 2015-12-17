@@ -8,6 +8,8 @@ import net.alcuria.umbracraft.engine.windows.message.MessageWindow;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** A {@link ScriptCommand} to display an ingame dialogue box. Commands resume
  * after the dialogue box has been dismissed.
@@ -15,7 +17,7 @@ import com.badlogic.gdx.Input.Keys;
 public class MessageScriptCommand extends ScriptCommand {
 
 	private boolean dismissable = false;
-	public String message;
+	public String message = "";
 	private MessageWindow window;
 
 	public MessageScriptCommand() {
@@ -28,6 +30,11 @@ public class MessageScriptCommand extends ScriptCommand {
 	@Override
 	public String getName() {
 		return "Message: '" + StringUtils.truncate(message, 15) + "'";
+	}
+
+	@Override
+	public ObjectMap<String, Array<String>> getSuggestions() {
+		return null;
 	}
 
 	@Override
