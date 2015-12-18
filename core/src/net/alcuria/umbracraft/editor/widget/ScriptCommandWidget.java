@@ -7,6 +7,7 @@ import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.modules.Module;
 import net.alcuria.umbracraft.engine.scripts.BattleScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.CameraTargetScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.FlagScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.LogScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.MoveScriptCommand;
@@ -28,8 +29,8 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 
 public class ScriptCommandWidget extends Module<ScriptCommand> {
 	public static enum Commands {
-		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), //
-		MOVE("Move", MoveScriptCommand.class), PAUSE("Pause", PauseScriptCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class);
+		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), FLAG("Flag", FlagScriptCommand.class), LOG("Log", LogScriptCommand.class), //
+		MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), PAUSE("Pause", PauseScriptCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class);
 
 		public static Commands from(final String name) {
 			for (Commands c : Commands.values()) {

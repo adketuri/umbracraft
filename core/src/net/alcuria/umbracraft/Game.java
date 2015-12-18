@@ -70,6 +70,12 @@ public final class Game {
 		System.err.println(string);
 	}
 
+	/** @return the {@link FlagManager} */
+	public static FlagManager flags() {
+		return flags;
+
+	}
+
 	/** @return whether or not the game is in debug mode. */
 	public static boolean isDebug() {
 		return debug;

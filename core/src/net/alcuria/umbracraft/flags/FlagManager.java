@@ -48,4 +48,16 @@ public class FlagManager {
 		}
 	}
 
+	/** Sets a flag, either enabling it or disabling it.
+	 * @param id
+	 * @param enable */
+	public void set(String id, boolean enable) {
+		if (enable) {
+			enable(id);
+		} else {
+			disable(id);
+		}
+
+	}
+
 }

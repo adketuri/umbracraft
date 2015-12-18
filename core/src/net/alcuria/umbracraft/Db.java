@@ -119,7 +119,6 @@ public final class Db {
 			throw new NullPointerException("Definitions not initialized");
 		}
 		return (ListDefinition<EntityDefinition>) definitions.get("entities");
-
 	}
 
 	public EntityDefinition entity(String name) {
@@ -131,11 +130,15 @@ public final class Db {
 	}
 
 	public FlagDefinition flag(String id) {
+		return (FlagDefinition) flags().get(id);
+	}
+
+	public ListDefinition<FlagDefinition> flags() {
 		if (definitions == null) {
 			throw new NullPointerException("Definitions not initialized");
 		}
-		ListDefinition<FlagDefinition> definition = (ListDefinition<FlagDefinition>) definitions.get("flags");
-		return (FlagDefinition) definition.get(id);
+		return (ListDefinition<FlagDefinition>) definitions.get("flags");
+
 	}
 
 	public MapDefinition map(String name) {
