@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft;
 
 import net.alcuria.umbracraft.definitions.Definition;
+import net.alcuria.umbracraft.definitions.FlagDefinition;
 import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
@@ -36,6 +37,7 @@ public final class Db {
 		classes.put("entities", ListDefinition.class);
 		classes.put("map", ListDefinition.class);
 		classes.put("areas", ListDefinition.class);
+		classes.put("flags", ListDefinition.class);
 		classes.put("configuration", ConfigDefinition.class);
 		classes.put("tilesets", TilesetListDefinition.class);
 
@@ -126,6 +128,14 @@ public final class Db {
 		}
 		ListDefinition<EntityDefinition> definition = (ListDefinition<EntityDefinition>) definitions.get("entities");
 		return (EntityDefinition) definition.get(name);
+	}
+
+	public FlagDefinition flag(String id) {
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
+		}
+		ListDefinition<FlagDefinition> definition = (ListDefinition<FlagDefinition>) definitions.get("flags");
+		return (FlagDefinition) definition.get(id);
 	}
 
 	public MapDefinition map(String name) {

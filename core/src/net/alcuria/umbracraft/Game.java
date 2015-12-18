@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.events.EventPublisher;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
+import net.alcuria.umbracraft.flags.FlagManager;
 import net.alcuria.umbracraft.party.Party;
 
 import com.badlogic.gdx.Gdx;
@@ -22,6 +23,7 @@ public final class Game {
 	private static Db db;
 	private static boolean debug = false;
 	private static EntityManager entities;
+	private static FlagManager flags;
 	private static Map map;
 	private static Party party;
 	private static EventPublisher publisher;
@@ -143,6 +145,7 @@ public final class Game {
 		map = new Map();
 		publisher = new EventPublisher();
 		areas = new AreaBuilder();
+		flags = new FlagManager();
 
 		// now subscribe
 		publisher.subscribe(view);
@@ -165,6 +168,9 @@ public final class Game {
 		}
 		if (areas != null) {
 			areas.dispose();
+		}
+		if (flags != null) {
+			flags.dispose();
 		}
 		publisher.removeAllListeners();
 		publisher = null;
