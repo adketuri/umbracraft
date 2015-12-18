@@ -147,6 +147,9 @@ public abstract class Module<T extends Definition> {
 								} catch (Exception e) {
 									value = "";
 								}
+								if ("null".equals(value)) {
+									value = "";
+								}
 								VisTextField textField = null;
 								SuggestionWidget widget = null;
 								if (config.suggestions != null && config.suggestions.containsKey(field.getName())) {
