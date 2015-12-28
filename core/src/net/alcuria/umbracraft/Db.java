@@ -14,6 +14,7 @@ import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
+import net.alcuria.umbracraft.editor.Editor;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -21,7 +22,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
-/** A database class to maintain all modules and their contents from disc
+/** A database class to maintain all {@link Definition} classes from disk. The
+ * returned objects are never copied to new objects, so care should be taken
+ * when modifying Definitions returned from this class. By default, the
+ * {@link Game} and {@link Editor} contain a reference to a Db object, so any
+ * additional copies are likely unnecessary.
  * @author Andrew Keturi */
 public final class Db {
 
@@ -79,19 +84,19 @@ public final class Db {
 	}
 
 	public AnimationGroupDefinition animGroup(String name) {
+		return (AnimationGroupDefinition) animGroups().get(name);
+	}
+
+	public ListDefinition<AnimationGroupDefinition> animGroups() {
 		if (definitions == null) {
 			throw new NullPointerException("Definitions not initialized");
 		}
 		ListDefinition<AnimationGroupDefinition> definition = (ListDefinition<AnimationGroupDefinition>) definitions.get("animationgroup");
-		return (AnimationGroupDefinition) definition.get(name);
+		return definition;
 	}
 
 	public AreaDefinition area(final String name) {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
-		ListDefinition<AreaDefinition> definition = (ListDefinition<AreaDefinition>) definitions.get("areas");
-		return (AreaDefinition) definition.get(name);
+		return (AreaDefinition) areas().get(name);
 	}
 
 	public ListDefinition<AreaDefinition> areas() {
@@ -133,14 +138,16 @@ public final class Db {
 		return (FlagDefinition) flags().get(id);
 	}
 
+	/** @return all {@link FlagDefinition} objects in the database */
 	public ListDefinition<FlagDefinition> flags() {
 		if (definitions == null) {
 			throw new NullPointerException("Definitions not initialized");
 		}
 		return (ListDefinition<FlagDefinition>) definitions.get("flags");
-
 	}
 
+	/** @param name the name of the map
+	 * @return the {@link MapDefinition} from the database */
 	public MapDefinition map(String name) {
 		if (definitions == null) {
 			throw new NullPointerException("Definitions not initialized");
@@ -149,6 +156,9 @@ public final class Db {
 		return (MapDefinition) definition.get(name);
 	}
 
+	/** Gets a tileset TODO: refactor using keys
+	 * @param i the index
+	 * @return the {@link TilesetDefinition} */
 	public TilesetDefinition tileset(int i) {
 		TilesetListDefinition listDef = (TilesetListDefinition) definitions.get("tilesets");
 		return listDef.tiles.get(i);

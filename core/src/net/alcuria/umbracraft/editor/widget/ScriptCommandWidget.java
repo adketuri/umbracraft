@@ -89,7 +89,9 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 
 	private static boolean consumedDown = false;
 
-	private ScriptCommand command, newCommand;
+	private final ScriptCommand command;
+
+	private ScriptCommand createdCommand;
 	private final ScriptPageWidget commandsWidget;
 	private final Table content, popup, popupFields = new Table();
 	private ScriptCommandWidget nextWidget;
@@ -199,14 +201,14 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			@Override
 			public void invoke() {
 				// insertion
-				newCommand.setNext(command);
-				Game.log(page.command.getName() + " inserting");
+				createdCommand.setNext(command);
 				final ScriptCommand parent = page.getParent(page.command, command);
+				Game.log("INSERTING: createdCommand: " + (createdCommand != null ? createdCommand.getName() : "null") + " command:" + (command != null ? command.getName() : "null") + " parent: " + (parent != null ? parent : "null"));
 				if (parent != null) {
-					parent.setNext(newCommand);
+					parent.setNext(createdCommand);
 				} else {
 					// no parent, this new command now becomes the HEAD
-					page.command = newCommand;
+					page.command = createdCommand;
 				}
 				popup.setVisible(false);
 				commandsWidget.setPage();
@@ -263,18 +265,18 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 					Commands localCommand = Commands.from(textField.getText());
 					if (localCommand != null) {
 						popupFields.clear();
-						if (newCommand == null) {
+						if (createdCommand == null) {
 							Game.log("Setting new command");
-							newCommand = localCommand.getCommandInstance();
+							createdCommand = localCommand.getCommandInstance();
 						}
 						final PopulateConfig config = new PopulateConfig();
-						config.suggestions = newCommand.getSuggestions();
-						populate(popupFields, localCommand.getCommandClass(), newCommand, config);
+						config.suggestions = createdCommand.getSuggestions();
+						populate(popupFields, localCommand.getCommandClass(), createdCommand, config);
 						popupFields.row();
 						popupFields.add(WidgetUtils.button("Create", commandCreated()));
 					} else {
 						popupFields.clear();
-						command = null;
+						createdCommand = null;
 					}
 				}
 				last = textField.getText();

@@ -2,7 +2,7 @@ package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
-import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.StartCondition;
+import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.ScriptTrigger;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
@@ -34,7 +34,7 @@ public class ScriptComponent implements Component, EventListener {
 		// create a dummy event page for now
 		scriptPage = new ScriptPageDefinition();
 		scriptPage.haltInput = true;
-		scriptPage.startCondition = StartCondition.ON_INTERACTION;
+		scriptPage.trigger = ScriptTrigger.ON_INTERACTION;
 		scriptPage.addCommand(new MessageScriptCommand("Start a battle"));
 		scriptPage.addCommand(new PauseScriptCommand(0.4f));
 		scriptPage.addCommand(new MessageScriptCommand("All done!"));
@@ -106,7 +106,7 @@ public class ScriptComponent implements Component, EventListener {
 	public void update(Entity entity) {
 		// if we have some pages to execute, see if we can do that
 		if (!active) {
-			switch (scriptPage.startCondition) {
+			switch (scriptPage.trigger) {
 			case INSTANT:
 				startScript();
 				break;

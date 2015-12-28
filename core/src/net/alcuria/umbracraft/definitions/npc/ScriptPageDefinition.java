@@ -8,20 +8,22 @@ import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
  * @author Andrew Keturi */
 public class ScriptPageDefinition extends Definition {
 
-	public static enum StartCondition {
+	public static enum ScriptTrigger {
 		INSTANT, ON_INTERACTION, ON_TOUCH
 	}
 
+	/** The graphics for this script */
+	public String animationGroup;
 	/** The commands to execute */
 	public ScriptCommand command;
-	/** Whether or not to halt player input on touch */
+	/** Whether or not to halt player input on activation */
 	public boolean haltInput;
 	/** A name for the page */
 	public String name;
-	/** The precondition of this event page */
-	public Object precondition;
+	/** The flag that when on will trigger this page */
+	public String precondition;
 	/** How the event starts */
-	public StartCondition startCondition;
+	public ScriptTrigger trigger = ScriptTrigger.ON_TOUCH;
 
 	//FIXME: temp
 	public void addCommand(ScriptCommand command) {

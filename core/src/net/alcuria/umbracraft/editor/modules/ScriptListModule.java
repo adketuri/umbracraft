@@ -3,9 +3,9 @@ package net.alcuria.umbracraft.editor.modules;
 import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
-import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.StartCondition;
+import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.ScriptTrigger;
+import net.alcuria.umbracraft.editor.widget.ScriptPagePropertiesWidget;
 import net.alcuria.umbracraft.editor.widget.ScriptPageWidget;
-import net.alcuria.umbracraft.editor.widget.ScriptPreconditionsWidget;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand;
 
@@ -21,7 +21,7 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 	private final ScriptPageWidget commandsWidget = new ScriptPageWidget();
 	private ScriptPageDefinition currentPage;
 	private final Table headerTable = new Table(), preconditionsTable = new Table(), commandsTable = new Table();
-	private final ScriptPreconditionsWidget preconditionsWidget = new ScriptPreconditionsWidget();
+	private final ScriptPagePropertiesWidget propertiesWidget = new ScriptPagePropertiesWidget();
 	private ScriptDefinition script;
 
 	@Override
@@ -30,7 +30,7 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 		script.name = "Script " + rootDefinition.size();
 		script.pages = new Array<ScriptPageDefinition>();
 		final ScriptPageDefinition page = new ScriptPageDefinition();
-		page.startCondition = StartCondition.ON_INTERACTION;
+		page.trigger = ScriptTrigger.ON_INTERACTION;
 		page.name = "Untitled";
 		page.command = new MessageScriptCommand("first");
 		page.command.add(new MessageScriptCommand("second"));
@@ -46,7 +46,7 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 			@Override
 			public void invoke() {
 				final ScriptPageDefinition page = new ScriptPageDefinition();
-				page.startCondition = StartCondition.ON_INTERACTION;
+				page.trigger = ScriptTrigger.ON_INTERACTION;
 				page.name = "Untitled " + (script.pages.size + 1);
 				script.pages.add(page);
 				updateHeader();
@@ -61,7 +61,7 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 		content.add(headerTable).expandX().row();
 		content.add(new Table() {
 			{
-				add(preconditionsTable).width(200).expand().fillX().top();
+				add(preconditionsTable).width(250).expand().fillX().top();
 				add(commandsTable).width(600).expand().top().left();
 
 			}
@@ -124,7 +124,7 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 
 	private void updatePreconditions() {
 		preconditionsTable.clear();
-		preconditionsTable.add(preconditionsWidget.getActor()).expandX().fill();
-		preconditionsWidget.setPage(currentPage);
+		preconditionsTable.add(propertiesWidget.getActor()).expandX().fill();
+		propertiesWidget.setPage(currentPage);
 	}
 }
