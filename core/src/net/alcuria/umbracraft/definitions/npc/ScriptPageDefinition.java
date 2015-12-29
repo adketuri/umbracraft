@@ -13,6 +13,8 @@ public class ScriptPageDefinition extends Definition {
 	}
 
 	/** The graphics for this script */
+	public String animation;
+	/** The graphics for this script */
 	public String animationGroup;
 	/** The commands to execute */
 	public ScriptCommand command;

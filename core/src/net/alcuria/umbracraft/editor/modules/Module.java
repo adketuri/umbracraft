@@ -176,6 +176,9 @@ public abstract class Module<T extends Definition> {
 
 									@Override
 									public void keyTyped(VisTextField textField, char c) {
+										if (c == '\t') {
+											return;
+										}
 										saveField(field, definition, textField, config);
 										if (w != null) {
 											w.populateSuggestions();

@@ -26,11 +26,17 @@ public class ScriptComponent implements Component, EventListener {
 	private final Rectangle collisionRect = new Rectangle();
 	private ScriptCommand currentCommand;
 	private boolean pressed = false;
+	private final String script;
 	private ScriptPageDefinition scriptPage;
 	private final Vector3 source = new Vector3();
 
+	public ScriptComponent(String script) {
+		this.script = script;
+	}
+
 	@Override
 	public void create(final Entity entity) {
+		//TODO: use script field to fetch the Script from the DB and create it here
 		// create a dummy event page for now
 		scriptPage = new ScriptPageDefinition();
 		scriptPage.haltInput = true;

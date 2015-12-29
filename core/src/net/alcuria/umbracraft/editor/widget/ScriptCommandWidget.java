@@ -91,9 +91,9 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 
 	private final ScriptCommand command;
 
-	private ScriptCommand createdCommand;
 	private final ScriptPageWidget commandsWidget;
 	private final Table content, popup, popupFields = new Table();
+	private ScriptCommand createdCommand;
 	private ScriptCommandWidget nextWidget;
 	private final ScriptPageDefinition page;
 
@@ -270,6 +270,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 							createdCommand = localCommand.getCommandInstance();
 						}
 						final PopulateConfig config = new PopulateConfig();
+						config.cols = 1;
 						config.suggestions = createdCommand.getSuggestions();
 						populate(popupFields, localCommand.getCommandClass(), createdCommand, config);
 						popupFields.row();

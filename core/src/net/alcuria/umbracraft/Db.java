@@ -68,11 +68,7 @@ public final class Db {
 	 * exception if not found.
 	 * @param name the name of the animation definition */
 	public AnimationDefinition anim(String name) {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
-		return ((AnimationListDefinition) definitions.get("animations")).animations.get(name);
-
+		return anims().get(name);
 	}
 
 	public AnimationCollectionDefinition animCollection(String name) {
@@ -93,6 +89,13 @@ public final class Db {
 		}
 		ListDefinition<AnimationGroupDefinition> definition = (ListDefinition<AnimationGroupDefinition>) definitions.get("animationgroup");
 		return definition;
+	}
+
+	public ObjectMap<String, AnimationDefinition> anims() {
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
+		}
+		return ((AnimationListDefinition) definitions.get("animations")).animations;
 	}
 
 	public AreaDefinition area(final String name) {

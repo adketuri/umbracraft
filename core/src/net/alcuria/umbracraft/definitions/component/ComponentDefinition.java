@@ -126,10 +126,12 @@ public abstract class ComponentDefinition extends Definition {
 
 	/** Defines the {@link ScriptComponent} for an entity. */
 	public static class ScriptComponentDefinition extends ComponentDefinition {
+		/** The name of the script */
+		public String script;
 
 		@Override
 		public Component create() {
-			return new ScriptComponent();
+			return new ScriptComponent(script);
 		}
 	}
 

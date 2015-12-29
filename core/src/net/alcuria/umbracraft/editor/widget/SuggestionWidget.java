@@ -23,12 +23,12 @@ import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
  * the scene simply call {@link SuggestionWidget#getActor()}
  * @author Andrew Keturi */
 public class SuggestionWidget {
-	private static final int MAX_SUGGESTIONS = 20;
+	private static final int MAX_SUGGESTIONS = 15;
 	private final Array<String> allSuggestions;
 	private final Array<String> curSuggestions;
+	private int highlightIndex = -1;
 	private final Array<Label> highlightLabels = new Array<Label>();
 	private final Array<Table> highlightTables = new Array<Table>();
-	private int highlightIndex = -1;
 	private Listener selectListener;
 	private Table suggestionTable;
 	private VisTextField textField;

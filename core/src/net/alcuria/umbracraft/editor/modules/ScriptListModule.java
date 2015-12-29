@@ -55,9 +55,14 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 	}
 
 	@Override
-	public void create(ScriptDefinition definition, Table content) {
+	public void create(final ScriptDefinition definition, Table content) {
 		script = definition;
 		currentPage = script.pages.first();
+		content.add(new Table() {
+			{
+				populate(this, ScriptDefinition.class, definition, new PopulateConfig());
+			}
+		}).row();
 		content.add(headerTable).expandX().row();
 		content.add(new Table() {
 			{

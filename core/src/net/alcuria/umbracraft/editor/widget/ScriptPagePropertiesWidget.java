@@ -60,12 +60,13 @@ public class ScriptPagePropertiesWidget extends Module<ScriptPageDefinition> {
 		this.page = page;
 		content.clear();
 		content.setBackground(Drawables.get("blue"));
-		content.add(new VisLabel("Properties")).row();
+		content.add(new VisLabel("State Properties")).row();
 		WidgetUtils.divider(content, "yellow");
 		PopulateConfig config = new PopulateConfig();
 		config.cols = 1;
 		config.suggestions = new ObjectMap<String, Array<String>>() {
 			{
+				put("animation", Editor.db().anims().keys().toArray());
 				put("animationGroup", Editor.db().animGroups().keys());
 				put("precondition", Editor.db().flags().keys());
 			}
