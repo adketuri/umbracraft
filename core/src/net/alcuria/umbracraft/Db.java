@@ -12,6 +12,7 @@ import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.config.ConfigDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
+import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 import net.alcuria.umbracraft.editor.Editor;
@@ -43,6 +44,7 @@ public final class Db {
 		classes.put("map", ListDefinition.class);
 		classes.put("areas", ListDefinition.class);
 		classes.put("flags", ListDefinition.class);
+		classes.put("scripts", ListDefinition.class);
 		classes.put("configuration", ConfigDefinition.class);
 		classes.put("tilesets", TilesetListDefinition.class);
 
@@ -157,6 +159,18 @@ public final class Db {
 		}
 		ListDefinition<MapDefinition> definition = (ListDefinition<MapDefinition>) definitions.get("map");
 		return (MapDefinition) definition.get(name);
+	}
+
+	public ScriptDefinition script(String id) {
+		return (ScriptDefinition) scripts().get(id);
+	}
+
+	/** @return all {@link FlagDefinition} objects in the database */
+	public ListDefinition<ScriptDefinition> scripts() {
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
+		}
+		return (ListDefinition<ScriptDefinition>) definitions.get("scripts");
 	}
 
 	/** Gets a tileset TODO: refactor using keys

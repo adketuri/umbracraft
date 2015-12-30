@@ -17,7 +17,7 @@ public class FlagManager {
 	private final Set<String> enabledFlags = new HashSet<String>();
 
 	public FlagManager() {
-		// TODO load saved flags from disk?
+		// TODO load saved flags from disk
 	}
 
 	/** Disables a flag. This does not do any checks to ensure the flag exists in
@@ -48,6 +48,19 @@ public class FlagManager {
 		}
 	}
 
+	/** @param id the flag ID
+	 * @return <code>true</code> if the flag is set */
+	public boolean isSet(String id) {
+		if (id == null) {
+			return false;
+		}
+		return enabledFlags.contains(id);
+	}
+
+	public boolean isValid(String id) {
+		return id != null && id.length() > 0;
+	}
+
 	/** Sets a flag, either enabling it or disabling it.
 	 * @param id
 	 * @param enable */
@@ -57,7 +70,5 @@ public class FlagManager {
 		} else {
 			disable(id);
 		}
-
 	}
-
 }

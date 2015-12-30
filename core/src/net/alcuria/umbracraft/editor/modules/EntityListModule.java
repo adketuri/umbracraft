@@ -7,6 +7,7 @@ import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition.ComponentType;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
+import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 
 import com.badlogic.gdx.Gdx;
@@ -100,6 +101,7 @@ public class EntityListModule extends ListModule<EntityDefinition> {
 						}
 					}
 				});
+				suggestions.put("script", Editor.db().scripts().keys());
 
 			}
 		};

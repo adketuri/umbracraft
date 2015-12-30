@@ -1,15 +1,13 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
-import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.ScriptTrigger;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.ScriptEndedEvent;
 import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
-import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand;
-import net.alcuria.umbracraft.engine.scripts.PauseScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand.CommandState;
 
@@ -25,43 +23,22 @@ public class ScriptComponent implements Component, EventListener {
 	private boolean active = false;
 	private final Rectangle collisionRect = new Rectangle();
 	private ScriptCommand currentCommand;
+	private ScriptPageDefinition currentPage;
 	private boolean pressed = false;
-	private final String script;
-	private ScriptPageDefinition scriptPage;
+	private ScriptDefinition script;
 	private final Vector3 source = new Vector3();
 
-	public ScriptComponent(String script) {
-		this.script = script;
+	public ScriptComponent(String scriptId) {
+		if (scriptId != null) {
+			script = Game.db().script(scriptId);
+		} else {
+			Game.error("Script ID is null. Cannot attach component.");
+		}
 	}
 
 	@Override
 	public void create(final Entity entity) {
-		//TODO: use script field to fetch the Script from the DB and create it here
-		// create a dummy event page for now
-		scriptPage = new ScriptPageDefinition();
-		scriptPage.haltInput = true;
-		scriptPage.trigger = ScriptTrigger.ON_INTERACTION;
-		scriptPage.addCommand(new MessageScriptCommand("Start a battle"));
-		scriptPage.addCommand(new PauseScriptCommand(0.4f));
-		scriptPage.addCommand(new MessageScriptCommand("All done!"));
-		//		scriptPage.commands = new Array<ScriptCommand>() {
-		//			{
-		//				add(Commands.message("Start a battle"));
-		//				add(Commands.pause(0.4f));
-		//				add(Commands.battle());
-		//				add(Commands.message("You're done!"));
-		//				//add(Commands.cameraTarget("Chest2"));
-		//				//add(Commands.cameraTarget(Entity.PLAYER));
-		//				//add(Commands.move("Chest", 2, 2, true));
-		//				//add(Commands.teleport("Test", 5, 5));
-		//				//add(Commands.showAnim(entity.getName(), "ChestAnim", true, false));
-		//				//add(Commands.showAnim(Entity.PLAYER, "Spin", true, true));
-		//				//add(Commands.pause(1));
-		//				//add(Commands.message("This is not a mockup. I've finally implemented some simple messageboxes which should comfortably fit three or four lines. Still a work-in-progress, though."));
-		//
-		//			}
-		//		};
-		// listen for a key press
+		setCurrentPage(entity);
 		Game.publisher().subscribe(this);
 	}
 
@@ -83,12 +60,35 @@ public class ScriptComponent implements Component, EventListener {
 
 	}
 
+	private void setCurrentPage(Entity entity) {
+		if (script == null) {
+			return;
+		}
+		// go thru the pages in reverse, finding the first page that has its preconditions met
+		for (int i = script.pages.size - 1; i >= 0; i--) {
+			final String precondition = script.pages.get(i).precondition;
+			if (precondition == null || !Game.flags().isValid(precondition) || Game.flags().isSet(precondition)) {
+				currentPage = script.pages.get(i);
+			}
+		}
+		// update the animation/animationGroup components
+		if (currentPage != null && (currentPage.animationGroup != null || currentPage.animation != null)) {
+			entity.removeComponent(AnimationComponent.class);
+			entity.removeComponent(AnimationGroupComponent.class);
+			if (currentPage.animationGroup != null) {
+				entity.addComponent(new AnimationGroupComponent(Game.db().animGroup(currentPage.animationGroup)));
+			} else if (currentPage.animation != null) {
+				entity.addComponent(new AnimationComponent(Game.db().anim(currentPage.animation)));
+			}
+		}
+	}
+
 	/** Starts a script. should only be called once at the start */
 	private void startScript() {
-		Game.publisher().publish(new ScriptStartedEvent(scriptPage));
+		Game.publisher().publish(new ScriptStartedEvent(currentPage));
 		// halt player movement
 		Game.entities().find(Entity.PLAYER).velocity.set(0, 0, 0);
-		currentCommand = scriptPage.command;
+		currentCommand = currentPage.command;
 		active = true;
 		pressed = false;
 	}
@@ -112,7 +112,7 @@ public class ScriptComponent implements Component, EventListener {
 	public void update(Entity entity) {
 		// if we have some pages to execute, see if we can do that
 		if (!active) {
-			switch (scriptPage.trigger) {
+			switch (currentPage.trigger) {
 			case INSTANT:
 				startScript();
 				break;
@@ -150,7 +150,7 @@ public class ScriptComponent implements Component, EventListener {
 		// check if we're done with all scripts
 		if (currentCommand == null) {
 			active = false;
-			Game.publisher().publish(new ScriptEndedEvent(scriptPage));
+			Game.publisher().publish(new ScriptEndedEvent(currentPage));
 		}
 	}
 }
