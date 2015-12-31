@@ -43,7 +43,6 @@ public class ShowAnimationScriptCommand extends ScriptCommand {
 
 	@Override
 	public ObjectMap<String, Array<String>> getSuggestions() {
-		//TODO: name and anim fields
 		return new ObjectMap<String, Array<String>>() {
 			{
 				put("target", Editor.db().entities().keys());
@@ -57,19 +56,19 @@ public class ShowAnimationScriptCommand extends ScriptCommand {
 	}
 
 	@Override
-	public void onStarted() {
-		final Entity entity = Game.entities().find(target);
-		if (entity != null) {
-			entity.removeComponent(AnimationComponent.class);
+	public void onStarted(Entity entity) {
+		final Entity targetEntity = self ? entity : Game.entities().find(target);
+		if (targetEntity != null) {
+			targetEntity.removeComponent(AnimationComponent.class);
 			final AnimationComponent component = new AnimationComponent(Game.db().anim(anim));
-			entity.addComponent(component);
+			targetEntity.addComponent(component);
 			if (wait) {
 				component.setListener(new Listener() {
 
 					@Override
 					public void invoke() {
 						if (removeAfter) {
-							entity.removeComponent(AnimationComponent.class);
+							targetEntity.removeComponent(AnimationComponent.class);
 						}
 						complete();
 					}

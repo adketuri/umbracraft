@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.engine.scripts;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.StringUtils;
+import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
 import net.alcuria.umbracraft.engine.windows.message.MessageWindow;
@@ -43,7 +44,7 @@ public class MessageScriptCommand extends ScriptCommand {
 	}
 
 	@Override
-	public void onStarted() {
+	public void onStarted(Entity entity) {
 		window = new MessageWindow(message);
 		Game.publisher().publish(new WindowShowEvent(window));
 	}

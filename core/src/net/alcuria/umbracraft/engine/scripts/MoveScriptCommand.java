@@ -61,13 +61,13 @@ public class MoveScriptCommand extends ScriptCommand {
 	}
 
 	@Override
-	public void onStarted() {
-		Entity entity = Game.entities().find(id);
-		if (entity != null) {
-			DirectedInputComponent component = entity.getComponent(DirectedInputComponent.class);
+	public void onStarted(Entity entity) {
+		Entity target = Game.entities().find(id);
+		if (target != null) {
+			DirectedInputComponent component = target.getComponent(DirectedInputComponent.class);
 			if (component != null) {
 				if (relative) {
-					component.setTarget((int) entity.position.x + x * Config.tileWidth, (int) entity.position.y + y * Config.tileWidth);
+					component.setTarget((int) target.position.x + x * Config.tileWidth, (int) target.position.y + y * Config.tileWidth);
 				} else {
 					component.setTarget(x * Config.tileWidth, y * Config.tileWidth);
 				}

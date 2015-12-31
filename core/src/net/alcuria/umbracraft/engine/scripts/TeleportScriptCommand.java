@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.scripts;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
 
 import com.badlogic.gdx.Gdx;
@@ -39,7 +40,7 @@ public class TeleportScriptCommand extends ScriptCommand {
 	}
 
 	@Override
-	public void onStarted() {
+	public void onStarted(Entity entity) {
 		time = 0;
 		teleported = false;
 	}

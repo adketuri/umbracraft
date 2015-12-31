@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.StringUtils;
 import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
@@ -69,15 +70,16 @@ public class ScriptComponent implements Component, EventListener {
 			final String precondition = script.pages.get(i).precondition;
 			if (precondition == null || !Game.flags().isValid(precondition) || Game.flags().isSet(precondition)) {
 				currentPage = script.pages.get(i);
+				break;
 			}
 		}
 		// update the animation/animationGroup components
 		if (currentPage != null && (currentPage.animationGroup != null || currentPage.animation != null)) {
 			entity.removeComponent(AnimationComponent.class);
 			entity.removeComponent(AnimationGroupComponent.class);
-			if (currentPage.animationGroup != null) {
+			if (StringUtils.isNotEmpty(currentPage.animationGroup)) {
 				entity.addComponent(new AnimationGroupComponent(Game.db().animGroup(currentPage.animationGroup)));
-			} else if (currentPage.animation != null) {
+			} else if (StringUtils.isNotEmpty(currentPage.animation)) {
 				entity.addComponent(new AnimationComponent(Game.db().anim(currentPage.animation)));
 			}
 		}
@@ -85,8 +87,8 @@ public class ScriptComponent implements Component, EventListener {
 
 	/** Starts a script. should only be called once at the start */
 	private void startScript() {
-		Game.publisher().publish(new ScriptStartedEvent(currentPage));
 		// halt player movement
+		Game.publisher().publish(new ScriptStartedEvent(currentPage));
 		Game.entities().find(Entity.PLAYER).velocity.set(0, 0, 0);
 		currentCommand = currentPage.command;
 		active = true;
@@ -124,14 +126,14 @@ public class ScriptComponent implements Component, EventListener {
 
 			}
 		} else {
-			updateScript();
+			updateScript(entity);
 		}
 
 	}
 
 	/** Updates the script, assumes all preconditions are met. (Eg., key has been
 	 * pressed, etc.) */
-	private void updateScript() {
+	private void updateScript(Entity entity) {
 		// if its done, increment our index
 		switch (currentCommand.getState()) {
 		case COMPLETE:
@@ -139,7 +141,7 @@ public class ScriptComponent implements Component, EventListener {
 			currentCommand = currentCommand.getNext();
 			break;
 		case NOT_STARTED:
-			currentCommand.start();
+			currentCommand.start(entity);
 			break;
 		case STARTED:
 			currentCommand.update();
@@ -149,6 +151,7 @@ public class ScriptComponent implements Component, EventListener {
 		}
 		// check if we're done with all scripts
 		if (currentCommand == null) {
+			setCurrentPage(entity);
 			active = false;
 			Game.publisher().publish(new ScriptEndedEvent(currentPage));
 		}

@@ -50,10 +50,10 @@ public class CameraTargetScriptCommand extends ScriptCommand {
 	}
 
 	@Override
-	public void onStarted() {
-		Entity entity = Game.entities().find(name);
-		if (entity != null) {
-			Game.publisher().publish(new CameraTargetEvent(entity));
+	public void onStarted(Entity entity) {
+		Entity target = Game.entities().find(name);
+		if (target != null) {
+			Game.publisher().publish(new CameraTargetEvent(target));
 		} else {
 			Game.log("Entity not found: " + name + ". Cannot target.");
 		}

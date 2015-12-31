@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.scripts;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -35,7 +36,7 @@ public class BattleScriptCommand extends ScriptCommand {
 	}
 
 	@Override
-	public void onStarted() {
+	public void onStarted(Entity entity) {
 		Game.battle().start();
 	}
 

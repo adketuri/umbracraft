@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.scripts;
 
 import net.alcuria.umbracraft.definitions.Definition;
+import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -72,8 +73,9 @@ public abstract class ScriptCommand extends Definition {
 	/** Invoked after the command is completed */
 	public abstract void onCompleted();
 
-	/** Invoked when the command starts */
-	public abstract void onStarted();
+	/** Invoked when the command starts
+	 * @param entity the {@link Entity} this command is attached to */
+	public abstract void onStarted(Entity entity);
 
 	/** Recursively prints all commands */
 	public void print() {
@@ -98,10 +100,11 @@ public abstract class ScriptCommand extends Definition {
 
 	/** Called when the command is to be started. Has a callback for the
 	 * subclasses ({@link ScriptCommand#onStarted()}) to do any
-	 * subclass-specific work. */
-	public final void start() {
+	 * subclass-specific work.
+	 * @param entity */
+	public final void start(Entity entity) {
 		state = CommandState.STARTED;
-		onStarted();
+		onStarted(entity);
 	}
 
 	/** Called every frame to update the {@link ScriptCommand} */

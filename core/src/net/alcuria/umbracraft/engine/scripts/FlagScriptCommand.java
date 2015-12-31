@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.FlagDefinition;
 import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.editor.Editor;
+import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -41,7 +42,7 @@ public class FlagScriptCommand extends ScriptCommand {
 	}
 
 	@Override
-	public void onStarted() {
+	public void onStarted(Entity entity) {
 	}
 
 	@Override
