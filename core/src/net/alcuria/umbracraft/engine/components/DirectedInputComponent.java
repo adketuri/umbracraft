@@ -23,8 +23,6 @@ public class DirectedInputComponent implements Component {
 
 	@Override
 	public void dispose(Entity entity) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

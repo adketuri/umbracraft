@@ -9,7 +9,7 @@ import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 public class ScriptPageDefinition extends Definition {
 
 	public static enum ScriptTrigger {
-		INSTANT, ON_INTERACTION, ON_TOUCH
+		INSTANT, ON_INTERACTION, ON_TOUCH;
 	}
 
 	/** The graphics for this script */

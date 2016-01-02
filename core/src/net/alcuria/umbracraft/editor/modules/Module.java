@@ -5,14 +5,18 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.editor.widget.SuggestionWidget;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -21,6 +25,7 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
@@ -96,7 +101,7 @@ public abstract class Module<T extends Definition> {
 					fieldList.addAll(Arrays.asList(clazz.getDeclaredFields()));
 					for (int i = 0; i < fieldList.size(); i++) {
 						final Field field = fieldList.get(i);
-						if (field.getModifiers() != Modifier.PRIVATE && (field.getType().toString().equals("int") || field.getType().toString().equals("float") || field.getType() == String.class || field.getType().toString().equals("boolean"))) {
+						if (field.getModifiers() != Modifier.PRIVATE && (field.getType().isEnum() || field.getType().toString().equals("int") || field.getType().toString().equals("float") || field.getType() == String.class || field.getType().toString().equals("boolean"))) {
 							if (idx % config.cols == config.cols - 1) {
 								add(keyInput(definition, field)).row();
 							} else {
@@ -115,7 +120,17 @@ public abstract class Module<T extends Definition> {
 				private Table keyInput(final Definition definition, final Field field) {
 					return new Table() {
 						{
-							if (field.getType().toString().equals("boolean")) {
+							if (field.getType().isEnum()) {
+								add(new VisLabel(field.getName())).minWidth(config.labelWidth);
+								final VisSelectBox selectBox = new VisSelectBox();
+								selectBox.setItems(field.getType().getEnumConstants());
+								add(selectBox).width(config.textFieldWidth).expandX().fill().left();
+								try {
+									selectBox.setSelected(field.get(definition));
+								} catch (Exception e) {
+								}
+								selectBox.addListener(selected(selectBox, definition, field));
+							} else if (field.getType().toString().equals("boolean")) {
 								add(new VisLabel(field.getName())).minWidth(config.labelWidth);
 								boolean value = false;
 								try {
@@ -138,7 +153,6 @@ public abstract class Module<T extends Definition> {
 								});
 								checkBox.align(Align.left);
 								add(checkBox).width(config.textFieldWidth).expandX().fill().left();
-
 							} else if (field.getType().toString().equals("int") || field.getType().toString().equals("float") || field.getType() == String.class) {
 								add(new VisLabel(field.getName())).minWidth(config.labelWidth);
 								String value;
@@ -188,6 +202,29 @@ public abstract class Module<T extends Definition> {
 
 							}
 
+						}
+					};
+				}
+
+				private EventListener selected(final VisSelectBox selectBox, final Definition definition, final Field field) {
+					return new EventListener() {
+
+						@Override
+						public boolean handle(Event event) {
+							if (event instanceof ChangeEvent) {
+								if (config.listener != null) {
+									config.listener.invoke();
+								}
+								try {
+									field.set(definition, selectBox.getSelected());
+								} catch (IllegalArgumentException | IllegalAccessException e) {
+									e.printStackTrace();
+								}
+								//page.trigger = ((SelectBox<ScriptTrigger>) event.getTarget()).getSelected();
+								Game.log("Dropdown changed: " + definition);
+								return true;
+							}
+							return false;
 						}
 					};
 				}

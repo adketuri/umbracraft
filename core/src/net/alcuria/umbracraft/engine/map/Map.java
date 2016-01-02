@@ -160,8 +160,6 @@ public class Map implements Disposable {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
 	}
 
 	/** @param f
