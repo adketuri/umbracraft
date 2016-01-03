@@ -31,14 +31,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * @author Andrew Keturi */
 public class MapTileWidget extends Table {
 
+	private static int selX, selY;
 	private static TextureRegion side, top, edge, outline;
 	private final MapDefinition definition;
 	private AnimationPreview entityPreview;
 	private final int i, j;
+	private final MapEditorWidget widget;
 
 	public MapTileWidget(int x, int y, final MapDefinition definition, final MapEditorWidget widget) {
 		i = x;
 		j = y;
+		this.widget = widget;
 		this.definition = definition;
 		// initialize static textures if needed
 		if (side == null) {
@@ -72,12 +75,16 @@ public class MapTileWidget extends Table {
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 				super.enter(event, x, y, pointer, fromActor);
 				setBackground(Drawables.get("yellow"));
+				getColor().a = 0.5f;
+				selX = i;
+				selY = j;
 			}
 
 			@Override
 			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
 				super.exit(event, x, y, pointer, toActor);
 				setBackground(Drawables.get("blue"));
+				getColor().a = 1f;
 			}
 		});
 		setTouchable(Touchable.enabled);
@@ -88,6 +95,14 @@ public class MapTileWidget extends Table {
 		super.act(delta);
 		if (entityPreview != null) {
 			entityPreview.act(delta);
+		}
+		// set the altitude with 0 - 9 number keys
+		if (widget.getEditMode() == EditMode.ALTITUDE) {
+			for (int i = 7; i <= 16; i++) {
+				if (Gdx.input.isKeyPressed(i)) {
+					definition.tiles.get(selX).get(selY).altitude = i - 7;
+				}
+			}
 		}
 	}
 
