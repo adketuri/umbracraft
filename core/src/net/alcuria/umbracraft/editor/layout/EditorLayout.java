@@ -51,7 +51,15 @@ public class EditorLayout extends Layout {
 				}
 			});
 		}
-		final ScrollPane scroll = new ScrollPane(content);
+		final ScrollPane scroll = new ScrollPane(content) {
+			@Override
+			public void act(float delta) {
+				if (!Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+					super.act(delta);
+				}
+			}
+
+		};
 		root.add(topnav()).expandX().fill().height(40).padBottom(10).row();
 		root.add(new Table() {
 			{
