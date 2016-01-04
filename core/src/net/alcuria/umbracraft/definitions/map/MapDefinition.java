@@ -59,9 +59,32 @@ public class MapDefinition extends Definition {
 		return name != null ? name : "Map";
 	}
 
+	/** Gets a tile definition at a particular x/y coordinate
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 * @return the {@link MapTileDefinition}, or <code>null</code> if it cannot
+	 *         be found. */
+	public MapTileDefinition getTileDefinition(int x, int y) {
+		try {
+			return tiles.get(x).get(y);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	/** @return the map's width */
 	public int getWidth() {
 		return width;
+	}
+
+	/** Marks all tiles as not filled, after a completed fill. */
+	public void resetFilled() {
+		for (int i = 0; i < tiles.size; i++) {
+			for (int j = 0; j < tiles.get(0).size; j++) {
+				tiles.get(i).get(j).filled = false;
+			}
+		}
+
 	}
 
 	/** Resizes the map

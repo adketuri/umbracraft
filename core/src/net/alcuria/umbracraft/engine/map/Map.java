@@ -30,6 +30,9 @@ public class Map implements Disposable {
 	private int width;
 
 	public void create(String id) {
+		if (id == null) {
+			throw new NullPointerException("id cannot be null. Perhaps an area node's mapDefinition field is null?");
+		}
 		name = id;
 		// json -> object
 		Json json = new Json();

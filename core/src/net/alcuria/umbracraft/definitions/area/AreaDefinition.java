@@ -73,7 +73,7 @@ public class AreaDefinition extends Definition {
 					if (childNode.name.equals(target)) {
 						return rootNode;
 					} else {
-						AreaNodeDefinition parent = find(childNode, target);
+						AreaNodeDefinition parent = findParent(childNode, target);
 						if (parent != null) {
 							return parent;
 						}

@@ -31,7 +31,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * @author Andrew Keturi */
 public class MapTileWidget extends Table {
 
-	private static int selX, selY;
+	static int selAlt = -1;
+	static int selX = -1;
+	static int selY = -1;
 	private static TextureRegion side, top, edge, outline;
 	private final MapDefinition definition;
 	private AnimationPreview entityPreview;
@@ -78,6 +80,7 @@ public class MapTileWidget extends Table {
 				getColor().a = 0.5f;
 				selX = i;
 				selY = j;
+				selAlt = definition.tiles.get(selX).get(selY).altitude;
 			}
 
 			@Override
@@ -97,10 +100,14 @@ public class MapTileWidget extends Table {
 			entityPreview.act(delta);
 		}
 		// set the altitude with 0 - 9 number keys
-		if (widget.getEditMode() == EditMode.ALTITUDE) {
+		if (widget.getEditMode() == EditMode.ALTITUDE && widget.isEntered()) {
 			for (int i = 7; i <= 16; i++) {
 				if (Gdx.input.isKeyPressed(i)) {
-					definition.tiles.get(selX).get(selY).altitude = i - 7;
+					try {
+						definition.tiles.get(selX).get(selY).altitude = i - 7;
+					} catch (Exception e) {
+						System.err.println("Out of bounds " + selX + ", " + selY);
+					}
 				}
 			}
 		}

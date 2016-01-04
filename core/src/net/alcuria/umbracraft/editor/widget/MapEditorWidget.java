@@ -5,15 +5,19 @@ import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.EntityReferenceDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
+import net.alcuria.umbracraft.definitions.map.MapTileDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.modules.MapListModule;
 import net.alcuria.umbracraft.editor.modules.Module.PopulateConfig;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -44,6 +48,7 @@ public class MapEditorWidget {
 	}
 
 	private static EditMode editMode = EditMode.ALTITUDE;
+	private boolean entered;
 	private final MapListModule module;
 	private Table popupTable;
 
@@ -78,6 +83,26 @@ public class MapEditorWidget {
 		};
 	}
 
+	/** Fills tiles up to +1 altitude
+	 * @param x
+	 * @param y
+	 * @param targetAlt */
+	private void fill(int x, int y, int targetAlt, boolean increase) {
+		final MapTileDefinition tile = module.getDefinition().getTileDefinition(x, y);
+		if (tile != null && !tile.filled && (increase && tile.altitude < targetAlt || !increase && tile.altitude > targetAlt)) {
+			tile.altitude = increase ? tile.altitude + 1 : tile.altitude - 1;
+			tile.filled = true;
+			try {
+				fill(x + 1, y, targetAlt, increase);
+				fill(x - 1, y, targetAlt, increase);
+				fill(x, y - 1, targetAlt, increase);
+				fill(x, y + 1, targetAlt, increase);
+			} catch (StackOverflowError e) {
+
+			}
+		}
+	}
+
 	/** @return a new map widget, consisting of several {@link MapTileWidget}
 	 *         classes to represent the current {@link MapDefinition}. */
 	public Actor getActor() {
@@ -92,7 +117,34 @@ public class MapEditorWidget {
 							}
 							add(row).row();
 						}
+						addListener(new ClickListener() {
+							@Override
+							public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+								entered = true;
+							};
+
+							@Override
+							public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+								entered = false;
+							};
+						});
 					}
+
+					@Override
+					public void act(float delta) {
+						super.act(delta);
+						if (MapTileWidget.selX >= 0 && MapTileWidget.selY >= 0) {
+							if (Gdx.input.isKeyJustPressed(Keys.F)) {
+								fill(MapTileWidget.selX, MapTileWidget.selY, MapTileWidget.selAlt + 1, true);
+								module.getDefinition().resetFilled();
+							}
+							if (Gdx.input.isKeyJustPressed(Keys.D)) {
+								fill(MapTileWidget.selX, MapTileWidget.selY, MapTileWidget.selAlt - 1, false);
+								module.getDefinition().resetFilled();
+							}
+						}
+					}
+
 				});
 				add(new Table() {
 					{
@@ -106,6 +158,11 @@ public class MapEditorWidget {
 	/** @return the current {@link EditMode} */
 	public EditMode getEditMode() {
 		return editMode;
+	}
+
+	/** @return <code>true</code> if the mouse has entered the editor widget. */
+	public boolean isEntered() {
+		return entered;
 	}
 
 	/** @return the {@link PopulateConfig} for showing the entity popup */
