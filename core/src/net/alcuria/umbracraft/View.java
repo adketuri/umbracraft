@@ -87,6 +87,14 @@ public class View implements EventListener {
 	 * @param bounds a {@link Rectangle} describing the boundaries of the image. */
 	public void setBounds(Rectangle bounds) {
 		this.bounds = bounds;
+		if (bounds.width < Config.viewWidth) {
+			//	bounds.x -= Math.abs(bounds.width - Config.viewWidth) / 2;
+			bounds.width = Config.viewWidth;
+		}
+		if (bounds.height < Config.viewHeight) {
+			//bounds.y -= Math.abs(bounds.height - Config.viewHeight) / 2;
+			bounds.height = Config.viewHeight;
+		}
 		this.bounds.x += Config.viewWidth / 2;
 		this.bounds.y += Config.viewHeight / 2;
 		update();
@@ -103,25 +111,29 @@ public class View implements EventListener {
 	public void update() {
 		boolean moved = false;
 		if (target != null) {
-			float dX = (target.position.x - camera.position.x) / 20f;
-			float dY = (target.position.y - camera.position.y) / 20f;
+			float dX = (bounds != null && bounds.width > Config.viewWidth) ? (target.position.x - camera.position.x) / 20f : 0;
+			float dY = (bounds != null && bounds.height > Config.viewHeight) ? (target.position.y - camera.position.y) / 20f : 0;
 			camera.translate(dX, dY);
 			moved = dX != 0 || dY != 0;
 		}
 		if (bounds != null) {
-			if (camera.position.x < bounds.x) {
-				camera.translate(bounds.x - camera.position.x, 0);
-				moved = true;
-			} else if (camera.position.x > bounds.width - Config.viewWidth / 2) {
-				camera.translate(bounds.width - Config.viewWidth / 2 - camera.position.x, 0);
-				moved = true;
+			if (bounds.width > Config.viewWidth) {
+				if (camera.position.x < bounds.x) {
+					camera.translate(bounds.x - camera.position.x, 0);
+					moved = true;
+				} else if (camera.position.x > bounds.width - Config.viewWidth / 2) {
+					camera.translate(bounds.width - Config.viewWidth / 2 - camera.position.x, 0);
+					moved = true;
+				}
 			}
-			if (camera.position.y < bounds.y) {
-				camera.translate(0, bounds.y - camera.position.y);
-				moved = true;
-			} else if (camera.position.y > bounds.height - Config.viewHeight / 2) {
-				camera.translate(0, bounds.height - Config.viewHeight / 2 - camera.position.y);
-				moved = true;
+			if (bounds.height > Config.viewHeight) {
+				if (camera.position.y < bounds.y) {
+					camera.translate(0, bounds.y - camera.position.y);
+					moved = true;
+				} else if (camera.position.y > bounds.height - Config.viewHeight / 2) {
+					camera.translate(0, bounds.height - Config.viewHeight / 2 - camera.position.y);
+					moved = true;
+				}
 			}
 		}
 		if (moved) {

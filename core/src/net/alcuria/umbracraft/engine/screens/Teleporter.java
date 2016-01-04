@@ -7,6 +7,8 @@ import net.alcuria.umbracraft.engine.AreaBuilder;
 import net.alcuria.umbracraft.engine.components.MapCollisionComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
+import com.badlogic.gdx.math.Rectangle;
+
 /** The teleporter is responsible for determining when the player entity reaches
  * the edge of a map, finding the appropriate map to teleport her to, and
  * notifying the {@link WorldScreen} that we want to change maps.
@@ -24,6 +26,7 @@ public class Teleporter {
 
 	private void teleport(TeleportDirection direction) {
 		Game.areas().changeNode(direction);
+		Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
 		Game.view().focus();
 		player = Game.entities().find(Entity.PLAYER);
 	}

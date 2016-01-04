@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.engine.screens;
 
+import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
@@ -8,6 +9,8 @@ import net.alcuria.umbracraft.engine.manager.hud.HudManager;
 import net.alcuria.umbracraft.engine.manager.input.OnscreenInputManager;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.windows.WindowStack;
+
+import com.badlogic.gdx.math.Rectangle;
 
 /** All objects live in the World. Enitities are rendered, the view unprojects,
  * and then ui elements are displayed.
@@ -25,6 +28,7 @@ public class WorldScreen implements UmbraScreen, EventListener {
 		Game.publisher().subscribe(this);
 		Game.entities().create(WorldUtils.getStartingMapName());
 		Game.map().create(WorldUtils.getStartingMapName());
+		Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
 		Game.areas().setAreaAndNode(Game.db().config().startingArea, Game.db().config().startingNode);
 		hud = new HudManager();
 		in = new OnscreenInputManager();
