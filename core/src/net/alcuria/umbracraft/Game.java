@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.engine.events.EventPublisher;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
 import net.alcuria.umbracraft.flags.FlagManager;
+import net.alcuria.umbracraft.hud.HUD;
 import net.alcuria.umbracraft.party.Party;
 
 import com.badlogic.gdx.Gdx;
@@ -24,6 +25,7 @@ public final class Game {
 	private static boolean debug = false;
 	private static EntityManager entities;
 	private static FlagManager flags;
+	private static HUD hud;
 	private static Map map;
 	private static Party party;
 	private static EventPublisher publisher;
@@ -76,6 +78,11 @@ public final class Game {
 
 	}
 
+	/** @return the {@link HUD} */
+	public static HUD hud() {
+		return hud;
+	}
+
 	/** @return whether or not the game is in debug mode. */
 	public static boolean isDebug() {
 		return debug;
@@ -117,6 +124,11 @@ public final class Game {
 	 * @param debug is the game in debug mode? */
 	public static void setDebug(boolean debug) {
 		Game.debug = debug;
+	}
+
+	/** Sets the hud type */
+	public static void setHUD(HUD hud) {
+		Game.hud = hud;
 	}
 
 	/** Changes the current screen

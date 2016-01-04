@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft;
 
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
+import net.alcuria.umbracraft.hud.HUD;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -17,6 +18,8 @@ public abstract class UmbraCraftApplication implements ApplicationListener {
 		VisUI.load();
 		game = new Game();
 		Game.setScreen(getFirstScreen(), false);
+		Game.setBattle(getBattle());
+		Game.setHUD(getHUD());
 	}
 
 	@Override
@@ -25,11 +28,24 @@ public abstract class UmbraCraftApplication implements ApplicationListener {
 		game.dispose();
 	}
 
+	/** This method is called when the application is created to specify a
+	 * {@link Battle} interface to tell the engine how to handle in-game
+	 * battles. Once the application is created, a reference to this battle
+	 * object is stored inside of {@link Game}.
+	 * @return a {@link Battle} */
+	public abstract Battle getBattle();
+
+	/** @return the first screen to display, typically a loading or title screen. */
 	public abstract UmbraScreen getFirstScreen();
+
+	/** This method is called when the application is created to specify a
+	 * {@link HUD} interface which tells the engine how to render and manage the
+	 * in-game HUD. Once called, a reference is stored in {@link Game}
+	 * @return */
+	public abstract HUD getHUD();
 
 	@Override
 	public void pause() {
-
 	}
 
 	@Override
