@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.anim;
 
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 
 /** An AnimationCollection is a collection of references to
@@ -8,17 +9,17 @@ import net.alcuria.umbracraft.definitions.Definition;
  * @author Andrew Keturi */
 public class AnimationCollectionDefinition extends Definition {
 
-	/** Falling pose */
+	@Tooltip("The falling pose from AnimationGroupDefinition")
 	public String falling;
-	/** Idle pose */
+	@Tooltip("The idle pose from AnimationGroupDefinition")
 	public String idle;
-	/** Jumping pose */
+	@Tooltip("The jumping pose from AnimationGroupDefinition")
 	public String jumping;
-	/** Name */
+	@Tooltip("The identifier for this definition")
 	public String name;
-	/** Running pose */
+	@Tooltip("The running pose from AnimationGroupDefinition")
 	public String running;
-	/** Walking pose */
+	@Tooltip("The walking pose from AnimationGroupDefinition")
 	public String walking;
 
 	@Override

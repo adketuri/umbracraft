@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.anim;
 
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 
 import com.badlogic.gdx.utils.Array;
@@ -8,25 +9,25 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class AnimationDefinition extends Definition implements Comparable<AnimationDefinition> {
 
-	/** Full internal path to texture */
+	@Tooltip("Filename, inside to the internal /sprites/animations/\n folder, to the asset.")
 	public String filename;
-	/** The frames for the animation. */
+	@Tooltip("The frames for the animation")
 	public Array<AnimationFrameDefinition> frames;
-	/** Height of a frame */
+	@Tooltip("The height of a single frame")
 	public int height;
-	/** Whether or not to hold on last frame */
+	@Tooltip("Whether or not to hold on last frame")
 	public boolean keepLast;
-	/** Whether or not the animation loops */
+	@Tooltip("Whether or not the animation loops")
 	public boolean loop;
-	/** A friendly name */
+	@Tooltip("A friendly name")
 	public String name;
-	/** Origin x */
+	@Tooltip("The x origin of a frame")
 	public int originX;
-	/** Origin y */
+	@Tooltip("The x origin of a frame")
 	public int originY;
-	/** A tag for the animation to help with sorting */
+	@Tooltip("A tag for the animation to help with sorting")
 	public String tag = "";
-	/** Width of a frame */
+	@Tooltip("The width of a frame")
 	public int width;
 
 	/** Uused for serialization */
