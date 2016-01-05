@@ -7,13 +7,21 @@ import java.util.Arrays;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.Listener;
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
+import net.alcuria.umbracraft.editor.Editor;
+import net.alcuria.umbracraft.editor.events.HideTooltip;
+import net.alcuria.umbracraft.editor.events.ShowTooltip;
 import net.alcuria.umbracraft.editor.widget.SuggestionWidget;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
@@ -53,6 +61,7 @@ public abstract class Module<T extends Definition> {
 
 	public VisTextButton button;
 	protected T rootDefinition;
+	private final Vector2 tmp = new Vector2();
 
 	public Module() {
 		button = new VisTextButton(getTitle());
@@ -84,8 +93,8 @@ public abstract class Module<T extends Definition> {
 	/** A generic populate method. Populates a table with a class's fields which
 	 * may be modified. For ints and string fields, a textfield is created where
 	 * the value of the field is updated when the textfield changes. For boolean
-	 * fields a checkbox is used. Other objects and private fields are not
-	 * displayed.
+	 * fields a checkbox is used. For enums, a dropdown menu will be generated.
+	 * Other objects and private fields are not displayed.
 	 * @param content the table to update
 	 * @param clazz the class definitions
 	 * @param definition the definition we want to update (when fields change
@@ -120,6 +129,25 @@ public abstract class Module<T extends Definition> {
 				private Table keyInput(final Definition definition, final Field field) {
 					return new Table() {
 						{
+							// check if we should show a tooltip for this field
+							final Tooltip annotation = field.getAnnotation(Tooltip.class);
+							if (annotation != null) {
+								final VisLabel helpLabel = new VisLabel("[?]", Color.YELLOW);
+								add(helpLabel).pad(5);
+								helpLabel.addListener(new ClickListener() {
+									@Override
+									public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+										tmp.x = -160;
+										tmp.y = -30;
+										Editor.publisher().publish(new ShowTooltip(helpLabel.localToStageCoordinates(tmp), annotation.value()));
+									};
+
+									@Override
+									public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+										Editor.publisher().publish(new HideTooltip());
+									};
+								});
+							}
 							if (field.getType().isEnum()) {
 								add(new VisLabel(field.getName())).minWidth(config.labelWidth);
 								final VisSelectBox selectBox = new VisSelectBox();

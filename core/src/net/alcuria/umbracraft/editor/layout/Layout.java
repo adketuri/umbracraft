@@ -12,10 +12,14 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 public abstract class Layout {
 	protected Table content;
 	protected Stage stage;
+	protected Table tooltip;
 
 	public Layout() {
 		stage = new Stage(new StretchViewport(Config.editorWidth, Config.editorHeight));
 	}
+
+	/** dispose the layout */
+	public abstract void dispose();
 
 	/** render the layout */
 	public void render(SpriteBatch batch) {

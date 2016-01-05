@@ -28,6 +28,10 @@ public class MapGenLayout extends Layout {
 	}
 
 	@Override
+	public void dispose() {
+	}
+
+	@Override
 	public void render(SpriteBatch batch) {
 		stage.draw();
 		gen.draw(batch);
