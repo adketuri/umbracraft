@@ -5,11 +5,10 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.engine.events.TouchpadCreatedEvent;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
@@ -22,26 +21,22 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor {
 
 	private static final int SIZE = 60;
 	private int pointer = -1;
-	private final Stage stage;
 	private final Vector3 touch = new Vector3();
 	private final Touchpad touchpad;
 
-	public TouchpadEntity() {
+	public TouchpadEntity(Stage stage) {
 		TouchpadStyle style = new TouchpadStyle();
 		style.background = new TextureRegionDrawable(Drawables.skin("ui/joyBack"));
 		style.knob = new TextureRegionDrawable(Drawables.skin("ui/joyNub"));
 		touchpad = new Touchpad(3, style);
 		touchpad.setBounds(40, 20, SIZE, SIZE);
-		stage = new Stage(Game.view().getViewport());
-		stage.addActor(touchpad);
-		Gdx.input.setInputProcessor(new InputMultiplexer() {
-			{
-				addProcessor(TouchpadEntity.this);
-				addProcessor(stage);
-			}
-		});
 		touchpad.getColor().a = 0;
+		stage.addActor(touchpad);
 		Game.publisher().publish(new TouchpadCreatedEvent(touchpad));
+	}
+
+	public Actor getActor() {
+		return touchpad;
 	}
 
 	@Override
@@ -66,7 +61,6 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor {
 
 	@Override
 	public void render() {
-		stage.draw();
 	}
 
 	@Override
@@ -107,8 +101,4 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor {
 		}
 	}
 
-	@Override
-	public void update() {
-		stage.act(Gdx.graphics.getDeltaTime());
-	}
 }

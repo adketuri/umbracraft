@@ -5,7 +5,6 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
-import net.alcuria.umbracraft.engine.manager.hud.HudManager;
 import net.alcuria.umbracraft.engine.manager.input.OnscreenInputManager;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.windows.WindowStack;
@@ -16,7 +15,6 @@ import com.badlogic.gdx.math.Rectangle;
  * and then ui elements are displayed.
  * @author Andrew Keturi */
 public class WorldScreen implements UmbraScreen, EventListener {
-	private final HudManager hud;
 	private final OnscreenInputManager in;
 	private Map map;
 	private final Teleporter teleporter;
@@ -30,7 +28,6 @@ public class WorldScreen implements UmbraScreen, EventListener {
 		Game.map().create(WorldUtils.getStartingMapName());
 		Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
 		Game.areas().setAreaAndNode(Game.db().config().startingArea, Game.db().config().startingNode);
-		hud = new HudManager();
 		in = new OnscreenInputManager();
 	}
 
@@ -64,7 +61,6 @@ public class WorldScreen implements UmbraScreen, EventListener {
 	public void render(float delta) {
 		Game.entities().render();
 		Game.batch().setProjectionMatrix(Game.view().getUiCamera().combined);
-		hud.render();
 		in.render();
 		windows.render();
 	}
@@ -87,7 +83,6 @@ public class WorldScreen implements UmbraScreen, EventListener {
 	@Override
 	public void update(float delta) {
 		Game.entities().update(delta);
-		hud.update();
 		in.update();
 		Game.view().update();
 		windows.update();

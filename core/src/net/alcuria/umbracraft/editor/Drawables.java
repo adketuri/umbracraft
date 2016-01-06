@@ -73,6 +73,15 @@ public class Drawables {
 		return atlas;
 	}
 
+	/** Finds a texture in the atlas and returns a new
+	 * {@link TextureRegionDrawable}. Because a new object is created, be
+	 * mindful when using this repeatedly.
+	 * @param region the texture region {@link String} from the atlas
+	 * @return a new {@link TextureRegionDrawable} */
+	public static TextureRegionDrawable texture(String region) {
+		return new TextureRegionDrawable(skin(region));
+	}
+
 	private Drawables() {
 	}
 

@@ -22,13 +22,13 @@ public class ControlledInputComponent implements Component, EventListener {
 	private static final int MARGIN = 4;
 	private static final float MAX_SPEED = 2; // max speed of the entity
 	private static final float MAX_SPEED_TIME = 0.12f; // time entity takes to reach max speed
+	private static Touchpad touchpad;
 	private AnimationCollectionComponent group;
 	private boolean haltInput;
 	private float holdTimeX, holdTimeY;
 	private final Vector3 inspectPos = new Vector3();
 	private MapCollisionComponent physics;
 	private boolean subscribed;
-	private Touchpad touchpad;
 
 	@Override
 	public void create(Entity entity) {
