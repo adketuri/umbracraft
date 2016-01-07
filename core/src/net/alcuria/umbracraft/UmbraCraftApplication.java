@@ -8,7 +8,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.kotcrab.vis.ui.VisUI;
 
-/** The engine.
+/** The top-level application class that is responsible for updating/rendering
+ * the current screen and initializing our {@link Game} object. Project-specific
+ * interfaces to handle unique gameflows are also initialized here.
  * @author Andrew Keturi */
 public abstract class UmbraCraftApplication implements ApplicationListener {
 	private Game game;

@@ -53,7 +53,6 @@ public class WindowStack implements EventListener {
 				@Override
 				public void invoke() {
 					windows.removeValue(window, true);
-
 				}
 			});
 		}
