@@ -10,6 +10,8 @@ public class MapTileDefinition extends Definition {
 	public int altitude;
 	/** For the editor, determines if we've already filled */
 	public transient boolean filled;
+	/** The type of tile, eg 0 for default, 1 for dirt, etc */
+	public int type;
 
 	@Override
 	public String getName() {

@@ -25,7 +25,6 @@ public class TilesetDefinition extends Definition {
 	public int edgeTop;
 	/** The northwestern edge */
 	public int edgeTopLeft;
-	/** The northeastern edge */
 	public int edgeTopRight;
 	/** The filename of the tileset with extension but no path. eg: "forest.png" */
 	public String filename;
@@ -37,6 +36,9 @@ public class TilesetDefinition extends Definition {
 	public int middleLeftWall;
 	/** The middle segment of the right side of the walls */
 	public int middleRightWall;
+	/** The northeastern edge */
+	/** The id of the first terrain */
+	public int terrain1;
 
 	@Override
 	public String getName() {

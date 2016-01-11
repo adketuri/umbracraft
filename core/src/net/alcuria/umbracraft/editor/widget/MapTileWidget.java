@@ -15,6 +15,7 @@ import net.alcuria.umbracraft.editor.widget.MapEditorWidget.EditMode;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -109,7 +110,23 @@ public class MapTileWidget extends Table {
 						System.err.println("Out of bounds " + selX + ", " + selY);
 					}
 				}
+				if (Gdx.input.isKeyPressed(Keys.Q)) {
+					try {
+						definition.tiles.get(selX).get(selY).type = 0;
+					} catch (Exception e) {
+						System.err.println("Out of bounds " + selX + ", " + selY);
+					}
+				}
+				if (Gdx.input.isKeyPressed(Keys.W)) {
+					try {
+						definition.tiles.get(selX).get(selY).type = 1;
+					} catch (Exception e) {
+						System.err.println("Out of bounds " + selX + ", " + selY);
+					}
+				}
+
 			}
+
 		}
 	}
 
@@ -124,11 +141,18 @@ public class MapTileWidget extends Table {
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
 		int altitude = alt(i, j);
+		int type = type(i, j);
 		// side
 		batch.draw(side, getX(), getY(), getWidth(), getWidth() * altitude);
 		// top
 		batch.draw(outline, getX(), getY() + altitude * getHeight(), getWidth(), getHeight());
+		if (type != 0) {
+			batch.setColor(Color.SKY);
+		}
 		batch.draw(top, getX() + 1, getY() + altitude * getHeight() + 1, getWidth() - 2, getHeight() - 2);
+		if (type != 0) {
+			batch.setColor(Color.WHITE);
+		}
 		// entity
 		if (entityPreview != null && entityPreview.getCurrentRegion() != null) {
 			final TextureRegion region = entityPreview.getCurrentRegion();
@@ -150,6 +174,13 @@ public class MapTileWidget extends Table {
 		if (alt(i, j - 1) < alt(i, j)) {
 			batch.draw(edge, getX(), getY() + getHeight() + altitude * getHeight() - 2, getWidth(), 2);
 		}
+	}
+
+	private int type(int i, int j) {
+		if (i < 0 || i >= definition.tiles.size || j < 0 || j >= definition.tiles.get(0).size) {
+			return 0;
+		}
+		return definition.tiles.get(i).get(j).type;
 	}
 
 	/** This monolithic function is a nightmare but for now it works. It looks

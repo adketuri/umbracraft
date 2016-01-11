@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.Json;
  * objects to render the map.
  * @author Andrew Keturi */
 public class Map implements Disposable {
-	private int[][] altMap;
+	private int[][] altMap, typeMap;
 	//	private final BitmapFont font = Game.assets().get("fonts/message.fnt", BitmapFont.class);
 	private int height;
 	private Array<Layer> layers;
@@ -51,9 +51,12 @@ public class Map implements Disposable {
 		width = mapDef.getWidth();
 		height = mapDef.getHeight();
 		altMap = new int[width][height];
+		typeMap = new int[width][height];
+
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				altMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).altitude;
+				typeMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).type;
 			}
 		}
 
@@ -136,6 +139,13 @@ public class Map implements Disposable {
 			return tilesetDefinition.edgeBottomLeft;
 		}
 		//TODO: More cases (0101, 1010, 1111, etc)
+		if (getTypeAt(i, j) > 0) {
+			switch (getTypeAt(i, j)) {
+			case 1:
+				return tilesetDefinition.terrain1;
+			default:
+			}
+		}
 		return 0;
 	}
 
@@ -218,6 +228,22 @@ public class Map implements Disposable {
 		}
 		//		}
 		return regions;
+	}
+
+	/** Gets the terrain yupe at some tile coordinates and does bounds checking
+	 * too!
+	 * @param x x tile
+	 * @param y y tile
+	 * @return */
+	public int getTypeAt(int x, int y) {
+		// clamp to the size of the map so it's assumed tiles outside the map are the same as edge tiles
+		try {
+			x = MathUtils.clamp(x, 0, altMap.length - 1);
+			y = MathUtils.clamp(y, 0, altMap[0].length - 1);
+			return typeMap[x][y];
+		} catch (NullPointerException npe) {
+			return 0;
+		}
 	}
 
 	public int getWidth() {
