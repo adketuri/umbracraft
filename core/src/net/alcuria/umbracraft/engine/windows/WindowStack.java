@@ -17,11 +17,6 @@ import com.badlogic.gdx.utils.Array;
 public class WindowStack implements EventListener {
 	private boolean containsTouchable = false;
 	private InputProcessor savedInputProcessor;
-	/** TODO: have a method touchable for the screens when we add a screen to the
-	 * stack, check if the stack contains a 'touchable' screen. if so, save off
-	 * the input processor. when we remove a screen from the stack, we see if
-	 * the stack no longer contains a touchable screen. if that's the case, we
-	 * can set the input processor back to the saved off value. */
 	private final Array<Window<?>> windows = new Array<>();
 
 	public WindowStack() {
