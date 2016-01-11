@@ -21,6 +21,12 @@ public abstract class Window<T extends WindowLayout> {
 
 	}
 
+	/** @return whether or not this window is touchable. default is
+	 *         <code>true</code>. */
+	public boolean isTouchable() {
+		return true;
+	}
+
 	/** callback after the window has closed */
 	public abstract void onClose();
 

@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.windows;
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Listener;
 
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -21,6 +22,11 @@ public abstract class WindowLayout {
 		stage = new Stage(new FitViewport(Config.viewWidth, Config.viewHeight));
 		stage.addActor(root);
 		root.add(content).expand().fill();
+	}
+
+	/** @return the stage */
+	public InputProcessor getStage() {
+		return stage;
 	}
 
 	/** override to hide/close the window. listener must be called after any

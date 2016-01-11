@@ -7,6 +7,7 @@ import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Array;
 
@@ -14,7 +15,13 @@ import com.badlogic.gdx.utils.Array;
  * them. Windows display content (menus, messages, etc.) to the user.
  * @author Andrew Keturi */
 public class WindowStack implements EventListener {
-
+	private boolean containsTouchable = false;
+	private InputProcessor savedInputProcessor;
+	/** TODO: have a method touchable for the screens when we add a screen to the
+	 * stack, check if the stack contains a 'touchable' screen. if so, save off
+	 * the input processor. when we remove a screen from the stack, we see if
+	 * the stack no longer contains a touchable screen. if that's the case, we
+	 * can set the input processor back to the saved off value. */
 	private final Array<Window<?>> windows = new Array<>();
 
 	public WindowStack() {
@@ -52,7 +59,23 @@ public class WindowStack implements EventListener {
 
 				@Override
 				public void invoke() {
+					// remove window
 					windows.removeValue(window, true);
+					// check if we should reset touchable
+					if (containsTouchable) {
+						boolean isTouchable = false;
+						for (Window<?> w : windows) {
+							if (w.isTouchable()) {
+								isTouchable = true;
+								break;
+							}
+						}
+						if (!isTouchable && savedInputProcessor != null) {
+							containsTouchable = false;
+							Gdx.input.setInputProcessor(savedInputProcessor);
+							Game.log("Setting back to saved input processor");
+						}
+					}
 				}
 			});
 		}
@@ -61,10 +84,16 @@ public class WindowStack implements EventListener {
 	/** push a new window to the stack */
 	public void push(Window<?> window) {
 		if (window != null) {
+			if (!containsTouchable && window.isTouchable()) {
+				savedInputProcessor = Gdx.input.getInputProcessor();
+				containsTouchable = true;
+				Game.log("Saving off input processor");
+			}
 			Game.log("pushing " + window);
 			windows.add(window);
 			window.open();
 		}
+
 	}
 
 	/** renders the stack */

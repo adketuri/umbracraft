@@ -13,6 +13,11 @@ public class MessageWindow extends Window<MessageWindowLayout> {
 	}
 
 	@Override
+	public boolean isTouchable() {
+		return false;
+	}
+
+	@Override
 	public void onClose() {
 
 	}
