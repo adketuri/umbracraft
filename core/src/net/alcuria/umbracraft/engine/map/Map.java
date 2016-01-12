@@ -52,11 +52,55 @@ public class Map implements Disposable {
 		height = mapDef.getHeight();
 		altMap = new int[width][height];
 		typeMap = new int[width][height];
-
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				altMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).altitude;
 				typeMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).type;
+				if (typeMap[i][j] == 1) {
+					typeMap[i][j] = tilesetDefinition.terrain1;
+				}
+			}
+		}
+
+		// remove unusable terrain
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (getAltitudeAt(i - 2, j) < getAltitudeAt(i, j) || getAltitudeAt(i - 1, j) != getAltitudeAt(i, j)) {
+					typeMap[i][j] = 0;
+				}
+				if (getAltitudeAt(i + 2, j) < getAltitudeAt(i, j) || getAltitudeAt(i + 1, j) != getAltitudeAt(i, j)) {
+					typeMap[i][j] = 0;
+				}
+				if (getAltitudeAt(i, j - 2) < getAltitudeAt(i, j) || getAltitudeAt(i, j - 1) != getAltitudeAt(i, j)) {
+					typeMap[i][j] = 0;
+				}
+				if (getAltitudeAt(i, j + 2) < getAltitudeAt(i, j) || getAltitudeAt(i, j + 1) != getAltitudeAt(i, j)) {
+					typeMap[i][j] = 0;
+				}
+			}
+		}
+
+		// set terrain edges
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				final int terrain = tilesetDefinition.terrain1;
+				if (typeMap[i][j] == terrain) {
+					setTypeAt(i - 1, j, terrain - 1);
+					setTypeAt(i + 1, j, terrain + 1);
+					setTypeAt(i, j - 1, terrain + 16);
+					setTypeAt(i, j + 1, terrain - 16);
+				}
+			}
+		}
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				final int terrain = tilesetDefinition.terrain1;
+				if (typeMap[i][j] == terrain) {
+					setTypeAt(i + 1, j + 1, terrain - 15);
+					setTypeAt(i - 1, j + 1, terrain - 17);
+					setTypeAt(i + 1, j - 1, terrain + 17);
+					setTypeAt(i - 1, j - 1, terrain + 15);
+				}
 			}
 		}
 
@@ -139,14 +183,7 @@ public class Map implements Disposable {
 			return tilesetDefinition.edgeBottomLeft;
 		}
 		//TODO: More cases (0101, 1010, 1111, etc)
-		if (getTypeAt(i, j) > 0) {
-			switch (getTypeAt(i, j)) {
-			case 1:
-				return tilesetDefinition.terrain1;
-			default:
-			}
-		}
-		return 0;
+		return getTypeAt(i, j);
 	}
 
 	private int createWall(int i, int j, int drop, int altitude, int baseAlt) {
@@ -290,6 +327,18 @@ public class Map implements Disposable {
 		//				font.draw(Game.batch(), String.valueOf(altMap[i][j]), i * tileSize + 6, j * tileSize + 14);
 		//			}
 		//		}
+	}
+
+	/** Given some tile coordinates, checks if they're valid and the tile type
+	 * there has not been defined., and if so, applies newType to those
+	 * coordinates.
+	 * @param x
+	 * @param y
+	 * @param newType */
+	private void setTypeAt(int x, int y, int newType) {
+		if (x >= 0 && x < altMap.length && y >= 0 && y < altMap[0].length && typeMap[x][y] == 0) {
+			typeMap[x][y] = newType;
+		}
 	}
 
 	/** Updates the map
