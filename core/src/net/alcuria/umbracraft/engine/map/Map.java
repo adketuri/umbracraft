@@ -27,6 +27,7 @@ public class Map implements Disposable {
 	private TilesetDefinition tilesetDefinition;
 	private final int tileSide = 1;
 	private final int tileTop = 2;
+	private boolean[][] typeFlags;
 	private int width;
 
 	public void create(String id) {
@@ -51,9 +52,11 @@ public class Map implements Disposable {
 		width = mapDef.getWidth();
 		height = mapDef.getHeight();
 		altMap = new int[width][height];
+		typeFlags = new boolean[width][height];
 		typeMap = new int[width][height];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
+				typeFlags[i][j] = false;
 				altMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).altitude;
 				typeMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).type;
 				if (typeMap[i][j] == 1) {
@@ -80,29 +83,76 @@ public class Map implements Disposable {
 			}
 		}
 
-		// set terrain edges
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				final int terrain = tilesetDefinition.terrain1;
-				if (typeMap[i][j] == terrain) {
-					setTypeAt(i - 1, j, terrain - 1);
-					setTypeAt(i + 1, j, terrain + 1);
-					setTypeAt(i, j - 1, terrain + 16);
-					setTypeAt(i, j + 1, terrain - 16);
+				if (typeMap[i][j] == 0 && !typeFlags[i][j]) {
+					// get surrounding mask
+					// top topright right rightdown down downleft left lefttop
+					int[] dX = { 0, 1, 1, 1, 0, -1, -1, -1 };
+					int[] dY = { 1, 1, 0, -1, -1, -1, 0, 1 };
+					int value = 0b00000000;
+					int mask = 0b10000000;
+					boolean valid = false;
+					for (int k = 0; k < dX.length; k++) {
+						System.out.println(String.format("Value: %s mask: %s ", Integer.toBinaryString(value), Integer.toBinaryString(mask)));
+						if (getTypeAt(i + dX[k], j + dY[k]) == terrain) {
+							value = value ^ mask;
+							valid = true;
+						}
+						mask = mask >>> 1;
+					}
+
+					if (valid) {
+						switch (value) {
+						case 0b0000_0000:
+							throw new IllegalStateException("Tile marked as valid but has no valid adjacent tiles");
+						case 0b1000_0000: // top permutations
+						case 0b1100_0000:
+						case 0b1000_0001:
+						case 0b1100_0001:
+							setTypeAt(i, j, terrain + 16);
+							break;
+						case 0b0100_0000:
+							setTypeAt(i, j, terrain + 15);
+							break;
+						case 0b0010_0000: // right permutations
+						case 0b0110_0000:
+						case 0b0011_0000:
+						case 0b0111_0000:
+							setTypeAt(i, j, terrain - 1);
+							break;
+						case 0b0001_0000:
+							setTypeAt(i, j, terrain - 17);
+							break;
+						case 0b0000_1000: // down permutations
+						case 0b0000_1100:
+						case 0b0001_1000:
+						case 0b0001_1100:
+							setTypeAt(i, j, terrain - 16);
+							break;
+						case 0b0000_0100:
+							setTypeAt(i, j, terrain - 15);
+							break;
+						case 0b0000_0010: // left permuatations
+						case 0b0000_0011:
+						case 0b0000_0110:
+						case 0b0000_0111:
+							setTypeAt(i, j, terrain + 1);
+							break;
+						case 0b0000_0001:
+							setTypeAt(i, j, terrain + 17);
+							break;
+						}
+						typeFlags[i][j] = true;
+					}
 				}
 			}
 		}
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				final int terrain = tilesetDefinition.terrain1;
-				if (typeMap[i][j] == terrain) {
-					setTypeAt(i + 1, j + 1, terrain - 15);
-					setTypeAt(i - 1, j + 1, terrain - 17);
-					setTypeAt(i + 1, j - 1, terrain + 17);
-					setTypeAt(i - 1, j - 1, terrain + 15);
-				}
-			}
-		}
+		//					setTypeAt(i + 1, j + 1, terrain - 15);
+		//					setTypeAt(i - 1, j + 1, terrain - 17);
+		//					setTypeAt(i + 1, j - 1, terrain + 17);
+		//					setTypeAt(i - 1, j - 1, terrain + 15);
 
 		// create list of all heights
 		Array<Integer> heights = new Array<Integer>();

@@ -104,7 +104,7 @@ public class EntityManager {
 		int width = Config.viewWidth / Config.tileWidth;
 		int height = Config.viewHeight / Config.tileWidth;
 		// add visible entitities onscreen
-		int row = y + height;
+		int row = y + height + 1; // start at the top
 		for (int i = 0; i < entities.size; i++) {
 			final int entityRow = getRow(entities.get(i));
 			if (entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= mapHeight) {
