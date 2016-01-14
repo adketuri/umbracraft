@@ -88,11 +88,11 @@ public class Map implements Disposable {
 				final int terrain = tilesetDefinition.terrain1;
 				if (typeMap[i][j] == 0 && !typeFlags[i][j]) {
 					// get surrounding mask
-					// top topright right rightdown down downleft left lefttop
+					// top topright right rightdown _ down downleft left lefttop
 					int[] dX = { 0, 1, 1, 1, 0, -1, -1, -1 };
 					int[] dY = { 1, 1, 0, -1, -1, -1, 0, 1 };
-					int value = 0b00000000;
-					int mask = 0b10000000;
+					int value = 0b0000_0000;
+					int mask = 0b1000_0000;
 					boolean valid = false;
 					for (int k = 0; k < dX.length; k++) {
 						System.out.println(String.format("Value: %s mask: %s ", Integer.toBinaryString(value), Integer.toBinaryString(mask)));
@@ -143,7 +143,33 @@ public class Map implements Disposable {
 						case 0b0000_0001:
 							setTypeAt(i, j, terrain + 17);
 							break;
+						case 0b1000_0011: // top left 3/4ths
+						case 0b1000_0111:
+						case 0b1100_0011:
+						case 0b1100_0111:
+							setTypeAt(i, j, terrain - 14);
+						case 0b1110_0000: // top right 3/4ths
+						case 0b1110_0001:
+						case 0b1111_0000:
+						case 0b1111_0001:
+							setTypeAt(i, j, terrain - 13);
+							break;
+						case 0b0011_1000: // down right 3/4ths
+						case 0b0011_1100:
+						case 0b0111_1000:
+						case 0b0111_1100:
+							setTypeAt(i, j, terrain + 3);
+							break;
+						case 0b0000_1110: // down left 3/4ths
+						case 0b0001_1110:
+						case 0b0000_1111:
+						case 0b0001_1111:
+							setTypeAt(i, j, terrain + 2);
+							break;
+
 						}
+						//case 0b1101_0000:
+						//case 0b1000_0101:
 						typeFlags[i][j] = true;
 					}
 				}
