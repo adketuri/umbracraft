@@ -61,27 +61,35 @@ public class Map implements Disposable {
 				typeMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).type;
 				if (typeMap[i][j] == 1) {
 					typeMap[i][j] = tilesetDefinition.terrain1;
+				} else if (typeMap[i][j] == 2) {
+					typeMap[i][j] = tilesetDefinition.terrain2;
+				} else if (typeMap[i][j] == 3) {
+					typeMap[i][j] = tilesetDefinition.terrain3;
+				} else if (typeMap[i][j] == 4) {
+					typeMap[i][j] = tilesetDefinition.terrain4;
+				} else if (typeMap[i][j] == 5) {
+					typeMap[i][j] = tilesetDefinition.stairs;
 				}
 			}
 		}
 
 		// remove unusable terrain
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				if (getAltitudeAt(i - 2, j) < getAltitudeAt(i, j) || getAltitudeAt(i - 1, j) != getAltitudeAt(i, j)) {
-					typeMap[i][j] = 0;
-				}
-				if (getAltitudeAt(i + 2, j) < getAltitudeAt(i, j) || getAltitudeAt(i + 1, j) != getAltitudeAt(i, j)) {
-					typeMap[i][j] = 0;
-				}
-				if (getAltitudeAt(i, j - 2) < getAltitudeAt(i, j) || getAltitudeAt(i, j - 1) != getAltitudeAt(i, j)) {
-					typeMap[i][j] = 0;
-				}
-				if (getAltitudeAt(i, j + 2) < getAltitudeAt(i, j) || getAltitudeAt(i, j + 1) != getAltitudeAt(i, j)) {
-					typeMap[i][j] = 0;
-				}
-			}
-		}
+		//		for (int i = 0; i < width; i++) {
+		//			for (int j = 0; j < height; j++) {
+		//				if (getAltitudeAt(i - 2, j) < getAltitudeAt(i, j) || getAltitudeAt(i - 1, j) != getAltitudeAt(i, j)) {
+		//					typeMap[i][j] = 0;
+		//				}
+		//				if (getAltitudeAt(i + 2, j) < getAltitudeAt(i, j) || getAltitudeAt(i + 1, j) != getAltitudeAt(i, j)) {
+		//					typeMap[i][j] = 0;
+		//				}
+		//				if (getAltitudeAt(i, j - 2) < getAltitudeAt(i, j) || getAltitudeAt(i, j - 1) != getAltitudeAt(i, j)) {
+		//					typeMap[i][j] = 0;
+		//				}
+		//				if (getAltitudeAt(i, j + 2) < getAltitudeAt(i, j) || getAltitudeAt(i, j + 1) != getAltitudeAt(i, j)) {
+		//					typeMap[i][j] = 0;
+		//				}
+		//			}
+		//		}
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -308,6 +316,10 @@ public class Map implements Disposable {
 		} catch (NullPointerException npe) {
 			return 0;
 		}
+	}
+
+	public TilesetDefinition getDefinition() {
+		return tilesetDefinition;
 	}
 
 	/** @return the height (not altitude) of the map */

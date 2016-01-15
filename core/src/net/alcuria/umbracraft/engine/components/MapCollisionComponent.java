@@ -16,7 +16,7 @@ public class MapCollisionComponent implements Component {
 	private BitmapFont debug;
 	private final int height, width;
 	private final Map map;
-	private boolean onGround;
+	private boolean onGround, onStairs;
 
 	public MapCollisionComponent(int width, int height) {
 		this.width = width;
@@ -165,13 +165,24 @@ public class MapCollisionComponent implements Component {
 			}
 			checkJump(Direction.LEFT, entity);
 		}
+
 		// update position
 		int tileX = (int) (entity.position.x) / Config.tileWidth;
 		int tileY = (int) (entity.position.y) / Config.tileWidth;
+
+		// stair updates
+		if (map.getTypeAt(tileX, tileY) == map.getDefinition().stairs && map.getAltitudeAt(tileX, tileY + 1) > entity.position.z / Config.tileWidth) {
+			Game.log("STAIRS");
+			entity.velocity.z = entity.velocity.y;
+			entity.velocity.y = 0;
+		}
+
 		entity.position.add(entity.velocity);
 
-		// check for falling or placement
-		if (entity.position.z / Config.tileWidth > map.getAltitudeAt(tileX, tileY)) {
+		// check for stairs, falling, or placement
+		if (onStairs) {
+			Game.log("" + entity.velocity.y);
+		} else if (entity.position.z / Config.tileWidth > map.getAltitudeAt(tileX, tileY)) {
 			onGround = false;
 			entity.velocity.z -= 0.5f;
 		} else {

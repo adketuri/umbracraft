@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.editor.widget;
 
+import net.alcuria.umbracraft.MapUtils;
 import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
@@ -100,34 +101,40 @@ public class MapTileWidget extends Table {
 		if (entityPreview != null) {
 			entityPreview.act(delta);
 		}
-		// set the altitude with 0 - 9 number keys
 		if (widget.getEditMode() == EditMode.ALTITUDE && widget.isEntered()) {
-			for (int i = 7; i <= 16; i++) {
-				if (Gdx.input.isKeyPressed(i)) {
-					try {
+			try {
+				// set the altitude with 0 - 9 number keys
+				for (int i = 7; i <= 16; i++) {
+					if (Gdx.input.isKeyPressed(i)) {
 						definition.tiles.get(selX).get(selY).altitude = i - 7;
-					} catch (Exception e) {
-						System.err.println("Out of bounds " + selX + ", " + selY);
 					}
 				}
+				// terrain setters
 				if (Gdx.input.isKeyPressed(Keys.Q)) {
-					try {
-						definition.tiles.get(selX).get(selY).type = 0;
-					} catch (Exception e) {
-						System.err.println("Out of bounds " + selX + ", " + selY);
-					}
+					definition.tiles.get(selX).get(selY).type = 0;
 				}
 				if (Gdx.input.isKeyPressed(Keys.W)) {
-					try {
-						definition.tiles.get(selX).get(selY).type = 1;
-					} catch (Exception e) {
-						System.err.println("Out of bounds " + selX + ", " + selY);
-					}
+					definition.tiles.get(selX).get(selY).type = 1;
 				}
-
+				if (Gdx.input.isKeyPressed(Keys.E)) {
+					definition.tiles.get(selX).get(selY).type = 2;
+				}
+				if (Gdx.input.isKeyPressed(Keys.R)) {
+					definition.tiles.get(selX).get(selY).type = 3;
+				}
+				if (Gdx.input.isKeyPressed(Keys.T)) {
+					definition.tiles.get(selX).get(selY).type = 4;
+				}
+				// stair setter
+				if (Gdx.input.isKeyPressed(Keys.S)) {
+					definition.tiles.get(selX).get(selY).type = 5;
+				}
+			} catch (Exception e) {
+				System.err.println("Out of bounds " + selX + ", " + selY);
 			}
 
 		}
+
 	}
 
 	private int alt(int i, int j) {
@@ -147,7 +154,7 @@ public class MapTileWidget extends Table {
 		// top
 		batch.draw(outline, getX(), getY() + altitude * getHeight(), getWidth(), getHeight());
 		if (type != 0) {
-			batch.setColor(Color.SKY);
+			batch.setColor(MapUtils.getTerrainColor(type));
 		}
 		batch.draw(top, getX() + 1, getY() + altitude * getHeight() + 1, getWidth() - 2, getHeight() - 2);
 		if (type != 0) {
