@@ -25,6 +25,9 @@ public class MapCollisionComponent implements Component {
 	}
 
 	private void checkJump(Direction direction, Entity entity) {
+		if (onStairs) {
+			return;
+		}
 		final float len = Math.abs(entity.velocity.x) + Math.abs(entity.velocity.y);
 		if (len < 1.5f) {
 			return;
@@ -101,7 +104,30 @@ public class MapCollisionComponent implements Component {
 
 	@Override
 	public void update(Entity entity) {
-		int tileAltitude = (int) (entity.position.z / Config.tileWidth);
+
+		// stair updates
+		int centerX = (int) (entity.position.x) / Config.tileWidth;
+		int centerY = (int) (entity.position.y) / Config.tileWidth;
+		int tileYNorth = (int) (2 + entity.position.y + height / 2) / Config.tileWidth;
+		int tileYSouth = (int) ((entity.position.y - height / 2) - 0) / Config.tileWidth;
+
+		final float tileAltitudeFloat = (entity.position.z / Config.tileWidth);
+		if (map.getTypeAt(centerX, centerY) == map.getDefinition().stairs && (map.getAltitudeAt(centerX, tileYNorth) > tileAltitudeFloat || map.getAltitudeAt(centerX, tileYSouth) < tileAltitudeFloat)) {
+			Game.log(tileAltitudeFloat + " " + map.getAltitudeAt(centerX, tileYSouth));
+			if (tileAltitudeFloat < map.getAltitudeAt(centerX, tileYNorth) && entity.velocity.y > 0) {
+				entity.velocity.z = entity.velocity.y;
+				entity.velocity.y = 0;
+			} else if (tileAltitudeFloat > map.getAltitudeAt(centerX, tileYSouth) && entity.velocity.y < 0) {
+				entity.velocity.z = entity.velocity.y;
+				entity.velocity.y = 0;
+			}
+			onStairs = true;
+		} else {
+			onStairs = false;
+		}
+		final int tileAltitude = (int) (entity.position.z / Config.tileWidth);
+
+		// update position
 		// check for collisions
 		if (entity.velocity.y > 0) {
 			// NORTH
@@ -166,47 +192,36 @@ public class MapCollisionComponent implements Component {
 			checkJump(Direction.LEFT, entity);
 		}
 
-		// update position
-		int tileX = (int) (entity.position.x) / Config.tileWidth;
-		int tileY = (int) (entity.position.y) / Config.tileWidth;
-
-		// stair updates
-		if (map.getTypeAt(tileX, tileY) == map.getDefinition().stairs && map.getAltitudeAt(tileX, tileY + 1) > entity.position.z / Config.tileWidth) {
-			Game.log("STAIRS");
-			entity.velocity.z = entity.velocity.y;
-			entity.velocity.y = 0;
-		}
-
 		entity.position.add(entity.velocity);
 
 		// check for stairs, falling, or placement
 		if (onStairs) {
-			Game.log("" + entity.velocity.y);
-		} else if (entity.position.z / Config.tileWidth > map.getAltitudeAt(tileX, tileY)) {
+			entity.velocity.z = 0;
+		} else if (tileAltitude > map.getAltitudeAt(centerX, centerY)) {
 			onGround = false;
 			entity.velocity.z -= 0.5f;
 		} else {
 			onGround = true;
 			entity.velocity.z = 0;
-			entity.position.z = map.getAltitudeAt(tileX, tileY) * Config.tileWidth;
+			entity.position.z = map.getAltitudeAt(centerX, centerY) * Config.tileWidth;
 		}
 
 		// check if we're STILL inside a wall, and if so gently nudge out
-		if (entity.velocity.z <= 0) {
+		if (!onStairs && entity.velocity.z <= 0) {
 			// north/south
 			int tileY1 = (int) (entity.position.y + height / 2) / Config.tileWidth;
 			int tileY2 = (int) (entity.position.y - height / 2) / Config.tileWidth;
-			if (map.getAltitudeAt(tileX, tileY1) > map.getAltitudeAt(tileX, tileY)) {
+			if (map.getAltitudeAt(centerX, tileY1) > map.getAltitudeAt(centerX, centerY)) {
 				entity.position.y -= 0.75f;
-			} else if (map.getAltitudeAt(tileX, tileY2) > map.getAltitudeAt(tileX, tileY)) {
+			} else if (map.getAltitudeAt(centerX, tileY2) > map.getAltitudeAt(centerX, centerY)) {
 				entity.position.y += 0.75f;
 			}
 			// east/west
 			int tileX1 = (int) (entity.position.x + width / 2) / Config.tileWidth;
 			int tileX2 = (int) (entity.position.x - width / 2) / Config.tileWidth;
-			if (map.getAltitudeAt(tileX1, tileY) > map.getAltitudeAt(tileX, tileY)) {
+			if (map.getAltitudeAt(tileX1, centerY) > map.getAltitudeAt(centerX, centerY)) {
 				entity.position.x -= 1f;
-			} else if (map.getAltitudeAt(tileX2, tileY) > map.getAltitudeAt(tileX, tileY)) {
+			} else if (map.getAltitudeAt(tileX2, centerY) > map.getAltitudeAt(centerX, centerY)) {
 				entity.position.x += 1f;
 			}
 		}
