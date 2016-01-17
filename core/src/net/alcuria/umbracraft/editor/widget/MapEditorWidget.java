@@ -1,5 +1,10 @@
 package net.alcuria.umbracraft.editor.widget;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
@@ -9,10 +14,12 @@ import net.alcuria.umbracraft.definitions.map.MapTileDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.modules.MapListModule;
 import net.alcuria.umbracraft.editor.modules.Module.PopulateConfig;
+import net.dermetfan.utils.Pair;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
@@ -48,8 +55,14 @@ public class MapEditorWidget {
 	}
 
 	private static EditMode editMode = EditMode.ALTITUDE;
+
+	private static Pair<Vector2, MapTileDefinition> tile(final int x, final int y, final MapTileDefinition tile) {
+		return new Pair<Vector2, MapTileDefinition>(new Vector2(x, y), tile);
+	}
+
 	private boolean entered;
 	private final MapListModule module;
+
 	private Table popupTable;
 
 	public MapEditorWidget(MapListModule module) {
@@ -83,22 +96,57 @@ public class MapEditorWidget {
 		};
 	}
 
-	/** Fills tiles up to +1 altitude
-	 * @param x
-	 * @param y
-	 * @param targetAlt */
-	private void fill(int x, int y, int targetAlt, boolean increase) {
-		final MapTileDefinition tile = module.getDefinition().getTileDefinition(x, y);
-		if (tile != null && !tile.filled && (increase && tile.altitude < targetAlt || !increase && tile.altitude > targetAlt)) {
-			tile.altitude = increase ? tile.altitude + 1 : tile.altitude - 1;
-			tile.filled = true;
-			try {
-				fill(x + 1, y, targetAlt, increase);
-				fill(x - 1, y, targetAlt, increase);
-				fill(x, y - 1, targetAlt, increase);
-				fill(x, y + 1, targetAlt, increase);
-			} catch (StackOverflowError e) {
+	/** Fills tiles up to +1/-1 altitude
+	 * @param x the x tile coordinate
+	 * @param y the y tile coordinate
+	 * @param targetAlt the target altitude */
+	private void fill(int x, int y, boolean increase) {
+		final MapDefinition map = module.getDefinition();
+		final MapTileDefinition tile = map.getTileDefinition(x, y);
+		final int currentAltitude = tile.altitude;
+		final int targetAltitude = increase ? currentAltitude + 1 : currentAltitude - 1;
+		final List<Pair<Vector2, MapTileDefinition>> tilesToFill = new ArrayList<Pair<Vector2, MapTileDefinition>>();
+		final Set<MapTileDefinition> tilesInList = new HashSet<MapTileDefinition>();
 
+		tilesToFill.add(tile(x, y, tile));
+		tilesInList.add(tile);
+
+		while (!tilesToFill.isEmpty()) {
+			final Pair<Vector2, MapTileDefinition> currentTile = tilesToFill.remove(tilesToFill.size() - 1);
+			final MapTileDefinition currentMapDefinition = currentTile.getValue();
+			tilesInList.remove(currentMapDefinition);
+
+			if (currentMapDefinition.altitude != currentAltitude) {
+				continue;
+			}
+
+			currentMapDefinition.altitude = targetAltitude;
+
+			final int currentX = (int) currentTile.getKey().x;
+			final int currentY = (int) currentTile.getKey().y;
+
+			final MapTileDefinition left = map.getTileDefinition(currentX - 1, currentY);
+			if (left != null && !tilesInList.contains(left)) {
+				tilesToFill.add(tile(currentX - 1, currentY, left));
+				tilesInList.add(left);
+			}
+
+			final MapTileDefinition right = map.getTileDefinition(currentX + 1, currentY);
+			if (right != null && !tilesInList.contains(right)) {
+				tilesToFill.add(tile(currentX + 1, currentY, right));
+				tilesInList.add(right);
+			}
+
+			final MapTileDefinition top = map.getTileDefinition(currentX, currentY + 1);
+			if (top != null && !tilesInList.contains(top)) {
+				tilesToFill.add(tile(currentX, currentY + 1, top));
+				tilesInList.add(top);
+			}
+
+			final MapTileDefinition bottom = map.getTileDefinition(currentX, currentY - 1);
+			if (bottom != null && !tilesInList.contains(bottom)) {
+				tilesToFill.add(tile(currentX, currentY - 1, bottom));
+				tilesInList.add(bottom);
 			}
 		}
 	}
@@ -135,11 +183,11 @@ public class MapEditorWidget {
 						super.act(delta);
 						if (MapTileWidget.selX >= 0 && MapTileWidget.selY >= 0) {
 							if (Gdx.input.isKeyJustPressed(Keys.F)) {
-								fill(MapTileWidget.selX, MapTileWidget.selY, MapTileWidget.selAlt + 1, true);
+								fill(MapTileWidget.selX, MapTileWidget.selY, true);
 								module.getDefinition().resetFilled();
 							}
 							if (Gdx.input.isKeyJustPressed(Keys.D)) {
-								fill(MapTileWidget.selX, MapTileWidget.selY, MapTileWidget.selAlt - 1, false);
+								fill(MapTileWidget.selX, MapTileWidget.selY, false);
 								module.getDefinition().resetFilled();
 							}
 						}
