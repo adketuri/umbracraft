@@ -5,7 +5,6 @@ import net.alcuria.umbracraft.definitions.anim.BattleAnimationGroupDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** A component to handle simple battle animations. Contrary to the
@@ -27,7 +26,6 @@ public class BattleAnimationGroupComponent implements Component {
 	private BattlePose delayPose;
 	private float delaySeconds = 0;
 	private boolean isMirrored;
-	private Vector2 origin = new Vector2();
 
 	/** @param definition the {@link BattleAnimationGroupDefinition} from the
 	 *        database. */
@@ -49,7 +47,7 @@ public class BattleAnimationGroupComponent implements Component {
 			for (AnimationComponent anim : animations.values()) {
 				anim.create(entity);
 				anim.setMirrorAll(isMirrored);
-				anim.setOrigin(origin);
+				//				anim.setOrigin(origin);
 			}
 			currentComponent = animations.get(BattlePose.IDLE);
 		}
@@ -87,10 +85,6 @@ public class BattleAnimationGroupComponent implements Component {
 			}
 			currentComponent.setMirrorAll(isMirrored);
 		}
-	}
-
-	public void setOrigin(Vector2 origin) {
-		this.origin = origin;
 	}
 
 	/** Sets the current pose to render for this component. Be sure
