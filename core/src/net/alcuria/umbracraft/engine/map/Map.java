@@ -394,7 +394,7 @@ public class Map implements Disposable {
 			if (row < 0 || row >= altMap[0].length) {
 				return;
 			}
-			for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth; i < n; i++) {
+			for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth + 1; i < n; i++) {
 				// prevents bottom rows from creeping up during rendering
 				// TODO: make this generic. i think for alts > 0 it will break
 				int rowRenderHeight = alt == 0 ? 0 : getAltitudeAt(i, row);
