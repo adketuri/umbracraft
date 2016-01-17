@@ -4,9 +4,9 @@ package net.alcuria.umbracraft;
  * @author Andrew Keturi */
 public final class Config {
 	/** The viewport height of the editor */
-	public static final int editorHeight = 700;
+	public static final int editorHeight = 1000;
 	/** The viewport width of the editor */
-	public static final int editorWidth = 1200;
+	public static final int editorWidth = 1800;
 	/** The width of the tileset images TODO: don't use? */
 	public static final int tilesetWidth = 256;
 	/** The width of a single tile */
