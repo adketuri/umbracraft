@@ -17,11 +17,11 @@ public class AnimationCollectionComponent implements Component {
 		FALLING, IDLE, JUMPING, RUNNING, WALKING
 	}
 
+	private MapCollisionComponent collision;
 	private Direction currentDirection;
 	private AnimationGroupComponent currentGroup;
 	private Pose currentPose;
 	private final AnimationCollectionDefinition definition;
-
 	private ObjectMap<Pose, AnimationGroupComponent> groups;
 
 	public AnimationCollectionComponent(AnimationCollectionDefinition definition) {
@@ -31,6 +31,7 @@ public class AnimationCollectionComponent implements Component {
 	@Override
 	public void create(Entity entity) {
 		if (definition != null) {
+			collision = entity.getComponent(MapCollisionComponent.class);
 			//FIXME: ugly
 			groups = new ObjectMap<Pose, AnimationGroupComponent>();
 			groups.put(Pose.IDLE, new AnimationGroupComponent(Game.db().animGroup(definition.idle)));
@@ -54,6 +55,14 @@ public class AnimationCollectionComponent implements Component {
 		return currentGroup;
 	}
 
+	private boolean isMoving(Entity entity) {
+		if (collision != null && collision.isOnStairs() && entity.velocity.z != 0) {
+			return true;
+		}
+		return entity.velocity.x != 0 || entity.velocity.y != 0;
+
+	}
+
 	@Override
 	public void render(Entity entity) {
 		if (currentGroup != null) {
@@ -65,7 +74,7 @@ public class AnimationCollectionComponent implements Component {
 	public void update(Entity entity) {
 		//save off last pose and get current pose/direction
 		Pose lastPose = currentPose;
-		if (entity.velocity.x == 0 && entity.velocity.y == 0) {
+		if (!isMoving(entity)) {
 			currentPose = Pose.IDLE;
 		} else {
 			currentPose = Pose.WALKING;
@@ -79,5 +88,4 @@ public class AnimationCollectionComponent implements Component {
 			currentGroup.update(entity);
 		}
 	}
-
 }

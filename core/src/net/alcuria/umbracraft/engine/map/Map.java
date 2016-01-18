@@ -233,6 +233,9 @@ public class Map implements Disposable {
 		if (tilesetDefinition == null) {
 			return 0;
 		}
+		if (getTypeAt(i, j - 1) == tilesetDefinition.stairs) {
+			return getTypeAt(i, j) == tilesetDefinition.stairs ? tilesetDefinition.stairs + 2 : tilesetDefinition.floor;
+		}
 		// top right down left
 		int mask = 0b0000;
 		if (getAltitudeAt(i, j + 1) < altitude) {
@@ -271,6 +274,9 @@ public class Map implements Disposable {
 	}
 
 	private int createWall(int i, int j, int drop, int altitude, int baseAlt) {
+		if (getTypeAt(i, j - 1) == tilesetDefinition.stairs) {
+			return tilesetDefinition.stairs + 1;
+		}
 		if (drop == altitude - baseAlt) {
 			// lower walls
 			if (getAltitudeAt(i - 1, j) < altitude) {

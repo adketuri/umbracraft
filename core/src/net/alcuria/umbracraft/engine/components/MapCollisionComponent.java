@@ -37,7 +37,7 @@ public class MapCollisionComponent implements Component {
 		float farX = (entity.position.x);
 		float nearY = (entity.position.y);
 		float farY = (entity.position.y);
-		float z = entity.position.z / 16;
+		float z = entity.position.z / Config.tileWidth;
 		switch (direction) {
 		case UP:
 			farY += 14;
@@ -60,13 +60,13 @@ public class MapCollisionComponent implements Component {
 		farY /= Config.tileWidth;
 
 		// check for jumping from a higher to lower altitude
-		if (map.getAltitudeAt(nearX, nearY) < z && onGround) {
+		if (map.getAltitudeAt(nearX, nearY) < (int) z && onGround && !onStairs) {
 			onGround = false;
 			entity.velocity.z = 5;
 		}
 
 		// check if the altitude in front of the player is just one tile up
-		if ((map.getAltitudeAt(farX, farY) - 1 == z) && onGround) {
+		if ((map.getAltitudeAt(farX, farY) - 1 == z) && onGround && !onStairs) {
 			onGround = false;
 			entity.velocity.z = 5;
 		}
@@ -92,6 +92,16 @@ public class MapCollisionComponent implements Component {
 		return width;
 	}
 
+	/** @return whether or not the entity is colliding with the ground */
+	public boolean isOnGround() {
+		return onGround;
+	}
+
+	/** @return whether or not the entity is on stairs */
+	public boolean isOnStairs() {
+		return onStairs;
+	}
+
 	@Override
 	public void render(Entity entity) {
 		int tileX1 = (int) (entity.position.x + width) / Config.tileWidth;
@@ -112,11 +122,11 @@ public class MapCollisionComponent implements Component {
 		int tileYSouth = (int) ((entity.position.y - height / 2) - 0) / Config.tileWidth;
 
 		final float tileAltitudeFloat = (entity.position.z / Config.tileWidth);
-		if (map.getTypeAt(centerX, centerY) == map.getDefinition().stairs && (map.getAltitudeAt(centerX, tileYNorth) > tileAltitudeFloat || map.getAltitudeAt(centerX, tileYSouth) < tileAltitudeFloat)) {
-			Game.log(tileAltitudeFloat + " " + map.getAltitudeAt(centerX, tileYSouth));
+		if (map.getTypeAt(centerX, centerY) == map.getDefinition().stairs) {
 			if (tileAltitudeFloat < map.getAltitudeAt(centerX, tileYNorth) && entity.velocity.y > 0) {
 				entity.velocity.z = entity.velocity.y;
 				entity.velocity.y = 0;
+				Game.log(entity.velocity + "");
 			} else if (tileAltitudeFloat > map.getAltitudeAt(centerX, tileYSouth) && entity.velocity.y < 0) {
 				entity.velocity.z = entity.velocity.y;
 				entity.velocity.y = 0;
@@ -144,7 +154,7 @@ public class MapCollisionComponent implements Component {
 				}
 			}
 			checkJump(Direction.UP, entity);
-		} else if (entity.velocity.y < 0) {
+		} else if (entity.velocity.y < 0 && !onStairs) {
 			// SOUTH
 			int tileX1 = (int) (entity.position.x + width / 2) / Config.tileWidth;
 			int tileX2 = (int) (entity.position.x - width / 2) / Config.tileWidth;
@@ -196,8 +206,10 @@ public class MapCollisionComponent implements Component {
 
 		// check for stairs, falling, or placement
 		if (onStairs) {
+			// reset back to y so the animations work correctly
+			entity.velocity.y = entity.velocity.z;
 			entity.velocity.z = 0;
-		} else if (tileAltitude > map.getAltitudeAt(centerX, centerY)) {
+		} else if (entity.position.z / Config.tileWidth > map.getAltitudeAt(centerX, centerY)) {
 			onGround = false;
 			entity.velocity.z -= 0.5f;
 		} else {
