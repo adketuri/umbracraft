@@ -60,6 +60,9 @@ public class WorldScreen implements UmbraScreen, EventListener {
 	@Override
 	public void render(float delta) {
 		Game.entities().render();
+		if (Game.isDebug()) {
+			Game.entities().renderPaths();
+		}
 		Game.batch().setProjectionMatrix(Game.view().getUiCamera().combined);
 		in.render();
 		windows.render();

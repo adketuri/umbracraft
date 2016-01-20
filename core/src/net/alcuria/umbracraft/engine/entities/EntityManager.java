@@ -7,6 +7,7 @@ import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.EntityReferenceDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
+import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
 
 import com.badlogic.gdx.utils.Array;
@@ -123,6 +124,18 @@ public class EntityManager {
 			row--;
 		}
 		visibleEntities.clear();
+	}
+
+	/** Attempts to render the path of any Entity with a
+	 * {@link DirectedInputComponent} */
+	public void renderPaths() {
+		for (final Entity e : entities) {
+			final DirectedInputComponent component = e.getComponent(DirectedInputComponent.class);
+			if (component != null) {
+				component.renderPaths();
+			}
+		}
+
 	}
 
 	/** Sets the height of the map, for rendering. This should be in pixels.
