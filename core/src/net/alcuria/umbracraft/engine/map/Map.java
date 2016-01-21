@@ -381,8 +381,11 @@ public class Map implements Disposable {
 		return width;
 	}
 
-	private boolean isInBounds(int i, int j) {
-		return i >= 0 && i < altMap.length && j >= 0 && j < altMap[0].length;
+	/** @param x
+	 * @param y
+	 * @return <code>true</code> if the tile x,y is in bounds */
+	public boolean isInBounds(int x, int y) {
+		return x >= 0 && x < altMap.length && y >= 0 && y < altMap[0].length;
 	}
 
 	/** Renders every visible layer.
