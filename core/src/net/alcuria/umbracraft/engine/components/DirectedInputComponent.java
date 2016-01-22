@@ -1,7 +1,6 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Config;
-import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.Pathfinder;
 import net.alcuria.umbracraft.engine.Pathfinder.PathNode;
 import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
@@ -46,7 +45,7 @@ public class DirectedInputComponent implements Component {
 	 * @param y */
 	public void setTarget(int x, int y) {
 		haltMovement = false;
-		pathfinder.setDestination(new PathNode(currentX / Config.tileWidth, currentY / Config.tileWidth), new PathNode(x, y));
+		pathfinder.setTarget(new PathNode(currentX / Config.tileWidth, currentY / Config.tileWidth), new PathNode(x, y));
 	}
 
 	@Override
@@ -66,19 +65,16 @@ public class DirectedInputComponent implements Component {
 		currentY = (int) (entity.position.y / Config.tileWidth);
 
 		if (!choseNextNode) {
-			Game.log("Choosing new index");
 			final PathNode lastNode = pathfinder.getSolution().get(pathfinder.getSolution().size - 1);
 			targetX = lastNode.x;
 			targetY = lastNode.y;
 			choseNextNode = true;
 		}
 		if (targetX == currentX && targetY == currentY) {
-			Game.log("Removing index");
 			choseNextNode = false;
 			pathfinder.getSolution().removeIndex(pathfinder.getSolution().size - 1);
 			return;
 		}
-		Game.log("C " + currentX + " " + currentY + ", T" + targetX + " " + targetY);
 
 		// pick a new direction
 		if (currentX > targetX) {

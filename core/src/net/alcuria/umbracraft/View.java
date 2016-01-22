@@ -111,8 +111,10 @@ public class View implements EventListener {
 	public void update() {
 		boolean moved = false;
 		if (target != null) {
-			float dX = (bounds != null && bounds.width > Config.viewWidth) ? (target.position.x - camera.position.x) / 20f : 0;
-			float dY = (bounds != null && bounds.height > Config.viewHeight) ? (target.position.y - camera.position.y) / 20f : 0;
+			//			float dX = (bounds != null && bounds.width > Config.viewWidth) ? (target.position.x - camera.position.x) / 20f : 0;
+			//			float dY = (bounds != null && bounds.height > Config.viewHeight) ? (target.position.y - camera.position.y) / 20f : 0;
+			float dX = (target.position.x - camera.position.x) / 20f;
+			float dY = (target.position.y - camera.position.y) / 20f;
 			camera.translate(dX, dY);
 			moved = dX != 0 || dY != 0;
 		}

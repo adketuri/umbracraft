@@ -67,10 +67,6 @@ public class Pathfinder {
 		return solution;
 	}
 
-	public boolean isRunning() {
-		return source != null && destination != null;
-	}
-
 	/** Searches a list for a pathNode that matches the given x,y coordinates
 	 * @param list a list of {@link PathNode} objects
 	 * @param x the tile x coords
@@ -108,51 +104,38 @@ public class Pathfinder {
 		}
 	}
 
-	private void reset() {
-		source = null;
-		destination = null;
-	}
-
-	public void setDestination(PathNode source, PathNode destination) {
+	/** Sets a destination to attempt to find a path to
+	 * @param source the starting {@link PathNode}
+	 * @param destination the ending {@link PathNode} */
+	public void setTarget(PathNode source, PathNode destination) {
 		if (source == null) {
 			throw new NullPointerException("source cannot be null");
 		}
 		if (destination == null) {
 			throw new NullPointerException("destination cannot be null");
 		}
-		if (!isRunning()) {
-			Game.log("Setting source: " + source + " dest: " + destination);
-			// clear out the lists
-			open.clear();
-			closed.clear();
-			// set source and dest
-			this.source = source;
-			this.destination = destination;
-			this.source.f = Heuristic.calculateFCost(source, destination, source);
-			new Thread() {
-				@Override
-				public void run() {
-					setName("Pathfinder");
-					work();
-				};
-			}.start();
-		}
+		Game.log("Setting source: " + source + " dest: " + destination);
+		// clear out the lists
+		open.clear();
+		closed.clear();
+		// set source and dest
+		this.source = source;
+		this.destination = destination;
+		this.source.f = Heuristic.calculateFCost(source, destination, source);
+		new Thread("Pathfinder") {
+			@Override
+			public void run() {
+				solve();
+			};
+		}.start();
 	}
 
-	public void update(Entity entity) {
-		if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
-			reset();
-			Entity hero = Game.entities().find(Entity.PLAYER);
-			setDestination(new PathNode((int) (entity.position.x / Config.tileWidth), (int) (entity.position.y / Config.tileWidth)), new PathNode((int) (hero.position.x / Config.tileWidth), (int) (hero.position.y / Config.tileWidth)));
-		}
-	}
-
-	public void work() {
+	private void solve() {
 		final Map map = Game.map();
 		final int[] dX = { 0, 1, 1, 1, 0, -1, -1, -1 }; // clockwise, from 12 oclock
 		final int[] dY = { 1, 1, 0, -1, -1, -1, 0, 1 };
 		open.add(source);
-		while (isRunning()) {
+		while (true) {
 
 			// ensure we still have open nodes
 			if (open.size <= 0) {
@@ -194,6 +177,13 @@ public class Pathfinder {
 				}
 			}
 
+		}
+	}
+
+	public void update(Entity entity) {
+		if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
+			Entity hero = Game.entities().find(Entity.PLAYER);
+			setTarget(new PathNode((int) (entity.position.x / Config.tileWidth), (int) (entity.position.y / Config.tileWidth)), new PathNode((int) (hero.position.x / Config.tileWidth), (int) (hero.position.y / Config.tileWidth)));
 		}
 	}
 
