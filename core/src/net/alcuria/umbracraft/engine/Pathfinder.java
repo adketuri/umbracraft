@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.Array;
 
 /** Handles pathfinding through a {@link DirectedInputComponent}
  * @author Andrew Keturi */
-public class Pathfinder extends Thread {
+public class Pathfinder {
 
 	public static class PathNode implements Comparable<PathNode> {
 		public PathNode parent;
@@ -57,13 +57,18 @@ public class Pathfinder extends Thread {
 	private final DirectedInputComponent component;
 	private PathNode destination, source;
 	private final Array<PathNode> open = new Array<PathNode>();
+	private final Array<PathNode> solution = new Array<PathNode>();
 
 	public Pathfinder(DirectedInputComponent component) {
 		this.component = component;
 	}
 
+	public Array<PathNode> getSolution() {
+		return solution;
+	}
+
 	public boolean isRunning() {
-		return source != null && destination != null && (source.x != destination.x || source.y != destination.y);
+		return source != null && destination != null;
 	}
 
 	/** Searches a list for a pathNode that matches the given x,y coordinates
@@ -96,15 +101,65 @@ public class Pathfinder extends Thread {
 		if (destination != null) {
 			destination.draw(Color.MAGENTA, Game.map().getAltitudeAt(destination.x, destination.y), Game.batch());
 		}
+		if (solution != null) {
+			for (PathNode n : solution) {
+				n.draw(Color.CYAN, Game.map().getAltitudeAt(n.x, n.y), Game.batch());
+			}
+		}
 	}
 
-	@Override
-	public void run() {
+	private void reset() {
+		source = null;
+		destination = null;
+	}
+
+	public void setDestination(PathNode source, PathNode destination) {
+		if (source == null) {
+			throw new NullPointerException("source cannot be null");
+		}
+		if (destination == null) {
+			throw new NullPointerException("destination cannot be null");
+		}
+		if (!isRunning()) {
+			Game.log("Setting source: " + source + " dest: " + destination);
+			// clear out the lists
+			open.clear();
+			closed.clear();
+			// set source and dest
+			this.source = source;
+			this.destination = destination;
+			this.source.f = Heuristic.calculateFCost(source, destination, source);
+			new Thread() {
+				@Override
+				public void run() {
+					setName("Pathfinder");
+					work();
+				};
+			}.start();
+		}
+	}
+
+	public void update(Entity entity) {
+		if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
+			reset();
+			Entity hero = Game.entities().find(Entity.PLAYER);
+			setDestination(new PathNode((int) (entity.position.x / Config.tileWidth), (int) (entity.position.y / Config.tileWidth)), new PathNode((int) (hero.position.x / Config.tileWidth), (int) (hero.position.y / Config.tileWidth)));
+		}
+	}
+
+	public void work() {
 		final Map map = Game.map();
-		final int[] dX = { 0, 0, 1, -1 };
-		final int[] dY = { 1, -1, 0, 0 };
+		final int[] dX = { 0, 1, 1, 1, 0, -1, -1, -1 }; // clockwise, from 12 oclock
+		final int[] dY = { 1, 1, 0, -1, -1, -1, 0, 1 };
 		open.add(source);
 		while (isRunning()) {
+
+			// ensure we still have open nodes
+			if (open.size <= 0) {
+				Game.log("No path found");
+				break;
+			}
+
 			// get a pointer to the node in the open list with the lowest f cost
 			open.sort();
 			PathNode cur = open.removeIndex(0);
@@ -112,7 +167,12 @@ public class Pathfinder extends Thread {
 
 			if (cur.hasSameLocationAs(destination)) {
 				Game.log("Path found!");
-				return;
+				solution.clear();
+				while (cur != null) {
+					solution.add(cur);
+					cur = cur.parent;
+				}
+				break;
 			}
 
 			// foreach current node neighbor
@@ -134,36 +194,6 @@ public class Pathfinder extends Thread {
 				}
 			}
 
-			try {
-				sleep(100);
-			} catch (InterruptedException e) {
-			}
-		}
-	}
-
-	public void setDestination(PathNode source, PathNode destination) {
-		if (source == null) {
-			throw new NullPointerException("source cannot be null");
-		}
-		if (destination == null) {
-			throw new NullPointerException("destination cannot be null");
-		}
-		if (!isRunning()) {
-			Game.log("Setting source: " + source + " dest: " + destination);
-			// clear out the lists
-			open.clear();
-			closed.clear();
-			// set source and dest
-			this.source = source;
-			this.destination = destination;
-			setName(String.format("(%d, %d) -> (%d, %d)", source.x, source.y, destination.x, destination.y));
-			start();
-		}
-	}
-
-	public void update(Entity entity) {
-		if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
-			setDestination(new PathNode((int) (entity.position.x / Config.tileWidth), (int) (entity.position.y / Config.tileWidth)), new PathNode(0, 0));
 		}
 	}
 

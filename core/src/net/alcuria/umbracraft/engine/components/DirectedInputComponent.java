@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Config;
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.Pathfinder;
 import net.alcuria.umbracraft.engine.Pathfinder.PathNode;
 import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
@@ -13,8 +14,9 @@ public class DirectedInputComponent implements Component {
 
 	private Direction direction;
 	private Entity entity;
-	private boolean haltMovement;
+	private boolean haltMovement, choseNextNode;
 	private final Pathfinder pathfinder;
+	private int targetX, targetY, currentX, currentY;
 
 	public DirectedInputComponent() {
 		pathfinder = new Pathfinder(this);
@@ -44,7 +46,7 @@ public class DirectedInputComponent implements Component {
 	 * @param y */
 	public void setTarget(int x, int y) {
 		haltMovement = false;
-		pathfinder.setDestination(new PathNode((int) (entity.position.x / Config.tileWidth), (int) (entity.position.y / Config.tileWidth)), new PathNode(x, y));
+		pathfinder.setDestination(new PathNode(currentX / Config.tileWidth, currentY / Config.tileWidth), new PathNode(x, y));
 	}
 
 	@Override
@@ -56,54 +58,85 @@ public class DirectedInputComponent implements Component {
 		pathfinder.update(entity);
 
 		// see if we really need to move
-		if (haltMovement || pathfinder.isRunning()) {
+		if (pathfinder.getSolution().size <= 0) {
 			return;
 		}
 
-		//		// pick a new direction
-		//		if (entity.position.x > target.x) {
-		//			direction = Direction.LEFT;
-		//		} else if (entity.position.x < target.x) {
-		//			direction = Direction.RIGHT;
-		//		}
-		//		if (entity.position.y > target.y) {
-		//			direction = Direction.DOWN;
-		//		} else if (entity.position.y < target.y) {
-		//			direction = Direction.UP;
-		//		}
-		//
-		//		// update velocity
-		//		switch (direction) {
-		//		case DOWN:
-		//			entity.velocity.y = -2;
-		//			break;
-		//		case DOWNLEFT:
-		//			entity.velocity.x = -2 * 0.707f;
-		//			entity.velocity.y = -2 * 0.707f;
-		//			break;
-		//		case DOWNRIGHT:
-		//			entity.velocity.x = 2 * 0.707f;
-		//			entity.velocity.y = -2 * 0.707f;
-		//			break;
-		//		case LEFT:
-		//			entity.velocity.x = -2;
-		//			break;
-		//		case RIGHT:
-		//			entity.velocity.x = 2;
-		//			break;
-		//		case UP:
-		//			entity.velocity.y = 2;
-		//			break;
-		//		case UPLEFT:
-		//			entity.velocity.x = -2 * 0.707f;
-		//			entity.velocity.y = 2 * 0.707f;
-		//			break;
-		//		case UPRIGHT:
-		//			entity.velocity.x = 2 * 0.707f;
-		//			entity.velocity.y = 2 * 0.707f;
-		//			break;
-		//		default:
-		//			break;
-		//		}
+		currentX = (int) (entity.position.x / Config.tileWidth);
+		currentY = (int) (entity.position.y / Config.tileWidth);
+
+		if (!choseNextNode) {
+			Game.log("Choosing new index");
+			final PathNode lastNode = pathfinder.getSolution().get(pathfinder.getSolution().size - 1);
+			targetX = lastNode.x;
+			targetY = lastNode.y;
+			choseNextNode = true;
+		}
+		if (targetX == currentX && targetY == currentY) {
+			Game.log("Removing index");
+			choseNextNode = false;
+			pathfinder.getSolution().removeIndex(pathfinder.getSolution().size - 1);
+			return;
+		}
+		Game.log("C " + currentX + " " + currentY + ", T" + targetX + " " + targetY);
+
+		// pick a new direction
+		if (currentX > targetX) {
+			if (currentY > targetY) {
+				direction = Direction.DOWNLEFT;
+			} else if (currentY < targetY) {
+				direction = Direction.UPLEFT;
+			} else {
+				direction = Direction.LEFT;
+			}
+		} else if (currentX < targetX) {
+			if (currentY > targetY) {
+				direction = Direction.DOWNRIGHT;
+			} else if (currentY < targetY) {
+				direction = Direction.UPRIGHT;
+			} else {
+				direction = Direction.RIGHT;
+			}
+		} else {
+			if (currentY > targetY) {
+				direction = Direction.DOWN;
+			} else if (currentY < targetY) {
+				direction = Direction.UP;
+			}
+		}
+
+		// update velocity
+		switch (direction) {
+		case DOWN:
+			entity.velocity.y = -2;
+			break;
+		case DOWNLEFT:
+			entity.velocity.x = -2 * 0.707f;
+			entity.velocity.y = -2 * 0.707f;
+			break;
+		case DOWNRIGHT:
+			entity.velocity.x = 2 * 0.707f;
+			entity.velocity.y = -2 * 0.707f;
+			break;
+		case LEFT:
+			entity.velocity.x = -2;
+			break;
+		case RIGHT:
+			entity.velocity.x = 2;
+			break;
+		case UP:
+			entity.velocity.y = 2;
+			break;
+		case UPLEFT:
+			entity.velocity.x = -2 * 0.707f;
+			entity.velocity.y = 2 * 0.707f;
+			break;
+		case UPRIGHT:
+			entity.velocity.x = 2 * 0.707f;
+			entity.velocity.y = 2 * 0.707f;
+			break;
+		default:
+			break;
+		}
 	}
 }

@@ -103,7 +103,7 @@ public class Map implements Disposable {
 					int mask = 0b1000_0000;
 					boolean valid = false;
 					for (int k = 0; k < dX.length; k++) {
-						System.out.println(String.format("Value: %s mask: %s ", Integer.toBinaryString(value), Integer.toBinaryString(mask)));
+						//						System.out.println(String.format("Value: %s mask: %s ", Integer.toBinaryString(value), Integer.toBinaryString(mask)));
 						if (getTypeAt(i + dX[k], j + dY[k]) == terrain) {
 							value = value ^ mask;
 							valid = true;
