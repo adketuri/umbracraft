@@ -13,7 +13,6 @@ public class FlagListModule extends ListModule<FlagDefinition> {
 		final FlagDefinition item = new FlagDefinition();
 		item.id = "Untitled " + rootDefinition.size();
 		rootDefinition.add(item);
-
 	}
 
 	@Override

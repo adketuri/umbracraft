@@ -1,11 +1,11 @@
 package net.alcuria.umbracraft.engine.scripts;
 
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.StringUtils;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
 import net.alcuria.umbracraft.engine.windows.message.MessageWindow;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;

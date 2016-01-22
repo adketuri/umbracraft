@@ -57,10 +57,6 @@ public class FlagManager {
 		return enabledFlags.contains(id);
 	}
 
-	public boolean isValid(String id) {
-		return id != null && id.length() > 0;
-	}
-
 	/** Sets a flag, either enabling it or disabling it.
 	 * @param id
 	 * @param enable */

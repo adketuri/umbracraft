@@ -17,6 +17,7 @@ import net.alcuria.umbracraft.editor.modules.MapListModule;
 import net.alcuria.umbracraft.editor.modules.Module;
 import net.alcuria.umbracraft.editor.modules.ScriptListModule;
 import net.alcuria.umbracraft.editor.modules.TilesetsModule;
+import net.alcuria.umbracraft.editor.modules.VariableListModule;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 
@@ -99,13 +100,14 @@ public class EditorLayout extends Layout implements EventListener {
 		modules.add(new TilesetsModule());
 		modules.add(new AnimationsModule());
 		modules.add(new AnimationGroupListModule());
+		modules.add(new BattleAnimationGroupListModule());
 		modules.add(new AnimationCollectionListModule());
 		modules.add(new AreaListModule());
 		modules.add(new MapListModule());
 		modules.add(new EntityListModule());
 		modules.add(new ScriptListModule());
 		modules.add(new FlagListModule());
-		modules.add(new BattleAnimationGroupListModule());
+		modules.add(new VariableListModule());
 	}
 
 	@Override

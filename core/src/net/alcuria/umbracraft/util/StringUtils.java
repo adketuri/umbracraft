@@ -1,4 +1,4 @@
-package net.alcuria.umbracraft;
+package net.alcuria.umbracraft.util;
 
 /** Utility functions for {@link String} objects.
  * @author Andrew Keturi */

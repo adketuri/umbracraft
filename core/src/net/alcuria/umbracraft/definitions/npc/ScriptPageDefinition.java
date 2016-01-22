@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.definitions.npc;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 
@@ -12,19 +13,21 @@ public class ScriptPageDefinition extends Definition {
 		INSTANT, ON_INTERACTION, ON_TOUCH;
 	}
 
-	/** The graphics for this script */
+	@Tooltip("An Animation to be added to this entity when this page is active")
 	public String animation;
-	/** The graphics for this script */
+	@Tooltip("An AnimationCollection to be added to this entity when this page is active\nOverrides animation and animationGroup")
+	public String animationCollection;
+	@Tooltip("An Animation to be added to this entity when this page is active\nOverrides animation")
 	public String animationGroup;
-	/** The commands to execute */
+	@Tooltip("The starting command to execute")
 	public ScriptCommand command;
-	/** Whether or not to halt player input on activation */
+	@Tooltip("Whether or not to halt player input upon activation")
 	public boolean haltInput;
-	/** A name for the page */
+	@Tooltip("A name for the page")
 	public String name;
-	/** The flag that when on will trigger this page */
+	@Tooltip("The flag that when on will trigger this page")
 	public String precondition;
-	/** How the event starts */
+	@Tooltip("How the script page starts execution")
 	public ScriptTrigger trigger = ScriptTrigger.ON_TOUCH;
 
 	//FIXME: temp

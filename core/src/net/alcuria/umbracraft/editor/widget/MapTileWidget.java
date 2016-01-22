@@ -1,6 +1,5 @@
 package net.alcuria.umbracraft.editor.widget;
 
-import net.alcuria.umbracraft.MapUtils;
 import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
@@ -13,6 +12,7 @@ import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.widget.MapEditorWidget.EditMode;
+import net.alcuria.umbracraft.util.MapUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;

@@ -74,11 +74,15 @@ public final class Db {
 	}
 
 	public AnimationCollectionDefinition animCollection(String name) {
+		return (AnimationCollectionDefinition) animCollections().get(name);
+	}
+
+	public ListDefinition<AnimationCollectionDefinition> animCollections() {
 		if (definitions == null) {
 			throw new NullPointerException("Definitions not initialized");
 		}
 		ListDefinition<AnimationCollectionDefinition> definition = (ListDefinition<AnimationCollectionDefinition>) definitions.get("animationcollection");
-		return (AnimationCollectionDefinition) definition.get(name);
+		return definition;
 	}
 
 	public AnimationGroupDefinition animGroup(String name) {

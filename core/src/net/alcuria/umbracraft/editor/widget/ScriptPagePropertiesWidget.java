@@ -46,6 +46,8 @@ public class ScriptPagePropertiesWidget extends Module<ScriptPageDefinition> {
 			{
 				put("animation", Editor.db().anims().keys().toArray());
 				put("animationGroup", Editor.db().animGroups().keys());
+				put("animationCollection", Editor.db().animCollections().keys());
+
 				put("precondition", Editor.db().flags().keys());
 			}
 		};

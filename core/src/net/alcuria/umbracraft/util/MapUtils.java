@@ -1,4 +1,4 @@
-package net.alcuria.umbracraft;
+package net.alcuria.umbracraft.util;
 
 import com.badlogic.gdx.graphics.Color;
 

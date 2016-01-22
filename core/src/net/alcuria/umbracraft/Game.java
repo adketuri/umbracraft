@@ -8,12 +8,14 @@ import net.alcuria.umbracraft.engine.screens.UmbraScreen;
 import net.alcuria.umbracraft.flags.FlagManager;
 import net.alcuria.umbracraft.hud.HUD;
 import net.alcuria.umbracraft.party.Party;
+import net.alcuria.umbracraft.variables.VariableManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-/** Contains everything needed by the Engine.
+/** Contains everything needed globally by the Engine. These should be modified
+ * with caution.
  * @author Andrew Keturi */
 public final class Game {
 
@@ -30,6 +32,7 @@ public final class Game {
 	private static Party party;
 	private static EventPublisher publisher;
 	private static UmbraScreen screen;
+	private static VariableManager variables;
 	private static View view;
 
 	/** @return the {@link AreaBuilder} */
@@ -75,7 +78,6 @@ public final class Game {
 	/** @return the {@link FlagManager} */
 	public static FlagManager flags() {
 		return flags;
-
 	}
 
 	/** @return the {@link HUD} */
@@ -148,6 +150,11 @@ public final class Game {
 		}
 	}
 
+	/** @return the {@link VariableManager} */
+	public static VariableManager variables() {
+		return variables;
+	}
+
 	/** @return the {@link View} for handling cameras and so on. */
 	public static View view() {
 		return view;
@@ -164,6 +171,7 @@ public final class Game {
 		publisher = new EventPublisher();
 		areas = new AreaBuilder();
 		flags = new FlagManager();
+		variables = new VariableManager();
 
 		// now subscribe
 		publisher.subscribe(view);
@@ -177,7 +185,6 @@ public final class Game {
 		if (batch != null) {
 			batch.dispose();
 		}
-		view = null;
 		if (publisher != null) {
 			publisher.removeAllListeners();
 		}
@@ -189,6 +196,9 @@ public final class Game {
 		}
 		if (flags != null) {
 			flags.dispose();
+		}
+		if (variables != null) {
+			variables.dispose();
 		}
 		publisher.removeAllListeners();
 		publisher = null;

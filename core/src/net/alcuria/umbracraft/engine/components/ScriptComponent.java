@@ -1,7 +1,6 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.StringUtils;
 import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
@@ -11,6 +10,7 @@ import net.alcuria.umbracraft.engine.events.ScriptEndedEvent;
 import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand.CommandState;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -65,19 +65,30 @@ public class ScriptComponent implements Component, EventListener {
 		if (script == null) {
 			return;
 		}
+		ScriptPageDefinition oldPage = currentPage;
 		// go thru the pages in reverse, finding the first page that has its preconditions met
 		for (int i = script.pages.size - 1; i >= 0; i--) {
 			final String precondition = script.pages.get(i).precondition;
-			if (precondition == null || !Game.flags().isValid(precondition) || Game.flags().isSet(precondition)) {
+			if (precondition == null || !StringUtils.isNotEmpty(precondition) || Game.flags().isSet(precondition)) {
 				currentPage = script.pages.get(i);
 				break;
 			}
 		}
+
+		// if the current page is the same as the last, we don't want to do anything
+		if (currentPage == oldPage) {
+			Game.log("Page did not change, ignoring setCurrentPage for entity: " + entity.getName());
+			return;
+		}
+
 		// update the animation/animationGroup components
 		if (currentPage != null && (currentPage.animationGroup != null || currentPage.animation != null)) {
 			entity.removeComponent(AnimationComponent.class);
 			entity.removeComponent(AnimationGroupComponent.class);
-			if (StringUtils.isNotEmpty(currentPage.animationGroup)) {
+			entity.removeComponent(AnimationCollectionComponent.class);
+			if (StringUtils.isNotEmpty(currentPage.animationCollection)) {
+				entity.addComponent(new AnimationCollectionComponent(Game.db().animCollection(currentPage.animationCollection)));
+			} else if (StringUtils.isNotEmpty(currentPage.animationGroup)) {
 				entity.addComponent(new AnimationGroupComponent(Game.db().animGroup(currentPage.animationGroup)));
 			} else if (StringUtils.isNotEmpty(currentPage.animation)) {
 				entity.addComponent(new AnimationComponent(Game.db().anim(currentPage.animation)));
