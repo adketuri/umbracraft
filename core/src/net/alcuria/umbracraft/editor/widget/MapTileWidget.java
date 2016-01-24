@@ -6,9 +6,11 @@ import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition.AnimationCollectionComponentDefinition;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition.AnimationComponentDefinition;
+import net.alcuria.umbracraft.definitions.component.ComponentDefinition.ScriptComponentDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.EntityReferenceDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
+import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.widget.MapEditorWidget.EditMode;
@@ -24,6 +26,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -38,7 +41,7 @@ public class MapTileWidget extends Table {
 	static int selY = -1;
 	private static TextureRegion side, top, edge, outline;
 	private final MapDefinition definition;
-	private AnimationPreview entityPreview;
+	private Image entityPreview;
 	private final int i, j;
 	private final MapEditorWidget widget;
 
@@ -161,9 +164,17 @@ public class MapTileWidget extends Table {
 			batch.setColor(Color.WHITE);
 		}
 		// entity
-		if (entityPreview != null && entityPreview.getCurrentRegion() != null) {
-			final TextureRegion region = entityPreview.getCurrentRegion();
-			batch.draw(region, getX(), getY() + altitude * getHeight(), region.getRegionWidth() * 2, region.getRegionHeight() * 2);
+		if (entityPreview != null) {
+			if (entityPreview instanceof AnimationPreview && ((AnimationPreview) entityPreview).getCurrentRegion() != null) {
+				final TextureRegion region = ((AnimationPreview) entityPreview).getCurrentRegion();
+				final int offset = (int) ((AnimationPreview) entityPreview).getOriginX();
+				batch.draw(region, getX() - offset, getY() + altitude * getHeight(), region.getRegionWidth() * 2, region.getRegionHeight() * 2);
+			} else {
+				entityPreview.setX(getX());
+				entityPreview.setY(getY());
+				entityPreview.setScale(2);
+				entityPreview.draw(batch, 1);
+			}
 		}
 		// left edge
 		if (alt(i - 1, j) < alt(i, j)) {
@@ -206,7 +217,38 @@ public class MapTileWidget extends Table {
 				if (entity != null) {
 					// find an animation component for the preview image
 					for (ComponentDefinition componentDefinition : entity.components) {
-						if (componentDefinition instanceof AnimationComponentDefinition) {
+						if (componentDefinition instanceof ScriptComponentDefinition) {
+							final ScriptComponentDefinition scriptComponentDefinition = (ScriptComponentDefinition) componentDefinition;
+							final ScriptDefinition definition = Editor.db().script(scriptComponentDefinition.script);
+							if (definition.pages.get(0).animationCollection != null) {
+								AnimationCollectionDefinition animDefinition = Editor.db().animCollection(definition.pages.get(0).animationCollection);
+								if (animDefinition != null) {
+									final AnimationGroupDefinition animGroup = Editor.db().animGroup(animDefinition.idle);
+									if (animGroup != null) {
+										final AnimationDefinition anim = Editor.db().anim(animGroup.down);
+										if (anim != null) {
+											entityPreview = new AnimationPreview(anim);
+											break;
+										}
+									}
+								}
+							} else if (definition.pages.get(0).animationGroup != null) {
+								AnimationGroupDefinition animGroup = Editor.db().animGroup(definition.pages.get(0).animationGroup);
+								if (animGroup != null) {
+									final AnimationDefinition anim = Editor.db().anim(animGroup.down);
+									if (anim != null) {
+										entityPreview = new AnimationPreview(anim);
+										break;
+									}
+								}
+							} else if (definition.pages.get(0).animation != null) {
+								AnimationDefinition anim = Editor.db().anim(definition.pages.get(0).animation);
+								if (anim != null) {
+									entityPreview = new AnimationPreview(anim);
+									break;
+								}
+							}
+						} else if (componentDefinition instanceof AnimationComponentDefinition) {
 							// create the definition from the component
 							final AnimationComponentDefinition animationComponentDefinition = (AnimationComponentDefinition) componentDefinition;
 							if (animationComponentDefinition.animationComponent != null) {
@@ -231,8 +273,10 @@ public class MapTileWidget extends Table {
 							}
 						}
 					}
+				} else {
+					entityPreview = new Image(Drawables.get("entity"));
+					break;
 				}
-				break;
 			}
 		}
 	}

@@ -17,9 +17,11 @@ public class AnimationPreview extends Image {
 	private TextureRegion currentRegion;
 	private final AnimationDefinition definition;
 	private int idx = 0;
+	private int originX = 0;
 
 	public AnimationPreview(AnimationDefinition definition) {
 		this.definition = definition;
+		originX = definition.originX;
 	}
 
 	@Override
@@ -46,4 +48,8 @@ public class AnimationPreview extends Image {
 		return currentRegion;
 	}
 
+	@Override
+	public float getOriginX() {
+		return originX;
+	}
 }
