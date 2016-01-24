@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
-import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
@@ -279,7 +278,6 @@ public abstract class Module<T extends Definition> {
 									config.listener.invoke(field.getName());
 								}
 								//page.trigger = ((SelectBox<ScriptTrigger>) event.getTarget()).getSelected();
-								Game.log("Dropdown changed: " + definition);
 								return true;
 							}
 							return false;

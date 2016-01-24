@@ -82,7 +82,7 @@ public class ScriptComponent implements Component, EventListener {
 		}
 
 		// update the animation/animationGroup components
-		if (currentPage != null && (currentPage.animationGroup != null || currentPage.animation != null)) {
+		if (currentPage != null && (currentPage.animationCollection != null || currentPage.animationGroup != null || currentPage.animation != null)) {
 			entity.removeComponent(AnimationComponent.class);
 			entity.removeComponent(AnimationGroupComponent.class);
 			entity.removeComponent(AnimationCollectionComponent.class);
