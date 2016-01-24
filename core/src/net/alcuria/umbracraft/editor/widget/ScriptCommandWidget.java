@@ -1,12 +1,12 @@
 package net.alcuria.umbracraft.editor.widget;
 
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.modules.Module;
 import net.alcuria.umbracraft.engine.scripts.BattleScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.CameraTargetScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.ControlVariableCommand;
 import net.alcuria.umbracraft.engine.scripts.FlagScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.LogScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand;
@@ -15,6 +15,8 @@ import net.alcuria.umbracraft.engine.scripts.PauseScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ShowAnimationScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.TeleportScriptCommand;
+import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.listeners.TypeListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -30,7 +32,8 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 public class ScriptCommandWidget extends Module<ScriptCommand> {
 	public static enum Commands {
 		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), FLAG("Flag", FlagScriptCommand.class), LOG("Log", LogScriptCommand.class), //
-		MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), PAUSE("Pause", PauseScriptCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class);
+		MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), PAUSE("Pause", PauseScriptCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), //
+		TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
 
 		public static Commands from(final String name) {
 			for (Commands c : Commands.values()) {
@@ -64,7 +67,6 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		}
 
 		private Class<?> clazz;
-
 		private String name;
 
 		private Commands(String name, Class<?> clazz) {
@@ -88,14 +90,13 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 	}
 
 	private static boolean consumedDown = false;
-
 	private final ScriptCommand command;
-
 	private final ScriptPageWidget commandsWidget;
-	private final Table content, popup, popupFields = new Table();
+	private final Table content, popup, buttonTable = new Table(), popupFields = new Table();
 	private ScriptCommand createdCommand;
 	private ScriptCommandWidget nextWidget;
 	private final ScriptPageDefinition page;
+	private SuggestionWidget suggestionsWidget;
 
 	public ScriptCommandWidget(ScriptPageWidget commandsWidget, Table content, Table popup, ScriptPageDefinition page, ScriptCommand command) {
 		this.command = command;
@@ -144,11 +145,9 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 					if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 						Game.log("Editing...");
 						createPopup("Edit Command", Commands.getNameFrom(command));
-						final PopulateConfig config = new PopulateConfig();
-						config.suggestions = command.getSuggestions();
-						populate(popupFields, command.getClass(), command, config);
-						popupFields.row();
-						popupFields.add(WidgetUtils.button("Update", commandUpdated()));
+						populate(popupFields, command.getClass(), command, populateConfig());
+						buttonTable.clear();
+						buttonTable.add(WidgetUtils.button("Update", commandUpdated()));
 					} else if (Gdx.input.isKeyJustPressed(Keys.DEL) || Gdx.input.isKeyJustPressed(Keys.BACKSPACE)) {
 						Game.log("Deleting...");
 						final ScriptCommand next = command.getNext();
@@ -234,7 +233,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		popupFields.clear();
 		popup.setBackground(Drawables.get("black"));
 		WidgetUtils.popupTitle(popup, title, closePopup());
-		final SuggestionWidget suggestionsWidget = new SuggestionWidget(Commands.getAll(), 130);
+		suggestionsWidget = new SuggestionWidget(Commands.getAll(), 130);
 		popup.add(new Table() {
 			{
 				add(new VisLabel("Enter Command:"));
@@ -250,6 +249,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		suggestionsWidget.addSelectListener(createPopupFields(suggestionsWidget.getTextField()));
 		suggestionsWidget.setGenericPopulate(createPopupFields(suggestionsWidget.getTextField()));
 		popup.add(popupFields).expand().fill().row();
+		popup.add(buttonTable);
 	}
 
 	private Listener createPopupFields(final VisTextField textField) {
@@ -269,12 +269,9 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 							Game.log("Setting new command");
 							createdCommand = localCommand.getCommandInstance();
 						}
-						final PopulateConfig config = new PopulateConfig();
-						config.cols = 1;
-						config.suggestions = createdCommand.getSuggestions();
-						populate(popupFields, localCommand.getCommandClass(), createdCommand, config);
-						popupFields.row();
-						popupFields.add(WidgetUtils.button("Create", commandCreated()));
+						populate(popupFields, localCommand.getCommandClass(), createdCommand, populateConfig());
+						buttonTable.clear();
+						buttonTable.add(WidgetUtils.button("Create", commandCreated()));
 					} else {
 						popupFields.clear();
 						createdCommand = null;
@@ -291,8 +288,40 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		return "Title";
 	}
 
+	/** Updates the filters if we change the "type" dropdown
+	 * @param textField
+	 * @return */
+	private TypeListener<String> listener(final VisTextField textField) {
+		return new TypeListener<String>() {
+
+			@Override
+			public void invoke(String type) {
+				if ("type".equals(type)) {
+					Commands localCommand = Commands.from(textField.getText());
+					popupFields.clear();
+					populate(popupFields, localCommand.getCommandClass(), createdCommand, populateConfig());
+				}
+			}
+		};
+	}
+
 	@Override
 	public void populate(Table content) {
 
+	}
+
+	private PopulateConfig populateConfig() {
+		final PopulateConfig config = new PopulateConfig();
+		config.cols = 1;
+		// depending on whether or not we edit or create one or the other createdCommand/command is null ugghh idk why right now but this fixes stuff
+		if (createdCommand == null) {
+			createdCommand = command;
+		}
+		config.suggestions = createdCommand.getSuggestions();
+		config.filter = createdCommand.getFilter();
+		if (suggestionsWidget != null) {
+			config.listener = listener(suggestionsWidget.getTextField());
+		}
+		return config;
 	}
 }

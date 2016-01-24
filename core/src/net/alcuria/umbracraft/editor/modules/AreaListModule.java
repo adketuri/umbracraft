@@ -1,6 +1,5 @@
 package net.alcuria.umbracraft.editor.modules;
 
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
@@ -10,6 +9,7 @@ import net.alcuria.umbracraft.editor.widget.AreaNodeWidget;
 import net.alcuria.umbracraft.editor.widget.AreaNodeWidget.NodeClickHandler;
 import net.alcuria.umbracraft.editor.widget.TeleportSelectorWidget;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
+import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

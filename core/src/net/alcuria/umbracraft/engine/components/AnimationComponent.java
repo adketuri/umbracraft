@@ -1,10 +1,10 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;

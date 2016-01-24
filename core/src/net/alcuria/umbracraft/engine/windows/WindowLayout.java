@@ -1,7 +1,7 @@
 package net.alcuria.umbracraft.engine.windows;
 
 import net.alcuria.umbracraft.Config;
-import net.alcuria.umbracraft.Listener;
+import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;

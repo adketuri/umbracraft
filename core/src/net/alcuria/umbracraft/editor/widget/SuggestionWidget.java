@@ -1,7 +1,7 @@
 package net.alcuria.umbracraft.editor.widget;
 
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;

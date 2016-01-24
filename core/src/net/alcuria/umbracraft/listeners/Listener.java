@@ -1,4 +1,4 @@
-package net.alcuria.umbracraft;
+package net.alcuria.umbracraft.listeners;
 
 /** A basic listener.
  * @author Andrew Keturi */

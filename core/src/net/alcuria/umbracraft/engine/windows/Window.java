@@ -1,6 +1,6 @@
 package net.alcuria.umbracraft.engine.windows;
 
-import net.alcuria.umbracraft.Listener;
+import net.alcuria.umbracraft.listeners.Listener;
 
 /** An abstract window.
  * @author Andrew Keturi

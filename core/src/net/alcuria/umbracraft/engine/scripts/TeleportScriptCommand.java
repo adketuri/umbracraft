@@ -1,5 +1,7 @@
 package net.alcuria.umbracraft.engine.scripts;
 
+import java.util.Set;
+
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
@@ -23,13 +25,18 @@ public class TeleportScriptCommand extends ScriptCommand {
 	}
 
 	@Override
+	public Set<String> getFilter() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public String getName() {
 		return "teleport";
 	}
 
 	@Override
 	public ObjectMap<String, Array<String>> getSuggestions() {
-		//TODO: id field
 		return null;
 	}
 

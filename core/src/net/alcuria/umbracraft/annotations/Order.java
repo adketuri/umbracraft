@@ -5,10 +5,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** Indicates that a field should show a tooltip
+/** Determines order fields are displayed (since the save actions want them
+ * alphabetical). If not present it should revert to default ordering. Presence
+ * of this field should assume priority.
  * @author Andrew Keturi */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Tooltip {
-	public String value();
+public @interface Order {
+	public int value();
 }

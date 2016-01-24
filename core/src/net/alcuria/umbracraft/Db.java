@@ -16,6 +16,7 @@ import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 import net.alcuria.umbracraft.editor.Editor;
+import net.alcuria.umbracraft.editor.modules.VariableDefinition;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -44,6 +45,7 @@ public final class Db {
 		classes.put("map", ListDefinition.class);
 		classes.put("areas", ListDefinition.class);
 		classes.put("flags", ListDefinition.class);
+		classes.put("variables", ListDefinition.class);
 		classes.put("scripts", ListDefinition.class);
 		classes.put("configuration", ConfigDefinition.class);
 		classes.put("tilesets", TilesetListDefinition.class);
@@ -183,6 +185,20 @@ public final class Db {
 	public TilesetDefinition tileset(int i) {
 		TilesetListDefinition listDef = (TilesetListDefinition) definitions.get("tilesets");
 		return listDef.tiles.get(i);
+	}
+
+	/** @param id a variable id
+	 * @return a {@link VariableDefinition} with the given id */
+	public VariableDefinition variable(String id) {
+		return (VariableDefinition) variables().get(id);
+	}
+
+	/** @return all {@link VariableDefinition} objects in the database */
+	public ListDefinition<VariableDefinition> variables() {
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
+		}
+		return (ListDefinition<VariableDefinition>) definitions.get("variables");
 	}
 
 }

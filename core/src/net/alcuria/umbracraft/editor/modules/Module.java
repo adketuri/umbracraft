@@ -2,17 +2,18 @@ package net.alcuria.umbracraft.editor.modules;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Set;
 
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.Listener;
+import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.events.HideTooltip;
 import net.alcuria.umbracraft.editor.events.ShowTooltip;
 import net.alcuria.umbracraft.editor.widget.SuggestionWidget;
+import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.listeners.TypeListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -44,16 +45,35 @@ import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
  * @param <T> */
 public abstract class Module<T extends Definition> {
 
+	/** Same as a {@link Field}, but ordered based on an optional order value.
+	 * @author Andrew Keturi */
+	public class OrderedField implements Comparable<OrderedField> {
+		public Field field;
+		public int order;
+
+		@Override
+		public int compareTo(Module<T>.OrderedField o) {
+			if (o.order == order) {
+				return field.getName().compareTo(o.field.getName());
+			} else {
+				return order - o.order;
+			}
+		}
+	}
+
 	/** A helper class to define layout configurations when populating
 	 * definition.
 	 * @author Andrew Keturi */
 	public static class PopulateConfig {
 		/** Columns for each field */
 		public int cols = 3;
+		/** If non-null, only displays field names included in this set */
+		public Set<String> filter;
 		/** Width of the label */
 		public int labelWidth = 130;
 		/** A custom listener to invoke when a field changes value */
-		public Listener listener;
+		public TypeListener<String> listener;
+		/** Maps a field to an array of suggestions */
 		public ObjectMap<String, Array<String>> suggestions;
 		/** Width of the text fields */
 		public int textFieldWidth = 100;
@@ -106,11 +126,21 @@ public abstract class Module<T extends Definition> {
 			content.add(new Table() {
 				{
 					int idx = 0;
-					ArrayList<Field> fieldList = new ArrayList<Field>();
-					fieldList.addAll(Arrays.asList(clazz.getDeclaredFields()));
-					for (int i = 0; i < fieldList.size(); i++) {
-						final Field field = fieldList.get(i);
-						if (field.getModifiers() != Modifier.PRIVATE && (field.getType().isEnum() || field.getType().toString().equals("int") || field.getType().toString().equals("float") || field.getType() == String.class || field.getType().toString().equals("boolean"))) {
+					// get all fields
+					Array<Field> fieldList = new Array<Field>(clazz.getDeclaredFields());
+					// sort by @Order annotation
+					Array<OrderedField> orderedFields = new Array<OrderedField>();
+					for (int i = 0; i < fieldList.size; i++) {
+						OrderedField ordered = new OrderedField();
+						final Order orderAnnotation = fieldList.get(i).getAnnotation(Order.class);
+						ordered.order = orderAnnotation != null ? orderAnnotation.value() : Integer.MAX_VALUE;
+						ordered.field = fieldList.get(i);
+						orderedFields.add(ordered);
+					}
+					orderedFields.sort();
+					for (int i = 0; i < orderedFields.size; i++) {
+						final Field field = orderedFields.get(i).field;
+						if (visible(field, config) && field.getModifiers() != Modifier.PRIVATE && (field.getType().isEnum() || field.getType().toString().equals("int") || field.getType().toString().equals("float") || field.getType() == String.class || field.getType().toString().equals("boolean"))) {
 							if (idx % config.cols == config.cols - 1) {
 								add(keyInput(definition, field)).row();
 							} else {
@@ -119,7 +149,7 @@ public abstract class Module<T extends Definition> {
 							idx++;
 						}
 					}
-					int size = fieldList.size();
+					int size = fieldList.size;
 					while (size % config.cols != 0) {
 						add();
 						size++;
@@ -172,7 +202,7 @@ public abstract class Module<T extends Definition> {
 										try {
 											field.setBoolean(definition, checkBox.isChecked());
 											if (config.listener != null) {
-												config.listener.invoke();
+												config.listener.invoke(field.getName());
 											}
 										} catch (IllegalArgumentException | IllegalAccessException e) {
 											e.printStackTrace();
@@ -240,13 +270,13 @@ public abstract class Module<T extends Definition> {
 						@Override
 						public boolean handle(Event event) {
 							if (event instanceof ChangeEvent) {
-								if (config.listener != null) {
-									config.listener.invoke();
-								}
 								try {
 									field.set(definition, selectBox.getSelected());
 								} catch (IllegalArgumentException | IllegalAccessException e) {
 									e.printStackTrace();
+								}
+								if (config.listener != null) {
+									config.listener.invoke(field.getName());
 								}
 								//page.trigger = ((SelectBox<ScriptTrigger>) event.getTarget()).getSelected();
 								Game.log("Dropdown changed: " + definition);
@@ -255,6 +285,18 @@ public abstract class Module<T extends Definition> {
 							return false;
 						}
 					};
+				}
+
+				/** Determines whether or not a field should be visible based on
+				 * filteration.
+				 * @param field field we're inspecting
+				 * @param config the PopulateConfig
+				 * @return true if we should show it */
+				private boolean visible(Field field, PopulateConfig config) {
+					if (config.filter == null) {
+						return true;
+					}
+					return config.filter.contains(field.getName());
 				}
 			}).expandX().fill();
 		} catch (Exception e) {
@@ -287,7 +329,7 @@ public abstract class Module<T extends Definition> {
 				field.set(definition, textField.getText());
 			}
 			if (config.listener != null) {
-				config.listener.invoke();
+				config.listener.invoke(field.getName());
 			}
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

@@ -1,5 +1,7 @@
 package net.alcuria.umbracraft.engine.scripts;
 
+import java.util.Set;
+
 import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.Gdx;
@@ -20,8 +22,13 @@ public class PauseScriptCommand extends ScriptCommand {
 	}
 
 	@Override
+	public Set<String> getFilter() {
+		return null;
+	}
+
+	@Override
 	public String getName() {
-		return "Pause: " + time;
+		return "Pause: " + time + "s";
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.EntityReferenceDefinition;
@@ -14,6 +13,7 @@ import net.alcuria.umbracraft.definitions.map.MapTileDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.modules.MapListModule;
 import net.alcuria.umbracraft.editor.modules.Module.PopulateConfig;
+import net.alcuria.umbracraft.listeners.Listener;
 import net.dermetfan.utils.Pair;
 
 import com.badlogic.gdx.Gdx;

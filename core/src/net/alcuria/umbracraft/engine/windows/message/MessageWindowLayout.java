@@ -1,9 +1,9 @@
 package net.alcuria.umbracraft.engine.windows.message;
 
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.engine.windows.WindowLayout;
+import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;

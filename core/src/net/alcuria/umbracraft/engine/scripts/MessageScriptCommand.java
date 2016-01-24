@@ -1,5 +1,7 @@
 package net.alcuria.umbracraft.engine.scripts;
 
+import java.util.Set;
+
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
@@ -26,6 +28,11 @@ public class MessageScriptCommand extends ScriptCommand {
 
 	public MessageScriptCommand(final String message) {
 		this.message = message;
+	}
+
+	@Override
+	public Set<String> getFilter() {
+		return null;
 	}
 
 	@Override

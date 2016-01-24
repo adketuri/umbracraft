@@ -1,9 +1,9 @@
 package net.alcuria.umbracraft.editor.widget;
 
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
 import net.alcuria.umbracraft.definitions.map.TeleportDefinition;
 import net.alcuria.umbracraft.definitions.map.TeleportDefinition.TeleportDirection;
+import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;

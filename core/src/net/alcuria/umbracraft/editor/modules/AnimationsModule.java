@@ -3,7 +3,6 @@ package net.alcuria.umbracraft.editor.modules;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
@@ -11,6 +10,8 @@ import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.widget.AnimationPreview;
 import net.alcuria.umbracraft.editor.widget.AnimationPreviewFrame;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
+import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.listeners.TypeListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -194,10 +195,10 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 
 						private PopulateConfig frameConfig(final AnimationPreviewFrame image, final AnimationFrameDefinition frame) {
 							PopulateConfig cfg = new PopulateConfig();
-							cfg.listener = new Listener() {
+							cfg.listener = new TypeListener<String>() {
 
 								@Override
-								public void invoke() {
+								public void invoke(String type) {
 									image.update(definition, frame);
 								}
 							};
@@ -326,11 +327,11 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 
 	/** The listener for updating anything when the {@link AnimationDefinition}
 	 * changes */
-	private Listener updateButtonListener(final Image image, final VisTextButton button, final Table scroll, final AnimationDefinition definition) {
-		return new Listener() {
+	private TypeListener<String> updateButtonListener(final Image image, final VisTextButton button, final Table scroll, final AnimationDefinition definition) {
+		return new TypeListener<String>() {
 
 			@Override
-			public void invoke() {
+			public void invoke(String type) {
 				String path = "sprites/animations/" + definition.filename;
 				if (definition.filename != null && definition.filename.length() > 0 && Gdx.files.internal(path).exists()) {
 					image.setVisible(true);

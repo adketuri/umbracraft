@@ -1,11 +1,13 @@
 package net.alcuria.umbracraft.engine.scripts;
 
+import java.util.Set;
+
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -34,6 +36,11 @@ public class ShowAnimationScriptCommand extends ScriptCommand {
 		this.wait = wait;
 		this.self = self;
 		this.removeAfter = removeAfter;
+	}
+
+	@Override
+	public Set<String> getFilter() {
+		return null;
 	}
 
 	@Override

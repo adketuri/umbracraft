@@ -6,8 +6,6 @@ import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.map.Map;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -181,10 +179,10 @@ public class Pathfinder {
 	}
 
 	public void update(Entity entity) {
-		if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
-			Entity hero = Game.entities().find(Entity.PLAYER);
-			setTarget(new PathNode((int) (entity.position.x / Config.tileWidth), (int) (entity.position.y / Config.tileWidth)), new PathNode((int) (hero.position.x / Config.tileWidth), (int) (hero.position.y / Config.tileWidth)));
-		}
+		//		if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
+		//			Entity hero = Game.entities().find(Entity.PLAYER);
+		//			setTarget(new PathNode((int) (entity.position.x / Config.tileWidth), (int) (entity.position.y / Config.tileWidth)), new PathNode((int) (hero.position.x / Config.tileWidth), (int) (hero.position.y / Config.tileWidth)));
+		//		}
 	}
 
 }

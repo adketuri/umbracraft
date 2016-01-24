@@ -1,5 +1,7 @@
 package net.alcuria.umbracraft.engine.scripts;
 
+import java.util.Set;
+
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.FlagDefinition;
 import net.alcuria.umbracraft.definitions.ListDefinition;
@@ -15,6 +17,11 @@ public class FlagScriptCommand extends ScriptCommand {
 
 	public boolean enable;
 	public String id;
+
+	@Override
+	public Set<String> getFilter() {
+		return null;
+	}
 
 	@Override
 	public String getName() {

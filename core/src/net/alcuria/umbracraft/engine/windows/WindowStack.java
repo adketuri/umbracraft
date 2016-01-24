@@ -1,11 +1,11 @@
 package net.alcuria.umbracraft.engine.windows;
 
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
+import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;

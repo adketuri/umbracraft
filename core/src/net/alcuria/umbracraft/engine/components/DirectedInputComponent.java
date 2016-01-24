@@ -45,7 +45,7 @@ public class DirectedInputComponent implements Component {
 	 * @param y */
 	public void setTarget(int x, int y) {
 		haltMovement = false;
-		pathfinder.setTarget(new PathNode(currentX / Config.tileWidth, currentY / Config.tileWidth), new PathNode(x, y));
+		pathfinder.setTarget(new PathNode(currentX, currentY), new PathNode(x, y));
 	}
 
 	@Override
@@ -53,6 +53,8 @@ public class DirectedInputComponent implements Component {
 		// stop any movement from the past frame
 		entity.velocity.x = 0;
 		entity.velocity.y = 0;
+		currentX = (int) (entity.position.x / Config.tileWidth);
+		currentY = (int) (entity.position.y / Config.tileWidth);
 
 		pathfinder.update(entity);
 
@@ -60,9 +62,6 @@ public class DirectedInputComponent implements Component {
 		if (pathfinder.getSolution().size <= 0) {
 			return;
 		}
-
-		currentX = (int) (entity.position.x / Config.tileWidth);
-		currentY = (int) (entity.position.y / Config.tileWidth);
 
 		if (!choseNextNode) {
 			final PathNode lastNode = pathfinder.getSolution().get(pathfinder.getSolution().size - 1);

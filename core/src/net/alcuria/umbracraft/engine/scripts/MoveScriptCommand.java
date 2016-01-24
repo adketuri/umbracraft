@@ -1,12 +1,14 @@
 package net.alcuria.umbracraft.engine.scripts;
 
+import java.util.Set;
+
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.definitions.ListDefinition;
-import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -16,9 +18,16 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Andrew Keturi */
 public class MoveScriptCommand extends ScriptCommand {
 
+	@Tooltip("The entity id we wish to move")
 	public String id = "";
+	@Tooltip("If checked, movement is done relative to the entity's coordinates")
 	public boolean relative;
-	public int x, y;
+	@Tooltip("If checked, ignore id and just move the entity this script is attached to")
+	public boolean self;
+	@Tooltip("The x coordinate (either a variable or constant)")
+	public String x;
+	@Tooltip("The y coordinate (either a variable or constant)")
+	public String y;
 
 	public MoveScriptCommand() {
 	}
@@ -27,7 +36,7 @@ public class MoveScriptCommand extends ScriptCommand {
 	 * @param x the x position
 	 * @param y the y position
 	 * @param relative whether or not to use relative movement */
-	public MoveScriptCommand(final String id, final int x, final int y, final boolean relative) {
+	public MoveScriptCommand(final String id, final String x, final String y, final boolean relative) {
 		this.id = id;
 		this.x = x;
 		this.y = y;
@@ -35,22 +44,22 @@ public class MoveScriptCommand extends ScriptCommand {
 	}
 
 	@Override
+	public Set<String> getFilter() {
+		return null;
+	}
+
+	@Override
 	public String getName() {
-		return String.format("Move: %s to (%d, %d, %s)", id, x, y, relative ? "relative" : "absolute");
+		return String.format("Move: %s to (%s, %s, %s)", id, x, y, relative ? "relative" : "absolute");
 	}
 
 	@Override
 	public ObjectMap<String, Array<String>> getSuggestions() {
 		return new ObjectMap<String, Array<String>>() {
 			{
-				put("id", new Array<String>() {
-					{
-						final ListDefinition<EntityDefinition> entities = Editor.db().entities();
-						for (String key : entities.keys()) {
-							add(entities.get(key).getName());
-						}
-					}
-				});
+				put("id", Editor.db().entities().keys());
+				put("x", Editor.db().variables().keys());
+				put("y", Editor.db().variables().keys());
 			}
 		};
 	}
@@ -62,14 +71,17 @@ public class MoveScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
-		Entity target = Game.entities().find(id);
+		Entity target = self ? entity : Game.entities().find(id);
 		if (target != null) {
 			DirectedInputComponent component = target.getComponent(DirectedInputComponent.class);
 			if (component != null) {
+				// x/y can either be numbers or variables in the game's db
+				int convertedX = StringUtils.isDigit(x) ? Integer.valueOf(x) : Game.variables().get(x);
+				int convertedY = StringUtils.isDigit(y) ? Integer.valueOf(y) : Game.variables().get(y);
 				if (relative) {
-					component.setTarget((int) target.position.x + x * Config.tileWidth, (int) target.position.y + y * Config.tileWidth);
+					component.setTarget((int) target.position.x / Config.tileWidth + convertedX, (int) target.position.y / Config.tileWidth + convertedY);
 				} else {
-					component.setTarget(x * Config.tileWidth, y * Config.tileWidth);
+					component.setTarget(convertedX, convertedY);
 				}
 			} else {
 				Game.error("Entity has no DirectedInputComponent so it cannot be moved.");

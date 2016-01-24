@@ -1,8 +1,8 @@
 package net.alcuria.umbracraft.editor.widget;
 
-import net.alcuria.umbracraft.Listener;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.layout.EditorLayout;
+import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;

@@ -5,10 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** Indicates that a field should show a tooltip
+/** Hints at some suggestions for a field in the editor.
  * @author Andrew Keturi */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Tooltip {
+public @interface Suggest {
 	public String value();
 }

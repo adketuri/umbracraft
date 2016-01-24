@@ -1,5 +1,7 @@
 package net.alcuria.umbracraft.engine.scripts;
 
+import java.util.Set;
+
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
@@ -14,6 +16,11 @@ public class BattleScriptCommand extends ScriptCommand {
 
 	public BattleScriptCommand() {
 
+	}
+
+	@Override
+	public Set<String> getFilter() {
+		return null;
 	}
 
 	@Override
