@@ -37,10 +37,18 @@ public class View implements EventListener {
 
 	/** Immediately focuses the camera to its target */
 	public void focus() {
-		float dX = (target.position.x - camera.position.x);
-		float dY = (target.position.y - camera.position.y);
+		//		float dX = (target.position.x - camera.position.x);
+		//		float dY = (target.position.y - camera.position.y);
+		float dX = bounds != null ? (bounds.width > Config.viewWidth ? (target.position.x - camera.position.x) : bounds.x - camera.position.x) : 0;
+		float dY = bounds != null ? (bounds.height > Config.viewHeight ? (target.position.y - camera.position.y) : bounds.y - camera.position.y) : 0;
 		camera.translate(dX, dY);
 		camera.update();
+	}
+
+	/** @return The boundaries of the camera. May be null if there are no
+	 *         boundaries. */
+	public Rectangle getBounds() {
+		return bounds;
 	}
 
 	/** @return the camera for displaying entities, maps, etc */
@@ -88,11 +96,11 @@ public class View implements EventListener {
 	public void setBounds(Rectangle bounds) {
 		this.bounds = bounds;
 		if (bounds.width < Config.viewWidth) {
-			//	bounds.x -= Math.abs(bounds.width - Config.viewWidth) / 2;
+			bounds.x -= Math.abs(bounds.width - Config.viewWidth) / 2;
 			bounds.width = Config.viewWidth;
 		}
 		if (bounds.height < Config.viewHeight) {
-			//bounds.y -= Math.abs(bounds.height - Config.viewHeight) / 2;
+			bounds.y -= Math.abs(bounds.height - Config.viewHeight) / 2;
 			bounds.height = Config.viewHeight;
 		}
 		this.bounds.x += Config.viewWidth / 2;
@@ -111,10 +119,14 @@ public class View implements EventListener {
 	public void update() {
 		boolean moved = false;
 		if (target != null) {
-			//			float dX = (bounds != null && bounds.width > Config.viewWidth) ? (target.position.x - camera.position.x) / 20f : 0;
-			//			float dY = (bounds != null && bounds.height > Config.viewHeight) ? (target.position.y - camera.position.y) / 20f : 0;
-			float dX = (target.position.x - camera.position.x) / 20f;
-			float dY = (target.position.y - camera.position.y) / 20f;
+			float dX = bounds != null ? (bounds.width > Config.viewWidth ? (target.position.x - camera.position.x) / 20f : bounds.x - camera.position.x) : 0;
+			float dY = bounds != null ? (bounds.height > Config.viewHeight ? (target.position.y - camera.position.y) / 20f : bounds.y - camera.position.y) : 0;
+			if (dX < 0.5f && dX > -0.5f) {
+				dX = 0;
+			}
+			if (dY < 0.5f && dY > -0.5f) {
+				dY = 0;
+			}
 			camera.translate(dX, dY);
 			moved = dX != 0 || dY != 0;
 		}

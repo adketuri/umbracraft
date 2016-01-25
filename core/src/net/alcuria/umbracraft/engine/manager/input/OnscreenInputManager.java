@@ -22,6 +22,7 @@ public class OnscreenInputManager extends Manager<OnscreenInput> {
 		});
 		add(touchpad);
 		add(new MainMenuButton(stage));
+		add(new DebugText(stage));
 	}
 
 	@Override
