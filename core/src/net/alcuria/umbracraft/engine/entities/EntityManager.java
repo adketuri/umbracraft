@@ -103,9 +103,9 @@ public class EntityManager {
 		int x = (int) (Game.view().getCamera().position.x - Config.viewWidth / 2) / Config.tileWidth;
 		int y = (int) (Game.view().getCamera().position.y - Config.viewHeight / 2) / Config.tileWidth;
 		int width = Config.viewWidth / Config.tileWidth;
-		int height = Config.viewHeight / Config.tileWidth;
+		int height = (Config.viewHeight / Config.tileWidth) + 1;
 		// add visible entitities onscreen
-		int row = y + height + 1; // start at the top
+		int row = y + height; // start at the top
 		for (int i = 0; i < entities.size; i++) {
 			final int entityRow = getRow(entities.get(i));
 			if (entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= mapHeight) {
