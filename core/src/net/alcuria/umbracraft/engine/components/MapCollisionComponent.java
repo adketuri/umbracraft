@@ -15,6 +15,7 @@ public class MapCollisionComponent implements Component {
 
 	private BitmapFont debug;
 	private final int height, width;
+	private boolean isControlled;
 	private final Map map;
 	private boolean onGround, onStairs;
 
@@ -25,7 +26,7 @@ public class MapCollisionComponent implements Component {
 	}
 
 	private void checkJump(Direction direction, Entity entity) {
-		if (onStairs) {
+		if (onStairs || !isControlled) {
 			return;
 		}
 		final float len = Math.abs(entity.velocity.x) + Math.abs(entity.velocity.y);
@@ -75,6 +76,7 @@ public class MapCollisionComponent implements Component {
 	@Override
 	public void create(Entity entity) {
 		debug = Game.assets().get("fonts/message.fnt", BitmapFont.class);
+		isControlled = entity.getComponent(ControlledInputComponent.class) != null;
 	}
 
 	@Override

@@ -6,6 +6,8 @@ import net.alcuria.umbracraft.engine.Pathfinder.PathNode;
 import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
+import com.badlogic.gdx.math.Vector3;
+
 /** A component for handling input directed by some other component (for
  * instance, a {@link ScriptComponent}.
  * @author Andrew Keturi */
@@ -51,8 +53,12 @@ public class DirectedInputComponent implements Component {
 	@Override
 	public void update(Entity entity) {
 		// stop any movement from the past frame
-		entity.velocity.x = 0;
-		entity.velocity.y = 0;
+		entity.velocity.x *= 0.7;
+		entity.velocity.y *= 0.7;
+		if (entity.velocity.epsilonEquals(Vector3.Zero, 0.1f)) {
+			entity.velocity.x = 0;
+			entity.velocity.y = 0;
+		}
 		currentX = (int) (entity.position.x / Config.tileWidth);
 		currentY = (int) (entity.position.y / Config.tileWidth);
 

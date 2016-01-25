@@ -98,9 +98,11 @@ public class ScriptComponent implements Component, EventListener {
 
 	/** Starts a script. should only be called once at the start */
 	private void startScript() {
-		// halt player movement
-		Game.publisher().publish(new ScriptStartedEvent(currentPage));
-		Game.entities().find(Entity.PLAYER).velocity.set(0, 0, 0);
+		if (currentPage.haltInput) {
+			// halt player movement
+			Game.publisher().publish(new ScriptStartedEvent(currentPage));
+			Game.entities().find(Entity.PLAYER).velocity.set(0, 0, 0);
+		}
 		currentCommand = currentPage.command;
 		active = true;
 		pressed = false;

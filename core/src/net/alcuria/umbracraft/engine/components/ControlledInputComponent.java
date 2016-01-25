@@ -24,6 +24,7 @@ public class ControlledInputComponent implements Component, EventListener {
 	private static final float MAX_SPEED_TIME = 0.12f; // time entity takes to reach max speed
 	private static Touchpad touchpad;
 	private AnimationCollectionComponent group;
+	private int haltCounter = 0;
 	private boolean haltInput;
 	private float holdTimeX, holdTimeY;
 	private final Vector3 inspectPos = new Vector3();
@@ -52,12 +53,19 @@ public class ControlledInputComponent implements Component, EventListener {
 		// TODO: probably use a counter here so concurrent events don't get messy
 		if (event instanceof ScriptStartedEvent) {
 			if (((ScriptStartedEvent) event).page.haltInput) {
-				Game.log("Halting input");
+				haltCounter++;
+				Game.log("Halting input. counter: " + haltCounter);
 				haltInput = true;
 			}
 		} else if (event instanceof ScriptEndedEvent) {
-			haltInput = false;
-			Game.log("Resuming input");
+			if (((ScriptEndedEvent) event).page.haltInput) {
+				haltCounter--;
+				if (haltCounter <= 0) {
+					haltInput = false;
+					Game.log("Resuming input");
+					haltCounter = 0;
+				}
+			}
 		} else if (event instanceof TouchpadCreatedEvent) {
 			touchpad = ((TouchpadCreatedEvent) event).touchpad;
 			Game.log("Set touchpad");
@@ -124,7 +132,6 @@ public class ControlledInputComponent implements Component, EventListener {
 			holdTimeY = MathUtils.clamp(holdTimeY, 0, MAX_SPEED_TIME);
 			entity.velocity.x *= holdTimeX / MAX_SPEED_TIME;
 			entity.velocity.y *= holdTimeY / MAX_SPEED_TIME;
-
 		}
 
 		if (Gdx.input.isKeyJustPressed(Keys.F1)) {
