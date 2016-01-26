@@ -10,24 +10,30 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.kotcrab.vis.ui.widget.VisLabel;
 
 public class MessageWindowLayout extends WindowLayout {
+	private static final int MESSAGE_WIDTH = 310;
 	private Image faceImage;
-	private VisLabel messageLabel;
-	private Table nameTable;
+
+	private final Array<VisLabel> messageLabels = new Array<VisLabel>();
+	private Table nameTable, messageTable;
+	private final LabelStyle style = new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE);
 	private Stack windowBackground;
 
 	@Override
 	public void hide(final Listener completeListener) {
-		messageLabel.addAction(Actions.sequence(Actions.delay(0.2f), Actions.parallel(Actions.moveBy(0, -10, 0.2f, Interpolation.pow2In), Actions.alpha(0, 0.2f))));
+		for (VisLabel messageLabel : messageLabels) {
+			messageLabel.addAction(Actions.sequence(Actions.delay(0.2f), Actions.parallel(Actions.moveBy(0, -10, 0.2f, Interpolation.pow2In), Actions.alpha(0, 0.2f))));
+		}
 		nameTable.addAction(Actions.sequence(Actions.parallel(Actions.alpha(0, 0.2f), Actions.moveBy(-10, 0, 0.2f, Interpolation.pow2Out))));
 		faceImage.addAction(Actions.sequence(Actions.parallel(Actions.alpha(0, 0.2f), Actions.moveBy(-10, 0, 0.2f, Interpolation.pow2Out))));
 		windowBackground.addAction(Actions.sequence(Actions.delay(0.2f), Actions.parallel(Actions.moveBy(0, -10, 0.2f, Interpolation.pow2In), Actions.alpha(0, 0.2f)), Actions.run(new Runnable() {
@@ -40,8 +46,57 @@ public class MessageWindowLayout extends WindowLayout {
 	}
 
 	public void setMessage(String message) {
-		if (messageLabel != null) {
-			messageLabel.setText(message);
+		if (messageTable != null) {
+			messageLabels.clear();
+			messageTable.clear();
+
+			// split the message by space characters.
+			for (String word : message.split(" ")) {
+				messageLabels.add(new VisLabel(word, style));
+			}
+
+			// go thru every word
+			int idx = 0;
+			while (idx < messageLabels.size) {
+				Table row = new Table();
+				int rowWidth = 0;
+				// add words to a row till we run out or go too wide
+				while (rowWidth < MESSAGE_WIDTH && idx < messageLabels.size) {
+					final float labelWidth = messageLabels.get(idx).getPrefWidth();
+					row.add(messageLabels.get(idx)).width(labelWidth).padRight(5);
+					rowWidth += (labelWidth + 5);
+					idx++;
+				}
+				row.add().expandX().fillX();
+				messageTable.add(row).expandX().left().row();
+			}
+			messageTable.add().expand().fill(); // top aligns everything
+
+			float charPause = 0.02f;
+			int currentLetters = 0;
+			for (final VisLabel word : messageLabels) {
+				final String wordText = word.getText().toString();
+				final int wordLen = word.getText().length;
+				word.setText("");
+				word.addAction(Actions.sequence(Actions.delay(currentLetters * charPause), new TemporalAction(wordLen * charPause) {
+
+					float cur = 0;
+					int letters = 0;
+
+					@Override
+					protected void update(float percent) {
+						cur += percent;
+						if (cur > (float) letters / wordLen) {
+							letters++;
+							if (letters > wordLen) {
+								return;
+							}
+							word.setText(wordText.substring(0, letters));
+						}
+					}
+				}));
+				currentLetters += wordLen - 1;
+			}
 		}
 	}
 
@@ -76,7 +131,7 @@ public class MessageWindowLayout extends WindowLayout {
 		nameTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.2f), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, 0.2f), Actions.moveBy(10, 0, 0.2f, Interpolation.pow2Out))));
 		faceImage.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.2f), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, 0.2f), Actions.moveBy(10, 0, 0.2f, Interpolation.pow2Out))));
 		windowBackground.addAction(Actions.sequence(Actions.alpha(0), Actions.parallel(Actions.moveBy(0, 10, 0.2f, Interpolation.pow2Out), Actions.alpha(1, 0.2f))));
-		messageLabel.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.3f), Actions.alpha(1, 0.2f)));
+		messageTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.3f), Actions.alpha(1, 0.2f)));
 	}
 
 	private Table textTable() {
@@ -85,13 +140,8 @@ public class MessageWindowLayout extends WindowLayout {
 				faceImage = new Image(Game.assets().get("ui/face/amiru.png", Texture.class));
 				faceImage.setScaling(Scaling.none);
 				add(faceImage).bottom();
-				messageLabel = new VisLabel("", new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE));
-				messageLabel.setWrap(true);
-				messageLabel.setAlignment(Align.left);
-				add(messageLabel).expand().top().size(330, 70).padBottom(16).padTop(6);
+				add(messageTable = new Table()).expand().top().size(MESSAGE_WIDTH + 20, 70).padTop(30);
 			}
-
 		};
 	}
-
 }
