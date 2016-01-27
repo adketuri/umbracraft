@@ -40,6 +40,11 @@ public class WorldScreen implements UmbraScreen, EventListener {
 	}
 
 	@Override
+	public WindowStack getWindows() {
+		return windows;
+	}
+
+	@Override
 	public void hide() {
 
 	}

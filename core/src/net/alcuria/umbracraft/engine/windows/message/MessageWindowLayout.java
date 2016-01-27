@@ -21,13 +21,33 @@ import com.badlogic.gdx.utils.Scaling;
 import com.kotcrab.vis.ui.widget.VisLabel;
 
 public class MessageWindowLayout extends WindowLayout {
+
+	private static enum MessageState {
+		STEP_1_CREATE, STEP_2_ACCEPT_INPUT, STEP_3_MESSAGE_DISPLAYED
+	}
+
 	private static final int MESSAGE_WIDTH = 310;
 	private Image faceImage;
-
 	private final Array<VisLabel> messageLabels = new Array<VisLabel>();
 	private Table nameTable, messageTable;
+	private MessageState state = MessageState.STEP_1_CREATE;
 	private final LabelStyle style = new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE);
 	private Stack windowBackground;
+
+	/** Advances the message state
+	 * @return <code>true</code> when we are ready to close the message */
+	public boolean advance() {
+		switch (state) {
+		case STEP_1_CREATE:
+			return false;
+		case STEP_2_ACCEPT_INPUT:
+			immediatelyShowAllText();
+			return false;
+		case STEP_3_MESSAGE_DISPLAYED:
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public void hide(final Listener completeListener) {
@@ -43,6 +63,15 @@ public class MessageWindowLayout extends WindowLayout {
 				completeListener.invoke();
 			}
 		})));
+	}
+
+	private void immediatelyShowAllText() {
+		for (final VisLabel word : messageLabels) {
+			word.clearActions();
+			word.getColor().a = 1;
+		}
+		state = MessageState.STEP_3_MESSAGE_DISPLAYED;
+
 	}
 
 	public void setMessage(String message) {
@@ -130,7 +159,13 @@ public class MessageWindowLayout extends WindowLayout {
 		// do actions
 		nameTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.2f), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, 0.2f), Actions.moveBy(10, 0, 0.2f, Interpolation.pow2Out))));
 		faceImage.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.2f), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, 0.2f), Actions.moveBy(10, 0, 0.2f, Interpolation.pow2Out))));
-		windowBackground.addAction(Actions.sequence(Actions.alpha(0), Actions.parallel(Actions.moveBy(0, 10, 0.2f, Interpolation.pow2Out), Actions.alpha(1, 0.2f))));
+		windowBackground.addAction(Actions.sequence(Actions.alpha(0), Actions.parallel(Actions.moveBy(0, 10, 0.2f, Interpolation.pow2Out), Actions.alpha(1, 0.2f)), Actions.run(new Runnable() {
+
+			@Override
+			public void run() {
+				state = MessageState.STEP_2_ACCEPT_INPUT;
+			}
+		})));
 		messageTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.3f), Actions.alpha(1, 0.2f)));
 	}
 

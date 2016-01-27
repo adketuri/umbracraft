@@ -7,10 +7,9 @@ import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
 import net.alcuria.umbracraft.engine.windows.message.MessageWindow;
+import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.util.StringUtils;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -19,7 +18,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi */
 public class MessageScriptCommand extends ScriptCommand {
 
-	private boolean dismissable = false;
+	private final boolean dismissable = false;
 	public String message = "";
 	private MessageWindow window;
 
@@ -30,6 +29,16 @@ public class MessageScriptCommand extends ScriptCommand {
 		this.message = message;
 	}
 
+	public Listener close() {
+		return new Listener() {
+
+			@Override
+			public void invoke() {
+				complete();
+			}
+		};
+	}
+
 	@Override
 	public Set<String> getFilter() {
 		return null;
@@ -37,7 +46,7 @@ public class MessageScriptCommand extends ScriptCommand {
 
 	@Override
 	public String getName() {
-		return "Message: '" + StringUtils.truncate(message, 15) + "'";
+		return "Message: '" + StringUtils.truncate(message, 30) + "'";
 	}
 
 	@Override
@@ -53,17 +62,18 @@ public class MessageScriptCommand extends ScriptCommand {
 	@Override
 	public void onStarted(Entity entity) {
 		window = new MessageWindow(message);
+		window.addCloseListener(close());
 		Game.publisher().publish(new WindowShowEvent(window));
 	}
 
 	@Override
 	public void update() {
-		if (!Gdx.input.isKeyPressed(Keys.ENTER)) {
-			dismissable = true;
-		}
-		if (dismissable && Gdx.input.isKeyJustPressed(Keys.ENTER)) {
-			complete();
-		}
+		//		if (!Gdx.input.isKeyPressed(Keys.ENTER)) {
+		//			dismissable = true;
+		//		}
+		//		if (dismissable && Gdx.input.isKeyJustPressed(Keys.ENTER)) {
+		//			complete();
+		//		}
 	}
 
 }

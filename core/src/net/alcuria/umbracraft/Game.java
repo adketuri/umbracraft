@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.events.EventPublisher;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
+import net.alcuria.umbracraft.engine.windows.WindowStack;
 import net.alcuria.umbracraft.flags.FlagManager;
 import net.alcuria.umbracraft.hud.HUD;
 import net.alcuria.umbracraft.party.Party;
@@ -158,6 +159,11 @@ public final class Game {
 	/** @return the {@link View} for handling cameras and so on. */
 	public static View view() {
 		return view;
+	}
+
+	/** @return the screen's current windows */
+	public static WindowStack windows() {
+		return screen.getWindows();
 	}
 
 	public Game() {

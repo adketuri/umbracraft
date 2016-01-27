@@ -47,13 +47,14 @@ public class WindowStack implements EventListener {
 		}
 	}
 
-	private void pop(final Window<?> window) {
+	public void pop(final Window<?> window) {
 		Game.log("popping " + window);
 		if (window != null) {
 			window.close(new Listener() {
 
 				@Override
 				public void invoke() {
+					window.onClose();
 					// remove window
 					windows.removeValue(window, true);
 					// check if we should reset touchable
