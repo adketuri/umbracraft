@@ -5,9 +5,8 @@ import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Directio
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
-import net.alcuria.umbracraft.engine.events.ScriptEndedEvent;
-import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
 import net.alcuria.umbracraft.engine.events.TouchpadCreatedEvent;
+import net.alcuria.umbracraft.engine.manager.input.InputHalter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -22,10 +21,9 @@ public class ControlledInputComponent implements Component, EventListener {
 	private static final int MARGIN = 4;
 	private static final float MAX_SPEED = 2; // max speed of the entity
 	private static final float MAX_SPEED_TIME = 0.12f; // time entity takes to reach max speed
-	private static Touchpad touchpad;
+	private static Touchpad touchpad; // this fixes issues with changing maps/recreating entities and it's a bit ugly but...?
 	private AnimationCollectionComponent group;
-	private int haltCounter = 0;
-	private boolean haltInput;
+	private InputHalter halter;
 	private float holdTimeX, holdTimeY;
 	private final Vector3 inspectPos = new Vector3();
 	private MapCollisionComponent physics;
@@ -36,6 +34,7 @@ public class ControlledInputComponent implements Component, EventListener {
 		if (subscribed) {
 			return;
 		}
+		halter = new InputHalter();
 		Game.log("ControlledInput: SUBSCRIBING");
 		Game.publisher().subscribe(this);
 		subscribed = true;
@@ -51,24 +50,11 @@ public class ControlledInputComponent implements Component, EventListener {
 	@Override
 	public void onEvent(Event event) {
 		// TODO: probably use a counter here so concurrent events don't get messy
-		if (event instanceof ScriptStartedEvent) {
-			if (((ScriptStartedEvent) event).page.haltInput) {
-				haltCounter++;
-				Game.log("Halting input. counter: " + haltCounter);
-				haltInput = true;
-			}
-		} else if (event instanceof ScriptEndedEvent) {
-			if (((ScriptEndedEvent) event).page.haltInput) {
-				haltCounter--;
-				if (haltCounter <= 0) {
-					haltInput = false;
-					Game.log("Resuming input");
-					haltCounter = 0;
-				}
-			}
-		} else if (event instanceof TouchpadCreatedEvent) {
+		if (event instanceof TouchpadCreatedEvent) {
 			touchpad = ((TouchpadCreatedEvent) event).touchpad;
 			Game.log("Set touchpad");
+		} else {
+			halter.check(event);
 		}
 
 	}
@@ -82,7 +68,7 @@ public class ControlledInputComponent implements Component, EventListener {
 
 	@Override
 	public void update(Entity entity) {
-		if (haltInput) {
+		if (halter.isHalted()) {
 			return;
 		}
 

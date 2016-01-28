@@ -99,6 +99,7 @@ public class WindowStack implements EventListener {
 		}
 	}
 
+	/** @return the number of windows currently displayed */
 	public int size() {
 		return windows.size;
 	}

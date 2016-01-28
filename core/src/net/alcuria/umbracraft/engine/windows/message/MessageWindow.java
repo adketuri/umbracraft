@@ -18,7 +18,7 @@ public class MessageWindow extends Window<MessageWindowLayout> implements EventL
 	public MessageWindow(String message) {
 		super(new MessageWindowLayout());
 		this.message = message;
-		Game.publisher().subscribe(this);
+		//		Game.publisher().subscribe(this);
 	}
 
 	/** Adds a listener to invoke when the screen is closed */
@@ -57,7 +57,15 @@ public class MessageWindow extends Window<MessageWindowLayout> implements EventL
 
 	@Override
 	public void onOpen() {
+		// start the message and allow touch input to advance the messages
 		layout.setMessage(message, false);
+		layout.setTouchListener(new Listener() {
+
+			@Override
+			public void invoke() {
+				advance();
+			}
+		});
 	}
 
 }

@@ -36,6 +36,7 @@ public class WorldScreen implements UmbraScreen, EventListener {
 		Game.entities().dispose();
 		windows.dispose();
 		teleporter.dispose();
+		in.dispose();
 		Game.publisher().unsubscribe(this);
 	}
 

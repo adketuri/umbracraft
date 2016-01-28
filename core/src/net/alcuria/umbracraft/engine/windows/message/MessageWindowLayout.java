@@ -20,8 +20,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.kotcrab.vis.ui.widget.VisLabel;
 
+/** The layout for dialogue messages shown to the player.
+ * @author Andrew Keturi */
 public class MessageWindowLayout extends WindowLayout {
 
+	/** Input states for the message
+	 * @author Andrew Keturi */
 	private static enum MessageState {
 		STEP_1_CREATE, STEP_2_ACCEPT_INPUT, STEP_3_MESSAGE_DISPLAYED
 	}
@@ -73,6 +77,10 @@ public class MessageWindowLayout extends WindowLayout {
 		state = MessageState.STEP_3_MESSAGE_DISPLAYED;
 	}
 
+	/** Sets the message to display on the layout and begins animating it.
+	 * @param message the message {@link String}
+	 * @param instant if <code>true</code>, show text instantly. Otherwise, it
+	 *        animates in by letter. */
 	public void setMessage(String message, boolean instant) {
 		this.message = message;
 		if (messageTable != null) {
@@ -139,7 +147,6 @@ public class MessageWindowLayout extends WindowLayout {
 
 				@Override
 				public void run() {
-					Game.log("Done: ");
 					state = MessageState.STEP_3_MESSAGE_DISPLAYED;
 				}
 			})));
