@@ -30,6 +30,7 @@ public class OnscreenInputManager extends Manager<OnscreenInput> implements Even
 		});
 		add(touchpad);
 		add(new MainMenuButton(stage));
+		add(new InspectButton(stage));
 		add(new DebugText(stage));
 		Game.publisher().subscribe(this);
 	}

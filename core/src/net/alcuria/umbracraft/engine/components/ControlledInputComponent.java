@@ -22,6 +22,7 @@ public class ControlledInputComponent implements Component, EventListener {
 	private static final float MAX_SPEED = 2; // max speed of the entity
 	private static final float MAX_SPEED_TIME = 0.12f; // time entity takes to reach max speed
 	private static Touchpad touchpad; // this fixes issues with changing maps/recreating entities and it's a bit ugly but...?
+	private Entity entity;
 	private AnimationCollectionComponent group;
 	private InputHalter halter;
 	private float holdTimeX, holdTimeY;
@@ -34,6 +35,7 @@ public class ControlledInputComponent implements Component, EventListener {
 		if (subscribed) {
 			return;
 		}
+		this.entity = entity;
 		halter = new InputHalter();
 		Game.log("ControlledInput: SUBSCRIBING");
 		Game.publisher().subscribe(this);
@@ -45,6 +47,31 @@ public class ControlledInputComponent implements Component, EventListener {
 		Game.log("ControlledInput: UNSUBSCRIBING");
 		Game.publisher().unsubscribe(this);
 		subscribed = false;
+	}
+
+	public void inspect() {
+		physics = entity.getComponent(MapCollisionComponent.class);
+		group = entity.getComponent(AnimationCollectionComponent.class);
+		if (physics != null && group != null) {
+			inspectPos.x = entity.position.x + physics.getWidth() / 2;
+			inspectPos.y = entity.position.y + physics.getHeight() / 2;
+			inspectPos.z = entity.position.z;
+			final Direction d = group.getGroup().getDirection();
+			if (d == Direction.UPRIGHT || d == Direction.RIGHT || d == Direction.DOWNRIGHT) {
+				inspectPos.x += physics.getWidth() / 2 + MARGIN;
+			}
+			if (d == Direction.UPLEFT || d == Direction.LEFT || d == Direction.DOWNLEFT) {
+				inspectPos.x -= physics.getWidth() / 2 + MARGIN;
+			}
+			if (d == Direction.UPLEFT || d == Direction.UP || d == Direction.UPRIGHT) {
+				inspectPos.y += physics.getHeight() / 2 + MARGIN;
+			}
+			if (d == Direction.DOWNLEFT || d == Direction.DOWN || d == Direction.DOWNRIGHT) {
+				inspectPos.y -= physics.getHeight() / 2 + MARGIN;
+			}
+			Game.log("Pressed Enter, publishing KeyDownEvent");
+			Game.publisher().publish(new KeyDownEvent(Keys.ENTER, inspectPos));
+		}
 	}
 
 	@Override
@@ -124,28 +151,7 @@ public class ControlledInputComponent implements Component, EventListener {
 			Game.setDebug(!Game.isDebug());
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
-			physics = entity.getComponent(MapCollisionComponent.class);
-			group = entity.getComponent(AnimationCollectionComponent.class);
-			if (physics != null && group != null) {
-				inspectPos.x = entity.position.x + physics.getWidth() / 2;
-				inspectPos.y = entity.position.y + physics.getHeight() / 2;
-				inspectPos.z = entity.position.z;
-				final Direction d = group.getGroup().getDirection();
-				if (d == Direction.UPRIGHT || d == Direction.RIGHT || d == Direction.DOWNRIGHT) {
-					inspectPos.x += physics.getWidth() / 2 + MARGIN;
-				}
-				if (d == Direction.UPLEFT || d == Direction.LEFT || d == Direction.DOWNLEFT) {
-					inspectPos.x -= physics.getWidth() / 2 + MARGIN;
-				}
-				if (d == Direction.UPLEFT || d == Direction.UP || d == Direction.UPRIGHT) {
-					inspectPos.y += physics.getHeight() / 2 + MARGIN;
-				}
-				if (d == Direction.DOWNLEFT || d == Direction.DOWN || d == Direction.DOWNRIGHT) {
-					inspectPos.y -= physics.getHeight() / 2 + MARGIN;
-				}
-				Game.log("Pressed Enter, publishing KeyDownEvent");
-				Game.publisher().publish(new KeyDownEvent(Keys.ENTER, inspectPos));
-			}
+			inspect();
 		}
 	}
 }
