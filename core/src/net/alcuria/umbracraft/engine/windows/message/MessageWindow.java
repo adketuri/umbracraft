@@ -57,7 +57,7 @@ public class MessageWindow extends Window<MessageWindowLayout> implements EventL
 
 	@Override
 	public void onOpen() {
-		layout.setMessage(message);
+		layout.setMessage(message, false);
 	}
 
 }

@@ -27,7 +27,9 @@ public class MessageWindowLayout extends WindowLayout {
 	}
 
 	private static final int MESSAGE_WIDTH = 310;
+	private static final float SHOW_TRANSITION_TIME = 0.15f;
 	private Image faceImage;
+	private String message;
 	private final Array<VisLabel> messageLabels = new Array<VisLabel>();
 	private Table nameTable, messageTable;
 	private MessageState state = MessageState.STEP_1_CREATE;
@@ -51,12 +53,13 @@ public class MessageWindowLayout extends WindowLayout {
 
 	@Override
 	public void hide(final Listener completeListener) {
+
 		for (VisLabel messageLabel : messageLabels) {
-			messageLabel.addAction(Actions.sequence(Actions.delay(0.2f), Actions.parallel(Actions.moveBy(0, -10, 0.2f, Interpolation.pow2In), Actions.alpha(0, 0.2f))));
+			messageLabel.addAction(Actions.sequence(Actions.delay(SHOW_TRANSITION_TIME), Actions.parallel(Actions.moveBy(0, -10, SHOW_TRANSITION_TIME, Interpolation.pow2In), Actions.alpha(0, SHOW_TRANSITION_TIME))));
 		}
-		nameTable.addAction(Actions.sequence(Actions.parallel(Actions.alpha(0, 0.2f), Actions.moveBy(-10, 0, 0.2f, Interpolation.pow2Out))));
-		faceImage.addAction(Actions.sequence(Actions.parallel(Actions.alpha(0, 0.2f), Actions.moveBy(-10, 0, 0.2f, Interpolation.pow2Out))));
-		windowBackground.addAction(Actions.sequence(Actions.delay(0.2f), Actions.parallel(Actions.moveBy(0, -10, 0.2f, Interpolation.pow2In), Actions.alpha(0, 0.2f)), Actions.run(new Runnable() {
+		nameTable.addAction(Actions.sequence(Actions.parallel(Actions.alpha(0, SHOW_TRANSITION_TIME), Actions.moveBy(-10, 0, SHOW_TRANSITION_TIME, Interpolation.pow2Out))));
+		faceImage.addAction(Actions.sequence(Actions.parallel(Actions.alpha(0, SHOW_TRANSITION_TIME), Actions.moveBy(-10, 0, SHOW_TRANSITION_TIME, Interpolation.pow2Out))));
+		windowBackground.addAction(Actions.sequence(Actions.delay(SHOW_TRANSITION_TIME), Actions.parallel(Actions.moveBy(0, -10, SHOW_TRANSITION_TIME, Interpolation.pow2In), Actions.alpha(0, SHOW_TRANSITION_TIME)), Actions.run(new Runnable() {
 
 			@Override
 			public void run() {
@@ -66,15 +69,12 @@ public class MessageWindowLayout extends WindowLayout {
 	}
 
 	private void immediatelyShowAllText() {
-		for (final VisLabel word : messageLabels) {
-			word.clearActions();
-			word.getColor().a = 1;
-		}
+		setMessage(message, true);
 		state = MessageState.STEP_3_MESSAGE_DISPLAYED;
-
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(String message, boolean instant) {
+		this.message = message;
 		if (messageTable != null) {
 			messageLabels.clear();
 			messageTable.clear();
@@ -101,16 +101,25 @@ public class MessageWindowLayout extends WindowLayout {
 			}
 			messageTable.add().expand().fill(); // top aligns everything
 
-			float charPause = 0.02f;
+			float charPause = instant ? 0f : 0.02f;
 			int currentLetters = 0;
 			for (final VisLabel word : messageLabels) {
 				final String wordText = word.getText().toString();
 				final int wordLen = word.getText().length;
-				word.setText("");
-				word.addAction(Actions.sequence(Actions.delay(currentLetters * charPause), new TemporalAction(wordLen * charPause) {
+				if (!instant) {
+					word.setText("");
+				}
+				word.clearActions();
+				word.addAction(Actions.sequence(Actions.delay(SHOW_TRANSITION_TIME + currentLetters * charPause), new TemporalAction(wordLen * charPause) {
 
 					float cur = 0;
 					int letters = 0;
+
+					@Override
+					protected void end() {
+						super.end();
+						word.setText(wordText);
+					}
 
 					@Override
 					protected void update(float percent) {
@@ -126,6 +135,14 @@ public class MessageWindowLayout extends WindowLayout {
 				}));
 				currentLetters += wordLen - 1;
 			}
+			windowBackground.addAction(Actions.sequence(Actions.delay(SHOW_TRANSITION_TIME + currentLetters * charPause), Actions.run(new Runnable() {
+
+				@Override
+				public void run() {
+					Game.log("Done: ");
+					state = MessageState.STEP_3_MESSAGE_DISPLAYED;
+				}
+			})));
 		}
 	}
 
@@ -157,16 +174,17 @@ public class MessageWindowLayout extends WindowLayout {
 		windowBackground.setColor(1, 1, 1, 0);
 		content.stack(windowFrame, textTable()).expand().left().bottom().pad(10).padBottom(0);
 		// do actions
-		nameTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.2f), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, 0.2f), Actions.moveBy(10, 0, 0.2f, Interpolation.pow2Out))));
-		faceImage.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.2f), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, 0.2f), Actions.moveBy(10, 0, 0.2f, Interpolation.pow2Out))));
-		windowBackground.addAction(Actions.sequence(Actions.alpha(0), Actions.parallel(Actions.moveBy(0, 10, 0.2f, Interpolation.pow2Out), Actions.alpha(1, 0.2f)), Actions.run(new Runnable() {
+		nameTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(SHOW_TRANSITION_TIME), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, SHOW_TRANSITION_TIME), Actions.moveBy(10, 0, SHOW_TRANSITION_TIME, Interpolation.pow2Out))));
+		faceImage.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(SHOW_TRANSITION_TIME), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, SHOW_TRANSITION_TIME), Actions.moveBy(10, 0, SHOW_TRANSITION_TIME, Interpolation.pow2Out))));
+		windowBackground.addAction(Actions.sequence(Actions.alpha(0), Actions.parallel(Actions.moveBy(0, 10, SHOW_TRANSITION_TIME, Interpolation.pow2Out), Actions.alpha(1, SHOW_TRANSITION_TIME)), Actions.run(new Runnable() {
 
 			@Override
 			public void run() {
+				Game.log("Accepting");
 				state = MessageState.STEP_2_ACCEPT_INPUT;
 			}
 		})));
-		messageTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.3f), Actions.alpha(1, 0.2f)));
+		messageTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(0.3f), Actions.alpha(1, SHOW_TRANSITION_TIME)));
 	}
 
 	private Table textTable() {
