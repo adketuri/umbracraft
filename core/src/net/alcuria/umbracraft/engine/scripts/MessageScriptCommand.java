@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.scripts;
 import java.util.Set;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
@@ -18,8 +19,21 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi */
 public class MessageScriptCommand extends ScriptCommand {
 
+	/** Various facial expressions
+	 * @author Andrew Keturi */
+	public static enum MessageEmotion {
+		ANGRY, HAPPY, NEUTRAL, SAD
+	}
+
 	private final boolean dismissable = false;
+	@Tooltip("The expression to display on the character's portrait")
+	public MessageEmotion emotion = MessageEmotion.NEUTRAL;
 	public String message = "";
+	@Tooltip("The name to display with the message. Requires a speaker.")
+	public String name = "";
+	@Tooltip("The person speaking the message. Leave empty to omit.")
+	public String speaker = "";
+
 	private MessageWindow window;
 
 	public MessageScriptCommand() {
@@ -61,7 +75,7 @@ public class MessageScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
-		window = new MessageWindow(message);
+		window = new MessageWindow(message, name, speaker, emotion);
 		window.addCloseListener(close());
 		Game.publisher().publish(new WindowShowEvent(window));
 	}

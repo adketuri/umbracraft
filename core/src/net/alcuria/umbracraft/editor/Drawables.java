@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.editor;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand.MessageEmotion;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,7 +20,22 @@ public class Drawables {
 
 	private static ObjectMap<String, TextureRegionDrawable> drawables;
 	private static boolean initialized = false;
-	private static TextureAtlas skin;
+	private static TextureAtlas skin, faces;
+
+	/** Gets the skin {@link TextureAtlas}
+	 * @param region the region in the TextureAtlas
+	 * @return a {@link TextureAtlas} */
+	public static TextureRegion faces(String name, MessageEmotion emotion) {
+		if (!initialized) {
+			init();
+		}
+		final String region = name.toLowerCase() + "/" + emotion.toString().toLowerCase();
+		final AtlasRegion atlas = faces.findRegion(region);
+		if (atlas == null) {
+			throw new NullPointerException("Region not found: " + region + ". Regions Available: " + faces.getRegions());
+		}
+		return atlas;
+	}
 
 	/** Gets a drawable from the map
 	 * @param name the name of the drawable
@@ -48,6 +64,7 @@ public class Drawables {
 		drawables.put("entity", new TextureRegionDrawable(new TextureRegion(texture, 0, 1, 16, 16)));
 		if (Game.assets() != null) {
 			skin = Game.assets().get("skin/skin.atlas", TextureAtlas.class);
+			faces = Game.assets().get("faces/faces.atlas", TextureAtlas.class);
 		}
 		initialized = true;
 	}

@@ -2,16 +2,19 @@ package net.alcuria.umbracraft.engine.windows.message;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand.MessageEmotion;
 import net.alcuria.umbracraft.engine.windows.WindowLayout;
 import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -32,10 +35,10 @@ public class MessageWindowLayout extends WindowLayout {
 
 	private static final int MESSAGE_WIDTH = 310;
 	private static final float SHOW_TRANSITION_TIME = 0.15f;
-	private Image faceImage;
 	private String message;
 	private final Array<VisLabel> messageLabels = new Array<VisLabel>();
-	private Table nameTable, messageTable;
+	private Label nameLabel;
+	private Table nameTable, messageTable, faceTable;
 	private MessageState state = MessageState.STEP_1_CREATE;
 	private final LabelStyle style = new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE);
 	private Stack windowBackground;
@@ -62,7 +65,7 @@ public class MessageWindowLayout extends WindowLayout {
 			messageLabel.addAction(Actions.sequence(Actions.delay(SHOW_TRANSITION_TIME), Actions.parallel(Actions.moveBy(0, -10, SHOW_TRANSITION_TIME, Interpolation.pow2In), Actions.alpha(0, SHOW_TRANSITION_TIME))));
 		}
 		nameTable.addAction(Actions.sequence(Actions.parallel(Actions.alpha(0, SHOW_TRANSITION_TIME), Actions.moveBy(-10, 0, SHOW_TRANSITION_TIME, Interpolation.pow2Out))));
-		faceImage.addAction(Actions.sequence(Actions.parallel(Actions.alpha(0, SHOW_TRANSITION_TIME), Actions.moveBy(-10, 0, SHOW_TRANSITION_TIME, Interpolation.pow2Out))));
+		faceTable.addAction(Actions.sequence(Actions.parallel(Actions.alpha(0, SHOW_TRANSITION_TIME), Actions.moveBy(-10, 0, SHOW_TRANSITION_TIME, Interpolation.pow2Out))));
 		windowBackground.addAction(Actions.sequence(Actions.delay(SHOW_TRANSITION_TIME), Actions.parallel(Actions.moveBy(0, -10, SHOW_TRANSITION_TIME, Interpolation.pow2In), Actions.alpha(0, SHOW_TRANSITION_TIME)), Actions.run(new Runnable() {
 
 			@Override
@@ -75,6 +78,17 @@ public class MessageWindowLayout extends WindowLayout {
 	private void immediatelyShowAllText() {
 		setMessage(message, true);
 		state = MessageState.STEP_3_MESSAGE_DISPLAYED;
+	}
+
+	public void setFace(String name, MessageEmotion emotion) {
+		faceTable.clear();
+		if (StringUtils.isNotEmpty(name)) {
+			final TextureRegion region = Drawables.faces(name, emotion);
+			Image faceImage = new Image(region);
+			faceImage.setScaling(Scaling.none);
+			faceTable.add(faceImage);
+			faceTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(SHOW_TRANSITION_TIME), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, SHOW_TRANSITION_TIME), Actions.moveBy(10, 0, SHOW_TRANSITION_TIME, Interpolation.pow2Out))));
+		}
 	}
 
 	/** Sets the message to display on the layout and begins animating it.
@@ -153,6 +167,19 @@ public class MessageWindowLayout extends WindowLayout {
 		}
 	}
 
+	public void setName(String name) {
+		if (nameLabel == null) {
+			throw new NullPointerException("nameLabel is null. Call show() first");
+		}
+		if (StringUtils.isNotEmpty(name)) {
+			nameLabel.setText(name);
+			nameTable.setVisible(true);
+			nameTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(SHOW_TRANSITION_TIME), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, SHOW_TRANSITION_TIME), Actions.moveBy(10, 0, SHOW_TRANSITION_TIME, Interpolation.pow2Out))));
+		} else {
+			nameTable.setVisible(false);
+		}
+	}
+
 	@Override
 	public void show() {
 		windowBackground = new Stack();
@@ -174,15 +201,13 @@ public class MessageWindowLayout extends WindowLayout {
 		windowFrame.add(nameTable = new Table() {
 			{
 				setBackground(Drawables.ninePatch("ui/namePlate"));
-				add(new VisLabel("Amiru", new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE))).pad(0, 65, 18, 20);
+				add(nameLabel = new VisLabel("Amiru", new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE))).pad(0, 65, 18, 20);
 			}
 		}).height(20).expand().padLeft(40).bottom().left().row();
 		windowFrame.add(windowBackground).expand().fillX().bottom().height(80).padLeft(40);
 		windowBackground.setColor(1, 1, 1, 0);
 		content.stack(windowFrame, textTable()).expand().left().bottom().pad(10).padBottom(0);
 		// do actions
-		nameTable.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(SHOW_TRANSITION_TIME), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, SHOW_TRANSITION_TIME), Actions.moveBy(10, 0, SHOW_TRANSITION_TIME, Interpolation.pow2Out))));
-		faceImage.addAction(Actions.sequence(Actions.alpha(0), Actions.delay(SHOW_TRANSITION_TIME), Actions.moveBy(-10, 0), Actions.parallel(Actions.alpha(1, SHOW_TRANSITION_TIME), Actions.moveBy(10, 0, SHOW_TRANSITION_TIME, Interpolation.pow2Out))));
 		windowBackground.addAction(Actions.sequence(Actions.alpha(0), Actions.parallel(Actions.moveBy(0, 10, SHOW_TRANSITION_TIME, Interpolation.pow2Out), Actions.alpha(1, SHOW_TRANSITION_TIME)), Actions.run(new Runnable() {
 
 			@Override
@@ -197,10 +222,10 @@ public class MessageWindowLayout extends WindowLayout {
 	private Table textTable() {
 		return new Table() {
 			{
-				faceImage = new Image(Game.assets().get("ui/face/amiru.png", Texture.class));
-				faceImage.setScaling(Scaling.none);
-				add(faceImage).bottom();
-				add(messageTable = new Table()).expand().top().size(MESSAGE_WIDTH + 20, 70).padTop(30);
+				add(faceTable = new Table()).bottom();
+				faceTable.setDebug(true);
+				add(messageTable = new Table()).expand().size(MESSAGE_WIDTH + 20, 80);
+				messageTable.setDebug(true);
 			}
 		};
 	}

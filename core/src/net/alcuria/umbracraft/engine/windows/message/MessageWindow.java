@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.components.KeyDownEvent;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
+import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand.MessageEmotion;
 import net.alcuria.umbracraft.engine.windows.Window;
 import net.alcuria.umbracraft.listeners.Listener;
 
@@ -13,11 +14,15 @@ import com.badlogic.gdx.Input.Keys;
  * @author Andrew Keturi */
 public class MessageWindow extends Window<MessageWindowLayout> implements EventListener {
 	private Listener close;
-	private final String message;
+	private final MessageEmotion emotion;
+	private final String message, speaker, name;
 
-	public MessageWindow(String message) {
+	public MessageWindow(String message, String name, String speaker, MessageEmotion emotion) {
 		super(new MessageWindowLayout());
 		this.message = message;
+		this.name = name;
+		this.speaker = speaker;
+		this.emotion = emotion;
 		//		Game.publisher().subscribe(this);
 	}
 
@@ -58,6 +63,8 @@ public class MessageWindow extends Window<MessageWindowLayout> implements EventL
 	@Override
 	public void onOpen() {
 		// start the message and allow touch input to advance the messages
+		layout.setFace(name, emotion);
+		layout.setName(name);
 		layout.setMessage(message, false);
 		layout.setTouchListener(new Listener() {
 
