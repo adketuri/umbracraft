@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.windows;
 
 import net.alcuria.umbracraft.Config;
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.Gdx;
@@ -27,6 +28,7 @@ public abstract class WindowLayout {
 		stage = new Stage(new FitViewport(Config.viewWidth, Config.viewHeight));
 		stage.addActor(root);
 		root.add(content).expand().fill();
+		content.setDebug(Game.isDebug(), true);
 	}
 
 	/** @return the stage */

@@ -53,6 +53,7 @@ public final class Db {
 		// deserialize all definitions
 		definitions = new ObjectMap<>();
 		Json json = new Json();
+		json.setIgnoreUnknownFields(true);
 		for (String name : classes.keys()) {
 			final FileHandle handle = Gdx.files.external("umbracraft/" + name + ".json");
 			if (handle.exists() && Gdx.app.getType() == ApplicationType.Desktop) {

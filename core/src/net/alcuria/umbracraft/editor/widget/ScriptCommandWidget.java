@@ -313,6 +313,8 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 	private PopulateConfig populateConfig() {
 		final PopulateConfig config = new PopulateConfig();
 		config.cols = 1;
+		config.textFieldWidth = 300;
+		config.labelWidth = 100;
 		// depending on whether or not we edit or create one or the other createdCommand/command is null ugghh idk why right now but this fixes stuff
 		if (createdCommand == null) {
 			createdCommand = command;
