@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 /** A component specifically for handling object input from the player.
  * @author Andrew Keturi */
 public class ControlledInputComponent implements Component, EventListener {
-	private static final int MARGIN = 4;
+	private static final int MARGIN = 6;
 	private static final float MAX_SPEED = 2; // max speed of the entity
 	private static final float MAX_SPEED_TIME = 0.12f; // time entity takes to reach max speed
 	private static Touchpad touchpad; // this fixes issues with changing maps/recreating entities and it's a bit ugly but...?
@@ -53,8 +53,8 @@ public class ControlledInputComponent implements Component, EventListener {
 		physics = entity.getComponent(MapCollisionComponent.class);
 		group = entity.getComponent(AnimationCollectionComponent.class);
 		if (physics != null && group != null) {
-			inspectPos.x = entity.position.x + physics.getWidth() / 2;
-			inspectPos.y = entity.position.y + physics.getHeight() / 2;
+			inspectPos.x = entity.position.x;// + physics.getWidth() / 2;
+			inspectPos.y = entity.position.y;// + physics.getHeight() / 2;
 			inspectPos.z = entity.position.z;
 			final Direction d = group.getGroup().getDirection();
 			if (d == Direction.UPRIGHT || d == Direction.RIGHT || d == Direction.DOWNRIGHT) {
@@ -76,7 +76,6 @@ public class ControlledInputComponent implements Component, EventListener {
 
 	@Override
 	public void onEvent(Event event) {
-		// TODO: probably use a counter here so concurrent events don't get messy
 		if (event instanceof TouchpadCreatedEvent) {
 			touchpad = ((TouchpadCreatedEvent) event).touchpad;
 			Game.log("Set touchpad");
