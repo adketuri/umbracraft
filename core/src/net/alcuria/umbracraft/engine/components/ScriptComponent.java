@@ -101,6 +101,12 @@ public class ScriptComponent implements Component, EventListener {
 		}
 	}
 
+	/** Immediately marks the script as inactive. Careful with this. */
+	public void setInactive() {
+		active = false;
+		Game.publisher().publish(new ScriptEndedEvent(currentPage));
+	}
+
 	/** Starts a script. should only be called once at the start */
 	private void startScript() {
 		if (currentPage.haltInput) {
@@ -177,8 +183,7 @@ public class ScriptComponent implements Component, EventListener {
 		// check if we're done with all scripts
 		if (currentCommand == null) {
 			setCurrentPage(entity);
-			active = false;
-			Game.publisher().publish(new ScriptEndedEvent(currentPage));
+			setInactive();
 		}
 	}
 }

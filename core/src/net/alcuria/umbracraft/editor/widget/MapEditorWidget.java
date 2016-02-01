@@ -181,7 +181,7 @@ public class MapEditorWidget {
 					@Override
 					public void act(float delta) {
 						super.act(delta);
-						if (MapTileWidget.selX >= 0 && MapTileWidget.selY >= 0) {
+						if (MapTileWidget.selX >= 0 && MapTileWidget.selY >= 0 && editMode == EditMode.ALTITUDE) {
 							if (Gdx.input.isKeyJustPressed(Keys.F)) {
 								fill(MapTileWidget.selX, MapTileWidget.selY, true);
 								module.getDefinition().resetFilled();

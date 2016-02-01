@@ -26,7 +26,6 @@ public class TeleportScriptCommand extends ScriptCommand {
 
 	@Override
 	public Set<String> getFilter() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

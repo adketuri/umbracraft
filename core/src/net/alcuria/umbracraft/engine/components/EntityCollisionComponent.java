@@ -7,11 +7,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Array;
 
-/** A component for handling when an entity overlaps with another entity. Once
- * all entities are created, {@link EntityCollisionComponent#setEntities(Array)}
- * needs to be called so this component knows about all other entities.
+/** A component for handling when an entity overlaps with another entity.
  * @author Andrew Keturi */
 public class EntityCollisionComponent implements Component {
 
