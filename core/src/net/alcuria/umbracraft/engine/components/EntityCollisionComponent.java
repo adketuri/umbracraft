@@ -73,6 +73,11 @@ public class EntityCollisionComponent implements Component {
 									entity.position.y -= overlapY;
 								}
 							}
+							// determine if we need to start an even triggered on touch
+							final ScriptComponent scripts = otherEntity.getComponent(ScriptComponent.class);
+							if (scripts != null) {
+								scripts.setCollided();
+							}
 						}
 					}
 				}

@@ -123,7 +123,7 @@ public class EntityManager {
 			}
 			row--;
 		}
-		Game.map().renderOverlays(x, y);
+		Game.map().renderOverlays(x, y - 4); // FIXME: required for the overlays since they're drawn 4 tiles up?
 		visibleEntities.clear();
 	}
 

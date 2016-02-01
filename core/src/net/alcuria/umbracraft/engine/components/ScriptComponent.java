@@ -25,7 +25,7 @@ public class ScriptComponent implements Component, EventListener {
 	private final Rectangle collisionRect = new Rectangle();
 	private ScriptCommand currentCommand;
 	private ScriptPageDefinition currentPage;
-	private boolean pressed = false;
+	private boolean pressed = false, collided = false;
 	private ScriptDefinition script;
 	private final Vector3 source = new Vector3();
 
@@ -59,6 +59,11 @@ public class ScriptComponent implements Component, EventListener {
 	@Override
 	public void render(Entity entity) {
 
+	}
+
+	/** Call when some other entity collides with this entity */
+	public void setCollided() {
+		collided = true;
 	}
 
 	private void setCurrentPage(Entity entity) {
@@ -135,10 +140,17 @@ public class ScriptComponent implements Component, EventListener {
 				if (pressed && touching(entity)) {
 					startScript();
 				}
+				break;
+			case ON_TOUCH:
+				if (collided) {
+					startScript();
+					collided = false;
+				}
 			default:
 
 			}
 		} else {
+			collided = false;
 			updateScript(entity);
 		}
 
