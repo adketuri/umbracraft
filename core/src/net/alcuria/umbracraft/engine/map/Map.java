@@ -17,16 +17,13 @@ import com.badlogic.gdx.utils.Json;
  * objects to render the map.
  * @author Andrew Keturi */
 public class Map implements Disposable {
-	private int[][] altMap, typeMap;
-	//	private final BitmapFont font = Game.assets().get("fonts/message.fnt", BitmapFont.class);
+	private int[][] altMap, typeMap, overlayTypeMap;
 	private int height;
 	private Array<Layer> layers;
 	private int maxAlt;
 	private String name;
 	private Array<TextureRegion> tiles;
 	private TilesetDefinition tilesetDefinition;
-	private final int tileSide = 1;
-	private final int tileTop = 2;
 	private boolean[][] typeFlags;
 	private int width;
 
@@ -54,11 +51,15 @@ public class Map implements Disposable {
 		altMap = new int[width][height];
 		typeFlags = new boolean[width][height];
 		typeMap = new int[width][height];
+		overlayTypeMap = new int[width][height];
+
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				typeFlags[i][j] = false;
 				altMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).altitude;
 				typeMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).type;
+				overlayTypeMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).overlayType;
+
 				if (typeMap[i][j] == 1) {
 					typeMap[i][j] = tilesetDefinition.terrain1;
 				} else if (typeMap[i][j] == 2) {
@@ -69,140 +70,185 @@ public class Map implements Disposable {
 					typeMap[i][j] = tilesetDefinition.terrain4;
 				} else if (typeMap[i][j] == 5) {
 					typeMap[i][j] = tilesetDefinition.stairs;
+				} else if (typeMap[i][j] == 6) {
+					typeMap[i][j] = tilesetDefinition.treeWall;
+				}
+
+				if (overlayTypeMap[i][j] == 1) {
+					overlayTypeMap[i][j] = tilesetDefinition.overlay;
+				} else if (overlayTypeMap[i][j] == 2) {
+					overlayTypeMap[i][j] = tilesetDefinition.obstacle1;
 				}
 			}
 		}
 
-		// remove unusable terrain
-		//		for (int i = 0; i < width; i++) {
-		//			for (int j = 0; j < height; j++) {
-		//				if (getAltitudeAt(i - 2, j) < getAltitudeAt(i, j) || getAltitudeAt(i - 1, j) != getAltitudeAt(i, j)) {
-		//					typeMap[i][j] = 0;
-		//				}
-		//				if (getAltitudeAt(i + 2, j) < getAltitudeAt(i, j) || getAltitudeAt(i + 1, j) != getAltitudeAt(i, j)) {
-		//					typeMap[i][j] = 0;
-		//				}
-		//				if (getAltitudeAt(i, j - 2) < getAltitudeAt(i, j) || getAltitudeAt(i, j - 1) != getAltitudeAt(i, j)) {
-		//					typeMap[i][j] = 0;
-		//				}
-		//				if (getAltitudeAt(i, j + 2) < getAltitudeAt(i, j) || getAltitudeAt(i, j + 1) != getAltitudeAt(i, j)) {
-		//					typeMap[i][j] = 0;
-		//				}
-		//			}
-		//		}
-
+		int[] terrains = { tilesetDefinition.terrain1, tilesetDefinition.overlay };
+		boolean[] isOverlay = { false, true };
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				final int terrain = tilesetDefinition.terrain1;
-				if (typeMap[i][j] == 0 && !typeFlags[i][j]) {
-					// get surrounding mask
-					// top topright right rightdown _ down downleft left lefttop
-					int[] dX = { 0, 1, 1, 1, 0, -1, -1, -1 };
-					int[] dY = { 1, 1, 0, -1, -1, -1, 0, 1 };
-					int value = 0b0000_0000;
-					int mask = 0b1000_0000;
-					boolean valid = false;
-					for (int k = 0; k < dX.length; k++) {
-						//						System.out.println(String.format("Value: %s mask: %s ", Integer.toBinaryString(value), Integer.toBinaryString(mask)));
-						if (getTypeAt(i + dX[k], j + dY[k]) == terrain) {
-							value = value ^ mask;
-							valid = true;
+				for (int k = 0; k < terrains.length; k++) {
+					final int terrain = terrains[k];
+					// reset TYPE flags
+					for (int l = 0; l < width; l++) {
+						for (int m = 0; m < height; m++) {
+							typeFlags[i][j] = false;
 						}
-						mask = mask >>> 1;
 					}
-
-					if (valid) {
-						switch (value) {
-						case 0b0000_0000:
-							throw new IllegalStateException("Tile marked as valid but has no valid adjacent tiles");
-						case 0b1000_0000: // top permutations
-						case 0b1100_0000:
-						case 0b1000_0001:
-						case 0b1100_0001:
-							setTypeAt(i, j, terrain + 16);
-							break;
-						case 0b0100_0000:
-							setTypeAt(i, j, terrain + 15);
-							break;
-						case 0b0010_0000: // right permutations
-						case 0b0110_0000:
-						case 0b0011_0000:
-						case 0b0111_0000:
-							setTypeAt(i, j, terrain - 1);
-							break;
-						case 0b0001_0000:
-							setTypeAt(i, j, terrain - 17);
-							break;
-						case 0b0000_1000: // down permutations
-						case 0b0000_1100:
-						case 0b0001_1000:
-						case 0b0001_1100:
-							setTypeAt(i, j, terrain - 16);
-							break;
-						case 0b0000_0100:
-							setTypeAt(i, j, terrain - 15);
-							break;
-						case 0b0000_0010: // left permuatations
-						case 0b0000_0011:
-						case 0b0000_0110:
-						case 0b0000_0111:
-							setTypeAt(i, j, terrain + 1);
-							break;
-						case 0b0000_0001:
-							setTypeAt(i, j, terrain + 17);
-							break;
-						case 0b1000_0011: // top left 3/4ths
-						case 0b1000_0111:
-						case 0b1100_0011:
-						case 0b1100_0111:
-							setTypeAt(i, j, terrain - 14);
-						case 0b1110_0000: // top right 3/4ths
-						case 0b1110_0001:
-						case 0b1111_0000:
-						case 0b1111_0001:
-							setTypeAt(i, j, terrain - 13);
-							break;
-						case 0b0011_1000: // down right 3/4ths
-						case 0b0011_1100:
-						case 0b0111_1000:
-						case 0b0111_1100:
-							setTypeAt(i, j, terrain + 3);
-							break;
-						case 0b0000_1110: // down left 3/4ths
-						case 0b0001_1110:
-						case 0b0000_1111:
-						case 0b0001_1111:
-							setTypeAt(i, j, terrain + 2);
-							break;
-
+					if ((!isOverlay[k] && typeMap[i][j] == 0) || (isOverlay[k] && overlayTypeMap[i][j] == 0) && !typeFlags[i][j]) {
+						// get surrounding mask
+						// top topright right rightdown _ down downleft left lefttop
+						int[] dX = { 0, 1, 1, 1, 0, -1, -1, -1 };
+						int[] dY = { 1, 1, 0, -1, -1, -1, 0, 1 };
+						int value = 0b0000_0000;
+						int mask = 0b1000_0000;
+						boolean valid = false;
+						for (int l = 0; l < dX.length; l++) {
+							//						System.out.println(String.format("Value: %s mask: %s ", Integer.toBinaryString(value), Integer.toBinaryString(mask)));
+							final int typeAt = isOverlay[k] ? getOverlayTypeAt(i + dX[l], j + dY[l]) : getTypeAt(i + dX[l], j + dY[l]);
+							if (typeAt == terrain) {
+								value = value ^ mask;
+								valid = true;
+							}
+							mask = mask >>> 1;
 						}
-						//case 0b1101_0000:
-						//case 0b1000_0101:
-						typeFlags[i][j] = true;
+
+						if (valid) {
+							switch (value) {
+							case 0b0000_0000:
+								throw new IllegalStateException("Tile marked as valid but has no valid adjacent tiles");
+							case 0b1000_0000: // top permutations
+							case 0b1100_0000:
+							case 0b1000_0001:
+							case 0b1100_0001:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain + 16);
+								} else {
+									setTypeAt(i, j, terrain + 16);
+								}
+								break;
+							case 0b0100_0000:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain + 15);
+								} else {
+									setTypeAt(i, j, terrain + 15);
+								}
+								break;
+							case 0b0010_0000: // right permutations
+							case 0b0110_0000:
+							case 0b0011_0000:
+							case 0b0111_0000:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain - 1);
+								} else {
+									setTypeAt(i, j, terrain - 1);
+								}
+								break;
+							case 0b0001_0000:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain - 17);
+								} else {
+									setTypeAt(i, j, terrain - 17);
+								}
+								break;
+							case 0b0000_1000: // down permutations
+							case 0b0000_1100:
+							case 0b0001_1000:
+							case 0b0001_1100:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain - 16);
+								} else {
+									setTypeAt(i, j, terrain - 16);
+								}
+								break;
+							case 0b0000_0100:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain - 15);
+								} else {
+									setTypeAt(i, j, terrain - 15);
+								}
+								break;
+							case 0b0000_0010: // left permuatations
+							case 0b0000_0011:
+							case 0b0000_0110:
+							case 0b0000_0111:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain + 1);
+								} else {
+									setTypeAt(i, j, terrain + 1);
+								}
+								break;
+							case 0b0000_0001:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain + 17);
+								} else {
+									setTypeAt(i, j, terrain + 17);
+								}
+								break;
+							case 0b1000_0011: // top left 3/4ths
+							case 0b1000_0111:
+							case 0b1100_0011:
+							case 0b1100_0111:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain - 14);
+								} else {
+									setTypeAt(i, j, terrain - 14);
+								}
+							case 0b1110_0000: // top right 3/4ths
+							case 0b1110_0001:
+							case 0b1111_0000:
+							case 0b1111_0001:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain - 13);
+								} else {
+									setTypeAt(i, j, terrain - 13);
+								}
+								break;
+							case 0b0011_1000: // down right 3/4ths
+							case 0b0011_1100:
+							case 0b0111_1000:
+							case 0b0111_1100:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain + 3);
+								} else {
+									setTypeAt(i, j, terrain + 3);
+								}
+								break;
+							case 0b0000_1110: // down left 3/4ths
+							case 0b0001_1110:
+							case 0b0000_1111:
+							case 0b0001_1111:
+								if (isOverlay[k]) {
+									setOverlayTypeAt(i, j, terrain + 2);
+								} else {
+									setTypeAt(i, j, terrain + 2);
+								}
+								break;
+
+							}
+							//case 0b1101_0000:
+							//case 0b1000_0101:
+							typeFlags[i][j] = true;
+						}
 					}
 				}
 			}
 		}
-		//					setTypeAt(i + 1, j + 1, terrain - 15);
-		//					setTypeAt(i - 1, j + 1, terrain - 17);
-		//					setTypeAt(i + 1, j - 1, terrain + 17);
-		//					setTypeAt(i - 1, j - 1, terrain + 15);
 
-		// create list of all heights
-		Array<Integer> heights = new Array<Integer>();
+		// create list of all altitudes
+		Array<Integer> altitudes = new Array<Integer>();
 		for (int i = 0; i < altMap.length; i++) {
 			for (int j = 0; j < altMap[0].length; j++) {
-				if (!heights.contains(Integer.valueOf(altMap[i][j]), false)) {
-					heights.add(new Integer(altMap[i][j]));
+				if (!altitudes.contains(Integer.valueOf(altMap[i][j]), false)) {
+					altitudes.add(new Integer(altMap[i][j]));
 				}
 			}
 		}
-		heights.sort();
-		maxAlt = heights.get(heights.size - 1);
+		altitudes.sort();
+		maxAlt = altitudes.get(altitudes.size - 1);
 
 		// build the layers
 		layers = new Array<Layer>();
-		for (Integer altitude : heights) {
+		for (Integer altitude : altitudes) {
 			Layer layer = new Layer();
 			layer.alt = altitude;
 			layer.data = new Tile[width][height];
@@ -217,7 +263,11 @@ public class Map implements Disposable {
 							int drop = (altitude - getAltitudeAt(i, j - 1));
 							while (drop > 0) {
 								if (isInBounds(i, (j + altitude) - drop)) {
-									layer.data[i][(j + altitude) - drop] = new Tile(createWall(i, j, drop, altitude, getAltitudeAt(i, j - 1)), layer.alt);
+									if (getTypeAt(i, j) == tilesetDefinition.treeWall) {
+										layer.data[i][(j + altitude) - drop] = new Tile(createTreeWall(i, j, drop, altitude), layer.alt);
+									} else {
+										layer.data[i][(j + altitude) - drop] = new Tile(createWall(i, j, drop, altitude, getAltitudeAt(i, j - 1)), layer.alt);
+									}
 								}
 								drop--;
 							}
@@ -238,39 +288,61 @@ public class Map implements Disposable {
 		}
 		// top right down left
 		int mask = 0b0000;
-		if (getAltitudeAt(i, j + 1) < altitude) {
+		// we check if the altitude drops down OR we're adjacent to a tree and it's a drop down to the tree
+		if (getAltitudeAt(i, j + 1) < altitude || (getTypeAt(i, j + 1) == tilesetDefinition.treeWall && getAltitudeAt(i, j + 1) - getAltitudeAt(i, j) < 4)) {
 			mask = mask ^ 0b1000;
 		}
-		if (getAltitudeAt(i + 1, j) < altitude) {
+		if (getAltitudeAt(i + 1, j) < altitude || (getTypeAt(i + 1, j) == tilesetDefinition.treeWall && getAltitudeAt(i + 1, j) - getAltitudeAt(i, j) < 4)) {
 			mask = mask ^ 0b0100;
 		}
-		if (getAltitudeAt(i, j - 1) < altitude) {
+		if (getAltitudeAt(i, j - 1) < altitude || (getTypeAt(i, j - 1) == tilesetDefinition.treeWall && getAltitudeAt(i, j - 1) - getAltitudeAt(i, j) < 4)) {
 			mask = mask ^ 0b0010;
 		}
-		if (getAltitudeAt(i - 1, j) < altitude) {
+		if (getAltitudeAt(i - 1, j) < altitude || (getTypeAt(i - 1, j) == tilesetDefinition.treeWall && getAltitudeAt(i - 1, j) - getAltitudeAt(i, j) < 4)) {
 			mask = mask ^ 0b0001;
 		}
 		// now to switch on every possibility
 		switch (mask) {
 		case 0b0001:
-			return tilesetDefinition.edgeLeft;
+			return tilesetDefinition.edge - 1;
 		case 0b0010:
-			return tilesetDefinition.edgeBottom;
+			return tilesetDefinition.edge + 16;
 		case 0b0100:
-			return tilesetDefinition.edgeRight;
+			return tilesetDefinition.edge + 1;
 		case 0b1000:
-			return tilesetDefinition.edgeTop;
+			return tilesetDefinition.edge - 16;
 		case 0b1100:
-			return tilesetDefinition.edgeTopRight;
+			return tilesetDefinition.edge - 15;
 		case 0b1001:
-			return tilesetDefinition.edgeTopLeft;
+			return tilesetDefinition.edge - 17;
 		case 0b0110:
-			return tilesetDefinition.edgeBottomRight;
+			return tilesetDefinition.edge + 17;
 		case 0b0011:
-			return tilesetDefinition.edgeBottomLeft;
+			return tilesetDefinition.edge + 15;
 		}
 		//TODO: More cases (0101, 1010, 1111, etc)
 		return getTypeAt(i, j);
+	}
+
+	private int createTreeWall(int i, int j, int drop, int altitude) {
+		int calculatedId;
+		if (getAltitudeAt(i - 1, j) < altitude) {
+			calculatedId = tilesetDefinition.treeWall + 1;
+		} else if (getAltitudeAt(i + 1, j) < altitude) {
+			calculatedId = tilesetDefinition.treeWall + 6;
+		} else {
+			int left = i;
+			while (getAltitudeAt(left, j) == altitude && left > 0) {
+				left--;
+			}
+			if ((i - left) % 2 == 0) {
+				calculatedId = tilesetDefinition.treeWall + 2;
+			} else {
+				calculatedId = tilesetDefinition.treeWall + 3;
+			}
+		}
+		calculatedId = calculatedId - ((altitude - drop) * 16);
+		return calculatedId;
 	}
 
 	private int createWall(int i, int j, int drop, int altitude, int baseAlt) {
@@ -279,21 +351,21 @@ public class Map implements Disposable {
 		}
 		if (drop == altitude - baseAlt) {
 			// lower walls
-			if (getAltitudeAt(i - 1, j) < altitude) {
-				return tilesetDefinition.bottomLeftWall;
-			} else if (getAltitudeAt(i + 1, j) < altitude) {
-				return tilesetDefinition.bottomRightWall;
+			if (getAltitudeAt(i - 1, j) < altitude || getTypeAt(i - 1, j) == tilesetDefinition.treeWall) {
+				return tilesetDefinition.wall - 1;
+			} else if (getAltitudeAt(i + 1, j) < altitude || getTypeAt(i + 1, j) == tilesetDefinition.treeWall) {
+				return tilesetDefinition.wall + 1;
 			} else {
-				return tilesetDefinition.bottomCenterWall;
+				return tilesetDefinition.wall;
 			}
 		} else {
 			// upper walls
-			if (getAltitudeAt(i - 1, j) < altitude) {
-				return tilesetDefinition.middleLeftWall;
-			} else if (getAltitudeAt(i + 1, j) < altitude) {
-				return tilesetDefinition.middleRightWall;
+			if (getAltitudeAt(i - 1, j) < altitude || getTypeAt(i - 1, j) == tilesetDefinition.treeWall) {
+				return tilesetDefinition.wall - 17;
+			} else if (getAltitudeAt(i + 1, j) < altitude || getTypeAt(i + 1, j) == tilesetDefinition.treeWall) {
+				return tilesetDefinition.wall - 15;
 			} else {
-				return tilesetDefinition.middleCenterWall;
+				return tilesetDefinition.wall - 16;
 			}
 		}
 	}
@@ -342,6 +414,18 @@ public class Map implements Disposable {
 		return name;
 	}
 
+	/** Gets the overlay yupe at some tile coordinates and does bounds checking
+	 * too!
+	 * @param x x tile
+	 * @param y y tile
+	 * @return */
+	public int getOverlayTypeAt(int x, int y) {
+		if (x >= 0 && x < altMap.length && y >= 0 && y < altMap[0].length) {
+			return overlayTypeMap[x][y];
+		}
+		return 0;
+	}
+
 	/** Returns an array of texture regions loaded from the tileset
 	 * @param filename */
 	private Array<TextureRegion> getRegions(String filename) {
@@ -361,7 +445,7 @@ public class Map implements Disposable {
 		return regions;
 	}
 
-	/** Gets the terrain yupe at some tile coordinates and does bounds checking
+	/** Gets the terrain type at some tile coordinates and does bounds checking
 	 * too!
 	 * @param x x tile
 	 * @param y y tile
@@ -424,6 +508,37 @@ public class Map implements Disposable {
 		//				font.draw(Game.batch(), String.valueOf(altMap[i][j]), i * tileSize + 6, j * tileSize + 14);
 		//			}
 		//		}
+	}
+
+	public void renderOverlays(int xOffset, int yOffset) {
+		final int tileSize = Config.tileWidth;
+		for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth + 1; i < n; i++) {
+			for (int j = yOffset, m = yOffset + Config.viewWidth / Config.tileWidth + 1; j < m; j++) {
+				final int overlayId = getOverlayTypeAt(i, j);
+				if (overlayId > 0) {
+					Game.batch().draw(tiles.get(overlayId), (i * tileSize), (j * tileSize) + 4 * tileSize, tileSize, tileSize);
+					if (j == 0) {
+						// draw down
+						for (int k = 1; k < 5; k++) {
+							Game.batch().draw(tiles.get(overlayId), (i * tileSize), ((j - k) * tileSize) + 4 * tileSize, tileSize, tileSize);
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	/** Given some tile coordinates, checks if they're valid and the tile type
+	 * there has not been defined., and if so, applies newType to those
+	 * coordinates.
+	 * @param x
+	 * @param y
+	 * @param newType */
+	private void setOverlayTypeAt(int x, int y, int newType) {
+		if (x >= 0 && x < altMap.length && y >= 0 && y < altMap[0].length && overlayTypeMap[x][y] == 0) {
+			overlayTypeMap[x][y] = newType;
+		}
 	}
 
 	/** Given some tile coordinates, checks if they're valid and the tile type

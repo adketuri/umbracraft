@@ -123,6 +123,7 @@ public class EntityManager {
 			}
 			row--;
 		}
+		Game.map().renderOverlays(x, y);
 		visibleEntities.clear();
 	}
 

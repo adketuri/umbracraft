@@ -133,6 +133,25 @@ public class MapTileWidget extends Table {
 				if (Gdx.input.isKeyPressed(Keys.S)) {
 					definition.tiles.get(selX).get(selY).type = 5;
 				}
+				// tree wall setter
+				if (Gdx.input.isKeyPressed(Keys.A)) {
+					if (definition.tiles.get(selX).get(selY).type != 6) {
+						definition.tiles.get(selX).get(selY).altitude += 4;
+					}
+					definition.tiles.get(selX).get(selY).type = 6;
+				}
+				// upper layer
+				if (Gdx.input.isKeyPressed(Keys.Z)) {
+					definition.tiles.get(selX).get(selY).overlayType = 0;
+				}
+				// overlay
+				if (Gdx.input.isKeyPressed(Keys.X)) {
+					definition.tiles.get(selX).get(selY).overlayType = 1;
+				}
+				// obstacle 1
+				if (Gdx.input.isKeyPressed(Keys.C)) {
+					definition.tiles.get(selX).get(selY).overlayType = 2;
+				}
 			} catch (Exception e) {
 				System.err.println("Out of bounds " + selX + ", " + selY);
 			}
@@ -153,6 +172,8 @@ public class MapTileWidget extends Table {
 		super.draw(batch, parentAlpha);
 		int altitude = alt(i, j);
 		int type = type(i, j);
+		int overlayType = overlayType(i, j);
+
 		// side
 		batch.draw(side, getX(), getY(), getWidth(), getWidth() * altitude);
 		// top
@@ -161,7 +182,12 @@ public class MapTileWidget extends Table {
 			batch.setColor(MapUtils.getTerrainColor(type));
 		}
 		batch.draw(top, getX() + 1, getY() + altitude * getHeight() + 1, getWidth() - 2, getHeight() - 2);
-		if (type != 0) {
+		if (overlayType != 0) {
+			batch.setColor(MapUtils.getTerrainColor(overlayType));
+			batch.draw(side, getX() + 4, getY() + altitude * getHeight() + 4, getWidth() - 8, getHeight() - 8);
+			batch.draw(top, getX() + 5, getY() + altitude * getHeight() + 5, getWidth() - 9, getHeight() - 9);
+		}
+		if (type != 0 || overlayType != 0) {
 			batch.setColor(Color.WHITE);
 		}
 		// entity
@@ -193,6 +219,13 @@ public class MapTileWidget extends Table {
 		if (alt(i, j - 1) < alt(i, j)) {
 			batch.draw(edge, getX(), getY() + getHeight() + altitude * getHeight() - 2, getWidth(), 2);
 		}
+	}
+
+	private int overlayType(int i, int j) {
+		if (i < 0 || i >= definition.tiles.size || j < 0 || j >= definition.tiles.get(0).size) {
+			return 0;
+		}
+		return definition.tiles.get(i).get(j).overlayType;
 	}
 
 	private int type(int i, int j) {

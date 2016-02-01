@@ -18,6 +18,8 @@ public class MapUtils {
 			return Color.CORAL;
 		case 5:
 			return Color.MAGENTA;
+		case 6:
+			return Color.GREEN;
 		default:
 			return Color.WHITE;
 		}
