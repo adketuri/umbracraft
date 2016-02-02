@@ -4,12 +4,15 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.widget.MapEditorWidget;
 import net.alcuria.umbracraft.editor.widget.MapEditorWidget.EditMode;
+import net.alcuria.umbracraft.editor.widget.WidgetUtils;
+import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 
@@ -21,6 +24,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 	private Table headerButtons, mapView;
 	private MapEditorWidget mapWidget;
 	private VisTextField widthField, heightField;
+	private int zoom = 1;
 
 	@Override
 	public void addListItem() {
@@ -96,15 +100,41 @@ public class MapListModule extends ListModule<MapDefinition> {
 				}).padLeft(10);
 			}
 		}).row();
+		headerButtons.add(new Table() {
+			{
+				add(new VisLabel("Zoom:"));
+				final VisSelectBox<Integer> selectBox = new VisSelectBox<Integer>() {
+					{
+						final Array<Integer> list = new Array<Integer>();
+						list.add(1);
+						list.add(2);
+						list.add(4);
+						setItems(list);
+					}
+				};
+				add(selectBox);
+				add(WidgetUtils.button("Change Zoom", new Listener() {
+
+					@Override
+					public void invoke() {
+						zoom = selectBox.getSelected();
+						refreshMap();
+					}
+				}));
+			}
+		}).row();
 		PopulateConfig config = new PopulateConfig();
 		config.cols = 1;
 		populate(headerButtons, MapDefinition.class, definition, config);
+		headerButtons.row();
+		headerButtons.add().expand().fill().height(60); //some padding for higher altitudes
 	}
 
 	/** Rebuilds a new {@link MapEditorWidget} */
 	public void refreshMap() {
 		mapWidget = new MapEditorWidget(this);
 		mapView.clear();
-		mapView.add(mapWidget.getActor());
+		mapView.add(mapWidget.getActor(zoom));
+		System.gc();
 	}
 }

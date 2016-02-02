@@ -62,7 +62,6 @@ public class MapEditorWidget {
 
 	private boolean entered;
 	private final MapListModule module;
-
 	private Table popupTable;
 
 	public MapEditorWidget(MapListModule module) {
@@ -99,7 +98,7 @@ public class MapEditorWidget {
 	/** Fills tiles up to +1/-1 altitude
 	 * @param x the x tile coordinate
 	 * @param y the y tile coordinate
-	 * @param targetAlt the target altitude */
+	 * @param increase whether to increase or decrease the fill level */
 	private void fill(int x, int y, boolean increase) {
 		final MapDefinition map = module.getDefinition();
 		final MapTileDefinition tile = map.getTileDefinition(x, y);
@@ -151,9 +150,10 @@ public class MapEditorWidget {
 		}
 	}
 
-	/** @return a new map widget, consisting of several {@link MapTileWidget}
+	/** @param zoom
+	 * @return a new map widget, consisting of several {@link MapTileWidget}
 	 *         classes to represent the current {@link MapDefinition}. */
-	public Actor getActor() {
+	public Actor getActor(final int zoom) {
 		return new Stack() {
 			{
 				add(new Table() {
@@ -161,7 +161,7 @@ public class MapEditorWidget {
 						for (int j = 0; j < module.getDefinition().getHeight(); j++) {
 							Table row = new Table();
 							for (int i = 0; i < module.getDefinition().getWidth(); i++) {
-								row.add(new MapTileWidget(i, j, module.getDefinition(), MapEditorWidget.this)).size(32).pad(0);
+								row.add(new MapTileWidget(i, j, module.getDefinition(), MapEditorWidget.this)).size(32 / zoom).pad(0);
 							}
 							add(row).row();
 						}

@@ -84,8 +84,19 @@ public class MapTileWidget extends Table {
 				super.enter(event, x, y, pointer, fromActor);
 				setBackground(Drawables.get("yellow"));
 				getColor().a = 0.5f;
+				//TODO: compare old selX and intermittently call entered
+				float oldSelX = selX;
+				float oldSelY = selY;
 				selX = i;
 				selY = j;
+				final float step = Math.max(Math.abs(oldSelX - selX), Math.abs(oldSelY) - selY);
+				float dX = (selX - oldSelX) / step;
+				float dY = (selY - oldSelY) / step;
+				while ((int) oldSelX != selX && (int) oldSelY != selY) {
+					oldSelX += dX;
+					oldSelY += dY;
+					updateTile((int) oldSelX, (int) oldSelY);
+				}
 				selAlt = definition.tiles.get(selX).get(selY).altitude;
 			}
 
@@ -106,56 +117,7 @@ public class MapTileWidget extends Table {
 			entityPreview.act(delta);
 		}
 		if (widget.getEditMode() == EditMode.ALTITUDE && widget.isEntered()) {
-			try {
-				// set the altitude with 0 - 9 number keys
-				for (int i = 7; i <= 16; i++) {
-					if (Gdx.input.isKeyPressed(i)) {
-						definition.tiles.get(selX).get(selY).altitude = i - 7;
-					}
-				}
-				// terrain setters
-				if (Gdx.input.isKeyPressed(Keys.Q)) {
-					definition.tiles.get(selX).get(selY).type = 0;
-				}
-				if (Gdx.input.isKeyPressed(Keys.W)) {
-					definition.tiles.get(selX).get(selY).type = 1;
-				}
-				if (Gdx.input.isKeyPressed(Keys.E)) {
-					definition.tiles.get(selX).get(selY).type = 2;
-				}
-				if (Gdx.input.isKeyPressed(Keys.R)) {
-					definition.tiles.get(selX).get(selY).type = 3;
-				}
-				if (Gdx.input.isKeyPressed(Keys.T)) {
-					definition.tiles.get(selX).get(selY).type = 4;
-				}
-				// stair setter
-				if (Gdx.input.isKeyPressed(Keys.S)) {
-					definition.tiles.get(selX).get(selY).type = 5;
-				}
-				// tree wall setter
-				if (Gdx.input.isKeyPressed(Keys.A)) {
-					if (definition.tiles.get(selX).get(selY).type != 6) {
-						definition.tiles.get(selX).get(selY).altitude += 4;
-					}
-					definition.tiles.get(selX).get(selY).type = 6;
-				}
-				// upper layer
-				if (Gdx.input.isKeyPressed(Keys.Z)) {
-					definition.tiles.get(selX).get(selY).overlayType = 0;
-				}
-				// overlay
-				if (Gdx.input.isKeyPressed(Keys.X)) {
-					definition.tiles.get(selX).get(selY).overlayType = 1;
-				}
-				// obstacle 1
-				if (Gdx.input.isKeyPressed(Keys.C)) {
-					definition.tiles.get(selX).get(selY).overlayType = 2;
-				}
-			} catch (Exception e) {
-				System.err.println("Out of bounds " + selX + ", " + selY);
-			}
-
+			updateTile(selX, selY);
 		}
 
 	}
@@ -313,5 +275,58 @@ public class MapTileWidget extends Table {
 				}
 			}
 		}
+	}
+
+	private void updateTile(int x, int y) {
+		try {
+			// set the altitude with 0 - 9 number keys
+			for (int i = 7; i <= 16; i++) {
+				if (Gdx.input.isKeyPressed(i)) {
+					definition.tiles.get(x).get(y).altitude = i - 7;
+				}
+			}
+			// terrain setters
+			if (Gdx.input.isKeyPressed(Keys.Q)) {
+				definition.tiles.get(x).get(y).type = 0;
+			}
+			if (Gdx.input.isKeyPressed(Keys.W)) {
+				definition.tiles.get(x).get(y).type = 1;
+			}
+			if (Gdx.input.isKeyPressed(Keys.E)) {
+				definition.tiles.get(x).get(y).type = 2;
+			}
+			if (Gdx.input.isKeyPressed(Keys.R)) {
+				definition.tiles.get(x).get(y).type = 3;
+			}
+			if (Gdx.input.isKeyPressed(Keys.T)) {
+				definition.tiles.get(x).get(y).type = 4;
+			}
+			// stair setter
+			if (Gdx.input.isKeyPressed(Keys.S)) {
+				definition.tiles.get(x).get(y).type = 5;
+			}
+			// tree wall setter
+			if (Gdx.input.isKeyPressed(Keys.A)) {
+				if (definition.tiles.get(x).get(y).type != 6) {
+					definition.tiles.get(x).get(y).altitude += 4;
+				}
+				definition.tiles.get(x).get(y).type = 6;
+			}
+			// upper layer
+			if (Gdx.input.isKeyPressed(Keys.Z)) {
+				definition.tiles.get(x).get(y).overlayType = 0;
+			}
+			// overlay
+			if (Gdx.input.isKeyPressed(Keys.X)) {
+				definition.tiles.get(x).get(y).overlayType = 1;
+			}
+			// obstacle 1
+			if (Gdx.input.isKeyPressed(Keys.C)) {
+				definition.tiles.get(x).get(y).overlayType = 2;
+			}
+		} catch (Exception e) {
+			System.err.println("Out of bounds " + selX + ", " + selY);
+		}
+
 	}
 }
