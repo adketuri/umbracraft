@@ -44,6 +44,19 @@ import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
  * @param <T> */
 public abstract class Module<T extends Definition> {
 
+	public static enum FieldType {
+		FLOAT, INT, STRING;
+
+		public static FieldType from(Field field) {
+			if (field.getType().toString().equals("float")) {
+				return FLOAT;
+			} else if (field.getType().toString().equals("int")) {
+				return INT;
+			}
+			return STRING;
+		}
+	}
+
 	/** Same as a {@link Field}, but ordered based on an optional order value.
 	 * @author Andrew Keturi */
 	public class OrderedField implements Comparable<OrderedField> {
@@ -80,6 +93,7 @@ public abstract class Module<T extends Definition> {
 
 	public VisTextButton button;
 	protected T rootDefinition;
+
 	private final Vector2 tmp = new Vector2();
 
 	public Module() {
@@ -229,11 +243,12 @@ public abstract class Module<T extends Definition> {
 									textField = widget.getTextField();
 									textField.setText(value);
 									final VisTextField tf = textField;
+									final FieldType type = FieldType.from(field);
 									widget.addSelectListener(new Listener() {
 
 										@Override
 										public void invoke() {
-											saveField(field, definition, tf, config);
+											saveField(type, field, definition, tf, config);
 										}
 
 									});
@@ -243,6 +258,7 @@ public abstract class Module<T extends Definition> {
 									add(textField).width(config.textFieldWidth);
 								}
 								final SuggestionWidget w = widget;
+								final FieldType type = FieldType.from(field);
 								textField.setTextFieldListener(new TextFieldListener() {
 
 									@Override
@@ -250,7 +266,7 @@ public abstract class Module<T extends Definition> {
 										if (c == '\t') {
 											return;
 										}
-										saveField(field, definition, textField, config);
+										saveField(type, field, definition, textField, config);
 										if (w != null) {
 											w.populateSuggestions();
 										}
@@ -309,15 +325,15 @@ public abstract class Module<T extends Definition> {
 		Gdx.files.external("umbracraft/" + getTitle().toLowerCase() + ".json").writeString(jsonStr, false);
 	}
 
-	public void saveField(Field field, Definition definition, VisTextField textField, PopulateConfig config) {
+	public void saveField(FieldType type, Field field, Definition definition, VisTextField textField, PopulateConfig config) {
 		try {
-			if (field.getType().toString().equals("int")) {
+			if (type == FieldType.INT) {
 				if (textField.getText().equals("")) {
 					field.setInt(definition, 0);
 				} else {
 					field.setInt(definition, Integer.valueOf(textField.getText()));
 				}
-			} else if (field.getType().toString().equals("float")) {
+			} else if (type == FieldType.FLOAT) {
 				if (textField.getText().equals("")) {
 					field.setFloat(definition, 0);
 				} else {
