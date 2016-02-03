@@ -183,13 +183,14 @@ public class MapEditorWidget {
 						super.act(delta);
 						if (MapTileWidget.selX >= 0 && MapTileWidget.selY >= 0 && editMode == EditMode.ALTITUDE) {
 							if (Gdx.input.isKeyJustPressed(Keys.F)) {
-								fill(MapTileWidget.selX, MapTileWidget.selY, true);
+								if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+									fill(MapTileWidget.selX, MapTileWidget.selY, false);
+								} else {
+									fill(MapTileWidget.selX, MapTileWidget.selY, true);
+								}
 								module.getDefinition().resetFilled();
 							}
-							if (Gdx.input.isKeyJustPressed(Keys.D)) {
-								fill(MapTileWidget.selX, MapTileWidget.selY, false);
-								module.getDefinition().resetFilled();
-							}
+
 						}
 					}
 

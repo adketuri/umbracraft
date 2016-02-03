@@ -308,9 +308,11 @@ public class MapTileWidget extends Table {
 			// tree wall setter
 			if (Gdx.input.isKeyPressed(Keys.A)) {
 				if (definition.tiles.get(x).get(y).type != 6) {
-					definition.tiles.get(x).get(y).altitude += 4;
+					if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+						definition.tiles.get(x).get(y).altitude += 4;
+					}
+					definition.tiles.get(x).get(y).type = 6;
 				}
-				definition.tiles.get(x).get(y).type = 6;
 			}
 			// upper layer
 			if (Gdx.input.isKeyPressed(Keys.Z)) {
