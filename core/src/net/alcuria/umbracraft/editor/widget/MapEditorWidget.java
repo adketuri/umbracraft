@@ -60,6 +60,7 @@ public class MapEditorWidget {
 		return new Pair<Vector2, MapTileDefinition>(new Vector2(x, y), tile);
 	}
 
+	private Actor actor;
 	private boolean entered;
 	private final MapListModule module;
 	private Table popupTable;
@@ -154,54 +155,57 @@ public class MapEditorWidget {
 	 * @return a new map widget, consisting of several {@link MapTileWidget}
 	 *         classes to represent the current {@link MapDefinition}. */
 	public Actor getActor(final int zoom) {
-		return new Stack() {
-			{
-				add(new Table() {
-					{
-						for (int j = 0; j < module.getDefinition().getHeight(); j++) {
-							Table row = new Table();
-							for (int i = 0; i < module.getDefinition().getWidth(); i++) {
-								row.add(new MapTileWidget(i, j, module.getDefinition(), MapEditorWidget.this)).size(32 / zoom).pad(0);
-							}
-							add(row).row();
-						}
-						addListener(new ClickListener() {
-							@Override
-							public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-								entered = true;
-							};
-
-							@Override
-							public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-								entered = false;
-							};
-						});
-					}
-
-					@Override
-					public void act(float delta) {
-						super.act(delta);
-						if (MapTileWidget.selX >= 0 && MapTileWidget.selY >= 0 && editMode == EditMode.ALTITUDE) {
-							if (Gdx.input.isKeyJustPressed(Keys.F)) {
-								if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
-									fill(MapTileWidget.selX, MapTileWidget.selY, false);
-								} else {
-									fill(MapTileWidget.selX, MapTileWidget.selY, true);
+		if (actor == null) {
+			actor = new Stack() {
+				{
+					add(new Table() {
+						{
+							for (int j = 0; j < module.getDefinition().getHeight(); j++) {
+								Table row = new Table();
+								for (int i = 0; i < module.getDefinition().getWidth(); i++) {
+									row.add(new MapTileWidget(i, j, module.getDefinition(), MapEditorWidget.this)).size(32 / zoom).pad(0);
 								}
-								module.getDefinition().resetFilled();
+								add(row).row();
 							}
+							addListener(new ClickListener() {
+								@Override
+								public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+									entered = true;
+								};
 
+								@Override
+								public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+									entered = false;
+								};
+							});
 						}
-					}
 
-				});
-				add(new Table() {
-					{
-						add(popupTable = new Table()).size(300);
-					}
-				});
-			}
-		};
+						@Override
+						public void act(float delta) {
+							super.act(delta);
+							if (MapTileWidget.selX >= 0 && MapTileWidget.selY >= 0 && editMode == EditMode.ALTITUDE) {
+								if (Gdx.input.isKeyJustPressed(Keys.F)) {
+									if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
+										fill(MapTileWidget.selX, MapTileWidget.selY, false);
+									} else {
+										fill(MapTileWidget.selX, MapTileWidget.selY, true);
+									}
+									module.getDefinition().resetFilled();
+								}
+
+							}
+						}
+
+					});
+					add(new Table() {
+						{
+							add(popupTable = new Table()).size(300);
+						}
+					});
+				}
+			};
+		}
+		return actor;
 	}
 
 	/** @return the current {@link EditMode} */

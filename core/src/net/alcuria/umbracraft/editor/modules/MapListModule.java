@@ -127,7 +127,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 		config.cols = 1;
 		populate(headerButtons, MapDefinition.class, definition, config);
 		headerButtons.row();
-		headerButtons.add().expand().fill().height(60); //some padding for higher altitudes
+		headerButtons.add().expand().fill().height(120); //some padding for higher altitudes
 	}
 
 	/** Rebuilds a new {@link MapEditorWidget} */

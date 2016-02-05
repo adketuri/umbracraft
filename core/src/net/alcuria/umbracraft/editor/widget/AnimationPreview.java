@@ -14,10 +14,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 public class AnimationPreview extends Image {
 
 	private int count = 0;
-	private TextureRegion currentRegion;
 	private final AnimationDefinition definition;
 	private int idx = 0;
+	private String lastPath;
 	private int originX = 0;
+	private TextureRegion textureRegion;
 
 	public AnimationPreview(AnimationDefinition definition) {
 		this.definition = definition;
@@ -36,20 +37,24 @@ public class AnimationPreview extends Image {
 			idx = (idx + 1) % definition.frames.size;
 			final AnimationFrameDefinition frame = definition.frames.get(idx);
 			final String path = "sprites/animations/" + definition.filename;
-			if (Gdx.files.internal(path).exists() && definition.filename.length() > 0) {
-				Texture texture = new Texture(Gdx.files.internal(path));
-				currentRegion = new TextureRegion(texture, frame.x * definition.width + (frame.mirror ? definition.width : 0), frame.y * definition.height, frame.mirror ? -definition.width : definition.width, definition.height);
-				setDrawable(new TextureRegionDrawable(currentRegion));
+			if (Gdx.files.internal(path).exists() && definition.filename.length() > 0 && path != null && !path.equals(lastPath)) {
+				textureRegion = new TextureRegion(new Texture(Gdx.files.internal(path)), frame.x * definition.width + (frame.mirror ? definition.width : 0), frame.y * definition.height, frame.mirror ? -definition.width : definition.width, definition.height);
+				setDrawable(new TextureRegionDrawable(textureRegion));
+				lastPath = new String(path);
+			}
+			if (textureRegion != null) {
+				textureRegion.setRegion(frame.x * definition.width + (frame.mirror ? definition.width : 0), frame.y * definition.height, frame.mirror ? -definition.width : definition.width, definition.height);
 			}
 		}
 	}
 
 	public TextureRegion getCurrentRegion() {
-		return currentRegion;
+		return textureRegion;
 	}
 
 	@Override
 	public float getOriginX() {
 		return originX;
 	}
+
 }
