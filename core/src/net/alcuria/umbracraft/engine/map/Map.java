@@ -325,6 +325,7 @@ public class Map implements Disposable {
 	}
 
 	private int createTreeWall(int i, int j, int drop, int altitude) {
+		Game.log(String.format("Create tree wall: i=%d j=%d drop=%d alt=%d", i, j, drop, altitude));
 		int calculatedId;
 		if (getAltitudeAt(i - 1, j) < altitude) {
 			calculatedId = tilesetDefinition.treeWall + 1;
@@ -477,37 +478,40 @@ public class Map implements Disposable {
 	 * @param xOffset the camera offset in tiles, to ensure we only render tiles
 	 *        visible in the x axis */
 	public void render(int row, int xOffset) {
+		//		row = 22;
 		final int tileSize = Config.tileWidth;
 		if (layers == null) {
 			return;
 		}
-		for (int k = 0; k < layers.size; k++) {
-			int alt = layers.get(k).alt;
-			final Tile[][] data = layers.get(k).data;
-			if (row < 0 || row >= altMap[0].length) {
+		//		for (int k = 0; k < layers.size; k++) {
+
+		for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth + 1; i < n; i++) {
+			int alt = getAltitudeAt(i, row);
+			Tile[][] data = null;
+			// we need to get the data for the tiles at this altitude
+			// FIXME: no looping please
+			for (int k = 0; k < layers.size; k++) {
+				if (layers.get(k).alt == alt) {
+					data = layers.get(k).data;
+					break;
+				}
+			}
+			if (data == null || row < 0 || row >= altMap[0].length) {
 				return;
 			}
-			for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth + 1; i < n; i++) {
-				// prevents bottom rows from creeping up during rendering
-				// TODO: make this generic. i think for alts > 0 it will break
-				int rowRenderHeight = alt == 0 ? 0 : getAltitudeAt(i, row);
-				for (int j = 0; j <= rowRenderHeight; j++) {
-					try {
-						if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
-							Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
-						}
-					} catch (ArrayIndexOutOfBoundsException e) {
-						//FIXME: Halp. someting up with rendering very top and very bottom rows.
-						// Game.log(i + " " + j + " " + row);
+			// prevents bottom rows from creeping up during rendering
+			int drop = alt - getAltitudeAt(i, row + 1); // this works, but why?
+			for (int j = alt; j >= drop; j--) {
+				try {
+					if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
+						Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
 					}
+				} catch (ArrayIndexOutOfBoundsException e) {
+					//FIXME: Halp. someting up with rendering very top and very bottom rows.
+					Game.log("render oob " + i + " " + j + " " + row);
 				}
 			}
 		}
-		//		for (int i = 0; i < altMap.length; i++) {
-		//			for (int j = 0; j < altMap[0].length; j++) {
-		//				font.draw(Game.batch(), String.valueOf(altMap[i][j]), i * tileSize + 6, j * tileSize + 14);
-		//			}
-		//		}
 	}
 
 	public void renderOverlays(int xOffset, int yOffset) {
