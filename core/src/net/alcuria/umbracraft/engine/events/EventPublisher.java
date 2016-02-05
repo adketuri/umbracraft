@@ -16,6 +16,7 @@ public class EventPublisher {
 	/** Publishes an event, notifying all listeners.
 	 * @param event the {@link Event} to publish. */
 	public void publish(Event event) {
+		Game.log(event.toString());
 		for (EventListener listener : listeners) {
 			listener.onEvent(event);
 		}

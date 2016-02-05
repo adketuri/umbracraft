@@ -27,6 +27,7 @@ public class InputHalter {
 		} else if (event instanceof ScriptEndedEvent) {
 			if (((ScriptEndedEvent) event).page.haltInput) {
 				haltCounter--;
+				Game.log("Updating halt counter: " + haltCounter);
 				if (haltCounter <= 0) {
 					haltInput = false;
 					Game.log("Resuming input");

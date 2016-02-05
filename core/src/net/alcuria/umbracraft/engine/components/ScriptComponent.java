@@ -166,24 +166,26 @@ public class ScriptComponent implements Component, EventListener {
 	 * pressed, etc.) */
 	private void updateScript(Entity entity) {
 		// if its done, increment our index
-		switch (currentCommand.getState()) {
-		case COMPLETE:
-			currentCommand.setState(CommandState.NOT_STARTED);
-			currentCommand = currentCommand.getNext();
-			break;
-		case NOT_STARTED:
-			currentCommand.start(entity);
-			break;
-		case STARTED:
-			currentCommand.update();
-			break;
-		default:
-			break;
+		if (currentCommand != null) {
+			switch (currentCommand.getState()) {
+			case COMPLETE:
+				currentCommand.setState(CommandState.NOT_STARTED);
+				currentCommand = currentCommand.getNext();
+				break;
+			case NOT_STARTED:
+				currentCommand.start(entity);
+				break;
+			case STARTED:
+				currentCommand.update();
+				break;
+			default:
+				break;
+			}
 		}
 		// check if we're done with all scripts
 		if (currentCommand == null) {
-			setCurrentPage(entity);
 			setInactive();
+			setCurrentPage(entity);
 		}
 	}
 }
