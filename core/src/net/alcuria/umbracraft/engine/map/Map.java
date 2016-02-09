@@ -508,7 +508,7 @@ public class Map implements Disposable {
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 					//FIXME: Halp. someting up with rendering very top and very bottom rows.
-					Game.log("render oob " + i + " " + j + " " + row);
+					//Game.log("render oob " + i + " " + j + " " + row);
 				}
 			}
 		}

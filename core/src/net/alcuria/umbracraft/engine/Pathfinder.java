@@ -112,7 +112,6 @@ public class Pathfinder {
 		if (destination == null) {
 			throw new NullPointerException("destination cannot be null");
 		}
-		Game.log("Setting source: " + source + " dest: " + destination);
 		// clear out the lists
 		open.clear();
 		closed.clear();

@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.engine.manager.input;
 
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class DebugText extends OnscreenInput {
 
+	private Entity entity;
 	private final LabelStyle style = new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE);
 	private final Table table;
 	private final Array<Label> text = new Array<Label>();
@@ -35,6 +37,9 @@ public class DebugText extends OnscreenInput {
 		super.update();
 		table.setVisible(Game.isDebug());
 		if (table.isVisible()) {
+			if (entity == null) {
+				entity = Game.entities().find(Entity.PLAYER);
+			}
 			table.setPosition(10, Config.viewHeight - 100);
 			text.get(0).setText("CamX: " + Game.view().getCamera().position.x);
 			text.get(1).setText("CamY: " + Game.view().getCamera().position.y);
@@ -43,6 +48,8 @@ public class DebugText extends OnscreenInput {
 				text.get(2).setText("Bounds: " + bounds.x + ", " + bounds.y + ", " + bounds.width + ", " + bounds.height);
 			}
 			text.get(3).setText("Map Size: " + Game.map().getWidth() + ", " + Game.map().getHeight());
+			text.get(4).setText("Position: " + entity.position);
+			text.get(5).setText("Velocity: " + entity.velocity);
 		}
 	}
 

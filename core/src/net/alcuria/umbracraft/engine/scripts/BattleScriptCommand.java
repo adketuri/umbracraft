@@ -39,7 +39,11 @@ public class BattleScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onCompleted() {
-
+		final Entity player = Game.entities().find(Entity.PLAYER);
+		if (player != null) {
+			player.position.setZero();
+			player.velocity.setZero();
+		}
 	}
 
 	@Override

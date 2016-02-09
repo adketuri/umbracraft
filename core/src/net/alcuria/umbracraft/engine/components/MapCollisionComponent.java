@@ -128,7 +128,6 @@ public class MapCollisionComponent implements Component {
 			if (tileAltitudeFloat < map.getAltitudeAt(centerX, tileYNorth) && entity.velocity.y > 0) {
 				entity.velocity.z = entity.velocity.y;
 				entity.velocity.y = 0;
-				Game.log(entity.velocity + "");
 			} else if (tileAltitudeFloat > map.getAltitudeAt(centerX, tileYSouth) && entity.velocity.y < 0) {
 				entity.velocity.z = entity.velocity.y;
 				entity.velocity.y = 0;
@@ -203,7 +202,6 @@ public class MapCollisionComponent implements Component {
 			}
 			checkJump(Direction.LEFT, entity);
 		}
-
 		entity.position.add(entity.velocity);
 
 		// check for stairs, falling, or placement
@@ -221,7 +219,7 @@ public class MapCollisionComponent implements Component {
 		}
 
 		// check if we're STILL inside a wall, and if so gently nudge out
-		if (!onStairs && entity.velocity.z <= 0) {
+		if (onGround && !onStairs && entity.velocity.z <= 0) {
 			// north/south
 			int tileY1 = (int) (entity.position.y + height / 2) / Config.tileWidth;
 			int tileY2 = (int) (entity.position.y - height / 2) / Config.tileWidth;

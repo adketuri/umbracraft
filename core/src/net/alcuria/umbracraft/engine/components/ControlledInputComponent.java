@@ -50,6 +50,9 @@ public class ControlledInputComponent implements Component, EventListener {
 	}
 
 	public void inspect() {
+		if (halter.isHalted()) {
+			return;
+		}
 		physics = entity.getComponent(MapCollisionComponent.class);
 		group = entity.getComponent(AnimationCollectionComponent.class);
 		if (physics != null && group != null) {
@@ -145,7 +148,6 @@ public class ControlledInputComponent implements Component, EventListener {
 			entity.velocity.x *= holdTimeX / MAX_SPEED_TIME;
 			entity.velocity.y *= holdTimeY / MAX_SPEED_TIME;
 		}
-
 		if (Gdx.input.isKeyJustPressed(Keys.F1)) {
 			Game.setDebug(!Game.isDebug());
 		}

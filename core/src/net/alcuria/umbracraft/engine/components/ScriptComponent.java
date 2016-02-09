@@ -58,7 +58,6 @@ public class ScriptComponent implements Component, EventListener {
 
 	@Override
 	public void render(Entity entity) {
-
 	}
 
 	/** Call when some other entity collides with this entity */
@@ -127,7 +126,7 @@ public class ScriptComponent implements Component, EventListener {
 		if (MathUtils.isEqual(source.z, entity.position.z)) {
 			MapCollisionComponent collision = entity.getComponent(MapCollisionComponent.class);
 			if (collision != null) {
-				collisionRect.set(entity.position.x, entity.position.y, collision.getWidth(), collision.getHeight());
+				collisionRect.set(entity.position.x - collision.getWidth() / 2, entity.position.y - collision.getHeight() / 2, collision.getWidth(), collision.getHeight());
 				return source != null && collisionRect.contains(source.x, source.y);
 			}
 		}
