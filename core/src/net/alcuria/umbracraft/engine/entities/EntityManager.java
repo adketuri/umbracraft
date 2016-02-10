@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
  * accordingly.
  * @author Andrew Keturi */
 public class EntityManager {
+	private static final int ENTITY_TILE_PAD = 4;
 	private final Array<Entity> entities = new Array<Entity>();
 	private int mapHeight;
 	private final Array<Entity> visibleEntities = new Array<Entity>();
@@ -84,6 +85,11 @@ public class EntityManager {
 		return null;
 	}
 
+	/** gets the column an entity is at for rendering */
+	private int getCol(Entity entity) {
+		return (int) ((entity.position.x) / Config.tileWidth);
+	}
+
 	/** @return all entities in the {@link EntityManager} */
 	public Array<Entity> getEntities() {
 		return entities;
@@ -99,31 +105,37 @@ public class EntityManager {
 		if (entities == null) {
 			return;
 		}
+
 		// get the visible tiles on the screen
-		int x = (int) (Game.view().getCamera().position.x - Config.viewWidth / 2) / Config.tileWidth;
-		int y = (int) (Game.view().getCamera().position.y - Config.viewHeight / 2) / Config.tileWidth;
-		int width = Config.viewWidth / Config.tileWidth;
-		int height = (Config.viewHeight / Config.tileWidth) + 1;
+		int x = (int) (Game.view().getCamera().position.x - Config.viewWidth / 2) / Config.tileWidth - ENTITY_TILE_PAD;
+		int y = (int) (Game.view().getCamera().position.y - Config.viewHeight / 2) / Config.tileWidth - ENTITY_TILE_PAD;
+		int width = Config.viewWidth / Config.tileWidth + ENTITY_TILE_PAD * 2;
+		int height = (Config.viewHeight / Config.tileWidth) + ENTITY_TILE_PAD * 2;
+
 		// add visible entitities onscreen
 		int row = y + height; // start at the top
 		for (int i = 0; i < entities.size; i++) {
 			final int entityRow = getRow(entities.get(i));
-			if (entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= mapHeight) {
+			final int entityCol = getCol(entities.get(i));
+			if (entityCol > x && entityCol < x + width && entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= mapHeight) {
 				visibleEntities.add(entities.get(i));
 			}
 		}
 		visibleEntities.sort();
+
 		// render each row in view, starting from the top
 		int idx = 0;
 		while (row > y - Game.map().getMaxAltitude() * 2) {
-			Game.map().render(row, x);
+			Game.map().render(row, x + ENTITY_TILE_PAD);
 			while (idx < visibleEntities.size && (visibleEntities.get(idx).position.y - 4) / Config.tileWidth >= row) {
 				visibleEntities.get(idx).render();
 				idx++;
 			}
 			row--;
 		}
-		Game.map().renderOverlays(x, y - 4); // FIXME: required for the overlays since they're drawn 4 tiles up?
+
+		// render our overlays last
+		Game.map().renderOverlays(x + ENTITY_TILE_PAD, y - 4); // FIXME: required for the overlays since they're drawn 4 tiles up?
 		visibleEntities.clear();
 	}
 
