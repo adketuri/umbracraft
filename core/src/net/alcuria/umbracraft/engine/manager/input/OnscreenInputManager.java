@@ -1,9 +1,11 @@
 package net.alcuria.umbracraft.engine.manager.input;
 
+import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.manager.Manager;
+import net.alcuria.umbracraft.engine.screens.SetInputEnabled;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -17,11 +19,12 @@ public class OnscreenInputManager extends Manager<OnscreenInput> implements Even
 
 	private final InputHalter halter;
 	private final Stage stage;
+	private final TouchpadEntity touchpad;
 
 	public OnscreenInputManager() {
 		halter = new InputHalter();
 		stage = new Stage(Game.view().getViewport());
-		final TouchpadEntity touchpad = new TouchpadEntity(stage);
+		touchpad = new TouchpadEntity(stage);
 		Gdx.input.setInputProcessor(new InputMultiplexer() {
 			{
 				addProcessor(touchpad);
@@ -37,12 +40,16 @@ public class OnscreenInputManager extends Manager<OnscreenInput> implements Even
 
 	@Override
 	public void dispose() {
+		touchpad.dispose();
 		Game.publisher().unsubscribe(this);
 	}
 
 	@Override
 	public void onEvent(Event event) {
 		halter.check(event);
+		if (event instanceof SetInputEnabled) {
+			stage.touchUp(1, Config.viewHeight - 1, 1, 0);
+		}
 	}
 
 	@Override

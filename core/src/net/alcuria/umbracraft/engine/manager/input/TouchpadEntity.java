@@ -3,7 +3,10 @@ package net.alcuria.umbracraft.engine.manager.input;
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.engine.events.Event;
+import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.TouchpadCreatedEvent;
+import net.alcuria.umbracraft.engine.screens.SetInputEnabled;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Interpolation;
@@ -14,10 +17,11 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Disposable;
 
 /** An entity for handling a {@link Touchpad} to provide mobile input.
  * @author Andrew Keturi */
-public class TouchpadEntity extends OnscreenInput implements InputProcessor {
+public class TouchpadEntity extends OnscreenInput implements InputProcessor, EventListener, Disposable {
 
 	private static final int SIZE = 60;
 	private int pointer = -1;
@@ -32,7 +36,13 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor {
 		touchpad.setBounds(40, 20, SIZE, SIZE);
 		touchpad.getColor().a = 0;
 		stage.addActor(touchpad);
+		Game.publisher().subscribe(this);
 		Game.publisher().publish(new TouchpadCreatedEvent(touchpad));
+	}
+
+	@Override
+	public void dispose() {
+		Game.publisher().unsubscribe(this);
 	}
 
 	public Actor getActor() {
@@ -57,6 +67,15 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor {
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		return false;
+	}
+
+	@Override
+	public void onEvent(Event event) {
+		if (event instanceof SetInputEnabled) {
+			if (!((SetInputEnabled) event).enabled) {
+				//touchUp(1, Config.viewHeight - 1, pointer, 0);
+			}
+		}
 	}
 
 	@Override
