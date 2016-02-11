@@ -75,6 +75,11 @@ public class Teleporter {
 		time = 0;
 		this.direction = direction;
 		Game.publisher().publish(new SetInputEnabled(false));
+		Entity player = Game.entities().find(Entity.PLAYER);
+		if (player != null) {
+			player.velocity.x = 0;
+			player.velocity.y = 0;
+		}
 	}
 
 	/** Update stuff */
