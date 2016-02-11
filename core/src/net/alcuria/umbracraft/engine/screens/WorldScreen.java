@@ -27,6 +27,7 @@ public class WorldScreen implements UmbraScreen, EventListener {
 		Game.entities().create(WorldUtils.getStartingMapName());
 		Game.map().create(WorldUtils.getStartingMapName());
 		Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
+		Game.view().focus();
 		Game.areas().setAreaAndNode(Game.db().config().startingArea, Game.db().config().startingNode);
 		in = new OnscreenInputManager();
 	}
