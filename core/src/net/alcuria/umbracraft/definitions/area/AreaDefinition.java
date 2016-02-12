@@ -29,16 +29,22 @@ public class AreaDefinition extends Definition {
 	}
 
 	/** Deletes a node.
-	 * @param definition the {@link AreaNodeDefinition} */
-	public void deleteNode(AreaNodeDefinition root, AreaNodeDefinition target) {
+	 * @param definition the {@link AreaNodeDefinition}
+	 * @return the node to delete */
+	public AreaNodeDefinition deleteNode(AreaNodeDefinition root, AreaNodeDefinition target) {
 		Game.log(root.name);
 		if (root == target) {
-			root = null;
+			return target;
 		} else if (root != null && root.children != null) {
 			for (AreaNodeDefinition child : root.children) {
-				deleteNode(child, target);
+				AreaNodeDefinition node = deleteNode(child, target);
+				if (node != null) {
+					root.children.removeValue(node, true);
+					return null;
+				}
 			}
 		}
+		return null;
 	}
 
 	/** Finds a node by name, recursively searching the node's children.
