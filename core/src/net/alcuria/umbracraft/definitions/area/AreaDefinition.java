@@ -1,6 +1,5 @@
 package net.alcuria.umbracraft.definitions.area;
 
-import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.Definition;
 
 import com.badlogic.gdx.utils.Array;
@@ -32,7 +31,6 @@ public class AreaDefinition extends Definition {
 	 * @param definition the {@link AreaNodeDefinition}
 	 * @return the node to delete */
 	public AreaNodeDefinition deleteNode(AreaNodeDefinition root, AreaNodeDefinition target) {
-		Game.log(root.name);
 		if (root == target) {
 			return target;
 		} else if (root != null && root.children != null) {

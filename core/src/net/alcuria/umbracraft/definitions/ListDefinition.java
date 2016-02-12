@@ -16,6 +16,15 @@ public class ListDefinition<T extends Definition> extends Definition {
 		definitions.put(item.getName(), item);
 	}
 
+	public void delete(String key) {
+		if (definitions.containsKey(key)) {
+			definitions.remove(key);
+		} else {
+			System.err.println("Cannot delete. Key not found: " + key);
+		}
+
+	}
+
 	/** Deletes an item from the list
 	 * @param item the item to delete */
 	public void delete(T item) {
