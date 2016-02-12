@@ -48,6 +48,7 @@ public class OnscreenInputManager extends Manager<OnscreenInput> implements Even
 	public void onEvent(Event event) {
 		halter.check(event);
 		if (event instanceof SetInputEnabled) {
+			// ensure they aren't touching down??
 			stage.touchUp(1, Config.viewHeight - 1, 1, 0);
 		}
 	}
@@ -65,6 +66,11 @@ public class OnscreenInputManager extends Manager<OnscreenInput> implements Even
 		if (!halter.isHalted()) {
 			super.update();
 			stage.act(Gdx.graphics.getDeltaTime());
+		}
+		// check if we've dragged offscreen and are letting go
+		if (touchpad.isVisible() && !Gdx.input.isTouched()) {
+			stage.touchUp(1, Config.viewHeight - 1, 0, 0);
+			touchpad.touchUp(1, Config.viewHeight - 1, 0, 0);
 		}
 	}
 }

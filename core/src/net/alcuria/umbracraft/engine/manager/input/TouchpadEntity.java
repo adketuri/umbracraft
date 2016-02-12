@@ -27,6 +27,7 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor, Eve
 	private int pointer = -1;
 	private final Vector3 touch = new Vector3();
 	private final Touchpad touchpad;
+	private boolean visible = false;
 
 	public TouchpadEntity(Stage stage) {
 		TouchpadStyle style = new TouchpadStyle();
@@ -47,6 +48,10 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor, Eve
 
 	public Actor getActor() {
 		return touchpad;
+	}
+
+	public boolean isVisible() {
+		return visible;
 	}
 
 	@Override
@@ -96,7 +101,10 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor, Eve
 		Game.view().getViewport().unproject(touch);
 		if (touch.x < Config.viewWidth * 0.6f && touch.y < Config.viewHeight * 0.6f) {
 			touchpad.setBounds(touch.x - SIZE / 2, touch.y - SIZE / 2, 60, 60);
-			touchpad.addAction(Actions.alpha(0.5f, 0.2f, Interpolation.pow2Out));
+			if (!visible) {
+				visible = true;
+				touchpad.addAction(Actions.alpha(0.5f, 0.2f, Interpolation.pow2Out));
+			}
 		}
 		return false;
 	}
@@ -115,7 +123,10 @@ public class TouchpadEntity extends OnscreenInput implements InputProcessor, Eve
 		if (this.pointer != pointer || touch.x < 0 || touch.x > Config.viewWidth || touch.y < 0 || touch.y > Config.viewHeight) {
 			return true;
 		} else {
-			touchpad.addAction(Actions.alpha(0f, 0.2f, Interpolation.pow2In));
+			if (visible) {
+				visible = false;
+				touchpad.addAction(Actions.alpha(0f, 0.2f, Interpolation.pow2In));
+			}
 			return false;
 		}
 	}
