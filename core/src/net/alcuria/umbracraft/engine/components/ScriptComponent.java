@@ -114,6 +114,7 @@ public class ScriptComponent implements Component, EventListener {
 			Game.entities().find(Entity.PLAYER).velocity.set(0, 0, 0);
 		}
 		currentCommand = currentPage.command;
+		currentCommand.setState(CommandState.NOT_STARTED);
 		active = true;
 		pressed = false;
 	}
@@ -165,11 +166,14 @@ public class ScriptComponent implements Component, EventListener {
 	 * pressed, etc.) */
 	private void updateScript(Entity entity) {
 		// if its done, increment our index
+		Game.log(currentCommand.getState() + "");
 		if (currentCommand != null) {
 			switch (currentCommand.getState()) {
 			case COMPLETE:
-				currentCommand.setState(CommandState.NOT_STARTED);
 				currentCommand = currentCommand.getNext();
+				if (currentCommand != null) {
+					currentCommand.setState(CommandState.NOT_STARTED);
+				}
 				break;
 			case NOT_STARTED:
 				currentCommand.start(entity);
