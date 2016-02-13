@@ -166,7 +166,6 @@ public class ScriptComponent implements Component, EventListener {
 	 * pressed, etc.) */
 	private void updateScript(Entity entity) {
 		// if its done, increment our index
-		Game.log(currentCommand.getState() + "");
 		if (currentCommand != null) {
 			switch (currentCommand.getState()) {
 			case COMPLETE:
