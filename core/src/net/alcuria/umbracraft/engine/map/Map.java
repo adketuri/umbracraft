@@ -77,13 +77,19 @@ public class Map implements Disposable {
 				if (overlayTypeMap[i][j] == 1) {
 					overlayTypeMap[i][j] = tilesetDefinition.overlay;
 				} else if (overlayTypeMap[i][j] == 2) {
-					overlayTypeMap[i][j] = tilesetDefinition.obstacle1;
+					overlayTypeMap[i][j] = tilesetDefinition.overlayPiece1;
+				} else if (overlayTypeMap[i][j] == 3) {
+					overlayTypeMap[i][j] = tilesetDefinition.overlayPiece2;
+				} else if (overlayTypeMap[i][j] == 4) {
+					overlayTypeMap[i][j] = tilesetDefinition.overlayPiece3;
+				} else if (overlayTypeMap[i][j] == 5) {
+					overlayTypeMap[i][j] = tilesetDefinition.overlayPiece4;
 				}
 			}
 		}
 
-		int[] terrains = { tilesetDefinition.terrain1, tilesetDefinition.overlay };
-		boolean[] isOverlay = { false, true };
+		int[] terrains = { tilesetDefinition.terrain1, tilesetDefinition.terrain2, tilesetDefinition.overlay };
+		boolean[] isOverlay = { false, false, true };
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				for (int k = 0; k < terrains.length; k++) {
@@ -257,6 +263,10 @@ public class Map implements Disposable {
 					if (getAltitudeAt(i, j) >= altitude) {
 						if (isInBounds(i, j + altitude)) {
 							layer.data[i][j + altitude] = new Tile(createEdge(i, j, altitude), layer.alt); // create edge
+							final int overlay = getOverlayTypeAt(i, j);
+							if (overlay == tilesetDefinition.overlayPiece1 || overlay == tilesetDefinition.overlayPiece2 || overlay == tilesetDefinition.overlayPiece3 || overlay == tilesetDefinition.overlayPiece4) { // 1 should be the forest overlay
+								layer.data[i][j + altitude].overId = overlay;
+							}
 						}
 						// check if we need to create a wall
 						if (j - 1 >= 0 && j - 1 < altMap[0].length) {
@@ -478,12 +488,10 @@ public class Map implements Disposable {
 	 * @param xOffset the camera offset in tiles, to ensure we only render tiles
 	 *        visible in the x axis */
 	public void render(int row, int xOffset) {
-		//		row = 22;
 		final int tileSize = Config.tileWidth;
 		if (layers == null) {
 			return;
 		}
-		//		for (int k = 0; k < layers.size; k++) {
 
 		for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth + 1; i < n; i++) {
 			int alt = getAltitudeAt(i, row);
@@ -505,6 +513,9 @@ public class Map implements Disposable {
 				try {
 					if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
 						Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
+						if (data[i][row + j].overId > 0) {
+							//Game.batch().draw(tiles.get(data[i][row + j].overId), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
+						}
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 					//FIXME: Halp. someting up with rendering very top and very bottom rows.
@@ -519,7 +530,7 @@ public class Map implements Disposable {
 		for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth + 1; i < n; i++) {
 			for (int j = yOffset, m = yOffset + Config.viewWidth / Config.tileWidth + 1; j < m; j++) {
 				final int overlayId = getOverlayTypeAt(i, j);
-				if (overlayId > 0) {
+				if (overlayId > 0 && overlayId != tilesetDefinition.overlayPiece1 && overlayId != tilesetDefinition.overlayPiece2 && overlayId != tilesetDefinition.overlayPiece3 && overlayId != tilesetDefinition.overlayPiece4) {
 					Game.batch().draw(tiles.get(overlayId), (i * tileSize), (j * tileSize) + 4 * tileSize, tileSize, tileSize);
 					if (j == 0) {
 						// draw down

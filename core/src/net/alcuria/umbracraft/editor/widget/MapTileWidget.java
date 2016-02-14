@@ -326,6 +326,18 @@ public class MapTileWidget extends Table {
 			if (Gdx.input.isKeyPressed(Keys.C)) {
 				definition.tiles.get(x).get(y).overlayType = 2;
 			}
+			// obstacle 2
+			if (Gdx.input.isKeyPressed(Keys.V)) {
+				definition.tiles.get(x).get(y).overlayType = 3;
+			}
+			// obstacle 3
+			if (Gdx.input.isKeyPressed(Keys.B)) {
+				definition.tiles.get(x).get(y).overlayType = 4;
+			}
+			// obstacle 4
+			if (Gdx.input.isKeyPressed(Keys.N)) {
+				definition.tiles.get(x).get(y).overlayType = 5;
+			}
 		} catch (Exception e) {
 			System.err.println("Out of bounds " + selX + ", " + selY);
 		}

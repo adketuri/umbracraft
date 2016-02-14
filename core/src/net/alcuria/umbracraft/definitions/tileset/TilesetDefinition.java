@@ -14,16 +14,17 @@ public class TilesetDefinition extends Definition {
 	public String filename;
 	@Tooltip("The base floor of the map ")
 	public int floor;
-	@Tooltip("The first obstacle")
 	public int obstacle1;
-	@Tooltip("The altitude of the first obstacle")
-	public int obstacle1Altitude;
-	@Tooltip("The height of the first obstacle")
-	public int obstacle1Height;
-	@Tooltip("The width of the first obstacle")
-	public int obstacle1Width;
 	@Tooltip("The tree/foliage overlay")
 	public int overlay;
+	@Tooltip("Misc pieces")
+	public int overlayPiece1;
+	@Tooltip("Misc pieces")
+	public int overlayPiece2;
+	@Tooltip("Misc pieces")
+	public int overlayPiece3;
+	@Tooltip("Misc pieces")
+	public int overlayPiece4;
 	@Tooltip("The id of the stairs")
 	public int stairs;
 	@Tooltip("The id of the first terrain")
