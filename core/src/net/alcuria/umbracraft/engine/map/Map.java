@@ -514,7 +514,7 @@ public class Map implements Disposable {
 					if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
 						Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
 						if (data[i][row + j].overId > 0) {
-							//Game.batch().draw(tiles.get(data[i][row + j].overId), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
+							Game.batch().draw(tiles.get(data[i][row + j].overId), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
 						}
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
