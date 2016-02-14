@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.map;
 
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 
 import com.badlogic.gdx.utils.Array;
@@ -17,6 +18,8 @@ public class MapDefinition extends Definition {
 	public String name;
 	/** The map tiles */
 	public Array<Array<MapTileDefinition>> tiles;
+	@Tooltip("The default level of the water, in tiles. Floating-point.")
+	public float waterLevel = 1;
 	/** The width of the map */
 	private int width;
 

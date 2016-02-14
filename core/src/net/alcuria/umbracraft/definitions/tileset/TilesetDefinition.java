@@ -39,6 +39,8 @@ public class TilesetDefinition extends Definition {
 	public int treeWall;
 	@Tooltip("The bottom center wall/cliffside id")
 	public int wall;
+	@Tooltip("The water tile")
+	public int water;
 
 	@Override
 	public String getName() {

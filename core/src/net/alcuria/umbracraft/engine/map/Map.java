@@ -21,6 +21,7 @@ public class Map implements Disposable {
 	private int[][] altMap, typeMap, overlayTypeMap;
 	private int height;
 	private Array<Layer> layers;
+	private MapDefinition mapDef;
 	private int maxAlt;
 	private String name;
 	private Array<TextureRegion> tiles;
@@ -46,7 +47,7 @@ public class Map implements Disposable {
 		tiles.addAll(getRegions(filename));
 
 		// create alt map from definition
-		final MapDefinition mapDef = Game.db().map(id);
+		mapDef = Game.db().map(id);
 		if (mapDef == null) {
 			throw new NullPointerException("Map not found: " + id);
 		}
@@ -478,6 +479,18 @@ public class Map implements Disposable {
 		}
 	}
 
+	private int getWaterDefinition(int x, int y, int alt) {
+		if (getAltitudeAt(x, y + 1) > alt) {
+			if (getAltitudeAt(x - 1, y + 1) <= alt) {
+				return tilesetDefinition.water + 1;
+			} else if (getAltitudeAt(x + 1, y + 1) <= alt) {
+				return tilesetDefinition.water + 3;
+			}
+			return tilesetDefinition.water + 2;
+		}
+		return tilesetDefinition.water;
+	}
+
 	public int getWidth() {
 		return width;
 	}
@@ -494,11 +507,12 @@ public class Map implements Disposable {
 	 * @param xOffset the camera offset in tiles, to ensure we only render tiles
 	 *        visible in the x axis */
 	public void render(int row, int xOffset) {
+		//		row = 1;
 		final int tileSize = Config.tileWidth;
 		if (layers == null) {
 			return;
 		}
-
+		mapDef.waterLevel = 1.5f;
 		for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth + 1; i < n; i++) {
 			int alt = getAltitudeAt(i, row);
 			Tile[][] data = null;
@@ -527,6 +541,9 @@ public class Map implements Disposable {
 					//FIXME: Halp. someting up with rendering very top and very bottom rows.
 					//Game.log("render oob " + i + " " + j + " " + row);
 				}
+			}
+			if (mapDef.waterLevel > alt) {
+				Game.batch().draw(tiles.get(getWaterDefinition(i, row, alt)), (i * tileSize), (row * tileSize + mapDef.waterLevel * tileSize), tileSize, tileSize);
 			}
 		}
 	}

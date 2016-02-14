@@ -135,7 +135,7 @@ public class EntityManager {
 		}
 
 		// render our overlays last
-		Game.map().renderOverlays(x + ENTITY_TILE_PAD, y - 4); // FIXME: required for the overlays since they're drawn 4 tiles up?
+		Game.map().renderOverlays(x + ENTITY_TILE_PAD, y - ENTITY_TILE_PAD); // FIXME: required for the overlays since they're drawn 4 tiles up?
 		visibleEntities.clear();
 	}
 
