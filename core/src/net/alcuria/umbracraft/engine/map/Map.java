@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.map;
 
 import net.alcuria.umbracraft.Config;
+import net.alcuria.umbracraft.Db;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
@@ -27,6 +28,9 @@ public class Map implements Disposable {
 	private boolean[][] typeFlags;
 	private int width;
 
+	/** Creates the map, building all layers and calculating terrain tiles so the
+	 * map may be rendered.
+	 * @param id the map's id from the {@link Db}. */
 	public void create(String id) {
 		if (id == null) {
 			throw new NullPointerException("id cannot be null. Perhaps an area node's mapDefinition field is null?");
@@ -407,6 +411,7 @@ public class Map implements Disposable {
 		}
 	}
 
+	/** @return the current {@link TilesetDefinition} */
 	public TilesetDefinition getDefinition() {
 		return tilesetDefinition;
 	}
@@ -421,11 +426,12 @@ public class Map implements Disposable {
 		return maxAlt;
 	}
 
+	/** @return the name of the map */
 	public String getName() {
 		return name;
 	}
 
-	/** Gets the overlay yupe at some tile coordinates and does bounds checking
+	/** Gets the overlay type at some tile coordinates and does bounds checking
 	 * too!
 	 * @param x x tile
 	 * @param y y tile

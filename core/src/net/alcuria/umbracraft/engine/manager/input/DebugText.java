@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
@@ -50,6 +51,9 @@ public class DebugText extends OnscreenInput {
 			text.get(3).setText("Map Size: " + Game.map().getWidth() + ", " + Game.map().getHeight());
 			text.get(4).setText("Position: " + entity.position);
 			text.get(5).setText("Velocity: " + entity.velocity);
+			text.get(6).setText("FPS: " + Gdx.graphics.getFramesPerSecond());
+			text.get(7).setText("Render Calls: " + Game.batch().renderCalls);
+
 		}
 	}
 
