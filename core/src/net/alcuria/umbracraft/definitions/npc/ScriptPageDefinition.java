@@ -30,15 +30,6 @@ public class ScriptPageDefinition extends Definition {
 	@Tooltip("How the script page starts execution")
 	public ScriptTrigger trigger = ScriptTrigger.ON_TOUCH;
 
-	//FIXME: temp
-	public void addCommand(ScriptCommand command) {
-		if (this.command == null) {
-			this.command = command;
-		} else {
-			this.command.add(command);
-		}
-	}
-
 	@Override
 	public String getName() {
 		return name != null ? name : "Untitled";
@@ -59,6 +50,7 @@ public class ScriptPageDefinition extends Definition {
 		}
 	}
 
+	/** Prints the commands recursively to stdout */
 	public void printCommands() {
 		command.print();
 	}
