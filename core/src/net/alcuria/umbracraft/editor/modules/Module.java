@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
+import net.alcuria.umbracraft.annotations.IgnorePopulate;
 import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
@@ -153,7 +154,7 @@ public abstract class Module<T extends Definition> {
 					orderedFields.sort();
 					for (int i = 0; i < orderedFields.size; i++) {
 						final Field field = orderedFields.get(i).field;
-						if (visible(field, config) && field.getModifiers() != Modifier.PRIVATE && (field.getType().isEnum() || field.getType().toString().equals("int") || field.getType().toString().equals("float") || field.getType() == String.class || field.getType().toString().equals("boolean"))) {
+						if (field.getAnnotation(IgnorePopulate.class) == null && visible(field, config) && field.getModifiers() != Modifier.PRIVATE && (field.getType().isEnum() || field.getType().toString().equals("int") || field.getType().toString().equals("float") || field.getType() == String.class || field.getType().toString().equals("boolean"))) {
 							if (idx % config.cols == config.cols - 1) {
 								add(keyInput(definition, field)).row();
 							} else {

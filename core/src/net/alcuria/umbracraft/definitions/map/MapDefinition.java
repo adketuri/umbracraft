@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.map;
 
+import net.alcuria.umbracraft.annotations.IgnorePopulate;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 
@@ -9,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class MapDefinition extends Definition {
 	/** Where on the map we enter from the four cardinal directions */
+	@IgnorePopulate
 	public int eastX, eastY, northX, northY, southX, southY, westX, westY;
 	/** The entities on this map */
 	public Array<EntityReferenceDefinition> entities;

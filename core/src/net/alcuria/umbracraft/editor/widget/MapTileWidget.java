@@ -135,11 +135,17 @@ public class MapTileWidget extends Table {
 		int altitude = alt(i, j);
 		int type = type(i, j);
 		int overlayType = overlayType(i, j);
-
+		boolean isTeleport = (i == definition.eastX && j == definition.eastY) || //
+				(i == definition.westX && j == definition.westY) || //
+				(i == definition.southX && j == definition.southY) || //
+				(i == definition.northX && j == definition.northY);
 		// side
 		batch.draw(side, getX(), getY(), getWidth(), getWidth() * altitude);
 		// top
 		batch.draw(outline, getX(), getY() + altitude * getHeight(), getWidth(), getHeight());
+		if (isTeleport) {
+			batch.setColor(Color.DARK_GRAY);
+		}
 		if (type != 0) {
 			batch.setColor(MapUtils.getTerrainColor(type));
 		}
@@ -149,7 +155,7 @@ public class MapTileWidget extends Table {
 			batch.draw(side, getX() + 4, getY() + altitude * getHeight() + 4, getWidth() - 8, getHeight() - 8);
 			batch.draw(top, getX() + 5, getY() + altitude * getHeight() + 5, getWidth() - 9, getHeight() - 9);
 		}
-		if (type != 0 || overlayType != 0) {
+		if (type != 0 || overlayType != 0 || isTeleport) {
 			batch.setColor(Color.WHITE);
 		}
 		// entity

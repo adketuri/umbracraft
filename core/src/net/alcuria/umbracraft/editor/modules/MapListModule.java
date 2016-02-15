@@ -23,6 +23,7 @@ public class MapListModule extends ListModule<MapDefinition> {
 	private MapDefinition definition;
 	private Table headerButtons, mapView;
 	private MapEditorWidget mapWidget;
+	private VisLabel teleportLabel;
 	private VisTextField widthField, heightField;
 	private int zoom = 1;
 
@@ -127,14 +128,27 @@ public class MapListModule extends ListModule<MapDefinition> {
 		config.cols = 1;
 		populate(headerButtons, MapDefinition.class, definition, config);
 		headerButtons.row();
-		headerButtons.add().expand().fill().height(120); //some padding for higher altitudes
+		headerButtons.add(teleportLabel = new VisLabel()).row();
+		headerButtons.add().expand().fill().height(140); //some padding for higher altitudes
 	}
 
 	/** Rebuilds a new {@link MapEditorWidget} */
 	public void refreshMap() {
 		mapWidget = new MapEditorWidget(this);
+		mapWidget.setTeleportChangeListener(new Listener() {
+
+			@Override
+			public void invoke() {
+				resetLabel();
+			}
+		});
 		mapView.clear();
 		mapView.add(mapWidget.getActor(zoom));
+		resetLabel();
 		System.gc();
+	}
+
+	private void resetLabel() {
+		teleportLabel.setText(String.format("N:(%d,%d) E:(%d,%d) S:(%d,%d) W:(%d,%d)", definition.northX, definition.northY, definition.eastX, definition.eastY, definition.southX, definition.southY, definition.westX, definition.westY));
 	}
 }

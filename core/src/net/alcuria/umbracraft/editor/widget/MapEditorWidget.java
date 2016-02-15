@@ -62,6 +62,7 @@ public class MapEditorWidget {
 
 	private Actor actor;
 	private boolean entered;
+	private Listener listener;
 	private final MapListModule module;
 	private Table popupTable;
 
@@ -191,6 +192,22 @@ public class MapEditorWidget {
 										fill(MapTileWidget.selX, MapTileWidget.selY, true);
 									}
 									module.getDefinition().resetFilled();
+								} else if (Gdx.input.isKeyJustPressed(Keys.LEFT)) {
+									module.getDefinition().westX = MapTileWidget.selX;
+									module.getDefinition().westY = module.getDefinition().getHeight() - MapTileWidget.selY;
+									updateTeleports();
+								} else if (Gdx.input.isKeyJustPressed(Keys.RIGHT)) {
+									module.getDefinition().eastX = MapTileWidget.selX;
+									module.getDefinition().eastY = module.getDefinition().getHeight() - MapTileWidget.selY;
+									updateTeleports();
+								} else if (Gdx.input.isKeyJustPressed(Keys.UP)) {
+									module.getDefinition().northX = MapTileWidget.selX;
+									module.getDefinition().northY = module.getDefinition().getHeight() - MapTileWidget.selY;
+									updateTeleports();
+								} else if (Gdx.input.isKeyJustPressed(Keys.DOWN)) {
+									module.getDefinition().southX = MapTileWidget.selX;
+									module.getDefinition().southY = module.getDefinition().getHeight() - MapTileWidget.selY;
+									updateTeleports();
 								}
 
 							}
@@ -246,6 +263,12 @@ public class MapEditorWidget {
 		MapEditorWidget.editMode = editMode;
 	}
 
+	/** Sets a listener to be invoked when a teleport tile is placed
+	 * @param listener the {@link Listener} */
+	public void setTeleportChangeListener(Listener listener) {
+		this.listener = listener;
+	}
+
 	/** Shows an entity popup for the tile at coordinates i,j
 	 * @param i
 	 * @param j */
@@ -269,5 +292,11 @@ public class MapEditorWidget {
 		buttonTable.add(WidgetUtils.button("Close", closeListener(entity)));
 		buttonTable.add(WidgetUtils.button("Delete", deleteListener(entity)));
 		popupTable.add(buttonTable).expandX().fill();
+	}
+
+	private void updateTeleports() {
+		if (listener != null) {
+			listener.invoke();
+		}
 	}
 }
