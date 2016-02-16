@@ -512,7 +512,8 @@ public class Map implements Disposable {
 		if (layers == null) {
 			return;
 		}
-		//		mapDef.waterLevel = 2f;
+		mapDef.waterLevel = 0f;
+		;
 		for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth + 1; i < n; i++) {
 			int alt = getAltitudeAt(i, row);
 			Tile[][] data = null;
@@ -542,8 +543,13 @@ public class Map implements Disposable {
 					//Game.log("render oob " + i + " " + j + " " + row);
 				}
 			}
-			if (mapDef.waterLevel > alt) {
-				Game.batch().draw(tiles.get(getWaterDefinition(i, row, alt)), (i * tileSize), (row * tileSize + mapDef.waterLevel * tileSize), tileSize, tileSize);
+			if (mapDef.waterLevel > alt || mapDef.waterLevel > getAltitudeAt(i, row + 1)) {
+				//FIXME: kinda hacky, will need to rewrite rendering at some point to remove the concept of a "layer" -- its making things more complicated than they need to
+				final int waterDefinition = getWaterDefinition(i, row, alt);
+				if (waterDefinition > tilesetDefinition.water) {
+					Game.batch().draw(tiles.get(waterDefinition), (i * tileSize), ((row + 1) * tileSize + mapDef.waterLevel * tileSize), tileSize, tileSize);
+				}
+				Game.batch().draw(tiles.get(tilesetDefinition.water), (i * tileSize), (row * tileSize + mapDef.waterLevel * tileSize), tileSize, tileSize);
 			}
 		}
 	}
