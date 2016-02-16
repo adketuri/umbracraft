@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.modules.Module;
 import net.alcuria.umbracraft.engine.scripts.BattleScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.CameraTargetScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.ConditionalCommand;
 import net.alcuria.umbracraft.engine.scripts.ControlVariableCommand;
 import net.alcuria.umbracraft.engine.scripts.FlagScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.LogScriptCommand;
@@ -32,9 +33,10 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 
 public class ScriptCommandWidget extends Module<ScriptCommand> {
 	public static enum Commands {
-		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), FLAG("Flag", FlagScriptCommand.class), LOG("Log", LogScriptCommand.class), //
-		MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), PAUSE("Pause", PauseScriptCommand.class), REMOVE("Remove Entity", RemoveEntityCommand.class), //
-		SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
+		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), CONDITIONAL("Conditional", ConditionalCommand.class), //
+		FLAG("Flag", FlagScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), //
+		PAUSE("Pause", PauseScriptCommand.class), REMOVE("Remove Entity", RemoveEntityCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), //
+		TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
 
 		public static Commands from(final String name) {
 			for (Commands c : Commands.values()) {
@@ -110,10 +112,14 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 	public void addActor() {
 
 		final VisLabel label = new VisLabel("<> " + (command != null ? command.getName() : ""));
-
 		content.add(new Table() {
 			{
 				add(label).expandX().left().row();
+				if (command instanceof ConditionalCommand) {
+					ConditionalCommand conditional = (ConditionalCommand) command;
+					ScriptCommandWidget conditionalWidget = new ScriptCommandWidget(commandsWidget, this, popup, page, conditional.conditional);
+					conditionalWidget.addActor();
+				}
 				setTouchable(Touchable.enabled);
 				addListener(new ClickListener() {
 					@Override
