@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.editor.widget;
 
+import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
@@ -135,10 +136,11 @@ public class MapTileWidget extends Table {
 		int altitude = alt(i, j);
 		int type = type(i, j);
 		int overlayType = overlayType(i, j);
-		boolean isTeleport = (i == definition.eastX && j == definition.eastY) || //
-				(i == definition.westX && j == definition.westY) || //
-				(i == definition.southX && j == definition.southY) || //
-				(i == definition.northX && j == definition.northY);
+		int y = definition.getHeight() - j - 1;
+		boolean isTeleport = (i == definition.eastX && y == definition.eastY) || //
+				(i == definition.westX && y == definition.westY) || //
+				(i == definition.southX && y == definition.southY) || //
+				(i == definition.northX && y == definition.northY);
 		// side
 		batch.draw(side, getX(), getY(), getWidth(), getWidth() * altitude);
 		// top
@@ -158,19 +160,7 @@ public class MapTileWidget extends Table {
 		if (type != 0 || overlayType != 0 || isTeleport) {
 			batch.setColor(Color.WHITE);
 		}
-		// entity
-		if (entityPreview != null) {
-			if (entityPreview instanceof AnimationPreview && ((AnimationPreview) entityPreview).getCurrentRegion() != null) {
-				final TextureRegion region = ((AnimationPreview) entityPreview).getCurrentRegion();
-				final int offset = (int) ((AnimationPreview) entityPreview).getOriginX();
-				batch.draw(region, getX() - 0, getY() + altitude * getHeight(), region.getRegionWidth() * 2, region.getRegionHeight() * 2);
-			} else {
-				entityPreview.setX(getX());
-				entityPreview.setY(getY());
-				entityPreview.setScale(2);
-				entityPreview.draw(batch, 1);
-			}
-		}
+
 		// left edge
 		if (alt(i - 1, j) < alt(i, j)) {
 			batch.draw(edge, getX(), getY() + altitude * getHeight(), 2, getHeight());
@@ -186,6 +176,22 @@ public class MapTileWidget extends Table {
 		// top edge
 		if (alt(i, j - 1) < alt(i, j)) {
 			batch.draw(edge, getX(), getY() + getHeight() + altitude * getHeight() - 2, getWidth(), 2);
+		}
+	}
+
+	public void drawEntity(Batch batch) {
+		int altitude = alt(i, j);
+		if (entityPreview != null) {
+			if (entityPreview instanceof AnimationPreview && ((AnimationPreview) entityPreview).getCurrentRegion() != null) {
+				final TextureRegion region = ((AnimationPreview) entityPreview).getCurrentRegion();
+				final int offset = (int) ((AnimationPreview) entityPreview).getOriginX();
+				batch.draw(region, widget.getActor(widget.getZoom()).getX() + getX(), widget.getActor(widget.getZoom()).getY() + (definition.getHeight() - j - 1) * Config.tileWidth * 2 / widget.getZoom() + altitude * getHeight(), region.getRegionWidth() * 2 / widget.getZoom(), region.getRegionHeight() * 2 / widget.getZoom());
+			} else {
+				entityPreview.setX(getX());
+				entityPreview.setY(getY());
+				entityPreview.setScale(2 * widget.getZoom());
+				entityPreview.draw(batch, 1);
+			}
 		}
 	}
 

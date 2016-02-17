@@ -19,6 +19,7 @@ import net.dermetfan.utils.Pair;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -65,6 +66,8 @@ public class MapEditorWidget {
 	private Listener listener;
 	private final MapListModule module;
 	private Table popupTable;
+	private final Array<MapTileWidget> tiles = new Array<MapTileWidget>();
+	private int zoom;
 
 	public MapEditorWidget(MapListModule module) {
 		this.module = module;
@@ -152,19 +155,25 @@ public class MapEditorWidget {
 		}
 	}
 
-	/** @param zoom
+	/** @param zoom the amount to zoom
 	 * @return a new map widget, consisting of several {@link MapTileWidget}
 	 *         classes to represent the current {@link MapDefinition}. */
 	public Actor getActor(final int zoom) {
 		if (actor == null) {
+			this.zoom = zoom;
+			tiles.clear();
 			actor = new Stack() {
+
 				{
+
 					add(new Table() {
 						{
 							for (int j = 0; j < module.getDefinition().getHeight(); j++) {
 								Table row = new Table();
 								for (int i = 0; i < module.getDefinition().getWidth(); i++) {
-									row.add(new MapTileWidget(i, j, module.getDefinition(), MapEditorWidget.this)).size(32 / zoom).pad(0);
+									final MapTileWidget widget = new MapTileWidget(i, j, module.getDefinition(), MapEditorWidget.this);
+									row.add(widget).size(32 / zoom).pad(0);
+									tiles.add(widget);
 								}
 								add(row).row();
 							}
@@ -194,19 +203,19 @@ public class MapEditorWidget {
 									module.getDefinition().resetFilled();
 								} else if (Gdx.input.isKeyJustPressed(Keys.LEFT)) {
 									module.getDefinition().westX = MapTileWidget.selX;
-									module.getDefinition().westY = module.getDefinition().getHeight() - MapTileWidget.selY;
+									module.getDefinition().westY = module.getDefinition().getHeight() - MapTileWidget.selY - 1;
 									updateTeleports();
 								} else if (Gdx.input.isKeyJustPressed(Keys.RIGHT)) {
 									module.getDefinition().eastX = MapTileWidget.selX;
-									module.getDefinition().eastY = module.getDefinition().getHeight() - MapTileWidget.selY;
+									module.getDefinition().eastY = module.getDefinition().getHeight() - MapTileWidget.selY - 1;
 									updateTeleports();
 								} else if (Gdx.input.isKeyJustPressed(Keys.UP)) {
 									module.getDefinition().northX = MapTileWidget.selX;
-									module.getDefinition().northY = module.getDefinition().getHeight() - MapTileWidget.selY;
+									module.getDefinition().northY = module.getDefinition().getHeight() - MapTileWidget.selY - 1;
 									updateTeleports();
 								} else if (Gdx.input.isKeyJustPressed(Keys.DOWN)) {
 									module.getDefinition().southX = MapTileWidget.selX;
-									module.getDefinition().southY = module.getDefinition().getHeight() - MapTileWidget.selY;
+									module.getDefinition().southY = module.getDefinition().getHeight() - MapTileWidget.selY - 1;
 									updateTeleports();
 								}
 
@@ -220,6 +229,15 @@ public class MapEditorWidget {
 						}
 					});
 				}
+
+				@Override
+				public void draw(Batch batch, float parentAlpha) {
+					super.draw(batch, parentAlpha);
+					for (int i = 0; i < tiles.size; i++) {
+						tiles.get(i).drawEntity(batch);
+					}
+				}
+
 			};
 		}
 		return actor;
@@ -228,6 +246,10 @@ public class MapEditorWidget {
 	/** @return the current {@link EditMode} */
 	public EditMode getEditMode() {
 		return editMode;
+	}
+
+	public int getZoom() {
+		return zoom;
 	}
 
 	/** @return <code>true</code> if the mouse has entered the editor widget. */
