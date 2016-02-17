@@ -114,24 +114,46 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		final VisLabel label = new VisLabel("<> " + (command != null ? command.getName() : ""));
 		content.add(new Table() {
 			{
-				add(label).expandX().left().row();
-				if (command instanceof ConditionalCommand) {
-					ConditionalCommand conditional = (ConditionalCommand) command;
-					ScriptCommandWidget conditionalWidget = new ScriptCommandWidget(commandsWidget, this, popup, page, conditional.conditional);
-					conditionalWidget.addActor();
-				}
-				setTouchable(Touchable.enabled);
-				addListener(new ClickListener() {
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						ScriptPageWidget.selected.clear();
-						ScriptPageWidget.selected.add(command);
-						if (getTapCount() > 1) {
-							createPopup("Insert Command", null);
-						}
-					}
+				add(new Table() {
+					{
+						add(label);
+						setTouchable(Touchable.enabled);
+						addListener(new ClickListener() {
+							@Override
+							public void clicked(InputEvent event, float x, float y) {
+								ScriptPageWidget.selected.clear();
+								Game.log(command != null ? command.getName() : command + "");
+								ScriptPageWidget.selected.add(command);
+								if (getTapCount() > 1) {
+									createPopup("Insert Command", null, false);
+								}
+							}
 
-				});
+						});
+					}
+				}).expandX().left().row();
+				if (command instanceof ConditionalCommand) {
+					add(new Table() {
+						{
+							final ConditionalCommand conditional = (ConditionalCommand) command;
+							ScriptCommandWidget conditionalWidget = new ScriptCommandWidget(commandsWidget, this, popup, page, conditional.conditional);
+							conditionalWidget.addActor();
+							setTouchable(Touchable.childrenOnly);
+							addListener(new ClickListener() {
+								@Override
+								public void clicked(InputEvent event, float x, float y) {
+									ScriptPageWidget.selected.clear();
+									Game.log(command != null ? command.getName() : command + "");
+									ScriptPageWidget.selected.add(conditional.getNext());
+									if (getTapCount() > 1) {
+										createPopup("Insert Command", null, true);
+									}
+								}
+
+							});
+						}
+					}).expandX().left().padLeft(20).row();
+				}
 				WidgetUtils.divider(this, "blue");
 			}
 
@@ -151,7 +173,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				if (command != null && ScriptPageWidget.selected.contains(command) && !popup.isVisible()) {
 					if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 						Game.log("Editing...");
-						createPopup("Edit Command", Commands.getNameFrom(command));
+						createPopup("Edit Command", Commands.getNameFrom(command), false);
 						populate(popupFields, command.getClass(), command, populateConfig());
 						buttonTable.clear();
 						buttonTable.add(WidgetUtils.button("Update", commandUpdated()));
@@ -201,14 +223,21 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		};
 	};
 
-	private Listener commandCreated() {
+	private Listener commandCreated(final boolean insideCommand) {
 		return new Listener() {
 
 			@Override
 			public void invoke() {
 				// insertion
 				createdCommand.setNext(command);
-				final ScriptCommand parent = page.getParent(page.command, command);
+				ScriptCommand parent = null;
+				if (insideCommand) {
+					if (command instanceof ConditionalCommand) {
+						ConditionalCommand conditional = (ConditionalCommand) command;
+					}
+				} else {
+				}
+				page.getParent(page.command, command);
 				Game.log("INSERTING: createdCommand: " + (createdCommand != null ? createdCommand.getName() : "null") + " command:" + (command != null ? command.getName() : "null") + " parent: " + (parent != null ? parent : "null"));
 				if (parent != null) {
 					parent.setNext(createdCommand);
@@ -234,7 +263,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		};
 	}
 
-	private void createPopup(final String title, final String defCommand) {
+	private void createPopup(final String title, final String defCommand, final boolean insideCommand) {
 		popup.setVisible(true);
 		popup.clear();
 		popupFields.clear();
@@ -253,13 +282,13 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				}
 			}
 		}).row();
-		suggestionsWidget.addSelectListener(createPopupFields(suggestionsWidget.getTextField()));
-		suggestionsWidget.setGenericPopulate(createPopupFields(suggestionsWidget.getTextField()));
+		suggestionsWidget.addSelectListener(createPopupFields(suggestionsWidget.getTextField(), insideCommand));
+		suggestionsWidget.setGenericPopulate(createPopupFields(suggestionsWidget.getTextField(), insideCommand));
 		popup.add(popupFields).expand().fill().row();
 		popup.add(buttonTable);
 	}
 
-	private Listener createPopupFields(final VisTextField textField) {
+	private Listener createPopupFields(final VisTextField textField, final boolean insideCommand) {
 		return new Listener() {
 			private String last = "";
 
@@ -278,7 +307,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 						}
 						populate(popupFields, localCommand.getCommandClass(), createdCommand, populateConfig());
 						buttonTable.clear();
-						buttonTable.add(WidgetUtils.button("Create", commandCreated()));
+						buttonTable.add(WidgetUtils.button("Create", commandCreated(insideCommand)));
 					} else {
 						popupFields.clear();
 						createdCommand = null;
