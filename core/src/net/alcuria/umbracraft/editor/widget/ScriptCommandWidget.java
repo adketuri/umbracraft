@@ -132,29 +132,6 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 						});
 					}
 				}).expandX().left().row();
-				if (command instanceof ConditionalCommand) {
-					add(new Table() {
-						{
-							final ConditionalCommand conditional = (ConditionalCommand) command;
-							ScriptCommandWidget conditionalWidget = new ScriptCommandWidget(commandsWidget, this, popup, page, conditional.conditional);
-							conditionalWidget.addActor();
-							setTouchable(Touchable.childrenOnly);
-							addListener(new ClickListener() {
-								@Override
-								public void clicked(InputEvent event, float x, float y) {
-									ScriptPageWidget.selected.clear();
-									Game.log(command != null ? command.getName() : command + "");
-									ScriptPageWidget.selected.add(conditional.getNext());
-									if (getTapCount() > 1) {
-										createPopup("Insert Command", null, true);
-									}
-								}
-
-							});
-						}
-					}).expandX().left().padLeft(20).row();
-				}
-				WidgetUtils.divider(this, "blue");
 			}
 
 			@Override
@@ -180,7 +157,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 					} else if (Gdx.input.isKeyJustPressed(Keys.DEL) || Gdx.input.isKeyJustPressed(Keys.BACKSPACE)) {
 						Game.log("Deleting...");
 						final ScriptCommand next = command.getNext();
-						final ScriptCommand parent = page.getParent(page.command, command);
+						final ScriptCommand parent = page.getParent(page.command, command, false);
 						if (parent != null) {
 							parent.setNext(next);
 						} else {
@@ -190,7 +167,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 						commandsWidget.setPage();
 					} else if (Gdx.input.isKeyJustPressed(Keys.UP)) {
 						Game.log("Pressed up");
-						final ScriptCommand parent = page.getParent(page.command, command);
+						final ScriptCommand parent = page.getParent(page.command, command, false);
 						if (parent != null) {
 							ScriptPageWidget.selected.clear();
 							ScriptPageWidget.selected.add(parent);
@@ -207,6 +184,16 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			}
 
 		}).expandX().fill().row();
+		if (command instanceof ConditionalCommand) {
+			content.add(new Table() {
+				{
+					final ConditionalCommand conditional = (ConditionalCommand) command;
+					ScriptCommandWidget conditionalWidget = new ScriptCommandWidget(commandsWidget, this, popup, page, conditional.conditional);
+					conditionalWidget.addActor();
+					setBackground(Drawables.get("yellow"));
+				}
+			}).expandX().fill().left().padLeft(20).row();
+		}
 		if (command != null) {
 			nextWidget = new ScriptCommandWidget(commandsWidget, content, popup, page, command.getNext());
 			nextWidget.addActor();
@@ -229,21 +216,26 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			@Override
 			public void invoke() {
 				// insertion
+				Game.log("Setting our new commands next to: " + command);
 				createdCommand.setNext(command);
 				ScriptCommand parent = null;
-				if (insideCommand) {
-					if (command instanceof ConditionalCommand) {
-						ConditionalCommand conditional = (ConditionalCommand) command;
-					}
-				} else {
-				}
-				page.getParent(page.command, command);
+				parent = page.getParent(page.command, command, true);
+
+				Game.log("Parent: " + (parent != null ? parent.getName() : "null"));
 				Game.log("INSERTING: createdCommand: " + (createdCommand != null ? createdCommand.getName() : "null") + " command:" + (command != null ? command.getName() : "null") + " parent: " + (parent != null ? parent : "null"));
 				if (parent != null) {
 					parent.setNext(createdCommand);
+					Game.log("set standard");
 				} else {
-					// no parent, this new command now becomes the HEAD
-					page.command = createdCommand;
+					// no parent, see if it comes from a conditional
+					parent = page.getParent(page.command, command, false);
+					if (parent != null && parent instanceof ConditionalCommand) {
+						((ConditionalCommand) parent).conditional = createdCommand;
+						Game.log("set conditional");
+					} else {
+						Game.log("no parent");
+						page.command = createdCommand;
+					}
 				}
 				popup.setVisible(false);
 				commandsWidget.setPage();

@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.definitions.npc;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
+import net.alcuria.umbracraft.engine.scripts.ConditionalCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 
 /** Defines a list of event commands to execute
@@ -38,15 +39,25 @@ public class ScriptPageDefinition extends Definition {
 	/** Gets the parent of a particular {@link ScriptCommand}
 	 * @param start
 	 * @param child
+	 * @param ignoreConditionals if true, conditionals do not qualify as parents
 	 * @return */
-	public ScriptCommand getParent(ScriptCommand start, ScriptCommand child) {
+	public ScriptCommand getParent(ScriptCommand start, ScriptCommand child, boolean ignoreConditionals) {
 		if (start == null) {
 			return null;
-		} else if (start.getNext() == child) {
+		} else if (start.getNext() == child || (start instanceof ConditionalCommand && ((ConditionalCommand) start).conditional == child)) {
 			Game.log("Found parent: " + start.getName());
 			return start;
 		} else {
-			return getParent(start.getNext(), child);
+			ScriptCommand parent = null;
+			if (!ignoreConditionals) {
+				if (start instanceof ConditionalCommand) {
+					parent = getParent(((ConditionalCommand) start).conditional, child, ignoreConditionals);
+				}
+				if (parent != null) {
+					return parent;
+				}
+			}
+			return getParent(start.getNext(), child, ignoreConditionals);
 		}
 	}
 
