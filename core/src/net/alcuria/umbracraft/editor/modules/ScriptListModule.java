@@ -6,7 +6,6 @@ import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.ScriptTrigger
 import net.alcuria.umbracraft.editor.widget.ScriptPagePropertiesWidget;
 import net.alcuria.umbracraft.editor.widget.ScriptPageWidget;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
-import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand;
 import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.graphics.Color;
@@ -32,10 +31,7 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 		final ScriptPageDefinition page = new ScriptPageDefinition();
 		page.trigger = ScriptTrigger.ON_INTERACTION;
 		page.name = "Untitled";
-		page.command = new MessageScriptCommand("first");
-		page.command.add(new MessageScriptCommand("second"));
-		page.command.getNext().add(new MessageScriptCommand("third"));
-		page.command.getNext().getNext().add(new MessageScriptCommand("fourth"));
+		page.command = new EmptyCommand();
 		script.pages.add(page);
 		rootDefinition.add(script);
 	}
@@ -46,6 +42,7 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 			@Override
 			public void invoke() {
 				final ScriptPageDefinition page = new ScriptPageDefinition();
+				page.command = new EmptyCommand();
 				page.trigger = ScriptTrigger.ON_INTERACTION;
 				page.name = "Untitled " + (script.pages.size + 1);
 				script.pages.add(page);
@@ -66,7 +63,7 @@ public class ScriptListModule extends ListModule<ScriptDefinition> {
 		content.add(headerTable).expandX().row();
 		content.add(new Table() {
 			{
-				add(preconditionsTable).width(250).expand().fillX().top();
+				add(preconditionsTable).width(300).expand().fillX().top();
 				add(commandsTable).width(600).expand().top().left();
 
 			}

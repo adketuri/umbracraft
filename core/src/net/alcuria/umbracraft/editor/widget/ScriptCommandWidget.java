@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.editor.widget;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.editor.modules.EmptyCommand;
 import net.alcuria.umbracraft.editor.modules.Module;
 import net.alcuria.umbracraft.engine.scripts.BattleScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.CameraTargetScriptCommand;
@@ -102,7 +103,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 	private SuggestionWidget suggestionsWidget;
 
 	public ScriptCommandWidget(ScriptPageWidget commandsWidget, Table content, Table popup, ScriptPageDefinition page, ScriptCommand command) {
-		this.command = command;
+		this.command = command != null ? command : new MessageScriptCommand("Empty");
 		this.popup = popup;
 		this.page = page;
 		this.content = content;
@@ -117,6 +118,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				add(new Table() {
 					{
 						add(label);
+						add().expandX().fillX();
 						setTouchable(Touchable.enabled);
 						addListener(new ClickListener() {
 							@Override
@@ -131,7 +133,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 
 						});
 					}
-				}).expandX().left().row();
+				}).expandX().fill().left().row();
 			}
 
 			@Override
@@ -154,10 +156,10 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 						populate(popupFields, command.getClass(), command, populateConfig());
 						buttonTable.clear();
 						buttonTable.add(WidgetUtils.button("Update", commandUpdated()));
-					} else if (Gdx.input.isKeyJustPressed(Keys.DEL) || Gdx.input.isKeyJustPressed(Keys.BACKSPACE)) {
+					} else if (!(command instanceof EmptyCommand) && (Gdx.input.isKeyJustPressed(Keys.DEL) || Gdx.input.isKeyJustPressed(Keys.BACKSPACE))) {
 						Game.log("Deleting...");
 						final ScriptCommand next = command.getNext();
-						final ScriptCommand parent = page.getParent(page.command, command, false);
+						final ScriptCommand parent = page.getParent(page.command, command);
 						if (parent != null) {
 							parent.setNext(next);
 						} else {
@@ -167,14 +169,17 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 						commandsWidget.setPage();
 					} else if (Gdx.input.isKeyJustPressed(Keys.UP)) {
 						Game.log("Pressed up");
-						final ScriptCommand parent = page.getParent(page.command, command, false);
+						final ScriptCommand parent = page.getParent(page.command, command);
 						if (parent != null) {
 							ScriptPageWidget.selected.clear();
 							ScriptPageWidget.selected.add(parent);
 						}
 					} else if (Gdx.input.isKeyJustPressed(Keys.DOWN) && !consumedDown) {
 						consumedDown = true;
-						if (command.getNext() != null) {
+						if (command instanceof ConditionalCommand) {
+							ScriptPageWidget.selected.clear();
+							ScriptPageWidget.selected.add(((ConditionalCommand) command).conditional);
+						} else if (command.getNext() != null) {
 							Game.log("Pressed down, " + command != null ? command.getName() : "");
 							ScriptPageWidget.selected.clear();
 							ScriptPageWidget.selected.add(command.getNext());
@@ -184,17 +189,17 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			}
 
 		}).expandX().fill().row();
+		WidgetUtils.divider(content, "blue");
 		if (command instanceof ConditionalCommand) {
 			content.add(new Table() {
 				{
 					final ConditionalCommand conditional = (ConditionalCommand) command;
 					ScriptCommandWidget conditionalWidget = new ScriptCommandWidget(commandsWidget, this, popup, page, conditional.conditional);
 					conditionalWidget.addActor();
-					setBackground(Drawables.get("yellow"));
 				}
 			}).expandX().fill().left().padLeft(20).row();
 		}
-		if (command != null) {
+		if (command.getNext() != null) {
 			nextWidget = new ScriptCommandWidget(commandsWidget, content, popup, page, command.getNext());
 			nextWidget.addActor();
 		}
@@ -216,26 +221,23 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			@Override
 			public void invoke() {
 				// insertion
-				Game.log("Setting our new commands next to: " + command);
+				Game.log("Setting our new commands next to: " + (command != null ? command.getName() : "null"));
 				createdCommand.setNext(command);
 				ScriptCommand parent = null;
-				parent = page.getParent(page.command, command, true);
-
+				parent = page.getParent(page.command, command);
 				Game.log("Parent: " + (parent != null ? parent.getName() : "null"));
 				Game.log("INSERTING: createdCommand: " + (createdCommand != null ? createdCommand.getName() : "null") + " command:" + (command != null ? command.getName() : "null") + " parent: " + (parent != null ? parent : "null"));
 				if (parent != null) {
-					parent.setNext(createdCommand);
-					Game.log("set standard");
-				} else {
-					// no parent, see if it comes from a conditional
-					parent = page.getParent(page.command, command, false);
-					if (parent != null && parent instanceof ConditionalCommand) {
+					if (parent instanceof ConditionalCommand && ((ConditionalCommand) parent).conditional == command) {
 						((ConditionalCommand) parent).conditional = createdCommand;
 						Game.log("set conditional");
 					} else {
-						Game.log("no parent");
-						page.command = createdCommand;
+						parent.setNext(createdCommand);
+						Game.log("set standard");
 					}
+				} else {
+					// no parent, this new command now becomes the HEAD
+					page.command = createdCommand;
 				}
 				popup.setVisible(false);
 				commandsWidget.setPage();

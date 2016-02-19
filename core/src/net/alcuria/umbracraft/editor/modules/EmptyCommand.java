@@ -1,18 +1,16 @@
-package net.alcuria.umbracraft.engine.scripts;
+package net.alcuria.umbracraft.editor.modules;
 
 import java.util.Set;
 
-import net.alcuria.umbracraft.editor.modules.EmptyCommand;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-/** Allows control flow within scripts.
+/** An empty command. For now this will do.
  * @author Andrew Keturi */
-public class ConditionalCommand extends ScriptCommand {
-
-	public ScriptCommand conditional = new EmptyCommand();
+public class EmptyCommand extends ScriptCommand {
 
 	@Override
 	public Set<String> getFilter() {
@@ -21,7 +19,7 @@ public class ConditionalCommand extends ScriptCommand {
 
 	@Override
 	public String getName() {
-		return "Conditional:";
+		return "";
 	}
 
 	@Override
@@ -36,7 +34,7 @@ public class ConditionalCommand extends ScriptCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
-
+		complete();
 	}
 
 	@Override

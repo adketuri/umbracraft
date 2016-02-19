@@ -39,9 +39,8 @@ public class ScriptPageDefinition extends Definition {
 	/** Gets the parent of a particular {@link ScriptCommand}
 	 * @param start
 	 * @param child
-	 * @param ignoreConditionals if true, conditionals do not qualify as parents
 	 * @return */
-	public ScriptCommand getParent(ScriptCommand start, ScriptCommand child, boolean ignoreConditionals) {
+	public ScriptCommand getParent(ScriptCommand start, ScriptCommand child) {
 		if (start == null) {
 			return null;
 		} else if (start.getNext() == child || (start instanceof ConditionalCommand && ((ConditionalCommand) start).conditional == child)) {
@@ -49,15 +48,13 @@ public class ScriptPageDefinition extends Definition {
 			return start;
 		} else {
 			ScriptCommand parent = null;
-			if (!ignoreConditionals) {
-				if (start instanceof ConditionalCommand) {
-					parent = getParent(((ConditionalCommand) start).conditional, child, ignoreConditionals);
-				}
-				if (parent != null) {
-					return parent;
-				}
+			if (start instanceof ConditionalCommand) {
+				parent = getParent(((ConditionalCommand) start).conditional, child);
 			}
-			return getParent(start.getNext(), child, ignoreConditionals);
+			if (parent != null) {
+				return parent;
+			}
+			return getParent(start.getNext(), child);
 		}
 	}
 
