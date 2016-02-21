@@ -6,29 +6,24 @@ import net.alcuria.umbracraft.definitions.map.TeleportDefinition.TeleportDirecti
 import net.alcuria.umbracraft.engine.AreaBuilder;
 import net.alcuria.umbracraft.engine.components.MapCollisionComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.engine.events.TintScreen;
+import net.alcuria.umbracraft.listeners.Listener;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Disposable;
 
 /** The teleporter is responsible for determining when the player entity reaches
  * the edge of a map, finding the appropriate map to teleport her to, and
  * notifying the {@link WorldScreen} that we want to change maps.
  * @author Andrew Keturi */
-public class Teleporter {
-
-	private enum TeleportState {
-		NOT_STARTED, STARTED, TRANSITIONED
-	}
+public class Teleporter implements Disposable {
 
 	private static final float FADE_TIME = 0.5f;
 	private AreaBuilder areaBuilder;
 	private TeleportDirection direction;
 	private Entity player;
 	private int playerWidth, playerHeight;
-	private TeleportState state = TeleportState.NOT_STARTED;
-
-	private float time;
+	private boolean teleporting;
 
 	private void checkEdges() {
 		if (player.position.x - playerWidth / 2 < 0) {
@@ -60,26 +55,41 @@ public class Teleporter {
 	}
 
 	private void completeTeleport() {
-		state = TeleportState.NOT_STARTED;
-		time = 0;
 		Game.publisher().publish(new SetInputEnabled(true));
+		teleporting = false;
 	}
 
 	/** Frees up any used assets. */
+	@Override
 	public void dispose() {
 		player = null;
 	}
 
-	private void startTeleport(TeleportDirection direction) {
-		state = TeleportState.STARTED;
-		time = 0;
+	private void startTeleport(final TeleportDirection direction) {
+		teleporting = true;
 		this.direction = direction;
-		Game.publisher().publish(new SetInputEnabled(false));
-		Entity player = Game.entities().find(Entity.PLAYER);
+		final Entity player = Game.entities().find(Entity.PLAYER);
 		if (player != null) {
 			player.velocity.x = 0;
 			player.velocity.y = 0;
 		}
+		Game.publisher().publish(new SetInputEnabled(false));
+		Game.publisher().publish(new TintScreen(1, FADE_TIME, new Listener() {
+
+			@Override
+			public void invoke() {
+				Game.areas().changeNode(direction);
+				Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
+				Game.view().focus();
+				Game.publisher().publish(new TintScreen(0, FADE_TIME, new Listener() {
+
+					@Override
+					public void invoke() {
+						completeTeleport();
+					}
+				}));
+			}
+		}));
 	}
 
 	/** Update stuff */
@@ -97,35 +107,8 @@ public class Teleporter {
 			areaBuilder = Game.areas();
 		}
 		if (player != null) {
-			if (state == TeleportState.NOT_STARTED) {
+			if (!teleporting) {
 				checkEdges();
-			} else {
-				updateTeleport();
-			}
-		}
-	}
-
-	private void updateTeleport() {
-		if (time < FADE_TIME) {
-			// fade out
-			final float color = (1 - time / FADE_TIME) * (1 - time / FADE_TIME);
-			Game.batch().setColor(new Color(color, color, color, 1));
-			time += Gdx.graphics.getDeltaTime();
-		} else {
-			// fade in
-			final float color = ((time - FADE_TIME) / FADE_TIME) * ((time - FADE_TIME) / FADE_TIME);
-			Game.batch().setColor(new Color(color, color, color, 1));
-			time += Gdx.graphics.getDeltaTime();
-			if (state != TeleportState.TRANSITIONED) {
-				state = TeleportState.TRANSITIONED;
-				time = FADE_TIME;
-				Game.areas().changeNode(direction);
-				Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
-				Game.view().focus();
-				player = Game.entities().find(Entity.PLAYER);
-			}
-			if (time >= 2 * FADE_TIME) {
-				completeTeleport();
 			}
 		}
 	}

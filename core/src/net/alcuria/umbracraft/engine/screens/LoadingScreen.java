@@ -4,7 +4,7 @@ import net.alcuria.umbracraft.Game;
 
 /** A screen to load all assets.
  * @author Andrew Keturi */
-public abstract class LoadingScreen implements UmbraScreen {
+public abstract class LoadingScreen extends UmbraScreen {
 
 	@Override
 	public void dispose() {
@@ -29,11 +29,6 @@ public abstract class LoadingScreen implements UmbraScreen {
 	}
 
 	@Override
-	public void render(float delta) {
-
-	}
-
-	@Override
 	public void resize(int width, int height) {
 
 	}
@@ -49,7 +44,7 @@ public abstract class LoadingScreen implements UmbraScreen {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void onUpdate(float delta) {
 		if (Game.assets().update()) {
 			Game.setScreen(getNextScreen(), true);
 		}

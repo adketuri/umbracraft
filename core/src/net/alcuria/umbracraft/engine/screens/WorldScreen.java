@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 /** All objects live in the World. Enitities are rendered, the view unprojects,
  * and then ui elements are displayed.
  * @author Andrew Keturi */
-public class WorldScreen implements UmbraScreen, EventListener {
+public class WorldScreen extends UmbraScreen implements EventListener {
 	private final OnscreenInputManager in;
 	private Map map;
 	private final Teleporter teleporter;
@@ -65,7 +65,7 @@ public class WorldScreen implements UmbraScreen, EventListener {
 	}
 
 	@Override
-	public void render(float delta) {
+	public void onRender() {
 		Game.entities().render();
 		if (Game.isDebug()) {
 			Game.entities().renderPaths();
@@ -91,7 +91,7 @@ public class WorldScreen implements UmbraScreen, EventListener {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void onUpdate(float delta) {
 		Game.entities().update(delta);
 		in.update();
 		Game.view().update();

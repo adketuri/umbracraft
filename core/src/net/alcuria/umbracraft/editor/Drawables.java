@@ -69,6 +69,12 @@ public class Drawables {
 		initialized = true;
 	}
 
+	/** @return whether or not the {@link Drawables} are loaded, initialized, and
+	 *         ready to be used. */
+	public static boolean isInitialized() {
+		return initialized;
+	}
+
 	public static NinePatchDrawable ninePatch(String region) {
 		final NinePatch patch = skin.createPatch(region);
 		if (patch == null) {

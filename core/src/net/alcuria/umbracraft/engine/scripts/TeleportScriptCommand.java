@@ -5,9 +5,9 @@ import java.util.Set;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
+import net.alcuria.umbracraft.engine.events.TintScreen;
+import net.alcuria.umbracraft.listeners.Listener;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -17,8 +17,6 @@ public class TeleportScriptCommand extends ScriptCommand {
 
 	private final float FADE_TIME = 0.5f;
 	public String id = "";
-	private boolean teleported;
-	private float time;
 
 	public TeleportScriptCommand(final String id) {
 		this.id = id;
@@ -41,37 +39,28 @@ public class TeleportScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onCompleted() {
-		teleported = false;
-		time = 0;
 	}
 
 	@Override
 	public void onStarted(Entity entity) {
-		time = 0;
-		teleported = false;
+		Game.publisher().publish(new TintScreen(1, FADE_TIME, new Listener() {
+
+			@Override
+			public void invoke() {
+				Game.publisher().publish(new MapChangedEvent(id));
+				Game.publisher().publish(new TintScreen(0, FADE_TIME, new Listener() {
+
+					@Override
+					public void invoke() {
+						complete();
+					}
+				}));
+			}
+		}));
 	}
 
 	@Override
 	public void update() {
-		if (time < FADE_TIME) {
-			// fade out
-			final float color = (1 - time / FADE_TIME) * (1 - time / FADE_TIME);
-			Game.batch().setColor(new Color(color, color, color, 1));
-			time += Gdx.graphics.getDeltaTime();
-		} else {
-			// fade in
-			final float color = ((time - FADE_TIME) / FADE_TIME) * ((time - FADE_TIME) / FADE_TIME);
-			Game.batch().setColor(new Color(color, color, color, 1));
-			time += Gdx.graphics.getDeltaTime();
-			if (!teleported) {
-				teleported = true;
-				time = FADE_TIME;
-				Game.publisher().publish(new MapChangedEvent(id));
-			}
-			if (time >= 2 * FADE_TIME) {
-				complete();
-			}
-		}
 	}
 
 }
