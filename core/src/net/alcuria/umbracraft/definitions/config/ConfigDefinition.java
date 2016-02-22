@@ -15,6 +15,10 @@ public class ConfigDefinition extends Definition {
 	public String startingArea;
 	@Tooltip("The name of the node to start on within the area")
 	public String startingNode;
+	@Tooltip("The player's starting x coordinate, in tiles")
+	public int startingX;
+	@Tooltip("The player's starting y coordinate, in tiles")
+	public int startingY;
 
 	@Override
 	public String getName() {
