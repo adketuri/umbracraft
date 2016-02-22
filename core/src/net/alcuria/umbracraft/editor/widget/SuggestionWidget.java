@@ -20,7 +20,7 @@ import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
 
 /** A {@link VisTextField} with a selectable list of suggestions that appear
  * underneath. Suggestions are passed into the constructor. To add the widget to
- * the scene simply call {@link SuggestionWidget#getActor()}
+ * the scene simply call {@link SuggestionWidget#getActor()}.
  * @author Andrew Keturi */
 public class SuggestionWidget {
 	private static final int MAX_SUGGESTIONS = 15;
@@ -32,15 +32,37 @@ public class SuggestionWidget {
 	private Listener selectListener;
 	private Table suggestionTable;
 	private VisTextField textField;
+	private boolean useCustomListener = false;
 	private final int width;
 
-	/** @param suggestions an array of ALL possible suggestions for this widget.
-	 *        Up to {@link SuggestionWidget#MAX_SUGGESTIONS} can be displayed at
-	 *        a given time. */
+	/** Creates a widget with a default width of 150 and no custom key typed
+	 * listener.
+	 * @param suggestions an {@link Array} of suggestions */
+	public SuggestionWidget(Array<String> suggestions) {
+		this(suggestions, 150);
+	}
+
+	/** Creates a widget with a custom width but no custom key typed listener
+	 * @param suggestions an {@link Array} of suggestions
+	 * @param width the width of the widget in px */
 	public SuggestionWidget(Array<String> suggestions, int width) {
+		this(suggestions, width, false);
+	}
+
+	/** Creates a widget with all custom parameters
+	 * @param suggestions an {@link Array} of suggestions
+	 * @param width the width of the widget in px
+	 * @param useCustomListener whether or not you intend to use a custom
+	 *        listener on key typed. <b>IMPORTANT</b> if you set this to
+	 *        <code>true</code>, be sure to actually set the listener to invoke
+	 *        on key typed otherwise you won't get suggestions.
+	 *        {@link SuggestionWidget#setGenericPopulate(Listener)} does what
+	 *        you want. */
+	public SuggestionWidget(Array<String> suggestions, int width, boolean useCustomListener) {
 		allSuggestions = suggestions;
 		curSuggestions = new Array<String>();
 		this.width = width;
+		this.useCustomListener = useCustomListener;
 	}
 
 	/** Adds a listener that is invoked when the user selects a suggestion
@@ -49,9 +71,12 @@ public class SuggestionWidget {
 		selectListener = listener;
 	}
 
-	/** @return the widget */
+	/** @return the widget, neatly wrapped into a table. */
 	public Table getActor() {
 		textField = new VisTextField();
+		if (!useCustomListener) {
+			setGenericPopulate(null);
+		}
 		return new Table() {
 			{
 				add(textField).width(width).height(25).expand().fill().row();
@@ -93,6 +118,8 @@ public class SuggestionWidget {
 		return textField;
 	}
 
+	/** Called when a selection is chosen
+	 * @param label the {@link Label} */
 	private void onSelection(final Label label) {
 		textField.setText(label.getText().toString());
 		if (selectListener != null) {
@@ -102,7 +129,8 @@ public class SuggestionWidget {
 	}
 
 	/** this MUST be called elsewhere to update suggestions, like when a key is
-	 * pressed */
+	 * pressed. If you use {@link SuggestionWidget#setGenericPopulate(Listener)}
+	 * this handles that for you. Check your constructor. */
 	public void populateSuggestions() {
 		curSuggestions.clear();
 		if (textField.getText().length() > 0) {

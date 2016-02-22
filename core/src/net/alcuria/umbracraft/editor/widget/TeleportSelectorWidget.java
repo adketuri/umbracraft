@@ -96,7 +96,7 @@ public class TeleportSelectorWidget {
 							defaults().padLeft(10).padRight(10);
 							add(new VisLabel(direction.toString())).width(80);
 							if (!suggestionWidgets.containsKey(direction)) {
-								final SuggestionWidget suggestion = new SuggestionWidget(suggestions(), 200);
+								final SuggestionWidget suggestion = new SuggestionWidget(suggestions(), 200, true);
 								suggestionWidgets.put(direction, suggestion);
 							}
 							add(suggestionWidgets.get(direction).getActor());
@@ -126,7 +126,7 @@ public class TeleportSelectorWidget {
 							final VisSelectBox<TeleportDirection> selectBox = new VisSelectBox<TeleportDirection>();
 							selectBox.setItems(availableDirections);
 							add(selectBox);
-							final SuggestionWidget addSuggestion = new SuggestionWidget(suggestions(), 200);
+							final SuggestionWidget addSuggestion = new SuggestionWidget(suggestions(), 200, true);
 							add(addSuggestion.getActor());
 							addSuggestion.setGenericPopulate(null);
 							add(WidgetUtils.button("Add", addDirectionListener(selectBox, addSuggestion)));

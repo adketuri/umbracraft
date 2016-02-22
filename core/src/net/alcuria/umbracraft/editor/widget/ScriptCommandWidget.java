@@ -263,7 +263,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		popupFields.clear();
 		popup.setBackground(Drawables.get("black"));
 		WidgetUtils.popupTitle(popup, title, closePopup());
-		suggestionsWidget = new SuggestionWidget(Commands.getAll(), 130);
+		suggestionsWidget = new SuggestionWidget(Commands.getAll(), 130, true);
 		popup.add(new Table() {
 			{
 				add(new VisLabel("Enter Command:"));

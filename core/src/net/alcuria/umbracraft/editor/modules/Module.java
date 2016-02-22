@@ -8,21 +8,15 @@ import net.alcuria.umbracraft.annotations.IgnorePopulate;
 import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
-import net.alcuria.umbracraft.editor.Editor;
-import net.alcuria.umbracraft.editor.events.HideTooltip;
-import net.alcuria.umbracraft.editor.events.ShowTooltip;
 import net.alcuria.umbracraft.editor.widget.SuggestionWidget;
+import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.listeners.TypeListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
@@ -94,8 +88,6 @@ public abstract class Module<T extends Definition> {
 
 	public VisTextButton button;
 	protected T rootDefinition;
-
-	private final Vector2 tmp = new Vector2();
 
 	public Module() {
 		button = new VisTextButton(getTitle());
@@ -176,21 +168,9 @@ public abstract class Module<T extends Definition> {
 							// check if we should show a tooltip for this field
 							final Tooltip annotation = field.getAnnotation(Tooltip.class);
 							if (annotation != null) {
-								final VisLabel helpLabel = new VisLabel("[?]", Color.YELLOW);
-								add(helpLabel).pad(5);
-								helpLabel.addListener(new ClickListener() {
-									@Override
-									public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-										tmp.x = -160;
-										tmp.y = -30;
-										Editor.publisher().publish(new ShowTooltip(helpLabel.localToStageCoordinates(tmp), annotation.value()));
-									};
-
-									@Override
-									public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-										Editor.publisher().publish(new HideTooltip());
-									};
-								});
+								add(WidgetUtils.tooltip(annotation.value()));
+							} else {
+								add().size(24);
 							}
 							if (field.getType().isEnum()) {
 								add(new VisLabel(field.getName())).minWidth(config.labelWidth);
@@ -239,7 +219,7 @@ public abstract class Module<T extends Definition> {
 								VisTextField textField = null;
 								SuggestionWidget widget = null;
 								if (config.suggestions != null && config.suggestions.containsKey(field.getName())) {
-									widget = new SuggestionWidget(config.suggestions.get(field.getName()), config.textFieldWidth);
+									widget = new SuggestionWidget(config.suggestions.get(field.getName()), config.textFieldWidth, true);
 									add(widget.getActor()).width(config.textFieldWidth);
 									textField = widget.getTextField();
 									textField.setText(value);
