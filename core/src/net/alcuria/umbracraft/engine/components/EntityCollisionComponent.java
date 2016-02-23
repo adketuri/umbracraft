@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -39,7 +40,7 @@ public class EntityCollisionComponent implements Component {
 
 	@Override
 	public void update(Entity entity) {
-		for (Entity otherEntity : Game.entities().getEntities()) {
+		for (Entity otherEntity : Game.entities().getEntities(EntityScope.MAP)) {
 			// ensure it's another entity and it's on the same z axis
 			if (otherEntity != entity && MathUtils.isEqual(entity.position.z, otherEntity.position.z, 2f)) {
 				// only check a collision if both entities have an EntityCollisionComponent

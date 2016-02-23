@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.components.ScriptComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -46,7 +47,7 @@ public class RemoveEntityCommand extends ScriptCommand {
 		final ScriptComponent script = self ? entity.getComponent(ScriptComponent.class) : Game.entities().find(id).getComponent(ScriptComponent.class);
 		if (script != null) {
 			script.setInactive();
-			Game.entities().getEntities().removeValue(self ? entity : Game.entities().find(id), true);
+			Game.entities().getEntities(EntityScope.MAP).removeValue(self ? entity : Game.entities().find(id), true);
 		}
 		complete();
 	}

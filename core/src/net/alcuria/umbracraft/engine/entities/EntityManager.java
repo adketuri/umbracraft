@@ -11,21 +11,45 @@ import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
-/** The EntityManager maintains all game objects and updates/renders them
- * accordingly.
+/** The EntityManager maintains all game entities and updates/renders them
+ * accordingly. Entities are divided into three different {@link EntityScope}
+ * types when added: <ol><li>MAP - the entity persists until the player changes
+ * maps</li><li>AREA - the entity persists until the player changes
+ * areas</li><li>GLOBAL - the entity sticks around FOREVER</li></ol>
  * @author Andrew Keturi */
 public class EntityManager {
+
+	/** The scope of entities found in the game. Area-specific, Map-specific, or
+	 * global.
+	 * @author Andrew Keturi */
+	public static enum EntityScope {
+		AREA, GLOBAL, MAP
+	}
+
 	private static final int ENTITY_TILE_PAD = 4;
-	private final Array<Entity> entities = new Array<Entity>();
+	private final ObjectMap<EntityScope, Array<Entity>> entities = new ObjectMap<EntityScope, Array<Entity>>();
 	private int mapHeight;
 	private final Array<Entity> visibleEntities = new Array<Entity>();
 
-	/** Adds an entity to the manager. If create is called afterwards this entity
-	 * will probably be gone.
-	 * @param entity the {@link Entity} */
-	public void add(Entity entity) {
-		entities.add(entity);
+	{
+		entities.put(EntityScope.AREA, new Array<Entity>());
+		entities.put(EntityScope.GLOBAL, new Array<Entity>());
+		entities.put(EntityScope.MAP, new Array<Entity>());
+	}
+
+	/** Adds an entity to the manager of some particular scope.
+	 * @param scope the {@link EntityScope}. for instance
+	 *        {@link EntityScope#MAP} entities get cleared on map change.
+	 * @param entity the {@link Entity} to add to the manager. */
+	public void add(EntityScope scope, Entity entity) {
+		if (scope == null) {
+			throw new NullPointerException("Scope cannot be null for entity insertion");
+		} else if (entity == null) {
+			throw new NullPointerException("Entity cannot be null for entity insertion");
+		}
+		entities.get(scope).add(entity);
 	}
 
 	/** Takes as input the name of a map in the {@link Db} and creates all
@@ -33,7 +57,7 @@ public class EntityManager {
 	 * @param mapName the map id {@link String} */
 	public void create(final String mapName) {
 		visibleEntities.clear();
-		entities.clear();
+		entities.get(EntityScope.MAP).clear();
 		// create entities
 		MapDefinition mapDef = Game.db().map(mapName);
 		mapHeight = mapDef.getHeight();
@@ -52,7 +76,7 @@ public class EntityManager {
 					if (entity.getName().equals(Entity.PLAYER)) { //FIXME: ugleh
 						Game.publisher().publish(new CameraTargetEvent(entity));
 					}
-					entities.add(entity);
+					entities.get(EntityScope.MAP).add(entity);
 				}
 			}
 		} else {
@@ -65,8 +89,8 @@ public class EntityManager {
 		if (entities == null) {
 			return;
 		}
-		for (int i = 0; i < entities.size; i++) {
-			entities.get(i).dispose();
+		for (int i = 0; i < entities.get(EntityScope.MAP).size; i++) {
+			entities.get(EntityScope.MAP).get(i).dispose();
 		}
 	}
 
@@ -77,25 +101,33 @@ public class EntityManager {
 	 * @return the {@link Entity} with the given name, or <code>null</code> if
 	 *         none is found */
 	public Entity find(String name) {
-		for (Entity entity : entities) {
-			if (entity.getName() != null && entity.getName().equals(name)) {
-				return entity;
+		for (EntityScope scope : EntityScope.values()) {
+			for (int i = 0; i < entities.get(scope).size; i++) {
+				if (entities.get(scope).get(i).getName() != null && entities.get(scope).get(i).getName().equals(name)) {
+					return entities.get(scope).get(i);
+				}
 			}
 		}
 		return null;
 	}
 
-	/** gets the column an entity is at for rendering */
+	/** Gets the column an entity is at for rendering */
 	private int getCol(Entity entity) {
 		return (int) ((entity.position.x) / Config.tileWidth);
 	}
 
-	/** @return all entities in the {@link EntityManager} */
-	public Array<Entity> getEntities() {
-		return entities;
+	/** @param scope the {@link EntityScope} for which we want to fetch all
+	 *        entities
+	 * @return all entities in the {@link EntityManager}. This is not a copy so
+	 *         be careful with it. */
+	public Array<Entity> getEntities(EntityScope scope) {
+		if (scope == null) {
+			throw new NullPointerException("Entity scope cannot be null");
+		}
+		return entities.get(scope);
 	}
 
-	/** gets the row an entity is at for rendering */
+	/** Gets the row an entity is at for rendering */
 	private int getRow(Entity entity) {
 		return (int) ((entity.position.y + entity.position.z) / Config.tileWidth);
 	}
@@ -114,11 +146,13 @@ public class EntityManager {
 
 		// add visible entitities onscreen
 		int row = y + height; // start at the top
-		for (int i = 0; i < entities.size; i++) {
-			final int entityRow = getRow(entities.get(i));
-			final int entityCol = getCol(entities.get(i));
-			if (entityCol > x && entityCol < x + width && entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= mapHeight) {
-				visibleEntities.add(entities.get(i));
+		for (EntityScope scope : EntityScope.values()) {
+			for (int i = 0; i < entities.get(scope).size; i++) {
+				final int entityRow = getRow(entities.get(scope).get(i));
+				final int entityCol = getCol(entities.get(scope).get(i));
+				if (entityCol > x && entityCol < x + width && entityRow < row && entityRow >= row - height && entityRow >= 0 && entityRow <= mapHeight) {
+					visibleEntities.add(entities.get(scope).get(i));
+				}
 			}
 		}
 		visibleEntities.sort();
@@ -142,7 +176,7 @@ public class EntityManager {
 	/** Attempts to render the path of any Entity with a
 	 * {@link DirectedInputComponent} */
 	public void renderPaths() {
-		for (final Entity e : entities) {
+		for (final Entity e : entities.get(EntityScope.MAP)) {
 			final DirectedInputComponent component = e.getComponent(DirectedInputComponent.class);
 			if (component != null) {
 				component.renderPaths();
@@ -163,8 +197,10 @@ public class EntityManager {
 			return;
 		}
 		Game.map().update(delta);
-		for (int i = 0; i < entities.size; i++) {
-			entities.get(i).update();
+		for (EntityScope scope : EntityScope.values()) {
+			for (int i = 0; i < entities.get(scope).size; i++) {
+				entities.get(scope).get(i).update();
+			}
 		}
 	}
 }

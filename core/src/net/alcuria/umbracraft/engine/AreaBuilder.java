@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
 import net.alcuria.umbracraft.definitions.map.TeleportDefinition.TeleportDirection;
 import net.alcuria.umbracraft.engine.components.ControlledInputComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 
 /** Builds areas/maps from the definitions for use in the engine.
  * @author Andrew Keturi */
@@ -67,7 +68,7 @@ public class AreaBuilder {
 		Game.entities().create(adjacentNode.mapDefinition);
 		if (Game.entities().find(Entity.PLAYER) == null) {
 			// add back our reference to the player
-			Game.entities().add(player);
+			Game.entities().add(EntityScope.MAP, player);
 		}
 		// set the player back
 		Game.entities().find(Entity.PLAYER).position.set(newX, newY, player.position.z);
