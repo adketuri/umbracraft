@@ -85,12 +85,15 @@ public class EntityManager {
 	}
 
 	/** Dispose all entities, freeing up any resources. */
-	public void dispose() {
+	public void dispose(EntityScope scope) {
+		if (scope == null) {
+			throw new NullPointerException("Scope cannot be null");
+		}
 		if (entities == null) {
 			return;
 		}
-		for (int i = 0; i < entities.get(EntityScope.MAP).size; i++) {
-			entities.get(EntityScope.MAP).get(i).dispose();
+		for (int i = 0; i < entities.get(scope).size; i++) {
+			entities.get(scope).get(i).dispose();
 		}
 	}
 

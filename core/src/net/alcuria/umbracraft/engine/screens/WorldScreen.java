@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.engine.screens;
 
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
@@ -34,7 +35,7 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 
 	@Override
 	public void dispose() {
-		Game.entities().dispose();
+		Game.entities().dispose(EntityScope.MAP);
 		windows.dispose();
 		teleporter.dispose();
 		in.dispose();
@@ -60,11 +61,6 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 	}
 
 	@Override
-	public void pause() {
-
-	}
-
-	@Override
 	public void onRender() {
 		Game.entities().render();
 		if (Game.isDebug()) {
@@ -73,6 +69,20 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 		Game.batch().setProjectionMatrix(Game.view().getUiCamera().combined);
 		in.render();
 		windows.render();
+	}
+
+	@Override
+	public void onUpdate(float delta) {
+		Game.entities().update(delta);
+		in.update();
+		Game.view().update();
+		windows.update();
+		teleporter.update();
+	}
+
+	@Override
+	public void pause() {
+
 	}
 
 	@Override
@@ -88,14 +98,5 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 	@Override
 	public void show() {
 
-	}
-
-	@Override
-	public void onUpdate(float delta) {
-		Game.entities().update(delta);
-		in.update();
-		Game.view().update();
-		windows.update();
-		teleporter.update();
 	}
 }

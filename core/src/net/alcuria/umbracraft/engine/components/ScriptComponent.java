@@ -111,7 +111,10 @@ public class ScriptComponent implements Component, EventListener {
 		if (currentPage.haltInput) {
 			// halt player movement
 			Game.publisher().publish(new ScriptStartedEvent(currentPage));
-			Game.entities().find(Entity.PLAYER).velocity.set(0, 0, 0);
+			final Entity player = Game.entities().find(Entity.PLAYER);
+			if (player != null) {
+				player.velocity.set(0, 0, 0);
+			}
 		}
 		currentCommand = currentPage.command;
 		currentCommand.setState(CommandState.NOT_STARTED);

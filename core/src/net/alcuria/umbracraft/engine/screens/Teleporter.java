@@ -96,11 +96,9 @@ public class Teleporter implements Disposable {
 	public void update() {
 		if (player == null) {
 			player = Game.entities().find(Entity.PLAYER);
-			try {
+			if (player != null) {
 				playerWidth = player.getComponent(MapCollisionComponent.class).getWidth();
 				playerHeight = player.getComponent(MapCollisionComponent.class).getWidth();
-			} catch (NullPointerException e) {
-				Game.error("Could not find MapCollisionComponent in player entity. Defaulting to size 0.");
 			}
 		}
 		if (areaBuilder == null) {

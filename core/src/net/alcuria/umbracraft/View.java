@@ -37,6 +37,9 @@ public class View implements EventListener {
 
 	/** Immediately focuses the camera to its target */
 	public void focus() {
+		if (target == null) {
+			return;
+		}
 		float dX = bounds != null ? (bounds.width > Config.viewWidth ? (target.position.x - camera.position.x) : bounds.x - camera.position.x) : 0;
 		float dY = bounds != null ? (bounds.height > Config.viewHeight ? (target.position.y - camera.position.y) : bounds.y - camera.position.y) : 0;
 		camera.translate(dX, dY);
