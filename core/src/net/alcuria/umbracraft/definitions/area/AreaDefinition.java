@@ -6,7 +6,8 @@ import com.badlogic.gdx.utils.Array;
 
 /** An Area consists of several nodes, which eventually become maps the player
  * can explore. Nodes are either defined as a pre-existing map or randomly
- * generated with developer-defined constraints.
+ * generated with developer-defined constraints. (The latter is left as an
+ * exercise for the reader.)
  * @author Andrew Keturi */
 public class AreaDefinition extends Definition {
 

@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.area;
 
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.definitions.map.TeleportDefinition;
 import net.alcuria.umbracraft.definitions.map.TeleportDefinition.TeleportDirection;
@@ -11,20 +12,12 @@ import com.badlogic.gdx.utils.Array;
 public class AreaNodeDefinition extends Definition {
 	/** all children nodes for the area */
 	public Array<AreaNodeDefinition> children;
-	/** the area map's height */
-	public int height;
-	/** the area map's variance */
-	public int heightVariance;
-	/** the map definition to use */
+	@Tooltip("The map definition to use at this node")
 	public String mapDefinition;
-	/** the name of the area map */
+	@Tooltip("A name given to this node")
 	public String name;
-	/** The teleport locations */
+	@Tooltip("The teleports")
 	public TeleportDefinition teleport;
-	/** the area map's width */
-	public int width;
-	/** the aream map's variance (width) */
-	public int widthVariance;
 
 	public AreaNodeDefinition() {
 		teleport = new TeleportDefinition();

@@ -99,7 +99,7 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 				add(new Table() {
 					{
 						PopulateConfig config = new PopulateConfig();
-						config.cols = 2;
+						config.cols = 1;
 						config.suggestions = new ObjectMap<String, Array<String>>();
 						config.suggestions.put("mapDefinition", new Array<String>() {
 							{
