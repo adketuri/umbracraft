@@ -25,4 +25,9 @@ public class ConfigDefinition extends Definition {
 		return "Configuration";
 	}
 
+	@Override
+	public String getTag() {
+		return "";
+	}
+
 }

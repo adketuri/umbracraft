@@ -18,6 +18,8 @@ public class MapDefinition extends Definition {
 	private int height;
 	/** The name of the map */
 	public String name;
+	@Tooltip("A tag for sorting")
+	public String tag;
 	/** The map tiles */
 	public Array<Array<MapTileDefinition>> tiles;
 	@Tooltip("The default level of the water, in tiles. Floating-point.")
@@ -62,6 +64,11 @@ public class MapDefinition extends Definition {
 	@Override
 	public String getName() {
 		return name != null ? name : "Map";
+	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
 	}
 
 	/** Gets a tile definition at a particular x/y coordinate

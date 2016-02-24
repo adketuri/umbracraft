@@ -27,6 +27,8 @@ public class TilesetDefinition extends Definition {
 	public int overlayPiece4;
 	@Tooltip("The id of the stairs")
 	public int stairs;
+	@Tooltip("A tag for sorting")
+	public String tag;
 	@Tooltip("The id of the first terrain")
 	public int terrain1;
 	@Tooltip("The id of the second terrain")
@@ -45,5 +47,10 @@ public class TilesetDefinition extends Definition {
 	@Override
 	public String getName() {
 		return "Tileset";
+	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
 	}
 }

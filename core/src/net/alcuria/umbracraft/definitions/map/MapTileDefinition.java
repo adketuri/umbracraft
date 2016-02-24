@@ -20,4 +20,9 @@ public class MapTileDefinition extends Definition {
 		return "Tile";
 	}
 
+	@Override
+	public String getTag() {
+		return "";
+	}
+
 }

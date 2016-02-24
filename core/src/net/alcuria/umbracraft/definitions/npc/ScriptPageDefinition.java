@@ -58,6 +58,11 @@ public class ScriptPageDefinition extends Definition {
 		}
 	}
 
+	@Override
+	public String getTag() {
+		return "";
+	}
+
 	/** Prints the commands recursively to stdout */
 	public void printCommands() {
 		command.print();

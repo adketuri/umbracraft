@@ -44,6 +44,11 @@ public class ListDefinition<T extends Definition> extends Definition {
 		return "List Definition";
 	}
 
+	@Override
+	public String getTag() {
+		return null;
+	}
+
 	public ObjectMap<String, T> items() {
 		return definitions;
 	}

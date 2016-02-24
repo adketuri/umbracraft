@@ -153,4 +153,9 @@ public abstract class ComponentDefinition extends Definition {
 	public String getName() {
 		return name != null ? name : "Component";
 	}
+
+	@Override
+	public String getTag() {
+		return "";
+	}
 }

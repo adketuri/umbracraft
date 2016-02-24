@@ -16,9 +16,16 @@ public class ScriptDefinition extends Definition {
 	public String name;
 	@Tooltip("The pages, or states, of the script.")
 	public Array<ScriptPageDefinition> pages;
+	@Tooltip("A tag for sorting")
+	public String tag;
 
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
 	}
 }

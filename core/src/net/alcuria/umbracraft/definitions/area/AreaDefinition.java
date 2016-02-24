@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.area;
 
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 
 import com.badlogic.gdx.utils.Array;
@@ -15,6 +16,8 @@ public class AreaDefinition extends Definition {
 	public String name;
 	/** the root node */
 	public AreaNodeDefinition root;
+	@Tooltip("A tag for sorting")
+	public String tag;
 
 	/** Recursively adds a node and its children
 	 * @param nodes
@@ -99,5 +102,10 @@ public class AreaDefinition extends Definition {
 		Array<AreaNodeDefinition> nodes = new Array<>();
 		addNodes(nodes, root);
 		return nodes;
+	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
 	}
 }

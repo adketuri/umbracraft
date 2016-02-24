@@ -16,4 +16,9 @@ public class SkillPositionDefinition extends Definition {
 		return "Position";
 	}
 
+	@Override
+	public String getTag() {
+		return "";
+	}
+
 }

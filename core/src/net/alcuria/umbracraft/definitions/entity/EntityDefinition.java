@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.entity;
 
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
 
@@ -12,9 +13,16 @@ public class EntityDefinition extends Definition {
 	public Array<ComponentDefinition> components;
 	/** The unique name of the entity */
 	public String name;
+	@Tooltip("A tag for sorting")
+	public String tag;
 
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
 	}
 }

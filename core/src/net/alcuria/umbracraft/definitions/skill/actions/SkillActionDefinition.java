@@ -12,4 +12,9 @@ public abstract class SkillActionDefinition extends Definition {
 		return "Action";
 	}
 
+	@Override
+	public String getTag() {
+		return "";
+	}
+
 }

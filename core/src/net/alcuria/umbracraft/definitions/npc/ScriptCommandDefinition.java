@@ -9,4 +9,9 @@ public class ScriptCommandDefinition extends Definition {
 		return "Command";
 	}
 
+	@Override
+	public String getTag() {
+		return "";
+	}
+
 }

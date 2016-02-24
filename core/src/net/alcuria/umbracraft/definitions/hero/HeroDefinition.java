@@ -12,9 +12,16 @@ public class HeroDefinition extends Definition {
 	public int maxLevel;
 	@Tooltip("The hero's displayed name.")
 	public String name;
+	@Tooltip("A tag for sorting")
+	public String tag;
 
 	@Override
 	public String getName() {
 		return name != null ? name : "Hero";
+	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
 	}
 }

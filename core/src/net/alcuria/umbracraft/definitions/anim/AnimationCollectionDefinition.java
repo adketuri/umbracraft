@@ -19,12 +19,19 @@ public class AnimationCollectionDefinition extends Definition {
 	public String name;
 	@Tooltip("The running pose from AnimationGroupDefinition")
 	public String running;
+	@Tooltip("A tag for sorting")
+	public String tag;
 	@Tooltip("The walking pose from AnimationGroupDefinition")
 	public String walking;
 
 	@Override
 	public String getName() {
 		return name != null ? name : "";
+	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
 	}
 
 }

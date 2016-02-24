@@ -19,4 +19,9 @@ public class EntityReferenceDefinition extends Definition {
 		return name + "@" + x + "," + y;
 	}
 
+	@Override
+	public String getTag() {
+		return "";
+	}
+
 }

@@ -22,6 +22,7 @@ public abstract class ScriptCommand extends Definition {
 	}
 
 	private ScriptCommand next;
+
 	private CommandState state = CommandState.NOT_STARTED;
 
 	/** Sets the next command, effectively adding a child command to the end of
@@ -64,6 +65,11 @@ public abstract class ScriptCommand extends Definition {
 	/** @return the suggestions hash, where the key is a field name eg, "id", and
 	 *         the value is an array of suggestions. */
 	public abstract ObjectMap<String, Array<String>> getSuggestions();
+
+	@Override
+	public String getTag() {
+		return "";
+	}
 
 	/** @return true if the command has started */
 	public boolean hasStarted() {

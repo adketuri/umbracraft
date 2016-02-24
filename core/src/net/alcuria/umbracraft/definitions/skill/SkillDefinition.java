@@ -26,6 +26,8 @@ public class SkillDefinition extends Definition {
 	public String iconId;
 	@Tooltip("The name of the skill")
 	public String name;
+	@Tooltip("A tag for sorting")
+	public String tag;
 	@Tooltip("Any restrictions on using the skill. For instance, the skill requires a target to cast or the skill must be cast into a blank space.")
 	public TargetRestriction targetRestriction = TargetRestriction.NO_RESTRICTION;
 	@Tooltip("The targets of the skill, relative to the drop point")
@@ -36,6 +38,11 @@ public class SkillDefinition extends Definition {
 	@Override
 	public String getName() {
 		return name != null ? name : "Skill";
+	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
 	}
 
 }

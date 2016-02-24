@@ -37,4 +37,9 @@ public class TeleportDefinition extends Definition {
 		return "teleports";
 	}
 
+	@Override
+	public String getTag() {
+		return null;
+	}
+
 }

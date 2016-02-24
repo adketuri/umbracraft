@@ -1,9 +1,14 @@
 package net.alcuria.umbracraft.editor.modules;
 
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
+
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -22,9 +27,11 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
  * @param <T> */
 public abstract class ListModule<T extends Definition> extends Module<ListDefinition> {
 	private final Array<VisTextButton> buttons = new Array<VisTextButton>();
-	private String currentIndex;
+	private Definition currentIndex;
 	private T definition;
+	private final Set<String> expandedTags = new HashSet<String>();
 	private Table menu;
+	private final Array<Definition> sortedDefinitions = new Array<Definition>();
 	private final Table view;
 
 	public ListModule() {
@@ -54,29 +61,9 @@ public abstract class ListModule<T extends Definition> extends Module<ListDefini
 
 	private Table menu() {
 		return new Table() {
+
 			{
-
-				defaults().uniformX().fillX().expandX();
-				buttons.clear();
-				for (Object i : rootDefinition.keys()) {
-					final String idx = (String) i;
-					final VisTextButton button = new VisTextButton(rootDefinition.get(idx).getName());
-					button.addListener(new ClickListener() {
-						@Override
-						public void clicked(InputEvent event, float x, float y) {
-							view.clear();
-							create((T) rootDefinition.get(idx), view);
-							currentIndex = idx;
-							updateHighlighted(button);
-						}
-
-					});
-					add(button).row();
-					buttons.add(button);
-				}
-				add().expand().fill().row();
-				add(WidgetUtils.button("Add Item", addListener())).row();
-				add(WidgetUtils.button("Delete Item", deleteListener()));
+				update();
 			}
 
 			private Listener addListener() {
@@ -105,6 +92,69 @@ public abstract class ListModule<T extends Definition> extends Module<ListDefini
 						}
 					}
 				};
+			}
+
+			private void update() {
+				clear();
+				defaults().uniformX().fillX().expandX();
+				// sort all definitions
+				sortedDefinitions.clear();
+				for (Object i : rootDefinition.keys()) {
+					final String idx = (String) i;
+					sortedDefinitions.add(rootDefinition.get(idx));
+				}
+				sortedDefinitions.sort(new Comparator<Definition>() {
+					@Override
+					public int compare(Definition def, Definition otherDef) {
+						if (def.getTag().equals(otherDef.getTag())) {
+							return def.getName().compareTo(otherDef.getName());
+						}
+						return def.getTag().compareTo(otherDef.getTag());
+					}
+				});
+				// display
+				buttons.clear();
+				String heading = null;
+				for (final Definition d : sortedDefinitions) {
+					if (d.getTag() != null && !d.getTag().equals(heading)) {
+						heading = d.getTag();
+						add(new Table() {
+							{
+								add(new VisLabel(StringUtils.isNotEmpty(d.getTag()) ? d.getTag() : "Untagged")).expandX();
+								add(WidgetUtils.button(expandedTags.contains(d.getTag()) ? "-" : "+", new Listener() {
+
+									@Override
+									public void invoke() {
+										if (expandedTags.contains(d.getTag())) {
+											expandedTags.remove(d.getTag());
+										} else {
+											expandedTags.add(d.getTag());
+										}
+										update();
+									}
+								})).size(15);
+							}
+						}).expandX().width(200).row();
+					}
+					if (expandedTags.contains(d.getTag())) {
+						final VisTextButton button = new VisTextButton(d.getName());
+						button.addListener(new ClickListener() {
+							@Override
+							public void clicked(InputEvent event, float x, float y) {
+								view.clear();
+								create((T) d, view);
+								currentIndex = d;
+								updateHighlighted(button);
+							}
+
+						});
+						add(button).row();
+						buttons.add(button);
+					}
+				}
+				add().expand().fill().row();
+				add(WidgetUtils.button("Add Item", addListener())).row();
+				add(WidgetUtils.button("Delete Item", deleteListener()));
 			}
 		};
 	}
@@ -141,6 +191,6 @@ public abstract class ListModule<T extends Definition> extends Module<ListDefini
 		for (VisTextButton button : buttons) {
 			button.getLabel().setColor(button == highlightedButton ? Color.YELLOW : Color.WHITE);
 		}
-
 	}
+
 }

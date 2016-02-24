@@ -79,4 +79,9 @@ public class AnimationDefinition extends Definition implements Comparable<Animat
 	public String getName() {
 		return name;
 	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
+	}
 }

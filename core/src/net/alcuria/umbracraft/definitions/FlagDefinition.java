@@ -13,10 +13,17 @@ public class FlagDefinition extends Definition {
 	public String description;
 	@Tooltip("A unique id")
 	public String id;
+	@Tooltip("A tag for sorting")
+	public String tag;
 
 	@Override
 	public String getName() {
 		return id;
+	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
 	}
 
 }

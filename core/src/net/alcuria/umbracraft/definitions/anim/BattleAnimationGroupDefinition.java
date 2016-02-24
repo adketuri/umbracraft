@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.anim;
 
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 
 /** Defines battle animations.
@@ -17,12 +18,19 @@ public class BattleAnimationGroupDefinition extends Definition {
 	public String idle;
 	/** The name */
 	public String name;
+	@Tooltip("A tag for sorting")
+	public String tag;
 	/** The moving towards animation */
 	public String towards;
 
 	@Override
 	public String getName() {
 		return name != null ? name : "Untitled";
+	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
 	}
 
 }

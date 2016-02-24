@@ -5,15 +5,7 @@ package net.alcuria.umbracraft.definitions;
  * parameters.
  * @author Andrew Keturi */
 public abstract class Definition {
-	public String key;
-
-	public String getKey() {
-		return key;
-	}
-
 	public abstract String getName();
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+	public abstract String getTag();
 }

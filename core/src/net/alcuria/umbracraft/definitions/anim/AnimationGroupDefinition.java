@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.anim;
 
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 
 /** Defines a collection of {@link AnimationDefinition} objects
@@ -20,6 +21,8 @@ public class AnimationGroupDefinition extends Definition {
 	public String name;
 	/** The id of the animation facing right */
 	public String right;
+	@Tooltip("A tag for sorting")
+	public String tag;
 	/** The id of the animation facing up */
 	public String up;
 	/** The id of the animation facing upLeft */
@@ -39,5 +42,10 @@ public class AnimationGroupDefinition extends Definition {
 	@Override
 	public String getName() {
 		return name != null ? name : "Untitled";
+	}
+
+	@Override
+	public String getTag() {
+		return tag != null ? tag : "";
 	}
 }

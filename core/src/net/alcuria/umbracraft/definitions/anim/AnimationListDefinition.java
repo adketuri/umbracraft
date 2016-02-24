@@ -41,4 +41,9 @@ public class AnimationListDefinition extends Definition {
 	public String getName() {
 		return "Animation List";
 	}
+
+	@Override
+	public String getTag() {
+		return null;
+	}
 }

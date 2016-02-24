@@ -28,4 +28,9 @@ public class AnimationFrameDefinition extends Definition {
 	public String getName() {
 		return "AnimationFrame";
 	}
+
+	@Override
+	public String getTag() {
+		return "";
+	}
 }

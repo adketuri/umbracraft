@@ -28,6 +28,11 @@ public class AreaNodeDefinition extends Definition {
 		return name != null ? name : "Untitled";
 	}
 
+	@Override
+	public String getTag() {
+		return "";
+	}
+
 	/** Sets a teleport node
 	 * @param direction the {@link TeleportDirection}
 	 * @param map a {@link String} representation of the map */
