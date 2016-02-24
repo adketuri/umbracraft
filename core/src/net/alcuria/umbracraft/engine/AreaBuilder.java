@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
 import net.alcuria.umbracraft.definitions.map.TeleportDefinition.TeleportDirection;
+import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 
 /** Builds areas/maps from the definitions for use in the engine.
@@ -58,23 +59,15 @@ public class AreaBuilder {
 			newY = Game.db().map(adjacentNode.mapDefinition).eastY * 16;
 			break;
 		}
-		// keep a reference to the player around in case after creating the entities there no longer is a PLAYER entity
-		//		final Entity player = Game.entities().find(Entity.PLAYER);
-
 		// add all map-specific entities to the map
 		Game.entities().dispose(EntityScope.MAP);
-		Game.entities().create(adjacentNode.mapDefinition);
-		//		if (Game.entities().find(Entity.PLAYER) == null) {
-		//			// add back our reference to the player
-		//			Game.entities().add(EntityScope.MAP, player);
-		//		}
-		//		//set the player back
-		//		Game.entities().find(Entity.PLAYER).position.set(newX, newY, player.position.z);
-		//		final ControlledInputComponent component = Game.entities().find(Entity.PLAYER).getComponent(ControlledInputComponent.class);
-		//		if (component != null) {
-		//			component.create(player);
-		//		}
-		// TODO: add global and area-specific entities
+		Game.entities().create(EntityScope.MAP, adjacentNode.mapDefinition);
+
+		// set the player to his new position
+		final Entity player = Game.entities().find(Entity.PLAYER);
+		if (player != null) {
+			player.position.set(newX, newY, player.position.z);
+		}
 		setAreaAndNode(currentArea, adjacentNodeName); //FIXME: area changes?
 	}
 

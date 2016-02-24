@@ -25,7 +25,8 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 		windows = new WindowStack();
 		teleporter = new Teleporter();
 		Game.publisher().subscribe(this);
-		Game.entities().create(WorldUtils.getStartingMapName());
+		Game.entities().create(EntityScope.MAP, WorldUtils.getStartingMapName());
+		Game.entities().create(EntityScope.GLOBAL, null);
 		Game.map().create(WorldUtils.getStartingMapName());
 		Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
 		Game.view().focus();

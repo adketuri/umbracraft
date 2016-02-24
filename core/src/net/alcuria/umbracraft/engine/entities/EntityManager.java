@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Db;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
+import net.alcuria.umbracraft.definitions.config.ConfigDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.map.EntityReferenceDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
@@ -52,35 +53,59 @@ public class EntityManager {
 		entities.get(scope).add(entity);
 	}
 
+	private void addComponents(Entity entity, String name) {
+		EntityDefinition entityDef = Game.db().entity(name);
+		if (entityDef != null) {
+			for (ComponentDefinition componentDef : entityDef.components) {
+				entity.addComponent(componentDef);
+			}
+			// TODO: for ControlledInputComponents, I think we need to set the input processor here...
+			if (entity.getName().equals(Entity.PLAYER)) { //FIXME: ugleh
+				Game.publisher().publish(new CameraTargetEvent(entity));
+			}
+		}
+	}
+
 	/** Takes as input the name of a map in the {@link Db} and creates all
 	 * entities and their components for that map. Clears any existing entities.
+	 * @param scope the scope of entities to create
 	 * @param mapName the map id {@link String} */
-	public void create(final String mapName) {
+	public void create(EntityScope scope, final String mapName) {
+		if (scope == null) {
+			throw new NullPointerException("scope cannot be null");
+		}
 		visibleEntities.clear();
-		entities.get(EntityScope.MAP).clear();
-		// create entities
-		MapDefinition mapDef = Game.db().map(mapName);
-		mapHeight = mapDef.getHeight();
-		if (mapDef != null && mapDef.entities != null) {
-			for (EntityReferenceDefinition reference : mapDef.entities) {
-				Entity entity = new Entity();
-				entity.setName(reference.name);
-				entity.position.x = reference.x * Config.tileWidth;
-				entity.position.y = reference.y * Config.tileWidth;
-				EntityDefinition entityDef = Game.db().entity(reference.name);
-				if (entityDef != null) {
-					for (ComponentDefinition componentDef : entityDef.components) {
-						entity.addComponent(componentDef);
-					}
-					// TODO: for ControlledInputComponents, I think we need to set the input processor here...
-					if (entity.getName().equals(Entity.PLAYER)) { //FIXME: ugleh
-						Game.publisher().publish(new CameraTargetEvent(entity));
-					}
-					entities.get(EntityScope.MAP).add(entity);
+		entities.get(scope).clear();
+		if (scope == EntityScope.GLOBAL) {
+			ConfigDefinition config = Game.db().config();
+			if (config.globalEntities != null) {
+				for (String entityName : config.globalEntities) {
+					Entity entity = new Entity();
+					entity.setName(entityName);
+					entity.position.x = config.startingX * Config.tileWidth;
+					entity.position.y = config.startingY * Config.tileWidth;
+					addComponents(entity, entityName);
+					entities.get(EntityScope.GLOBAL).add(entity);
 				}
 			}
-		} else {
-			Game.error("Map not found: " + mapName);
+		} else if (scope == EntityScope.AREA) {
+
+		} else if (scope == EntityScope.MAP) {
+			// create entities
+			MapDefinition mapDef = Game.db().map(mapName);
+			mapHeight = mapDef.getHeight();
+			if (mapDef != null && mapDef.entities != null) {
+				for (EntityReferenceDefinition reference : mapDef.entities) {
+					Entity entity = new Entity();
+					entity.setName(reference.name);
+					entity.position.x = reference.x * Config.tileWidth;
+					entity.position.y = reference.y * Config.tileWidth;
+					addComponents(entity, reference.name);
+					entities.get(EntityScope.MAP).add(entity);
+				}
+			} else {
+				Game.error("Map not found: " + mapName);
+			}
 		}
 	}
 

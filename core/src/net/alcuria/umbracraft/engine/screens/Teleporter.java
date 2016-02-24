@@ -20,7 +20,6 @@ public class Teleporter implements Disposable {
 
 	private static final float FADE_TIME = 0.5f;
 	private AreaBuilder areaBuilder;
-	private TeleportDirection direction;
 	private Entity player;
 	private int playerWidth, playerHeight;
 	private boolean teleporting;
@@ -67,7 +66,6 @@ public class Teleporter implements Disposable {
 
 	private void startTeleport(final TeleportDirection direction) {
 		teleporting = true;
-		this.direction = direction;
 		final Entity player = Game.entities().find(Entity.PLAYER);
 		if (player != null) {
 			player.velocity.x = 0;
