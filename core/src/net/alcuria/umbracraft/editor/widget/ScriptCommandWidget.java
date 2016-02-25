@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.modules.EmptyCommand;
 import net.alcuria.umbracraft.editor.modules.Module;
 import net.alcuria.umbracraft.engine.scripts.BattleScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.BlockCommand;
 import net.alcuria.umbracraft.engine.scripts.CameraTargetScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ConditionalCommand;
 import net.alcuria.umbracraft.engine.scripts.ControlVariableCommand;
@@ -176,9 +177,9 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 						}
 					} else if (Gdx.input.isKeyJustPressed(Keys.DOWN) && !consumedDown) {
 						consumedDown = true;
-						if (command instanceof ConditionalCommand) {
+						if (command instanceof BlockCommand) {
 							ScriptPageWidget.selected.clear();
-							ScriptPageWidget.selected.add(((ConditionalCommand) command).conditional);
+							ScriptPageWidget.selected.add(((BlockCommand) command).block);
 						} else if (command.getNext() != null) {
 							Game.log("Pressed down, " + command != null ? command.getName() : "");
 							ScriptPageWidget.selected.clear();
@@ -190,11 +191,11 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 
 		}).expandX().fill().row();
 		WidgetUtils.divider(content, "blue");
-		if (command instanceof ConditionalCommand) {
+		if (command instanceof BlockCommand) {
 			content.add(new Table() {
 				{
-					final ConditionalCommand conditional = (ConditionalCommand) command;
-					ScriptCommandWidget conditionalWidget = new ScriptCommandWidget(commandsWidget, this, popup, page, conditional.conditional);
+					final BlockCommand conditional = (BlockCommand) command;
+					ScriptCommandWidget conditionalWidget = new ScriptCommandWidget(commandsWidget, this, popup, page, conditional.block);
 					conditionalWidget.addActor();
 				}
 			}).expandX().fill().left().padLeft(20).row();
@@ -228,8 +229,8 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				Game.log("Parent: " + (parent != null ? parent.getName() : "null"));
 				Game.log("INSERTING: createdCommand: " + (createdCommand != null ? createdCommand.getName() : "null") + " command:" + (command != null ? command.getName() : "null") + " parent: " + (parent != null ? parent : "null"));
 				if (parent != null) {
-					if (parent instanceof ConditionalCommand && ((ConditionalCommand) parent).conditional == command) {
-						((ConditionalCommand) parent).conditional = createdCommand;
+					if (parent instanceof BlockCommand && ((BlockCommand) parent).block == command) {
+						((BlockCommand) parent).block = createdCommand;
 						Game.log("set conditional");
 					} else {
 						parent.setNext(createdCommand);
