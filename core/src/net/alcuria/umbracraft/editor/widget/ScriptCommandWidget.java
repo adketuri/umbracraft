@@ -191,15 +191,35 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 
 		}).expandX().fill().row();
 		WidgetUtils.divider(content, "blue");
+		// CONDITIONAL command
 		if (command instanceof BlockCommand) {
 			content.add(new Table() {
 				{
-					final BlockCommand conditional = (BlockCommand) command;
-					ScriptCommandWidget conditionalWidget = new ScriptCommandWidget(commandsWidget, this, popup, page, conditional.block);
+					final BlockCommand blockCommand = (BlockCommand) command;
+					ScriptCommandWidget conditionalWidget = new ScriptCommandWidget(commandsWidget, this, popup, page, blockCommand.block);
 					conditionalWidget.addActor();
 				}
 			}).expandX().fill().left().padLeft(20).row();
 		}
+		// ELSE case
+		if (command instanceof ConditionalCommand && ((ConditionalCommand) command).includeElse) {
+			content.add(new Table() {
+				{
+					add(new VisLabel("Else:")).expandX().left().row();
+					WidgetUtils.divider(this, "blue");
+					setBackground(Drawables.get("black"));
+
+				}
+			}).expandX().fill().left().row();
+			content.add(new Table() {
+				{
+					final ConditionalCommand conditional = (ConditionalCommand) command;
+					ScriptCommandWidget conditionalWidget = new ScriptCommandWidget(commandsWidget, this, popup, page, conditional.elseBlock);
+					conditionalWidget.addActor();
+				}
+			}).expandX().fill().left().padLeft(20).row();
+		}
+		// NEXT command
 		if (command.getNext() != null) {
 			nextWidget = new ScriptCommandWidget(commandsWidget, content, popup, page, command.getNext());
 			nextWidget.addActor();
@@ -232,6 +252,9 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 					if (parent instanceof BlockCommand && ((BlockCommand) parent).block == command) {
 						((BlockCommand) parent).block = createdCommand;
 						Game.log("set conditional");
+					} else if (parent instanceof ConditionalCommand && ((ConditionalCommand) parent).includeElse && ((ConditionalCommand) parent).elseBlock == command) {
+						((ConditionalCommand) parent).elseBlock = createdCommand;
+						Game.log("set conditional else");
 					} else {
 						parent.setNext(createdCommand);
 						Game.log("set standard");

@@ -5,6 +5,7 @@ import java.util.Set;
 import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.editor.Editor;
+import net.alcuria.umbracraft.editor.modules.EmptyCommand;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.utils.Array;
@@ -35,7 +36,7 @@ public class ConditionalCommand extends BlockCommand {
 	@Order(2)
 	public ConditionalComparison comparison = ConditionalComparison.OPT_0_EQUALS;
 	/** The else command */
-	public ScriptCommand elseBlock;
+	public ScriptCommand elseBlock = new EmptyCommand();
 	@Tooltip("Add an else statement")
 	@Order(4)
 	public boolean includeElse;
