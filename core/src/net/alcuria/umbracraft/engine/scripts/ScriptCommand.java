@@ -21,8 +21,7 @@ public abstract class ScriptCommand extends Definition {
 		COMPLETE, NOT_STARTED, STARTED
 	}
 
-	private ScriptCommand next;
-
+	private ScriptCommand next, parent;
 	private CommandState state = CommandState.NOT_STARTED;
 
 	/** Sets the next command, effectively adding a child command to the end of
@@ -57,6 +56,11 @@ public abstract class ScriptCommand extends Definition {
 		return next;
 	}
 
+	/** Gets the parent command. May be <code>null</code>. */
+	public ScriptCommand getParent() {
+		return null;
+	}
+
 	/** @return the {@link CommandState} */
 	public CommandState getState() {
 		return state;
@@ -69,16 +73,6 @@ public abstract class ScriptCommand extends Definition {
 	@Override
 	public String getTag() {
 		return "";
-	}
-
-	/** @return true if the command has started */
-	public boolean hasStarted() {
-		return state == CommandState.STARTED;
-	}
-
-	/** @return true if the command has completed */
-	public boolean isDone() {
-		return state == CommandState.COMPLETE;
 	}
 
 	/** Invoked after the command is completed */
@@ -100,6 +94,12 @@ public abstract class ScriptCommand extends Definition {
 	 * @param command the {@link ScriptCommand} */
 	public void setNext(ScriptCommand command) {
 		next = command;
+	}
+
+	/** Sets the parent node.
+	 * @param parent the {@link ScriptCommand} parent. */
+	public void setParent(ScriptCommand parent) {
+		this.parent = parent;
 	}
 
 	/** Sets the state of the command, for example {@link CommandState#COMPLETE}

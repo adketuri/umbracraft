@@ -18,7 +18,7 @@ public class ConditionalCommand extends BlockCommand {
 	/** Methods of comparison for a {@link ConditionalCommand}
 	 * @author Andrew Keturi */
 	public static enum ConditionalComparison {
-		OPT_0_EQUALS("=="), OPT_1_NOT_EQUAL("!="), OPT_2_GT(">"), OPT_3_GTE(">="), OPT_4_LT("<"), OPT_5_LTE("<=");
+		OPT_0_EQU("=="), OPT_1_NEQ("!="), OPT_2_GT(">"), OPT_3_GTE(">="), OPT_4_LT("<"), OPT_5_LTE("<=");
 
 		public String friendly;
 
@@ -32,9 +32,10 @@ public class ConditionalCommand extends BlockCommand {
 		}
 	}
 
+	private ScriptCommand calculatedNext;
 	@Tooltip("The comparison operation")
 	@Order(2)
-	public ConditionalComparison comparison = ConditionalComparison.OPT_0_EQUALS;
+	public ConditionalComparison comparison = ConditionalComparison.OPT_0_EQU;
 	/** The else command */
 	public ScriptCommand elseBlock = new EmptyCommand();
 	@Tooltip("Add an else statement")
@@ -43,6 +44,7 @@ public class ConditionalCommand extends BlockCommand {
 	@Tooltip("The comparison value, either a variable/flag or a constant")
 	@Order(1)
 	public String value1;
+
 	@Tooltip("The comparison value, either a variable/flag or a constant")
 	@Order(3)
 	public String value2;
@@ -77,6 +79,10 @@ public class ConditionalCommand extends BlockCommand {
 		};
 	}
 
+	private int getValue(String val) {
+		return 0;
+	}
+
 	@Override
 	public void onCompleted() {
 
@@ -84,6 +90,38 @@ public class ConditionalCommand extends BlockCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
+		boolean valid = false;
+		switch (comparison) {
+		case OPT_0_EQU:
+			valid = getValue(value1) == getValue(value2);
+			break;
+		case OPT_1_NEQ:
+			valid = getValue(value1) != getValue(value2);
+			break;
+		case OPT_2_GT:
+			valid = getValue(value1) > getValue(value2);
+			break;
+		case OPT_3_GTE:
+			valid = getValue(value1) >= getValue(value2);
+			break;
+		case OPT_4_LT:
+			valid = getValue(value1) < getValue(value2);
+			break;
+		case OPT_5_LTE:
+			valid = getValue(value1) <= getValue(value2);
+			break;
+		default:
+			break;
+		}
+
+		// determine which command comes next (inside conditional, inside else, or after conditional)
+		if (valid) {
+			calculatedNext = getNext();
+		} else if (includeElse) {
+			calculatedNext = elseBlock;
+		} else {
+			calculatedNext = getParent().getNext();
+		}
 
 	}
 

@@ -173,6 +173,9 @@ public class ScriptComponent implements Component, EventListener {
 			switch (currentCommand.getState()) {
 			case COMPLETE:
 				currentCommand = currentCommand.getNext();
+				if (currentCommand == null && currentCommand.getParent() != null) {
+					currentCommand.setNext(currentCommand.getParent().getNext());
+				}
 				if (currentCommand != null) {
 					currentCommand.setState(CommandState.NOT_STARTED);
 				}

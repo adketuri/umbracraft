@@ -251,12 +251,15 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				if (parent != null) {
 					if (parent instanceof BlockCommand && ((BlockCommand) parent).block == command) {
 						((BlockCommand) parent).block = createdCommand;
-						Game.log("set conditional");
+						Game.log("set block / conditional body");
+						createdCommand.setParent(parent);
 					} else if (parent instanceof ConditionalCommand && ((ConditionalCommand) parent).includeElse && ((ConditionalCommand) parent).elseBlock == command) {
 						((ConditionalCommand) parent).elseBlock = createdCommand;
 						Game.log("set conditional else");
+						createdCommand.setParent(parent);
 					} else {
 						parent.setNext(createdCommand);
+						createdCommand.setParent(parent.getParent());
 						Game.log("set standard");
 					}
 				} else {
