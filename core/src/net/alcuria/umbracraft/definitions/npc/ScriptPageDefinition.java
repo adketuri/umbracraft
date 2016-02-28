@@ -37,26 +37,27 @@ public class ScriptPageDefinition extends Definition {
 		return name != null ? name : "Untitled";
 	}
 
-	/** Gets the parent of a particular {@link ScriptCommand}
-	 * @param start
-	 * @param child
+	/** Recursively gets the previous command of a particular
+	 * {@link ScriptCommand}
+	 * @param start the starting node, usually the root when invoked, but
+	 * @param target the node we are searching for
 	 * @return */
-	public ScriptCommand getParent(ScriptCommand start, ScriptCommand child) {
+	public ScriptCommand getPrevious(ScriptCommand start, ScriptCommand target) {
 		if (start == null) {
 			return null;
-		} else if (start.getNext() == child || (start instanceof BlockCommand && ((BlockCommand) start).block == child) || (start instanceof ConditionalCommand && ((ConditionalCommand) start).elseBlock == child)) {
+		} else if (start.getNext() == target || (start instanceof BlockCommand && ((BlockCommand) start).block == target) || (start instanceof ConditionalCommand && ((ConditionalCommand) start).elseBlock == target)) {
 			Game.log("Found parent: " + start.getName());
 			return start;
 		} else {
 			ScriptCommand parent = null;
 
 			if (start instanceof BlockCommand) {
-				parent = getParent(((BlockCommand) start).block, child);
+				parent = getPrevious(((BlockCommand) start).block, target);
 			}
 			if (parent != null) {
 				return parent;
 			}
-			return getParent(start.getNext(), child);
+			return getPrevious(start.getNext(), target);
 		}
 	}
 

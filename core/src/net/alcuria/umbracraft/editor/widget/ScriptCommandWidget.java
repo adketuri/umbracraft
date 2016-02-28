@@ -160,7 +160,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 					} else if (!(command instanceof EmptyCommand) && (Gdx.input.isKeyJustPressed(Keys.DEL) || Gdx.input.isKeyJustPressed(Keys.BACKSPACE))) {
 						Game.log("Deleting...");
 						final ScriptCommand next = command.getNext();
-						final ScriptCommand parent = page.getParent(page.command, command);
+						final ScriptCommand parent = page.getPrevious(page.command, command);
 						if (parent != null) {
 							parent.setNext(next);
 						} else {
@@ -170,7 +170,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 						commandsWidget.setPage();
 					} else if (Gdx.input.isKeyJustPressed(Keys.UP)) {
 						Game.log("Pressed up");
-						final ScriptCommand parent = page.getParent(page.command, command);
+						final ScriptCommand parent = page.getPrevious(page.command, command);
 						if (parent != null) {
 							ScriptPageWidget.selected.clear();
 							ScriptPageWidget.selected.add(parent);
@@ -244,19 +244,19 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				// insertion
 				Game.log("Setting our new commands next to: " + (command != null ? command.getName() : "null"));
 				createdCommand.setNext(command);
-				ScriptCommand parent = null;
-				parent = page.getParent(page.command, command);
-				Game.log("Parent: " + (parent != null ? parent.getName() : "null"));
-				Game.log("INSERTING: createdCommand: " + (createdCommand != null ? createdCommand.getName() : "null") + " command:" + (command != null ? command.getName() : "null") + " parent: " + (parent != null ? parent : "null"));
-				if (parent != null) {
-					if (parent instanceof BlockCommand && ((BlockCommand) parent).block == command) {
-						((BlockCommand) parent).block = createdCommand;
+				ScriptCommand previous = null;
+				previous = page.getPrevious(page.command, command);
+				Game.log("Parent: " + (previous != null ? previous.getName() : "null"));
+				Game.log("INSERTING: createdCommand: " + (createdCommand != null ? createdCommand.getName() : "null") + " command:" + (command != null ? command.getName() : "null") + " parent: " + (previous != null ? previous : "null"));
+				if (previous != null) {
+					if (previous instanceof BlockCommand && ((BlockCommand) previous).block == command) {
+						((BlockCommand) previous).block = createdCommand;
 						Game.log("set block / conditional body");
-					} else if (parent instanceof ConditionalCommand && ((ConditionalCommand) parent).includeElse && ((ConditionalCommand) parent).elseBlock == command) {
-						((ConditionalCommand) parent).elseBlock = createdCommand;
+					} else if (previous instanceof ConditionalCommand && ((ConditionalCommand) previous).includeElse && ((ConditionalCommand) previous).elseBlock == command) {
+						((ConditionalCommand) previous).elseBlock = createdCommand;
 						Game.log("set conditional else");
 					} else {
-						parent.setNext(createdCommand);
+						previous.setNext(createdCommand);
 						Game.log("set standard");
 					}
 				} else {
