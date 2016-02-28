@@ -21,7 +21,7 @@ public abstract class ScriptCommand extends Definition {
 		COMPLETE, NOT_STARTED, STARTED
 	}
 
-	private ScriptCommand next, parent;
+	private ScriptCommand next;
 	private CommandState state = CommandState.NOT_STARTED;
 
 	/** Sets the next command, effectively adding a child command to the end of
@@ -94,12 +94,6 @@ public abstract class ScriptCommand extends Definition {
 	 * @param command the {@link ScriptCommand} */
 	public void setNext(ScriptCommand command) {
 		next = command;
-	}
-
-	/** Sets the parent node.
-	 * @param parent the {@link ScriptCommand} parent. */
-	public void setParent(ScriptCommand parent) {
-		this.parent = parent;
 	}
 
 	/** Sets the state of the command, for example {@link CommandState#COMPLETE}
