@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.engine.scripts.BlockCommand;
+import net.alcuria.umbracraft.engine.scripts.ConditionalCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 
 /** Defines a list of event commands to execute
@@ -43,11 +44,12 @@ public class ScriptPageDefinition extends Definition {
 	public ScriptCommand getParent(ScriptCommand start, ScriptCommand child) {
 		if (start == null) {
 			return null;
-		} else if (start.getNext() == child || (start instanceof BlockCommand && ((BlockCommand) start).block == child)) {
+		} else if (start.getNext() == child || (start instanceof BlockCommand && ((BlockCommand) start).block == child) || (start instanceof ConditionalCommand && ((ConditionalCommand) start).elseBlock == child)) {
 			Game.log("Found parent: " + start.getName());
 			return start;
 		} else {
 			ScriptCommand parent = null;
+
 			if (start instanceof BlockCommand) {
 				parent = getParent(((BlockCommand) start).block, child);
 			}
