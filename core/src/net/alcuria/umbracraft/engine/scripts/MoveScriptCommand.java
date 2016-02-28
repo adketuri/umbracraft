@@ -76,8 +76,8 @@ public class MoveScriptCommand extends ScriptCommand {
 			DirectedInputComponent component = target.getComponent(DirectedInputComponent.class);
 			if (component != null) {
 				// x/y can either be numbers or variables in the game's db
-				int convertedX = StringUtils.isDigit(x) ? Integer.valueOf(x) : Game.variables().get(x);
-				int convertedY = StringUtils.isDigit(y) ? Integer.valueOf(y) : Game.variables().get(y);
+				int convertedX = StringUtils.isNumber(x) ? Integer.valueOf(x) : Game.variables().get(x);
+				int convertedY = StringUtils.isNumber(y) ? Integer.valueOf(y) : Game.variables().get(y);
 				if (relative) {
 					component.setTarget((int) target.position.x / Config.tileWidth + convertedX, (int) target.position.y / Config.tileWidth + convertedY);
 				} else {

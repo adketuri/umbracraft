@@ -2,11 +2,13 @@ package net.alcuria.umbracraft.engine.scripts;
 
 import java.util.Set;
 
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.modules.EmptyCommand;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -41,7 +43,7 @@ public class ConditionalCommand extends BlockCommand {
 	@Tooltip("Add an else statement")
 	@Order(4)
 	public boolean includeElse;
-	private transient boolean isNested;
+	private boolean isNested;
 	@Tooltip("The comparison value, either a variable/flag or a constant")
 	@Order(1)
 	public String value1;
@@ -85,7 +87,19 @@ public class ConditionalCommand extends BlockCommand {
 		};
 	}
 
+	/** determine the value of a particular string. If it's an integer we treat
+	 * it as a number, but if it's a String we need to dig into the
+	 * variable/flag managers. */
 	private int getValue(String val) {
+		if (StringUtils.isNumber(val)) {
+			return Integer.parseInt(val);
+		} else if (Game.variables().exists(val)) {
+			return Game.variables().get(val);
+		} else if (Game.flags().isSet(val)) {
+			return 1;
+		} else if (StringUtils.isNotEmpty(val) && val.equalsIgnoreCase("true")) {
+			return 1;
+		}
 		return 0;
 	}
 

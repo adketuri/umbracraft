@@ -6,6 +6,7 @@ import java.util.Set;
 import net.alcuria.umbracraft.Db;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.editor.Editor;
+import net.alcuria.umbracraft.util.StringUtils;
 
 /** Manages states for all of the game's flags. Flags are initially created with
  * the {@link Editor} and in scripts their values change at runtime. This class
@@ -51,10 +52,7 @@ public class FlagManager {
 	/** @param id the flag ID
 	 * @return <code>true</code> if the flag is set */
 	public boolean isSet(String id) {
-		if (id == null) {
-			return false;
-		}
-		return enabledFlags.contains(id);
+		return StringUtils.isNotEmpty(id) && enabledFlags.contains(id);
 	}
 
 	/** Sets a flag, either enabling it or disabling it.

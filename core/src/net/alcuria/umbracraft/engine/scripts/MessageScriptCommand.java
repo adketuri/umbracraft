@@ -65,7 +65,7 @@ public class MessageScriptCommand extends ScriptCommand {
 
 	@Override
 	public String getName() {
-		return "Message: '" + StringUtils.truncate(message, 30) + "'";
+		return "Message: '" + StringUtils.truncate(message, 60) + "'";
 	}
 
 	@Override

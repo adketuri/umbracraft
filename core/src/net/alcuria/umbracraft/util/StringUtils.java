@@ -4,12 +4,6 @@ package net.alcuria.umbracraft.util;
  * @author Andrew Keturi */
 public class StringUtils {
 
-	/** @param str a string
-	 * @return <code>true</code> if the {@link String} is a digit */
-	public static boolean isDigit(String str) {
-		return isNotEmpty(str) && str.matches("^[+-]?\\d+$");
-	}
-
 	/** Checks whether or not a string is empty.
 	 * @param string a string to check
 	 * @return <code>true</code> if the string is both non-null and contains
@@ -18,6 +12,12 @@ public class StringUtils {
 	 *         <code>true</code>. */
 	public static boolean isNotEmpty(String string) {
 		return string != null && string.trim().length() > 0;
+	}
+
+	/** @param str a string
+	 * @return <code>true</code> if the {@link String} is a number */
+	public static boolean isNumber(String str) {
+		return isNotEmpty(str) && str.matches("^[+-]?\\d+$");
 	}
 
 	/** Truncates a string, appending ellipses if it's too long. */

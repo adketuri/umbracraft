@@ -20,7 +20,14 @@ public class VariableManager {
 
 	/** Saves all active variables to disk and disposes. */
 	public void dispose() {
+		// TODO: save
 		activeVariables.clear();
+	}
+
+	/** @param id the name of the variable
+	 * @return <code>true</code> if the id exists in the active variables map. */
+	public boolean exists(String id) {
+		return StringUtils.isNotEmpty(id) && activeVariables.containsKey(id);
 	}
 
 	/** Gets the value of a particular variable
