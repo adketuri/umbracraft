@@ -48,7 +48,6 @@ public class WindowStack implements EventListener {
 	}
 
 	public void pop(final Window<?> window) {
-		Game.log("popping " + window.getClass());
 		if (window != null) {
 			window.close(new Listener() {
 
@@ -85,7 +84,6 @@ public class WindowStack implements EventListener {
 				containsTouchable = true;
 				Game.log("Saving off input processor");
 			}
-			Game.log("pushing " + window.getClass());
 			windows.add(window);
 			window.open();
 		}

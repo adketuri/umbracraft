@@ -8,6 +8,7 @@ import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.ScriptEndedEvent;
 import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
+import net.alcuria.umbracraft.engine.scripts.ConditionalCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand.CommandState;
 import net.alcuria.umbracraft.util.StringUtils;
@@ -15,6 +16,7 @@ import net.alcuria.umbracraft.util.StringUtils;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 /** A component for handling scripted events, such as cutscenes. Consists of a
  * {@link ScriptPageDefinition} that is read and updated accordingly.
@@ -23,7 +25,7 @@ public class ScriptComponent implements Component, EventListener {
 
 	private boolean active = false;
 	private final Rectangle collisionRect = new Rectangle();
-	private ScriptCommand currentCommand;
+	private final Array<ScriptCommand> commandStack = new Array<ScriptCommand>();
 	private ScriptPageDefinition currentPage;
 	private boolean pressed = false, collided = false;
 	private ScriptDefinition script;
@@ -116,8 +118,10 @@ public class ScriptComponent implements Component, EventListener {
 				player.velocity.set(0, 0, 0);
 			}
 		}
-		currentCommand = currentPage.command;
-		currentCommand.setState(CommandState.NOT_STARTED);
+		// add the page's command to the stack
+		commandStack.clear();
+		commandStack.add(currentPage.command);
+		commandStack.get(0).setState(CommandState.NOT_STARTED);
 		active = true;
 		pressed = false;
 	}
@@ -140,6 +144,9 @@ public class ScriptComponent implements Component, EventListener {
 	@Override
 	public void update(Entity entity) {
 		// if we have some pages to execute, see if we can do that
+		if (currentPage == null) {
+			return;
+		}
 		if (!active) {
 			switch (currentPage.trigger) {
 			case INSTANT:
@@ -168,32 +175,51 @@ public class ScriptComponent implements Component, EventListener {
 	/** Updates the script, assumes all preconditions are met. (Eg., key has been
 	 * pressed, etc.) */
 	private void updateScript(Entity entity) {
-		// if its done, increment our index
-		if (currentCommand != null) {
-			switch (currentCommand.getState()) {
-			case COMPLETE:
-				currentCommand = currentCommand.getNext();
-				if (currentCommand == null && currentCommand.getParent() != null) {
-					currentCommand.setNext(currentCommand.getParent().getNext());
+		// ensure we have commands to execute
+		if (commandStack.size > 0) {
+			final ScriptCommand current = commandStack.get(commandStack.size - 1);
+			// get a reference to the top of the stack
+			if (current != null) {
+				switch (current.getState()) {
+				case COMPLETE:
+					Game.log("Completing " + current.getName());
+					final ScriptCommand next = current.getNext();
+					if (next != null) {
+						next.setState(CommandState.NOT_STARTED);
+					}
+					commandStack.set(commandStack.size - 1, next);
+					Game.log("  inserted, new size is " + commandStack.size);
+					Game.log("  Next is " + (next != null ? next.getName() : "null"));
+					if (current instanceof ConditionalCommand) {
+						final ConditionalCommand cond = (ConditionalCommand) current;
+						if (cond.isNextNested()) {
+							// we're inside a block so let's push it to the command stack
+							commandStack.add(cond.getCalculated());
+							cond.getCalculated().setState(CommandState.NOT_STARTED);
+							Game.log("    Inserting for cond: " + (cond.getCalculated().getName()));
+							Game.log("    new size is " + commandStack.size);
+						}
+
+					}
+					break;
+				case NOT_STARTED:
+					Game.log("Starting " + current.getName());
+					current.start(entity);
+					break;
+				case STARTED:
+					current.update();
+					break;
+				default:
+					break;
 				}
-				if (currentCommand != null) {
-					currentCommand.setState(CommandState.NOT_STARTED);
-				}
-				break;
-			case NOT_STARTED:
-				currentCommand.start(entity);
-				break;
-			case STARTED:
-				currentCommand.update();
-				break;
-			default:
-				break;
 			}
 		}
-		// check if we're done with all scripts
-		if (currentCommand == null) {
+		// check if we're done with all scripts. stack size changes above so we can't dump this in the else.
+		if (commandStack.size < 1) {
 			setInactive();
 			setCurrentPage(entity);
+		} else if (commandStack.get(commandStack.size - 1) == null) {
+			commandStack.pop();
 		}
 	}
 }

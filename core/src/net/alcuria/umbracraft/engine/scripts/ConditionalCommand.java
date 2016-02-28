@@ -32,7 +32,7 @@ public class ConditionalCommand extends BlockCommand {
 		}
 	}
 
-	private ScriptCommand calculatedNext;
+	private transient ScriptCommand calculatedNext;
 	@Tooltip("The comparison operation")
 	@Order(2)
 	public ConditionalComparison comparison = ConditionalComparison.OPT_0_EQU;
@@ -41,6 +41,7 @@ public class ConditionalCommand extends BlockCommand {
 	@Tooltip("Add an else statement")
 	@Order(4)
 	public boolean includeElse;
+	private transient boolean isNested;
 	@Tooltip("The comparison value, either a variable/flag or a constant")
 	@Order(1)
 	public String value1;
@@ -48,6 +49,11 @@ public class ConditionalCommand extends BlockCommand {
 	@Tooltip("The comparison value, either a variable/flag or a constant")
 	@Order(3)
 	public String value2;
+
+	/** @return the next {@link ScriptCommand} instruction */
+	public ScriptCommand getCalculated() {
+		return calculatedNext;
+	}
 
 	@Override
 	public Set<String> getFilter() {
@@ -83,6 +89,11 @@ public class ConditionalCommand extends BlockCommand {
 		return 0;
 	}
 
+	/** @return <code>true</code> if the next command is nested */
+	public boolean isNextNested() {
+		return isNested;
+	}
+
 	@Override
 	public void onCompleted() {
 
@@ -116,13 +127,16 @@ public class ConditionalCommand extends BlockCommand {
 
 		// determine which command comes next (inside conditional, inside else, or after conditional)
 		if (valid) {
-			calculatedNext = getNext();
+			calculatedNext = block; // go inside the block
+			isNested = true;
 		} else if (includeElse) {
-			calculatedNext = elseBlock;
+			calculatedNext = elseBlock; // go inside the else
+			isNested = true;
 		} else {
-			calculatedNext = getParent().getNext();
+			calculatedNext = getNext(); // fuck it, next instruction
+			isNested = false;
 		}
-
+		complete();
 	}
 
 	@Override

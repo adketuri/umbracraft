@@ -56,11 +56,6 @@ public abstract class ScriptCommand extends Definition {
 		return next;
 	}
 
-	/** Gets the parent command. May be <code>null</code>. */
-	public ScriptCommand getParent() {
-		return null;
-	}
-
 	/** @return the {@link CommandState} */
 	public CommandState getState() {
 		return state;
