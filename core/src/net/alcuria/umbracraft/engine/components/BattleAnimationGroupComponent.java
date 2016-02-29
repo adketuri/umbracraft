@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * {@link BattleAnimationGroupComponent#setPose(BattlePose)} when a pose change
  * is desired.
  * @author Andrew Keturi */
-public class BattleAnimationGroupComponent implements Component {
+public class BattleAnimationGroupComponent extends BaseComponent {
 
 	public static enum BattlePose {
 		APPROACH, ATTACK, DEAD, HURT, IDLE, RETURN

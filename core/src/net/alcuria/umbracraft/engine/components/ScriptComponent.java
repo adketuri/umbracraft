@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
+import net.alcuria.umbracraft.engine.events.KeyDownEvent;
 import net.alcuria.umbracraft.engine.events.ScriptEndedEvent;
 import net.alcuria.umbracraft.engine.events.ScriptStartedEvent;
 import net.alcuria.umbracraft.engine.scripts.ConditionalCommand;
@@ -21,7 +22,7 @@ import com.badlogic.gdx.utils.Array;
 /** A component for handling scripted events, such as cutscenes. Consists of a
  * {@link ScriptPageDefinition} that is read and updated accordingly.
  * @author Andrew Keturi */
-public class ScriptComponent implements Component, EventListener {
+public class ScriptComponent extends BaseComponent implements EventListener {
 
 	private boolean active = false;
 	private final Rectangle collisionRect = new Rectangle();

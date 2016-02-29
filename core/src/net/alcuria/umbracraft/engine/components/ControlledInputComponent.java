@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Directio
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
+import net.alcuria.umbracraft.engine.events.KeyDownEvent;
 import net.alcuria.umbracraft.engine.events.TouchpadCreatedEvent;
 import net.alcuria.umbracraft.engine.manager.input.InputHalter;
 
@@ -17,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 
 /** A component specifically for handling object input from the player.
  * @author Andrew Keturi */
-public class ControlledInputComponent implements Component, EventListener {
+public class ControlledInputComponent extends BaseComponent implements EventListener {
 	private static final int MARGIN = 6;
 	private static final float MAX_SPEED = 2; // max speed of the entity
 	private static final float MAX_SPEED_TIME = 0.12f; // time entity takes to reach max speed

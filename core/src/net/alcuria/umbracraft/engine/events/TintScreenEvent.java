@@ -6,7 +6,7 @@ import net.alcuria.umbracraft.listeners.Listener;
 /** An event to notify the {@link OverlayManager} when we want to tint the
  * screen/
  * @author Andrew Keturi */
-public class TintScreen extends Event {
+public class TintScreenEvent extends Event {
 	public Listener listener;
 	public float target, duration;
 
@@ -14,7 +14,7 @@ public class TintScreen extends Event {
 	 * @param duration the duration of the change, in seconds.
 	 * @param listener a {@link Listener} to invoke when tinting is complete.
 	 *        May be null. */
-	public TintScreen(float target, float duration, Listener listener) {
+	public TintScreenEvent(float target, float duration, Listener listener) {
 		this.target = target;
 		this.duration = duration;
 		this.listener = listener;

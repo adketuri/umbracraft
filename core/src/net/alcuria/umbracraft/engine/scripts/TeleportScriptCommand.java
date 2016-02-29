@@ -5,7 +5,7 @@ import java.util.Set;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
-import net.alcuria.umbracraft.engine.events.TintScreen;
+import net.alcuria.umbracraft.engine.events.TintScreenEvent;
 import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.utils.Array;
@@ -43,12 +43,12 @@ public class TeleportScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
-		Game.publisher().publish(new TintScreen(1, FADE_TIME, new Listener() {
+		Game.publisher().publish(new TintScreenEvent(1, FADE_TIME, new Listener() {
 
 			@Override
 			public void invoke() {
 				Game.publisher().publish(new MapChangedEvent(id));
-				Game.publisher().publish(new TintScreen(0, FADE_TIME, new Listener() {
+				Game.publisher().publish(new TintScreenEvent(0, FADE_TIME, new Listener() {
 
 					@Override
 					public void invoke() {

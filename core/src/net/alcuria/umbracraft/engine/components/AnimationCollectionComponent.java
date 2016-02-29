@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * reference to the current group based on the entity's velocity, position, and
  * so on.
  * @author Andrew Keturi */
-public class AnimationCollectionComponent implements Component {
+public class AnimationCollectionComponent extends BaseComponent {
 
 	public static enum Pose {
 		FALLING, IDLE, JUMPING, RUNNING, WALKING

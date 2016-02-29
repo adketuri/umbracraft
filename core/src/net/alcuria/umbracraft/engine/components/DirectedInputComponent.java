@@ -11,11 +11,10 @@ import com.badlogic.gdx.math.Vector3;
 /** A component for handling input directed by some other component (for
  * instance, a {@link ScriptComponent}.
  * @author Andrew Keturi */
-public class DirectedInputComponent implements Component {
+public class DirectedInputComponent extends BaseComponent {
 
+	private boolean choseNextNode;
 	private Direction direction;
-	private Entity entity;
-	private boolean haltMovement, choseNextNode;
 	private final Pathfinder pathfinder;
 	private int targetX, targetY, currentX, currentY;
 
@@ -25,8 +24,6 @@ public class DirectedInputComponent implements Component {
 
 	@Override
 	public void create(Entity entity) {
-		haltMovement = true;
-		this.entity = entity;
 	}
 
 	@Override
@@ -46,7 +43,6 @@ public class DirectedInputComponent implements Component {
 	 * @param x
 	 * @param y */
 	public void setTarget(int x, int y) {
-		haltMovement = false;
 		pathfinder.setTarget(new PathNode(currentX, currentY), new PathNode(x, y));
 	}
 

@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /** A component to handle map collision.
  * @author Andrew Keturi */
-public class MapCollisionComponent implements Component {
+public class MapCollisionComponent extends BaseComponent {
 
 	private BitmapFont debug;
 	private final int height, width;

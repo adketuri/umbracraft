@@ -6,7 +6,7 @@ import net.alcuria.umbracraft.definitions.map.TeleportDefinition.TeleportDirecti
 import net.alcuria.umbracraft.engine.AreaBuilder;
 import net.alcuria.umbracraft.engine.components.MapCollisionComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
-import net.alcuria.umbracraft.engine.events.TintScreen;
+import net.alcuria.umbracraft.engine.events.TintScreenEvent;
 import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.math.Rectangle;
@@ -72,14 +72,14 @@ public class Teleporter implements Disposable {
 			player.velocity.y = 0;
 		}
 		Game.publisher().publish(new SetInputEnabled(false));
-		Game.publisher().publish(new TintScreen(1, FADE_TIME, new Listener() {
+		Game.publisher().publish(new TintScreenEvent(1, FADE_TIME, new Listener() {
 
 			@Override
 			public void invoke() {
 				Game.areas().changeNode(direction);
 				Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
 				Game.view().focus();
-				Game.publisher().publish(new TintScreen(0, FADE_TIME, new Listener() {
+				Game.publisher().publish(new TintScreenEvent(0, FADE_TIME, new Listener() {
 
 					@Override
 					public void invoke() {

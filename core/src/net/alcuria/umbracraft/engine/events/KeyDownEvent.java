@@ -1,6 +1,4 @@
-package net.alcuria.umbracraft.engine.components;
-
-import net.alcuria.umbracraft.engine.events.Event;
+package net.alcuria.umbracraft.engine.events;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector3;

@@ -5,7 +5,7 @@ import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class DebugPositionComponent implements Component {
+public class DebugPositionComponent extends BaseComponent {
 
 	Texture debug;
 
