@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.entities;
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Db;
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
 import net.alcuria.umbracraft.definitions.config.ConfigDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
@@ -69,8 +70,8 @@ public class EntityManager {
 	/** Takes as input the name of a map in the {@link Db} and creates all
 	 * entities and their components for that map. Clears any existing entities.
 	 * @param scope the scope of entities to create
-	 * @param mapName the map id {@link String} */
-	public void create(EntityScope scope, final String mapName) {
+	 * @param name the map id {@link String} */
+	public void create(EntityScope scope, final String name) {
 		if (scope == null) {
 			throw new NullPointerException("scope cannot be null");
 		}
@@ -89,10 +90,15 @@ public class EntityManager {
 				}
 			}
 		} else if (scope == EntityScope.AREA) {
-
+			AreaDefinition area = Game.db().area(name);
+			for (String entityName : area.entities) {
+				Entity entity = new Entity(entityName);
+				addComponents(entity, entity.getName());
+				entities.get(EntityScope.AREA).add(entity);
+			}
 		} else if (scope == EntityScope.MAP) {
 			// create entities
-			MapDefinition mapDef = Game.db().map(mapName);
+			MapDefinition mapDef = Game.db().map(name);
 			mapHeight = mapDef.getHeight();
 			if (mapDef != null && mapDef.entities != null) {
 				for (EntityReferenceDefinition reference : mapDef.entities) {
@@ -104,7 +110,7 @@ public class EntityManager {
 					entities.get(EntityScope.MAP).add(entity);
 				}
 			} else {
-				Game.error("Map not found: " + mapName);
+				Game.error("Map not found: " + name);
 			}
 		}
 	}

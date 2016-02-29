@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.widget.AreaNodeWidget;
 import net.alcuria.umbracraft.editor.widget.AreaNodeWidget.NodeClickHandler;
 import net.alcuria.umbracraft.editor.widget.TeleportSelectorWidget;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
 /** The AreaListModule handles displaying UI for all the {@link AreaDefinition}
@@ -68,7 +70,19 @@ public class AreaListModule extends ListModule<AreaDefinition> implements NodeCl
 		AreaNodeWidget area = new AreaNodeWidget(definition.root, this);
 		widgetTable = new Table();
 		widgetTable.add(area).expand().fill();
-		content.stack(widgetTable, popupTable = new Table()).expand().fill();
+		content.stack(widgetTable, popupTable = new Table()).expand().fill().row();
+		content.add(new Table() {
+			{
+				add(new Table() {
+					{
+						add(WidgetUtils.tooltip("A list of entities present on this area."));
+						add(new VisLabel("Area Entities:"));
+					}
+				}).row();
+				WidgetUtils.divider(this, "blue");
+				WidgetUtils.modifiableList(this, definition.entities, new Array<String>(Editor.db().entities().keys()));
+			}
+		});
 	}
 
 	private Listener deleteListener(final AreaNodeDefinition definition) {

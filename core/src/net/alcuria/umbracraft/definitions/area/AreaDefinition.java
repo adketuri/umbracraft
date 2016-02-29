@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class AreaDefinition extends Definition {
 
+	/** A list of entities */
+	public Array<String> entities = new Array<String>();
 	/** the name of the area */
 	public String name;
 	/** the root node */
