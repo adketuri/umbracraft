@@ -1,7 +1,9 @@
 package net.alcuria.umbracraft.engine.entities;
 
+import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
+import net.alcuria.umbracraft.definitions.map.EntityReferenceDefinition;
 import net.alcuria.umbracraft.engine.components.Component;
 
 import com.badlogic.gdx.math.Vector3;
@@ -14,7 +16,7 @@ import com.badlogic.gdx.utils.Array;
 public class Entity implements BaseEntity, Comparable<Entity> {
 
 	public static final String PLAYER = "Player";
-
+	private final Array<String> args = new Array<String>();
 	private final Array<Component> components;
 	private String name, tag;
 	public Vector3 position, velocity;
@@ -126,6 +128,18 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		for (int i = 0; i < components.size; i++) {
 			components.get(i).render(this);
 		}
+	}
+
+	/** Given an {@link EntityReferenceDefinition}, sets the relevant fields of
+	 * the entity.
+	 * @param reference an {@link EntityReferenceDefinition} to use when
+	 *        updating this entity. */
+	public void setFromReference(EntityReferenceDefinition reference) {
+		setName(reference.name);
+		position.x = reference.x * Config.tileWidth;
+		position.y = reference.y * Config.tileWidth;
+		args.clear();
+		args.addAll(reference.arg1, reference.arg2, reference.arg3);
 	}
 
 	/** @param name the name to set */

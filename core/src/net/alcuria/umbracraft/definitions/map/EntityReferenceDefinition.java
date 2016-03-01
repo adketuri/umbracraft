@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.map;
 
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 
@@ -7,11 +8,17 @@ import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
  * per tile (not enforced).
  * @author Andrew Keturi */
 public class EntityReferenceDefinition extends Definition {
-	/** the name of the entity to use */
+	@Tooltip("The first argument (optional)")
+	public String arg1;
+	@Tooltip("The second argument (optional)")
+	public String arg2;
+	@Tooltip("The third argument (optional)")
+	public String arg3;
+	@Tooltip("The name of the entity to use")
 	public String name;
-	/** the x coordinate */
+	@Tooltip("The X coordinate")
 	public int x;
-	/** the y coordinate */
+	@Tooltip("The Y coordinate")
 	public int y;
 
 	@Override

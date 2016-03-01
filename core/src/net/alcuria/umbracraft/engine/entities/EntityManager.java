@@ -103,9 +103,7 @@ public class EntityManager {
 			if (mapDef != null && mapDef.entities != null) {
 				for (EntityReferenceDefinition reference : mapDef.entities) {
 					Entity entity = new Entity();
-					entity.setName(reference.name);
-					entity.position.x = reference.x * Config.tileWidth;
-					entity.position.y = reference.y * Config.tileWidth;
+					entity.setFromReference(reference);
 					addComponents(entity, reference.name);
 					entities.get(EntityScope.MAP).add(entity);
 				}
