@@ -33,7 +33,7 @@ public class Pathfinder {
 		public void draw(Color color, int altitude, SpriteBatch batch) {
 			batch.setColor(color);
 			final int w = Config.tileWidth;
-			//			Game.log(color + " " + x + " " + y);
+			//			Game.debug(color + " " + x + " " + y);
 			batch.draw(Game.assets().get("debug.png", Texture.class), x * w, y * w + altitude * w, w, w);
 			batch.setColor(Color.WHITE);
 		}
@@ -136,7 +136,7 @@ public class Pathfinder {
 
 			// ensure we still have open nodes
 			if (open.size <= 0) {
-				Game.log("No path found");
+				Game.debug("No path found");
 				break;
 			}
 
@@ -146,7 +146,7 @@ public class Pathfinder {
 			closed.add(cur);
 
 			if (cur.hasSameLocationAs(destination)) {
-				Game.log("Path found!");
+				Game.debug("Path found!");
 				solution.clear();
 				while (cur != null) {
 					solution.add(cur);

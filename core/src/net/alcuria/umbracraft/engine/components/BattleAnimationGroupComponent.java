@@ -47,7 +47,7 @@ public class BattleAnimationGroupComponent implements Component {
 			for (AnimationComponent anim : animations.values()) {
 				anim.create(entity);
 				anim.setMirrorAll(isMirrored);
-				//				anim.setOrigin(origin);
+				//anim.setOrigin(origin);
 			}
 			currentComponent = animations.get(BattlePose.IDLE);
 		}

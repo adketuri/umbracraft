@@ -65,6 +65,14 @@ public final class Game {
 		return db;
 	}
 
+	/** Logs only if we're in debug mode
+	 * @param string the debug message to print to console */
+	public static void debug(String string) {
+		if (debug) {
+			log(string);
+		}
+	}
+
 	/** @return the {@link EntityManager} consisting of all of the entities */
 	public static EntityManager entities() {
 		return entities;
