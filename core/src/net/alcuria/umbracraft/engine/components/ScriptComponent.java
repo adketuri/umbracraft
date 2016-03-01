@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.Array;
 /** A component for handling scripted events, such as cutscenes. Consists of a
  * {@link ScriptPageDefinition} that is read and updated accordingly.
  * @author Andrew Keturi */
-public class ScriptComponent extends BaseComponent implements EventListener {
+public class ScriptComponent implements Component, EventListener {
 
 	private boolean active = false;
 	private final Rectangle collisionRect = new Rectangle();

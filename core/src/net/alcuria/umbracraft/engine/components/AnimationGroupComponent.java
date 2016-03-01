@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 /** A component used for displaying components in particular directions.
  * @author Andrew Keturi */
-public class AnimationGroupComponent extends BaseComponent {
+public class AnimationGroupComponent implements Component {
 
 	/** Various animation facing directions
 	 * @author Andrew Keturi */

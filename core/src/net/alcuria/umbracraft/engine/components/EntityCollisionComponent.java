@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 /** A component for handling when an entity overlaps with another entity.
  * @author Andrew Keturi */
-public class EntityCollisionComponent extends BaseComponent {
+public class EntityCollisionComponent implements Component {
 
 	private final Rectangle r1 = new Rectangle(), r2 = new Rectangle();
 

@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 /** A component for handling input directed by some other component (for
  * instance, a {@link ScriptComponent}.
  * @author Andrew Keturi */
-public class DirectedInputComponent extends BaseComponent {
+public class DirectedInputComponent implements Component {
 
 	private boolean choseNextNode;
 	private Direction direction;

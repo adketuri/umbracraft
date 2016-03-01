@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Array;
 
 /** A component to display a single animation.
  * @author Andrew Keturi */
-public class AnimationComponent extends BaseComponent {
+public class AnimationComponent implements Component {
 
 	private float alpha = 1;
 	private Listener completeListener;
