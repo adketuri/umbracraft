@@ -28,6 +28,7 @@ public class ScriptComponent implements Component, EventListener {
 	private final Rectangle collisionRect = new Rectangle();
 	private final Array<ScriptCommand> commandStack = new Array<ScriptCommand>();
 	private ScriptPageDefinition currentPage;
+	private Entity entity;
 	private boolean pressed = false, collided = false;
 	private ScriptDefinition script;
 	private final Vector3 source = new Vector3();
@@ -42,6 +43,7 @@ public class ScriptComponent implements Component, EventListener {
 
 	@Override
 	public void create(final Entity entity) {
+		this.entity = entity;
 		setCurrentPage(entity);
 		Game.publisher().subscribe(this);
 	}
@@ -56,6 +58,8 @@ public class ScriptComponent implements Component, EventListener {
 		if (event instanceof KeyDownEvent) {
 			pressed = true;
 			source.set(((KeyDownEvent) event).source);
+		} else if (event instanceof FlagChangedEvent && entity != null && ((FlagChangedEvent) event).source != entity) {
+			setCurrentPage(entity);
 		}
 	}
 
@@ -84,7 +88,7 @@ public class ScriptComponent implements Component, EventListener {
 
 		// if the current page is the same as the last, we don't want to do anything
 		if (currentPage == oldPage) {
-			Game.log("Page did not change, ignoring setCurrentPage for entity: " + entity.getName());
+			Game.debug("Page did not change, ignoring setCurrentPage for entity: " + entity.getName());
 			return;
 		}
 
@@ -183,28 +187,28 @@ public class ScriptComponent implements Component, EventListener {
 			if (current != null) {
 				switch (current.getState()) {
 				case COMPLETE:
-					Game.log("Completing " + current.getName());
+					Game.debug("Completing " + current.getName());
 					final ScriptCommand next = current.getNext();
 					if (next != null) {
 						next.setState(CommandState.NOT_STARTED);
 					}
 					commandStack.set(commandStack.size - 1, next);
-					Game.log("  inserted, new size is " + commandStack.size);
-					Game.log("  Next is " + (next != null ? next.getName() : "null"));
+					Game.debug("  inserted, new size is " + commandStack.size);
+					Game.debug("  Next is " + (next != null ? next.getName() : "null"));
 					if (current instanceof ConditionalCommand) {
 						final ConditionalCommand cond = (ConditionalCommand) current;
 						if (cond.isNextNested()) {
 							// we're inside a block so let's push it to the command stack
 							commandStack.add(cond.getCalculated());
 							cond.getCalculated().setState(CommandState.NOT_STARTED);
-							Game.log("    Inserting for cond: " + (cond.getCalculated().getName()));
-							Game.log("    new size is " + commandStack.size);
+							Game.debug("    Inserting for cond: " + (cond.getCalculated().getName()));
+							Game.debug("    new size is " + commandStack.size);
 						}
 
 					}
 					break;
 				case NOT_STARTED:
-					Game.log("Starting " + current.getName());
+					Game.debug("Starting " + current.getName());
 					current.start(entity);
 					break;
 				case STARTED:

@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.FlagDefinition;
 import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.editor.Editor;
+import net.alcuria.umbracraft.engine.components.FlagChangedEvent;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.utils.Array;
@@ -50,13 +51,13 @@ public class FlagScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
+		Game.flags().set(id, enable);
+		Game.publisher().publish(new FlagChangedEvent(id, entity));
 	}
 
 	@Override
 	public void update() {
-		Game.flags().set(id, enable);
 		complete();
-
 	}
 
 }
