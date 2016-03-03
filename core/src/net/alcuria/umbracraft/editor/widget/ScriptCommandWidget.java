@@ -95,6 +95,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 	}
 
 	private static boolean consumedDown = false;
+	private ScriptCommand buffer;
 	private final ScriptCommand command;
 	private final ScriptPageWidget commandsWidget;
 	private final Table content, popup, buttonTable = new Table(), popupFields = new Table();
@@ -128,7 +129,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 								Game.log(command != null ? command.getName() : command + "");
 								ScriptPageWidget.selected.add(command);
 								if (getTapCount() > 1) {
-									createPopup("Insert Command", null, false);
+									createPopup("Insert Command", null);
 								}
 							}
 
@@ -153,21 +154,12 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				if (command != null && ScriptPageWidget.selected.contains(command) && !popup.isVisible()) {
 					if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 						Game.log("Editing...");
-						createPopup("Edit Command", Commands.getNameFrom(command), false);
+						createPopup("Edit Command", Commands.getNameFrom(command));
 						populate(popupFields, command.getClass(), command, populateConfig());
 						buttonTable.clear();
 						buttonTable.add(WidgetUtils.button("Update", commandUpdated()));
 					} else if (!(command instanceof EmptyCommand) && (Gdx.input.isKeyJustPressed(Keys.DEL) || Gdx.input.isKeyJustPressed(Keys.BACKSPACE))) {
-						Game.log("Deleting...");
-						final ScriptCommand next = command.getNext();
-						final ScriptCommand parent = page.getPrevious(page.command, command);
-						if (parent != null) {
-							parent.setNext(next);
-						} else {
-							// no parent, this new command now becomes the HEAD
-							page.command = next;
-						}
-						commandsWidget.setPage();
+						deleteSelectedCommand();
 					} else if (Gdx.input.isKeyJustPressed(Keys.UP)) {
 						Game.log("Pressed up");
 						final ScriptCommand parent = page.getPrevious(page.command, command);
@@ -185,6 +177,16 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 							ScriptPageWidget.selected.clear();
 							ScriptPageWidget.selected.add(command.getNext());
 						}
+					} else if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Keys.X) && !(command instanceof EmptyCommand)) {
+						buffer = command;
+						deleteSelectedCommand();
+					} else if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Keys.C) && !(command instanceof EmptyCommand)) {
+						buffer = command;
+					} else if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Keys.V) && !(command instanceof EmptyCommand)) {
+						//FIXME: broken
+						createdCommand = command;
+						Listener commandCreated = commandCreated();
+						commandCreated.invoke();
 					}
 				}
 			}
@@ -236,7 +238,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		};
 	};
 
-	private Listener commandCreated(final boolean insideCommand) {
+	private Listener commandCreated() {
 		return new Listener() {
 
 			@Override
@@ -281,7 +283,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		};
 	}
 
-	private void createPopup(final String title, final String defCommand, final boolean insideCommand) {
+	private void createPopup(final String title, final String defCommand) {
 		popup.setVisible(true);
 		popup.clear();
 		popupFields.clear();
@@ -300,13 +302,13 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				}
 			}
 		}).row();
-		suggestionsWidget.addSelectListener(createPopupFields(suggestionsWidget.getTextField(), insideCommand));
-		suggestionsWidget.setGenericPopulate(createPopupFields(suggestionsWidget.getTextField(), insideCommand));
+		suggestionsWidget.addSelectListener(createPopupFields(suggestionsWidget.getTextField()));
+		suggestionsWidget.setGenericPopulate(createPopupFields(suggestionsWidget.getTextField()));
 		popup.add(popupFields).expand().fill().row();
 		popup.add(buttonTable);
 	}
 
-	private Listener createPopupFields(final VisTextField textField, final boolean insideCommand) {
+	private Listener createPopupFields(final VisTextField textField) {
 		return new Listener() {
 			private String last = "";
 
@@ -325,7 +327,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 						}
 						populate(popupFields, localCommand.getCommandClass(), createdCommand, populateConfig());
 						buttonTable.clear();
-						buttonTable.add(WidgetUtils.button("Create", commandCreated(insideCommand)));
+						buttonTable.add(WidgetUtils.button("Create", commandCreated()));
 					} else {
 						popupFields.clear();
 						createdCommand = null;
@@ -335,6 +337,19 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			}
 
 		};
+	}
+
+	private void deleteSelectedCommand() {
+		Game.log("Deleting...");
+		final ScriptCommand next = command.getNext();
+		final ScriptCommand parent = page.getPrevious(page.command, command);
+		if (parent != null) {
+			parent.setNext(next);
+		} else {
+			// no parent, this new command now becomes the HEAD
+			page.command = next;
+		}
+		commandsWidget.setPage();
 	}
 
 	@Override

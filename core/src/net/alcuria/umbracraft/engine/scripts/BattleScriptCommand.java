@@ -58,5 +58,4 @@ public class BattleScriptCommand extends ScriptCommand {
 	public void update() {
 		complete();
 	}
-
 }
