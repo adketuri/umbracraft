@@ -13,7 +13,9 @@ import net.alcuria.umbracraft.util.StringUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-/** A block command to execute some commands if a given precondition is true.
+/** A block command to allow simple script control flow based based on some
+ * preconditions. This cannot parse any arbitrary logical expression. It is
+ * instead limited to only testing up to two separate conditions.
  * @author Andrew Keturi */
 public class ConditionalCommand extends BlockCommand {
 
@@ -34,23 +36,50 @@ public class ConditionalCommand extends BlockCommand {
 		}
 	}
 
+	/** Represents a logical operator in a conditional command
+	 * @author Andrew Keturi */
+	public static enum LogicalOperator {
+		OPT_0_OR("||"), OPT_1_AND("&&");
+
+		public String friendly;
+
+		private LogicalOperator(String friendly) {
+			this.friendly = friendly;
+		}
+
+		@Override
+		public String toString() {
+			return friendly;
+		}
+	}
+
 	private transient ScriptCommand calculatedNext;
-	@Tooltip("The comparison operation")
+	@Tooltip("The comparison operator")
 	@Order(2)
 	public ConditionalComparison comparison = ConditionalComparison.OPT_0_EQU;
+	@Tooltip("The second comparison operator")
+	@Order(6)
+	public ConditionalComparison comparison2 = ConditionalComparison.OPT_0_EQU;
 	/** The else command */
 	public ScriptCommand elseBlock = new EmptyCommand();
 	@Tooltip("Add an else statement")
-	@Order(4)
+	@Order(8)
 	public boolean includeElse;
 	private boolean isNested;
+	@Order(4)
+	public LogicalOperator logicalOperator = LogicalOperator.OPT_0_OR;
 	@Tooltip("The comparison value, either a variable/flag or a constant")
 	@Order(1)
-	public String value1;
-
+	public String value1 = "";
 	@Tooltip("The comparison value, either a variable/flag or a constant")
 	@Order(3)
-	public String value2;
+	public String value2 = "";
+	@Tooltip("The comparison value, either a variable/flag or a constant")
+	@Order(5)
+	public String value3 = "";
+	@Tooltip("The comparison value, either a variable/flag or a constant")
+	@Order(7)
+	public String value4 = "";
 
 	/** @return the next {@link ScriptCommand} instruction */
 	public ScriptCommand getCalculated() {
@@ -64,25 +93,24 @@ public class ConditionalCommand extends BlockCommand {
 
 	@Override
 	public String getName() {
-		return String.format("Conditional: %s %s %s", value1 != null ? value1 : "", comparison != null ? comparison : "", value2 != null ? value2 : "");
+		if (StringUtils.isNotEmpty(value3) && StringUtils.isNotEmpty(value4)) {
+			return String.format("Conditional: %s %s %s %s %s %s %s", value1, comparison, value2, logicalOperator, value3, comparison2, value4);
+		}
+		return String.format("Conditional: %s %s %s", value1, comparison, value2);
 	}
 
 	@Override
 	public ObjectMap<String, Array<String>> getSuggestions() {
 		return new ObjectMap<String, Array<String>>() {
 			{
-				put("value1", new Array<String>() {
-					{
-						addAll(Editor.db().flags().keys());
-						addAll(Editor.db().variables().keys());
-					}
-				});
-				put("value2", new Array<String>() {
-					{
-						addAll(Editor.db().flags().keys());
-						addAll(Editor.db().variables().keys());
-					}
-				});
+				for (int i = 1; i <= 4; i++) {
+					put("value" + i, new Array<String>() {
+						{
+							addAll(Editor.db().flags().keys());
+							addAll(Editor.db().variables().keys());
+						}
+					});
+				}
 			}
 		};
 	}
@@ -115,31 +143,20 @@ public class ConditionalCommand extends BlockCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
+		// 1. test the condition
 		boolean valid = false;
-		switch (comparison) {
-		case OPT_0_EQU:
-			valid = getValue(value1) == getValue(value2);
-			break;
-		case OPT_1_NEQ:
-			valid = getValue(value1) != getValue(value2);
-			break;
-		case OPT_2_GT:
-			valid = getValue(value1) > getValue(value2);
-			break;
-		case OPT_3_GTE:
-			valid = getValue(value1) >= getValue(value2);
-			break;
-		case OPT_4_LT:
-			valid = getValue(value1) < getValue(value2);
-			break;
-		case OPT_5_LTE:
-			valid = getValue(value1) <= getValue(value2);
-			break;
-		default:
-			break;
+		if (StringUtils.isNotEmpty(value3) && StringUtils.isNotEmpty(value4)) {
+			// if third and fourth values are present, use logical operator to test condition
+			if (logicalOperator == LogicalOperator.OPT_0_OR) {
+				valid = testCondition(value1, value2, comparison) || testCondition(value3, value4, comparison2);
+			} else if (logicalOperator == LogicalOperator.OPT_1_AND) {
+				valid = testCondition(value1, value2, comparison) && testCondition(value3, value4, comparison2);
+			}
+		} else {
+			// just use the first two values to test the condition
+			valid = testCondition(value1, value2, comparison);
 		}
-
-		// determine which command comes next (inside conditional, inside else, or after conditional)
+		// 2. determine which command comes next (inside conditional, inside else, or after conditional)
 		if (valid) {
 			calculatedNext = block; // go inside the block
 			isNested = true;
@@ -150,7 +167,27 @@ public class ConditionalCommand extends BlockCommand {
 			calculatedNext = getNext(); // fuck it, next instruction
 			isNested = false;
 		}
+		// 3. mark command for completion
 		complete();
+	}
+
+	private boolean testCondition(String valueA, String valueB, ConditionalComparison comp) {
+		switch (comp) {
+		case OPT_0_EQU:
+			return getValue(valueA) == getValue(valueB);
+		case OPT_1_NEQ:
+			return getValue(valueA) != getValue(valueB);
+		case OPT_2_GT:
+			return getValue(valueA) > getValue(valueB);
+		case OPT_3_GTE:
+			return getValue(valueA) >= getValue(valueB);
+		case OPT_4_LT:
+			return getValue(valueA) < getValue(valueB);
+		case OPT_5_LTE:
+			return getValue(valueA) <= getValue(valueB);
+		default:
+			return false;
+		}
 	}
 
 	@Override
