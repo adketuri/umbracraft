@@ -357,7 +357,7 @@ public class Map implements Disposable {
 				calculatedId = tilesetDefinition.treeWall + 3;
 			}
 		}
-		calculatedId = calculatedId - ((altitude - drop) * 16);
+		calculatedId = calculatedId - ((4 - drop) * (Config.tilesetWidth / Config.tileWidth));
 		return calculatedId;
 	}
 
