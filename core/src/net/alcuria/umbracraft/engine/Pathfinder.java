@@ -65,6 +65,13 @@ public class Pathfinder {
 		return solution;
 	}
 
+	private boolean isTraversible(Map map, PathNode cur, int destX, int destY) {
+		if (map.isStairs(cur.x, cur.y) && map.isStairs(destX, destY)) {
+			return true;
+		}
+		return (map.getAltitudeAt(destX, destY) - 1) <= map.getAltitudeAt(cur.x, cur.y);
+	}
+
 	/** Searches a list for a pathNode that matches the given x,y coordinates
 	 * @param list a list of {@link PathNode} objects
 	 * @param x the tile x coords
@@ -158,7 +165,7 @@ public class Pathfinder {
 			// foreach current node neighbor
 			for (int i = 0; i < dX.length; i++) {
 				// if neighbor is not traversible or neighbor is in closed, skip it
-				if (!map.isInBounds(cur.x + dX[i], cur.y + dY[i]) || map.getAltitudeAt(cur.x + dX[i], cur.y + dY[i]) > map.getAltitudeAt(cur.x, cur.y) || listContains(closed, cur.x + dX[i], cur.y + dY[i])) {
+				if (!map.isInBounds(cur.x + dX[i], cur.y + dY[i]) || !isTraversible(map, cur, cur.x + dX[i], cur.y + dY[i]) || listContains(closed, cur.x + dX[i], cur.y + dY[i])) {
 					continue;
 				}
 				PathNode neighbor = new PathNode(cur.x + dX[i], cur.y + dY[i]);

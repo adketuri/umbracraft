@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector3;
  * instance, a {@link ScriptComponent}.
  * @author Andrew Keturi */
 public class DirectedInputComponent implements Component {
-
+	private static final float TOLERANCE = 0f; // nonzero screws shit up
 	private boolean choseNextNode;
 	private Direction direction;
 	private final Pathfinder pathfinder;
@@ -49,12 +49,6 @@ public class DirectedInputComponent implements Component {
 	@Override
 	public void update(Entity entity) {
 		// stop any movement from the past frame
-		entity.velocity.x *= 0.7;
-		entity.velocity.y *= 0.7;
-		if (entity.velocity.epsilonEquals(Vector3.Zero, 0.1f)) {
-			entity.velocity.x = 0;
-			entity.velocity.y = 0;
-		}
 		currentX = (int) (entity.position.x / Config.tileWidth);
 		currentY = (int) (entity.position.y / Config.tileWidth);
 
@@ -62,6 +56,12 @@ public class DirectedInputComponent implements Component {
 
 		// see if we really need to move
 		if (pathfinder.getSolution().size <= 0) {
+			entity.velocity.x *= 0.7;
+			entity.velocity.y *= 0.7;
+			if (entity.velocity.epsilonEquals(Vector3.Zero, 0.1f)) {
+				entity.velocity.x = 0;
+				entity.velocity.y = 0;
+			}
 			return;
 		}
 
@@ -78,26 +78,26 @@ public class DirectedInputComponent implements Component {
 		}
 
 		// pick a new direction
-		if (currentX > targetX) {
-			if (currentY > targetY) {
+		if (currentX > targetX + TOLERANCE) {
+			if (currentY > targetY + TOLERANCE) {
 				direction = Direction.DOWNLEFT;
-			} else if (currentY < targetY) {
+			} else if (currentY < targetY + TOLERANCE) {
 				direction = Direction.UPLEFT;
 			} else {
 				direction = Direction.LEFT;
 			}
-		} else if (currentX < targetX) {
-			if (currentY > targetY) {
+		} else if (currentX < targetX + TOLERANCE) {
+			if (currentY > targetY + TOLERANCE) {
 				direction = Direction.DOWNRIGHT;
-			} else if (currentY < targetY) {
+			} else if (currentY < targetY + TOLERANCE) {
 				direction = Direction.UPRIGHT;
 			} else {
 				direction = Direction.RIGHT;
 			}
 		} else {
-			if (currentY > targetY) {
+			if (currentY > targetY + TOLERANCE) {
 				direction = Direction.DOWN;
-			} else if (currentY < targetY) {
+			} else if (currentY < targetY + TOLERANCE) {
 				direction = Direction.UP;
 			}
 		}

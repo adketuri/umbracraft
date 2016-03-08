@@ -502,6 +502,13 @@ public class Map implements Disposable {
 		return x >= 0 && x < altMap.length && y >= 0 && y < altMap[0].length;
 	}
 
+	/** @param x the x coordinate, in tiles
+	 * @param y the y coordinate, in tiles
+	 * @return <code>true</code> if the coordinates contain stairs */
+	public boolean isStairs(int x, int y) {
+		return getTypeAt(x, y) == tilesetDefinition.stairs;
+	}
+
 	/** Renders every visible layer.
 	 * @param row the map row to render, in tiles
 	 * @param xOffset the camera offset in tiles, to ensure we only render tiles
