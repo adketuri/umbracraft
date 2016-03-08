@@ -118,6 +118,9 @@ public abstract class ListModule<T extends Definition> extends Module<ListDefini
 				for (final Definition d : sortedDefinitions) {
 					if (d.getTag() != null && !d.getTag().equals(heading)) {
 						heading = d.getTag();
+						if (expandedTags.size() == 0) {
+							expandedTags.add(heading);
+						}
 						add(new Table() {
 							{
 								add(new VisLabel(StringUtils.isNotEmpty(d.getTag()) ? d.getTag() : "Untagged")).expandX();
