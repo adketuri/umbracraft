@@ -20,6 +20,14 @@ public class FlagScriptCommand extends ScriptCommand {
 	public String id;
 
 	@Override
+	public ScriptCommand copy() {
+		FlagScriptCommand cmd = new FlagScriptCommand();
+		cmd.enable = enable;
+		cmd.id = id;
+		return cmd;
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		return null;
 	}

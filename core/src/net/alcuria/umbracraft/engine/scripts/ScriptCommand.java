@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * serialized. Additionally, there are some implementation details in this
  * implementing ScriptCommands (for now).
  * @author Andrew Keturi */
-public abstract class ScriptCommand extends Definition {
+public abstract class ScriptCommand extends Definition implements Cloneable {
 
 	/** The current state of the command as it is being executed.
 	 * @author Andrew Keturi */
@@ -43,6 +43,9 @@ public abstract class ScriptCommand extends Definition {
 		state = CommandState.COMPLETE;
 		onCompleted();
 	}
+
+	/** Called to make a copy */
+	public abstract ScriptCommand copy();
 
 	/** Called by the editor to get a filter on the commands to show */
 	public abstract Set<String> getFilter();

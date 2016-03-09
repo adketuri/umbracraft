@@ -20,6 +20,14 @@ public class RemoveEntityCommand extends ScriptCommand {
 	public boolean self;
 
 	@Override
+	public ScriptCommand copy() {
+		RemoveEntityCommand cmd = new RemoveEntityCommand();
+		cmd.id = id;
+		cmd.self = self;
+		return cmd;
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		return null;
 	}

@@ -13,6 +13,11 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class EmptyCommand extends ScriptCommand {
 
 	@Override
+	public ScriptCommand copy() {
+		return new EmptyCommand();
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		return null;
 	}

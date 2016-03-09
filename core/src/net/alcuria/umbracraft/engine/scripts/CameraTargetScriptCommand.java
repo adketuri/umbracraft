@@ -26,6 +26,13 @@ public class CameraTargetScriptCommand extends ScriptCommand {
 	}
 
 	@Override
+	public CameraTargetScriptCommand copy() {
+		CameraTargetScriptCommand command = new CameraTargetScriptCommand();
+		command.name = name;
+		return command;
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		return null;
 	}

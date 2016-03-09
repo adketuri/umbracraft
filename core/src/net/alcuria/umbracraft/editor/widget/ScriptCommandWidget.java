@@ -95,7 +95,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 	}
 
 	private static boolean consumedDown = false;
-	private ScriptCommand buffer;
+	private static ScriptCommand copiedCommand;
 	private final ScriptCommand command;
 	private final ScriptPageWidget commandsWidget;
 	private final Table content, popup, buttonTable = new Table(), popupFields = new Table();
@@ -178,15 +178,15 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 							ScriptPageWidget.selected.add(command.getNext());
 						}
 					} else if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Keys.X) && !(command instanceof EmptyCommand)) {
-						buffer = command;
+						copiedCommand = command.copy();
 						deleteSelectedCommand();
 					} else if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Keys.C) && !(command instanceof EmptyCommand)) {
-						buffer = command;
-					} else if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Keys.V) && !(command instanceof EmptyCommand)) {
-						//FIXME: broken
-						createdCommand = command;
+						copiedCommand = command.copy();
+					} else if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Keys.V) && copiedCommand != null) {
+						createdCommand = copiedCommand;
 						Listener commandCreated = commandCreated();
 						commandCreated.invoke();
+						copiedCommand = createdCommand.copy();
 					}
 				}
 			}

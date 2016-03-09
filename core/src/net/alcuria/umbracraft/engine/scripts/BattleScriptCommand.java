@@ -20,6 +20,13 @@ public class BattleScriptCommand extends ScriptCommand {
 	}
 
 	@Override
+	public ScriptCommand copy() {
+		BattleScriptCommand command = new BattleScriptCommand();
+		command.id = id;
+		return command;
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		return null;
 	}

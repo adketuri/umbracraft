@@ -59,6 +59,17 @@ public class MessageScriptCommand extends ScriptCommand {
 	}
 
 	@Override
+	public ScriptCommand copy() {
+		MessageScriptCommand cmd = new MessageScriptCommand();
+		cmd.emotion = emotion;
+		cmd.faceId = faceId;
+		cmd.message = message;
+		cmd.name = name;
+		cmd.window = window;
+		return cmd;
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		return null;
 	}

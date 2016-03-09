@@ -100,6 +100,21 @@ public class ControlVariableCommand extends ScriptCommand {
 	}
 
 	@Override
+	public ScriptCommand copy() {
+		ControlVariableCommand cmd = new ControlVariableCommand();
+		cmd.constant = constant;
+		cmd.entityId = entityId;
+		cmd.id = id;
+		cmd.max = max;
+		cmd.min = min;
+		cmd.operation = operation;
+		cmd.self = self;
+		cmd.type = type;
+		cmd.variableId = variableId;
+		return cmd;
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		final HashSet<String> set = new HashSet<>();
 		if (type == null) {

@@ -81,6 +81,21 @@ public class ConditionalCommand extends BlockCommand {
 	@Order(7)
 	public String value4 = "";
 
+	@Override
+	public ScriptCommand copy() {
+		ConditionalCommand cmd = new ConditionalCommand();
+		cmd.comparison = comparison;
+		cmd.comparison2 = comparison2;
+		cmd.elseBlock = elseBlock;
+		cmd.includeElse = includeElse;
+		cmd.logicalOperator = logicalOperator;
+		cmd.value1 = value1;
+		cmd.value2 = value2;
+		cmd.value3 = value3;
+		cmd.value4 = value4;
+		return cmd;
+	}
+
 	/** @return the next {@link ScriptCommand} instruction */
 	public ScriptCommand getCalculated() {
 		return calculatedNext;

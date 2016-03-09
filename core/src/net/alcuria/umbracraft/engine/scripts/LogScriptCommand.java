@@ -23,6 +23,11 @@ public class LogScriptCommand extends ScriptCommand {
 	}
 
 	@Override
+	public ScriptCommand copy() {
+		return new LogScriptCommand(message);
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		return null;
 	}

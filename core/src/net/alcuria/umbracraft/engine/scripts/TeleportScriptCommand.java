@@ -23,6 +23,11 @@ public class TeleportScriptCommand extends ScriptCommand {
 	}
 
 	@Override
+	public ScriptCommand copy() {
+		return new TeleportScriptCommand(id);
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		return null;
 	}

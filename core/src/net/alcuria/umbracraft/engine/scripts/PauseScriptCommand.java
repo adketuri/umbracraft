@@ -22,6 +22,11 @@ public class PauseScriptCommand extends ScriptCommand {
 	}
 
 	@Override
+	public ScriptCommand copy() {
+		return new PauseScriptCommand(time);
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		return null;
 	}

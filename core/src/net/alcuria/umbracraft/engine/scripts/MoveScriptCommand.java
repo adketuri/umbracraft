@@ -44,6 +44,17 @@ public class MoveScriptCommand extends ScriptCommand {
 	}
 
 	@Override
+	public ScriptCommand copy() {
+		MoveScriptCommand cmd = new MoveScriptCommand();
+		cmd.id = id;
+		cmd.relative = relative;
+		cmd.self = self;
+		cmd.x = x;
+		cmd.y = y;
+		return cmd;
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		return null;
 	}

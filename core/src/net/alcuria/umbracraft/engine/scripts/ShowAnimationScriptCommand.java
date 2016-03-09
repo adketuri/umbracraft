@@ -39,6 +39,17 @@ public class ShowAnimationScriptCommand extends ScriptCommand {
 	}
 
 	@Override
+	public ScriptCommand copy() {
+		ShowAnimationScriptCommand cmd = new ShowAnimationScriptCommand();
+		cmd.anim = anim;
+		cmd.removeAfter = removeAfter;
+		cmd.self = self;
+		cmd.target = target;
+		cmd.wait = wait;
+		return cmd;
+	}
+
+	@Override
 	public Set<String> getFilter() {
 		return null;
 	}
