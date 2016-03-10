@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.engine.Pathfinder.PathNode;
 import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 /** A component for handling input directed by some other component (for
@@ -16,6 +17,7 @@ public class DirectedInputComponent implements Component {
 	private boolean choseNextNode;
 	private Direction direction;
 	private final Pathfinder pathfinder;
+	private final Vector2 target = new Vector2();
 	private int targetX, targetY, currentX, currentY;
 
 	public DirectedInputComponent() {
@@ -77,63 +79,9 @@ public class DirectedInputComponent implements Component {
 			return;
 		}
 
-		// pick a new direction
-		if (currentX > targetX + TOLERANCE) {
-			if (currentY > targetY + TOLERANCE) {
-				direction = Direction.DOWNLEFT;
-			} else if (currentY < targetY + TOLERANCE) {
-				direction = Direction.UPLEFT;
-			} else {
-				direction = Direction.LEFT;
-			}
-		} else if (currentX < targetX + TOLERANCE) {
-			if (currentY > targetY + TOLERANCE) {
-				direction = Direction.DOWNRIGHT;
-			} else if (currentY < targetY + TOLERANCE) {
-				direction = Direction.UPRIGHT;
-			} else {
-				direction = Direction.RIGHT;
-			}
-		} else {
-			if (currentY > targetY + TOLERANCE) {
-				direction = Direction.DOWN;
-			} else if (currentY < targetY + TOLERANCE) {
-				direction = Direction.UP;
-			}
-		}
-
-		// update velocity
-		switch (direction) {
-		case DOWN:
-			entity.velocity.y = -2;
-			break;
-		case DOWNLEFT:
-			entity.velocity.x = -2 * 0.707f;
-			entity.velocity.y = -2 * 0.707f;
-			break;
-		case DOWNRIGHT:
-			entity.velocity.x = 2 * 0.707f;
-			entity.velocity.y = -2 * 0.707f;
-			break;
-		case LEFT:
-			entity.velocity.x = -2;
-			break;
-		case RIGHT:
-			entity.velocity.x = 2;
-			break;
-		case UP:
-			entity.velocity.y = 2;
-			break;
-		case UPLEFT:
-			entity.velocity.x = -2 * 0.707f;
-			entity.velocity.y = 2 * 0.707f;
-			break;
-		case UPRIGHT:
-			entity.velocity.x = 2 * 0.707f;
-			entity.velocity.y = 2 * 0.707f;
-			break;
-		default:
-			break;
-		}
+		target.set(targetX * Config.tileWidth + Config.tileWidth / 2, targetY * Config.tileWidth + Config.tileWidth / 2);
+		target.sub(entity.position.x, entity.position.y);
+		target.setLength(Math.min(target.len(), 2));
+		entity.velocity.set(target.x, target.y, entity.velocity.z);
 	}
 }

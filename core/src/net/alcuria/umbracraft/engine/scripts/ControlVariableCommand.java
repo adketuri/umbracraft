@@ -22,7 +22,7 @@ public class ControlVariableCommand extends ScriptCommand {
 	/** The operations we may perform on a variable
 	 * @author Andrew Keturi */
 	public static enum ControlVariableOperation {
-		OPT_0_ASSIGN("="), OPT_1_ADD("+"), OPT_2_SUBTRACT("-"), OPT_3_MULTIPLY("*"), OPT_4_DIVIDE("/"), OPT_5_MOD("%");
+		OPT_0_ASSIGN("="), OPT_1_ADD("+"), OPT_2_SUBTRACT("-"), OPT_3_MULTIPLY("*"), OPT_4_DIVIDE("/"), OPT_5_MOD("%"), OPT_6_ABS("abs(x)");
 
 		public String friendly;
 
@@ -160,19 +160,19 @@ public class ControlVariableCommand extends ScriptCommand {
 			operand = constant;
 			break;
 		case ENTITY_X_POS:
-			final Entity e = Game.entities().find(entityId);
+			final Entity e = self ? entity : Game.entities().find(entityId);
 			if (e != null) {
 				operand = (int) (e.position.x / Config.tileWidth);
 			} else {
-				Game.error("Entity not found on map: " + e.getName());
+				Game.error("Entity not found on map: " + entityId);
 			}
 			break;
 		case ENTITY_Y_POS:
-			final Entity e2 = Game.entities().find(entityId);
+			final Entity e2 = self ? entity : Game.entities().find(entityId);
 			if (e2 != null) {
 				operand = (int) (e2.position.y / Config.tileWidth);
 			} else {
-				Game.error("Entity not found on map: " + e2.getName());
+				Game.error("Entity not found on map: " + entityId);
 			}
 			break;
 		case RANDOM:
@@ -207,6 +207,11 @@ public class ControlVariableCommand extends ScriptCommand {
 		case OPT_0_ASSIGN:
 			value = operand;
 			break;
+		case OPT_6_ABS:
+			value = Math.abs(operand);
+			break;
+		default:
+			break;
 		}
 
 		// update our variable db
@@ -220,11 +225,11 @@ public class ControlVariableCommand extends ScriptCommand {
 			return String.valueOf(constant);
 		case ENTITY_X_POS:
 		case ENTITY_Y_POS:
-			return entityId;
+			return self ? "<self>" : entityId;
 		case RANDOM:
 			return String.format("rand(%d, %d)", min, max);
 		case VARIABLE_VALUE:
-			return "valueOf(" + variableId + ")";
+			return variableId;
 		}
 		return entityId;
 	}

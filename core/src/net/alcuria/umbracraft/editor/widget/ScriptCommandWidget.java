@@ -153,7 +153,6 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 				// handle keys
 				if (command != null && ScriptPageWidget.selected.contains(command) && !popup.isVisible()) {
 					if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
-						Game.log("Editing...");
 						createPopup("Edit Command", Commands.getNameFrom(command));
 						populate(popupFields, command.getClass(), command, populateConfig());
 						buttonTable.clear();
@@ -161,7 +160,6 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 					} else if (!(command instanceof EmptyCommand) && (Gdx.input.isKeyJustPressed(Keys.DEL) || Gdx.input.isKeyJustPressed(Keys.BACKSPACE))) {
 						deleteSelectedCommand();
 					} else if (Gdx.input.isKeyJustPressed(Keys.UP)) {
-						Game.log("Pressed up");
 						final ScriptCommand parent = page.getPrevious(page.command, command);
 						if (parent != null) {
 							ScriptPageWidget.selected.clear();
@@ -173,7 +171,6 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 							ScriptPageWidget.selected.clear();
 							ScriptPageWidget.selected.add(((BlockCommand) command).block);
 						} else if (command.getNext() != null) {
-							Game.log("Pressed down, " + command != null ? command.getName() : "");
 							ScriptPageWidget.selected.clear();
 							ScriptPageWidget.selected.add(command.getNext());
 						}

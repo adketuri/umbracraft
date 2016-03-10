@@ -20,6 +20,8 @@ public class MoveScriptCommand extends ScriptCommand {
 
 	@Tooltip("The entity id we wish to move")
 	public String id = "";
+	@Tooltip("If checked, movement happens instantaneously")
+	public boolean instant;
 	@Tooltip("If checked, movement is done relative to the entity's coordinates")
 	public boolean relative;
 	@Tooltip("If checked, ignore id and just move the entity this script is attached to")
@@ -51,6 +53,7 @@ public class MoveScriptCommand extends ScriptCommand {
 		cmd.self = self;
 		cmd.x = x;
 		cmd.y = y;
+		cmd.instant = instant;
 		return cmd;
 	}
 
@@ -61,7 +64,7 @@ public class MoveScriptCommand extends ScriptCommand {
 
 	@Override
 	public String getName() {
-		return String.format("Move: %s to (%s, %s, %s)", id, x, y, relative ? "relative" : "absolute");
+		return String.format("Move: %s to (%s, %s) %s, %s", self ? "<self>" : id, x, y, relative ? "relative" : "absolute", instant ? "instant" : "");
 	}
 
 	@Override
@@ -85,14 +88,24 @@ public class MoveScriptCommand extends ScriptCommand {
 		Entity target = self ? entity : Game.entities().find(id);
 		if (target != null) {
 			DirectedInputComponent component = target.getComponent(DirectedInputComponent.class);
-			if (component != null) {
+			if (component != null || instant) {
 				// x/y can either be numbers or variables in the game's db
 				int convertedX = StringUtils.isNumber(x) ? Integer.valueOf(x) : Game.variables().get(x);
 				int convertedY = StringUtils.isNumber(y) ? Integer.valueOf(y) : Game.variables().get(y);
-				if (relative) {
-					component.setTarget((int) target.position.x / Config.tileWidth + convertedX, (int) target.position.y / Config.tileWidth + convertedY);
+				if (instant) {
+					if (relative) {
+						target.position.x += (convertedX * Config.tileWidth) + Config.tileWidth / 2;
+						target.position.y += (convertedY * Config.tileWidth) + Config.tileWidth / 2;
+					} else {
+						target.position.x = convertedX;
+						target.position.y = convertedY;
+					}
 				} else {
-					component.setTarget(convertedX, convertedY);
+					if (relative) {
+						component.setTarget((int) target.position.x / Config.tileWidth + convertedX, (int) target.position.y / Config.tileWidth + convertedY);
+					} else {
+						component.setTarget(convertedX, convertedY);
+					}
 				}
 			} else {
 				Game.error("Entity has no DirectedInputComponent so it cannot be moved.");
