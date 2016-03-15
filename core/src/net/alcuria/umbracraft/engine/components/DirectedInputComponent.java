@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Config;
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.Pathfinder;
 import net.alcuria.umbracraft.engine.Pathfinder.PathNode;
 import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
@@ -16,6 +17,8 @@ public class DirectedInputComponent implements Component {
 	private static final float TOLERANCE = 0f; // nonzero screws shit up
 	private boolean choseNextNode;
 	private Direction direction;
+	private Entity entity;
+	private final Vector3 lastPosition = new Vector3();
 	private final Pathfinder pathfinder;
 	private final Vector2 target = new Vector2();
 	private int targetX, targetY, currentX, currentY;
@@ -26,6 +29,7 @@ public class DirectedInputComponent implements Component {
 
 	@Override
 	public void create(Entity entity) {
+		this.entity = entity;
 	}
 
 	@Override
@@ -41,18 +45,30 @@ public class DirectedInputComponent implements Component {
 		pathfinder.renderPaths();
 	}
 
+	public void resetTarget(int i, int j) {
+		pathfinder.stop();
+		targetX = i;
+		targetY = j;
+	}
+
 	/** Sets the target to walk to
 	 * @param x
 	 * @param y */
 	public void setTarget(int x, int y) {
-		pathfinder.setTarget(new PathNode(currentX, currentY), new PathNode(x, y));
+		pathfinder.setTarget(new PathNode((int) (entity.position.x / Config.tileWidth), (int) (entity.position.y / Config.tileWidth)), new PathNode(x, y));
 	}
 
 	@Override
 	public void update(Entity entity) {
-		// stop any movement from the past frame
 		currentX = (int) (entity.position.x / Config.tileWidth);
 		currentY = (int) (entity.position.y / Config.tileWidth);
+
+		// see if we're stuck, if so try rejiggering the pathfinder
+		if (((entity.position.epsilonEquals(lastPosition, 0.01f) && (targetX != currentX || targetY != currentY)))) {
+			//			setTarget(targetX, targetY); //FIXME: too many crazy npe's
+			Game.log("STUCK " + targetX + " " + targetY);
+			lastPosition.set(entity.position);
+		}
 
 		pathfinder.update(entity);
 
@@ -73,15 +89,70 @@ public class DirectedInputComponent implements Component {
 			targetY = lastNode.y;
 			choseNextNode = true;
 		}
-		if (targetX == currentX && targetY == currentY) {
+		if (targetX == currentX && targetY == currentY && pathfinder.getSolution().size > 0) {
 			choseNextNode = false;
 			pathfinder.getSolution().removeIndex(pathfinder.getSolution().size - 1);
 			return;
 		}
 
-		target.set(targetX * Config.tileWidth + Config.tileWidth / 2, targetY * Config.tileWidth + Config.tileWidth / 2);
-		target.sub(entity.position.x, entity.position.y);
-		target.setLength(Math.min(target.len(), 2));
-		entity.velocity.set(target.x, target.y, entity.velocity.z);
+		// pick a new direction
+		if (currentX > targetX + TOLERANCE) {
+			if (currentY > targetY + TOLERANCE) {
+				direction = Direction.DOWNLEFT;
+			} else if (currentY < targetY + TOLERANCE) {
+				direction = Direction.UPLEFT;
+			} else {
+				direction = Direction.LEFT;
+			}
+		} else if (currentX < targetX + TOLERANCE) {
+			if (currentY > targetY + TOLERANCE) {
+				direction = Direction.DOWNRIGHT;
+			} else if (currentY < targetY + TOLERANCE) {
+				direction = Direction.UPRIGHT;
+			} else {
+				direction = Direction.RIGHT;
+			}
+		} else {
+			if (currentY > targetY + TOLERANCE) {
+				direction = Direction.DOWN;
+			} else if (currentY < targetY + TOLERANCE) {
+				direction = Direction.UP;
+			}
+		}
+		lastPosition.set(entity.position);
+		// update velocity
+		switch (direction) {
+		case DOWN:
+			entity.velocity.y = -2;
+			break;
+		case DOWNLEFT:
+			entity.velocity.x = -2 * 0.707f;
+			entity.velocity.y = -2 * 0.707f;
+			break;
+		case DOWNRIGHT:
+			entity.velocity.x = 2 * 0.707f;
+			entity.velocity.y = -2 * 0.707f;
+			break;
+		case LEFT:
+			entity.velocity.x = -2;
+			break;
+		case RIGHT:
+			entity.velocity.x = 2;
+			break;
+		case UP:
+			entity.velocity.y = 2;
+			break;
+		case UPLEFT:
+			entity.velocity.x = -2 * 0.707f;
+			entity.velocity.y = 2 * 0.707f;
+			break;
+		case UPRIGHT:
+			entity.velocity.x = 2 * 0.707f;
+			entity.velocity.y = 2 * 0.707f;
+			break;
+		default:
+			break;
+		}
+
 	}
 }

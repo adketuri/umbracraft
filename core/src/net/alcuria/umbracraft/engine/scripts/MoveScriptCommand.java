@@ -93,17 +93,22 @@ public class MoveScriptCommand extends ScriptCommand {
 				int convertedX = StringUtils.isNumber(x) ? Integer.valueOf(x) : Game.variables().get(x);
 				int convertedY = StringUtils.isNumber(y) ? Integer.valueOf(y) : Game.variables().get(y);
 				if (instant) {
+					target.velocity.x = 0;
+					target.velocity.y = 0;
 					if (relative) {
 						target.position.x += (convertedX * Config.tileWidth) + Config.tileWidth / 2;
 						target.position.y += (convertedY * Config.tileWidth) + Config.tileWidth / 2;
 					} else {
-						target.position.x = convertedX;
-						target.position.y = convertedY;
+						Game.log("target set to instant " + convertedX + " " + convertedY);
+						target.position.x = convertedX * Config.tileWidth;
+						target.position.y = convertedY * Config.tileWidth;
 					}
+					component.resetTarget((int) (target.position.x / Config.tileWidth), (int) (target.position.y / Config.tileWidth));
 				} else {
 					if (relative) {
 						component.setTarget((int) target.position.x / Config.tileWidth + convertedX, (int) target.position.y / Config.tileWidth + convertedY);
 					} else {
+						Game.log("target set to moved " + convertedX + " " + convertedY);
 						component.setTarget(convertedX, convertedY);
 					}
 				}

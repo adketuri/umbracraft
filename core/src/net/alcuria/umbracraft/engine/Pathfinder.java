@@ -119,6 +119,10 @@ public class Pathfinder {
 		if (destination == null) {
 			throw new NullPointerException("destination cannot be null");
 		}
+		if (source.hasSameLocationAs(destination)) {
+			Game.log("Target is already at destination");
+			return;
+		}
 		// clear out the lists
 		open.clear();
 		closed.clear();
@@ -126,12 +130,13 @@ public class Pathfinder {
 		this.source = source;
 		this.destination = destination;
 		this.source.f = Heuristic.calculateFCost(source, destination, source);
-		new Thread("Pathfinder") {
-			@Override
-			public void run() {
-				solve();
-			};
-		}.start();
+		//		new Thread("Pathfinder") {
+		//			@Override
+		//			public void run() {
+		//				solve();
+		//			};
+		//		}.start();
+		solve();
 	}
 
 	private void solve() {
@@ -182,6 +187,12 @@ public class Pathfinder {
 			}
 
 		}
+	}
+
+	public void stop() {
+		open.clear();
+		solution.clear();
+		closed.clear();
 	}
 
 	public void update(Entity entity) {
