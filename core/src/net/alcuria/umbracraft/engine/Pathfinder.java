@@ -56,6 +56,7 @@ public class Pathfinder {
 	private PathNode destination, source;
 	private final Array<PathNode> open = new Array<PathNode>();
 	private final Array<PathNode> solution = new Array<PathNode>();
+	private final boolean threaded = false;
 
 	public Pathfinder(DirectedInputComponent component) {
 		this.component = component;
@@ -130,13 +131,16 @@ public class Pathfinder {
 		this.source = source;
 		this.destination = destination;
 		this.source.f = Heuristic.calculateFCost(source, destination, source);
-		//		new Thread("Pathfinder") {
-		//			@Override
-		//			public void run() {
-		//				solve();
-		//			};
-		//		}.start();
-		solve();
+		if (threaded) {
+			new Thread("Pathfinder") {
+				@Override
+				public void run() {
+					solve();
+				};
+			}.start();
+		} else {
+			solve();
+		}
 	}
 
 	private void solve() {
