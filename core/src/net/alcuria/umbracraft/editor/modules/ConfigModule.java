@@ -46,6 +46,18 @@ public class ConfigModule extends Module<ConfigDefinition> {
 				WidgetUtils.modifiableList(this, rootDefinition.globalEntities, new Array<String>(Editor.db().entities().keys()));
 			}
 		});
+		content.add(new Table() {
+			{
+				add(new Table() {
+					{
+						add(WidgetUtils.tooltip("The default party."));
+						add(new VisLabel("Starting Party:"));
+					}
+				}).row();
+				WidgetUtils.divider(this, "blue");
+				WidgetUtils.modifiableList(this, rootDefinition.startingParty, new Array<String>(Editor.db().heroes().keys()));
+			}
+		});
 	}
 
 }

@@ -9,6 +9,7 @@ import net.alcuria.umbracraft.engine.events.MapChangedEvent;
 import net.alcuria.umbracraft.engine.manager.input.OnscreenInputManager;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.windows.WindowStack;
+import net.alcuria.umbracraft.party.PartyMember;
 
 import com.badlogic.gdx.math.Rectangle;
 
@@ -25,8 +26,16 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 		windows = new WindowStack();
 		teleporter = new Teleporter();
 		Game.publisher().subscribe(this);
+
+		// set the starting party
+		for (String hero : Game.db().config().startingParty) {
+			Game.party().addMember(new PartyMember(hero));
+		}
+		// set the starting area/map location
 		Game.entities().create(EntityScope.MAP, WorldUtils.getStartingMapName());
 		Game.entities().create(EntityScope.AREA, Game.db().config().startingArea);
+
+		// create global entities
 		Game.entities().create(EntityScope.GLOBAL, null);
 		Game.map().create(WorldUtils.getStartingMapName());
 		Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));

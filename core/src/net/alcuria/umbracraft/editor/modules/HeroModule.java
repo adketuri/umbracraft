@@ -11,7 +11,7 @@ public class HeroModule extends ListModule<HeroDefinition> {
 	@Override
 	public void addListItem() {
 		final HeroDefinition hero = new HeroDefinition();
-		hero.id = "Hero " + rootDefinition.size();
+		hero.name = "Hero " + rootDefinition.size();
 		rootDefinition.add(hero);
 	}
 

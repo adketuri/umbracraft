@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.hero;
 
+import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 
@@ -8,11 +9,8 @@ import net.alcuria.umbracraft.definitions.Definition;
 public class HeroDefinition extends Definition {
 	@Tooltip("The hero's HP. More is better.")
 	public int hp;
-	@Tooltip("An identifier for this hero")
-	public String id;
-	@Tooltip("The max level this hero may reach.")
-	public int maxLevel;
 	@Tooltip("The hero's displayed name.")
+	@Order(1)
 	public String name;
 	@Tooltip("A tag for sorting")
 	public String tag;
