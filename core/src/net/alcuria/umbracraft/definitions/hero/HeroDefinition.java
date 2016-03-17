@@ -8,6 +8,8 @@ import net.alcuria.umbracraft.definitions.Definition;
 public class HeroDefinition extends Definition {
 	@Tooltip("The hero's HP. More is better.")
 	public int hp;
+	@Tooltip("An identifier for this hero")
+	public String id;
 	@Tooltip("The max level this hero may reach.")
 	public int maxLevel;
 	@Tooltip("The hero's displayed name.")

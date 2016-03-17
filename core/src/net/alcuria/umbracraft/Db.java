@@ -11,6 +11,7 @@ import net.alcuria.umbracraft.definitions.anim.BattleAnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.config.ConfigDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
+import net.alcuria.umbracraft.definitions.hero.HeroDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
@@ -47,6 +48,7 @@ public final class Db {
 		classes.put("flags", ListDefinition.class);
 		classes.put("variables", ListDefinition.class);
 		classes.put("scripts", ListDefinition.class);
+		classes.put("heroes", ListDefinition.class);
 		classes.put("configuration", ConfigDefinition.class);
 		classes.put("tilesets", TilesetListDefinition.class);
 
@@ -63,7 +65,11 @@ public final class Db {
 				if (internalHandle.exists()) {
 					definitions.put(name, json.fromJson(classes.get(name), internalHandle));
 				} else {
-					throw new NullPointerException("Definition file is missing: " + name);
+					try {
+						definitions.put(name, classes.get(name).newInstance());
+					} catch (InstantiationException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -88,8 +94,8 @@ public final class Db {
 		return definition;
 	}
 
-	public AnimationGroupDefinition animGroup(String name) {
-		return (AnimationGroupDefinition) animGroups().get(name);
+	public AnimationGroupDefinition animGroup(String id) {
+		return (AnimationGroupDefinition) animGroups().get(id);
 	}
 
 	public ListDefinition<AnimationGroupDefinition> animGroups() {
@@ -107,8 +113,8 @@ public final class Db {
 		return ((AnimationListDefinition) definitions.get("animations")).animations;
 	}
 
-	public AreaDefinition area(final String name) {
-		return (AreaDefinition) areas().get(name);
+	public AreaDefinition area(final String id) {
+		return (AreaDefinition) areas().get(id);
 	}
 
 	public ListDefinition<AreaDefinition> areas() {
@@ -119,18 +125,20 @@ public final class Db {
 		return definition;
 	}
 
-	public BattleAnimationGroupDefinition battleAnimGroup(String name) {
+	public BattleAnimationGroupDefinition battleAnimGroup(String id) {
 		if (definitions == null) {
 			throw new NullPointerException("Definitions not initialized");
 		}
 		ListDefinition<BattleAnimationGroupDefinition> definition = (ListDefinition<BattleAnimationGroupDefinition>) definitions.get("battleanimationgroup");
-		return (BattleAnimationGroupDefinition) definition.get(name);
+		return (BattleAnimationGroupDefinition) definition.get(id);
 	}
 
+	/** @return the {@link ConfigDefinition} from the database. */
 	public ConfigDefinition config() {
 		return (ConfigDefinition) definitions.get("configuration");
 	}
 
+	/** @return all {@link EntityDefinition} objects in the database. */
 	public ListDefinition<EntityDefinition> entities() {
 		if (definitions == null) {
 			throw new NullPointerException("Definitions not initialized");
@@ -158,6 +166,20 @@ public final class Db {
 		return (ListDefinition<FlagDefinition>) definitions.get("flags");
 	}
 
+	/** @param id the ID of a {@link HeroDefinition}
+	 * @return the {@link HeroDefinition} with that ID in the database. */
+	public HeroDefinition hero(String id) {
+		return (HeroDefinition) heroes().get(id);
+	}
+
+	public ListDefinition<HeroDefinition> heroes() {
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
+		}
+		ListDefinition<HeroDefinition> definition = (ListDefinition<HeroDefinition>) definitions.get("heroes");
+		return definition;
+	}
+
 	/** @param name the name of the map
 	 * @return the {@link MapDefinition} from the database */
 	public MapDefinition map(String name) {
@@ -168,6 +190,9 @@ public final class Db {
 		return (MapDefinition) definition.get(name);
 	}
 
+	/** @param id A script ID
+	 * @return the {@link ScriptDefinition} with that particular ID in the
+	 *         database */
 	public ScriptDefinition script(String id) {
 		return (ScriptDefinition) scripts().get(id);
 	}
