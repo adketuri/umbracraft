@@ -6,12 +6,25 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class Party {
 
-	public Array<PartyMember> members;
+	private final Array<PartyMember> members = new Array<PartyMember>();
 
+	/** Adds a {@link PartyMember} to the party
+	 * @param member a {@link PartyMember} */
 	public void addMember(PartyMember member) {
-		if (members == null) {
-			members = new Array<PartyMember>();
-		}
 		members.add(member);
+	}
+
+	/** @param i an index into the party
+	 * @return the given {@link PartyMember} */
+	public PartyMember get(int i) {
+		if (i < 0 || i >= members.size) {
+			throw new ArrayIndexOutOfBoundsException("No party member at index " + i);
+		}
+		return members.get(i);
+	}
+
+	/** @return the size of the party */
+	public int size() {
+		return members.size;
 	}
 }

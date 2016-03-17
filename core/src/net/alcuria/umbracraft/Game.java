@@ -182,6 +182,7 @@ public final class Game {
 		db = new Db();
 		entities = new EntityManager();
 		map = new Map();
+		party = new Party();
 		publisher = new EventPublisher();
 		areas = new AreaBuilder();
 		flags = new FlagManager();
