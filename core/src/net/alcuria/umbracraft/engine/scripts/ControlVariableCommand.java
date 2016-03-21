@@ -202,7 +202,11 @@ public class ControlVariableCommand extends ScriptCommand {
 			}
 			break;
 		case OPT_5_MOD:
-			value %= 0;
+			if (operand != 0) {
+				value %= operand;
+			} else {
+				Game.error("Attempting to devide by zer-AAAAAAHHHH!!");
+			}
 			break;
 		case OPT_0_ASSIGN:
 			value = operand;

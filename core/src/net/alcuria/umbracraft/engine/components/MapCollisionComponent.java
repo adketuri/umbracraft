@@ -26,11 +26,11 @@ public class MapCollisionComponent implements Component {
 	}
 
 	private void checkJump(Direction direction, Entity entity) {
-		if (onStairs || !isControlled) {
+		if (onStairs) {
 			return;
 		}
 		final float len = Math.abs(entity.velocity.x) + Math.abs(entity.velocity.y);
-		if (len < 1.5f) {
+		if (len < 1.5f && isControlled) {
 			return;
 		}
 		// get the tile coordinates of the entity

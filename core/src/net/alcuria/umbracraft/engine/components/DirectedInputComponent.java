@@ -1,12 +1,12 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Config;
-import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.Pathfinder;
 import net.alcuria.umbracraft.engine.Pathfinder.PathNode;
 import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -14,14 +14,14 @@ import com.badlogic.gdx.math.Vector3;
  * instance, a {@link ScriptComponent}.
  * @author Andrew Keturi */
 public class DirectedInputComponent implements Component {
-	private static final float TOLERANCE = 0f; // nonzero screws shit up
+	private static final float TOLERANCE = 0.5f;
 	private boolean choseNextNode;
 	private Direction direction;
 	private Entity entity;
 	private final Vector3 lastPosition = new Vector3();
 	private final Pathfinder pathfinder;
 	private final Vector2 target = new Vector2();
-	private int targetX, targetY, currentX, currentY;
+	private float targetX, targetY, currentX, currentY;
 
 	public DirectedInputComponent() {
 		pathfinder = new Pathfinder(this);
@@ -66,8 +66,8 @@ public class DirectedInputComponent implements Component {
 		// see if we're stuck, if so try rejiggering the pathfinder
 		if (((entity.position.epsilonEquals(lastPosition, 0.01f) && (targetX != currentX || targetY != currentY)))) {
 			//			setTarget(targetX, targetY); //FIXME: too many crazy npe's
-			Game.log("STUCK " + targetX + " " + targetY);
-			lastPosition.set(entity.position);
+			//			Game.log("STUCK " + targetX + " " + targetY);
+			//			lastPosition.set(entity.position);
 		}
 
 		pathfinder.update(entity);
@@ -89,7 +89,7 @@ public class DirectedInputComponent implements Component {
 			targetY = lastNode.y;
 			choseNextNode = true;
 		}
-		if (targetX == currentX && targetY == currentY && pathfinder.getSolution().size > 0) {
+		if (MathUtils.isEqual(targetX, currentX, TOLERANCE) && MathUtils.isEqual(targetY, currentY, TOLERANCE) && pathfinder.getSolution().size > 0) {
 			choseNextNode = false;
 			pathfinder.getSolution().removeIndex(pathfinder.getSolution().size - 1);
 			return;
@@ -99,23 +99,23 @@ public class DirectedInputComponent implements Component {
 		if (currentX > targetX + TOLERANCE) {
 			if (currentY > targetY + TOLERANCE) {
 				direction = Direction.DOWNLEFT;
-			} else if (currentY < targetY + TOLERANCE) {
+			} else if (currentY < targetY - TOLERANCE) {
 				direction = Direction.UPLEFT;
 			} else {
 				direction = Direction.LEFT;
 			}
-		} else if (currentX < targetX + TOLERANCE) {
+		} else if (currentX < targetX - TOLERANCE) {
 			if (currentY > targetY + TOLERANCE) {
 				direction = Direction.DOWNRIGHT;
-			} else if (currentY < targetY + TOLERANCE) {
+			} else if (currentY < targetY - TOLERANCE) {
 				direction = Direction.UPRIGHT;
 			} else {
 				direction = Direction.RIGHT;
 			}
 		} else {
-			if (currentY > targetY + TOLERANCE) {
+			if (currentY > targetY) {
 				direction = Direction.DOWN;
-			} else if (currentY < targetY + TOLERANCE) {
+			} else if (currentY < targetY) {
 				direction = Direction.UP;
 			}
 		}
