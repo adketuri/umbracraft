@@ -92,8 +92,8 @@ public class WindowStack implements EventListener {
 
 	/** renders the stack */
 	public void render() {
-		for (Window<?> window : windows) {
-			window.render();
+		for (int i = 0; i < windows.size; i++) {
+			windows.get(i).render();
 		}
 	}
 
@@ -104,8 +104,8 @@ public class WindowStack implements EventListener {
 
 	/** updates the stack */
 	public void update() {
-		for (Window<?> window : windows) {
-			window.update();
+		for (int i = 0; i < windows.size; i++) {
+			windows.get(i).update();
 		}
 	}
 
