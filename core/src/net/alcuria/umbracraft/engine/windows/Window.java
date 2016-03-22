@@ -59,7 +59,13 @@ public abstract class Window<T extends WindowLayout> {
 		layout.update();
 		// check for close
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE) && escapeKeyCloses) {
-			Game.windows().pop(this);
+			close(new Listener() {
+
+				@Override
+				public void invoke() {
+					Game.windows().pop(Window.this);
+				}
+			});
 		}
 	}
 }
