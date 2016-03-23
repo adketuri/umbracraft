@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.windows;
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.listeners.WindowListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -17,9 +18,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public abstract class WindowLayout {
 	protected Table content;
 	private boolean isTouching;
-	protected Listener onTouch;
 	protected Table root;
 	protected Stage stage;
+	protected WindowListener windowListener;
 
 	public WindowLayout() {
 		content = new Table();
@@ -47,8 +48,8 @@ public abstract class WindowLayout {
 
 	/** Sets a listener to invoke on-touch
 	 * @param onTouch */
-	public void setTouchListener(Listener onTouch) {
-		this.onTouch = onTouch;
+	public void setTouchListener(WindowListener windowListener) {
+		this.windowListener = windowListener;
 	}
 
 	/** override this to create/show the window. */
@@ -58,19 +59,22 @@ public abstract class WindowLayout {
 	public void update() {
 		stage.act();
 		// invoke ontouch if we press enter
-		if (Gdx.input.isKeyJustPressed(Keys.ENTER) && onTouch != null) {
-			onTouch.invoke();
+		if (Gdx.input.isKeyJustPressed(Keys.ENTER) && windowListener != null) {
+			windowListener.onConfirm();
 		}
 		// invoke on touch only once
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			if (!isTouching) {
-				if (onTouch != null) {
-					onTouch.invoke();
+				if (windowListener != null) {
+					windowListener.onConfirm();
 				}
 				isTouching = true;
 			}
 		} else {
 			isTouching = false;
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+			windowListener.onCancel();
 		}
 	}
 
