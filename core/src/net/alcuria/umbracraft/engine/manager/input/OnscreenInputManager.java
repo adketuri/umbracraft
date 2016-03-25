@@ -24,15 +24,17 @@ public class OnscreenInputManager extends Manager<OnscreenInput> implements Even
 	public OnscreenInputManager() {
 		halter = new InputHalter();
 		stage = new Stage(Game.view().getViewport());
+		final MainMenuButton menuButton = new MainMenuButton(stage);
 		touchpad = new TouchpadEntity(stage);
 		Gdx.input.setInputProcessor(new InputMultiplexer() {
 			{
 				addProcessor(touchpad);
+				addProcessor(menuButton);
 				addProcessor(stage);
 			}
 		});
 		add(touchpad);
-		add(new MainMenuButton(stage));
+		add(menuButton);
 		add(new InspectButton(stage));
 		add(new DebugText(stage));
 		Game.publisher().subscribe(this);

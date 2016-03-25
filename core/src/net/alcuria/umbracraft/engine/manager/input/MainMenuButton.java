@@ -4,8 +4,8 @@ import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.editor.Drawables;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 /** Creates a button that, when clicked, will take the player to the main
  * menu/pause menu.
  * @author Andrew Keturi */
-public class MainMenuButton extends OnscreenInput {
+public class MainMenuButton extends OnscreenInput implements InputProcessor {
 
 	public MainMenuButton(Stage stage) {
 		Button button = new Button(Drawables.texture("ui/menuButtonUp"), Drawables.texture("ui/menuButtonDown"));
@@ -30,14 +30,56 @@ public class MainMenuButton extends OnscreenInput {
 		});
 	}
 
+	@Override
+	public boolean keyDown(int keycode) {
+		if (keycode == Keys.ESCAPE) {
+			onMenuPressed();
+			return true;
+		}
+		return false;
+
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
+
 	private void onMenuPressed() {
 		Game.hud().openMainMenu();
 	}
 
 	@Override
+	public boolean scrolled(int amount) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
 	public void update() {
-		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
-			onMenuPressed();
-		}
 	}
 }

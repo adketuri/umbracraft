@@ -1,16 +1,12 @@
 package net.alcuria.umbracraft.engine.windows;
 
-import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.listeners.Listener;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
+import net.alcuria.umbracraft.listeners.TypeListener;
 
 /** An abstract window.
  * @author Andrew Keturi
- * @param <T> */
-public abstract class Window<T extends WindowLayout> {
-	private boolean escapeKeyCloses;
+ * @param <T> the layout for the window */
+public abstract class Window<T extends WindowLayout> implements TypeListener<InputCode> {
 	public final T layout;
 
 	public Window(T layout) {
@@ -26,6 +22,11 @@ public abstract class Window<T extends WindowLayout> {
 
 	}
 
+	@Override
+	public void invoke(InputCode type) {
+		onKeyPressed(type);
+	}
+
 	/** @return whether or not this window is touchable. default is
 	 *         <code>true</code>. */
 	public boolean isTouchable() {
@@ -35,11 +36,15 @@ public abstract class Window<T extends WindowLayout> {
 	/** callback after the window has closed */
 	public abstract void onClose();
 
+	/** callback after a key is pressed */
+	public abstract void onKeyPressed(InputCode key);
+
 	/** callback after the window has opened */
 	public abstract void onOpen();
 
 	void open() {
 		layout.show();
+		layout.setTypeListener(this);
 		onOpen();
 	}
 
@@ -48,24 +53,8 @@ public abstract class Window<T extends WindowLayout> {
 		layout.render();
 	}
 
-	/** Sets whether or not escape should close the window
-	 * @param escapeKeyCloses */
-	public void setEscapeKeyCloses(boolean escapeKeyCloses) {
-		this.escapeKeyCloses = escapeKeyCloses;
-	}
-
 	/** called to update the layout */
 	public void update() {
 		layout.update();
-		// check for close
-		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE) && escapeKeyCloses) {
-			close(new Listener() {
-
-				@Override
-				public void invoke() {
-					Game.windows().pop(Window.this);
-				}
-			});
-		}
 	}
 }

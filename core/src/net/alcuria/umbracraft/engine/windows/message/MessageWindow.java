@@ -1,11 +1,10 @@
 package net.alcuria.umbracraft.engine.windows.message;
 
 import net.alcuria.umbracraft.Game;
-import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand.MessageEmotion;
+import net.alcuria.umbracraft.engine.windows.InputCode;
 import net.alcuria.umbracraft.engine.windows.Window;
 import net.alcuria.umbracraft.listeners.Listener;
-import net.alcuria.umbracraft.listeners.WindowListener;
 
 /** A {@link Window} that shows message boxes.
  * @author Andrew Keturi */
@@ -47,29 +46,18 @@ public class MessageWindow extends Window<MessageWindowLayout> {
 	}
 
 	@Override
+	public void onKeyPressed(InputCode key) {
+		if (key == InputCode.CONFIRM) {
+			advance();
+		}
+	}
+
+	@Override
 	public void onOpen() {
 		// start the message and allow touch input to advance the messages
 		layout.setFace(faceId, emotion);
 		layout.setName(name);
 		layout.setMessage(message, false);
-		layout.setTouchListener(new WindowListener() {
-
-			@Override
-			public void onCancel() {
-
-			}
-
-			@Override
-			public void onConfirm() {
-				advance();
-			}
-
-			@Override
-			public void onDirection(Direction direction) {
-
-			}
-		});
-
 	}
 
 }
