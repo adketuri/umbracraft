@@ -84,7 +84,6 @@ public abstract class WindowLayout extends InputAdapter {
 	/** Updates the stage and checks for any input. */
 	public void update() {
 		stage.act();
-		// invoke ontouch if we press enter
 		// invoke on touch only once
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			if (!isTouching) {

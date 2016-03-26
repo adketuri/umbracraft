@@ -3,10 +3,15 @@ package net.alcuria.umbracraft.engine.windows;
 import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.listeners.TypeListener;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
+
 /** An abstract window.
  * @author Andrew Keturi
  * @param <T> the layout for the window */
 public abstract class Window<T extends WindowLayout> implements TypeListener<InputCode> {
+	private InputProcessor lastInputProcessor;
 	public final T layout;
 
 	public Window(T layout) {
@@ -15,6 +20,7 @@ public abstract class Window<T extends WindowLayout> implements TypeListener<Inp
 
 	void close(Listener listener) {
 		layout.hide(listener);
+		Gdx.input.setInputProcessor(lastInputProcessor);
 	}
 
 	/** called to dispose any resources */
@@ -45,6 +51,8 @@ public abstract class Window<T extends WindowLayout> implements TypeListener<Inp
 	void open() {
 		layout.show();
 		layout.setTypeListener(this);
+		lastInputProcessor = Gdx.input.getInputProcessor();
+		Gdx.input.setInputProcessor(new InputMultiplexer(layout.getStage(), layout));
 		onOpen();
 	}
 
