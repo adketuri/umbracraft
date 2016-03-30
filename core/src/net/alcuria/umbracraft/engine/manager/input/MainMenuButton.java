@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.manager.input;
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.engine.screens.SetInputEnabled;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
@@ -56,6 +57,7 @@ public class MainMenuButton extends OnscreenInput implements InputProcessor {
 	}
 
 	private void onMenuPressed() {
+		Game.publisher().publish(new SetInputEnabled(false));
 		Game.hud().openMainMenu();
 	}
 
