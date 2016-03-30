@@ -12,10 +12,11 @@ import net.alcuria.umbracraft.editor.modules.BattleAnimationGroupListModule;
 import net.alcuria.umbracraft.editor.modules.ConfigModule;
 import net.alcuria.umbracraft.editor.modules.EntityListModule;
 import net.alcuria.umbracraft.editor.modules.FlagListModule;
-import net.alcuria.umbracraft.editor.modules.HeroModule;
+import net.alcuria.umbracraft.editor.modules.HeroListModule;
 import net.alcuria.umbracraft.editor.modules.MapListModule;
 import net.alcuria.umbracraft.editor.modules.Module;
 import net.alcuria.umbracraft.editor.modules.ScriptListModule;
+import net.alcuria.umbracraft.editor.modules.SkillListModule;
 import net.alcuria.umbracraft.editor.modules.TilesetsModule;
 import net.alcuria.umbracraft.editor.modules.VariableListModule;
 import net.alcuria.umbracraft.engine.events.Event;
@@ -95,7 +96,8 @@ public class EditorLayout extends Layout implements EventListener {
 	}
 
 	private void addModules() {
-		modules.add(new HeroModule());
+		modules.add(new HeroListModule());
+		modules.add(new SkillListModule());
 		modules.add(new ConfigModule());
 		modules.add(new TilesetsModule());
 		modules.add(new AnimationsModule());

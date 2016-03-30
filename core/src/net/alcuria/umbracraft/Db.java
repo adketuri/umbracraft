@@ -49,6 +49,7 @@ public final class Db {
 		classes.put("variables", ListDefinition.class);
 		classes.put("scripts", ListDefinition.class);
 		classes.put("heroes", ListDefinition.class);
+		classes.put("skills", ListDefinition.class);
 		classes.put("configuration", ConfigDefinition.class);
 		classes.put("tilesets", TilesetListDefinition.class);
 

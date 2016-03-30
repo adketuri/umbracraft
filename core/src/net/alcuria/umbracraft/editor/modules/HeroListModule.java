@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 /** The module for heroes.
  * @author Andrew Keturi */
-public class HeroModule extends ListModule<HeroDefinition> {
+public class HeroListModule extends ListModule<HeroDefinition> {
 
 	@Override
 	public void addListItem() {
