@@ -9,17 +9,19 @@ import net.sourceforge.jeval.Evaluator;
  * @author Andrew Keturi */
 public class MemberStats {
 	private final Evaluator eval = new Evaluator();
+	private int expNeeded;
 	private final HeroDefinition hero;
-	public int hp, maxHp, level, ep, maxEp, exp, expNeeded;
+	public int hp, level, ep, maxEp, exp;
+	private int maxHp;
 
 	public MemberStats(HeroDefinition hero) {
 		this.hero = hero;
-		hp = hero.hp;
-		maxHp = hero.hp;
 		level = hero.startingLevel;
 		ep = 10;
 		exp = 0;
-		expNeeded = getExpNeeded(hero.expNeeded);
+		expNeeded = parse(hero.expNeededFunc);
+		maxHp = parse(hero.maxHpFunc);
+		hp = maxHp;
 	}
 
 	/** Increments the member's level, updating exp and needed exp */
@@ -31,13 +33,23 @@ public class MemberStats {
 			if (exp < 0) {
 				exp = 0;
 			}
-			expNeeded = getExpNeeded(hero.expNeeded);
+			expNeeded = parse(hero.expNeededFunc);
 			Game.log(hero.name + " reached level " + level + " | " + exp + "/" + expNeeded);
 		}
 
 	}
 
-	private int getExpNeeded(String expression) {
+	public int getExpNeeded() {
+		expNeeded = parse(hero.expNeededFunc);
+		return expNeeded;
+	}
+
+	public int getMaxHp() {
+		maxHp = parse(hero.maxHpFunc);
+		return maxHp;
+	}
+
+	private int parse(String expression) {
 		try {
 			return (int) eval.getNumberResult(replaceVariables(expression));
 		} catch (EvaluationException e) {

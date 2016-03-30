@@ -1,30 +1,34 @@
 package net.alcuria.umbracraft.engine.components;
 
+import net.alcuria.gen.R;
 import net.alcuria.umbracraft.Config;
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.Pathfinder;
 import net.alcuria.umbracraft.engine.Pathfinder.PathNode;
 import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 /** A component for handling input directed by some other component (for
  * instance, a {@link ScriptComponent}.
  * @author Andrew Keturi */
 public class DirectedInputComponent implements Component {
-	private static final float TOLERANCE = 0.5f;
+	private static final float TOLERANCE = 0.4f;
 	private boolean choseNextNode;
+	private final Texture debug;
 	private Direction direction;
 	private Entity entity;
 	private final Vector3 lastPosition = new Vector3();
 	private final Pathfinder pathfinder;
-	private final Vector2 target = new Vector2();
 	private float targetX, targetY, currentX, currentY;
 
 	public DirectedInputComponent() {
 		pathfinder = new Pathfinder(this);
+		debug = Game.assets().get(R.debug, Texture.class);
 	}
 
 	@Override
@@ -38,7 +42,11 @@ public class DirectedInputComponent implements Component {
 
 	@Override
 	public void render(Entity entity) {
-
+		Game.batch().setColor(Color.RED);
+		Game.batch().draw(debug, targetX * 16 - 1, targetY * 16 - 1, 3, 3);
+		Game.batch().setColor(Color.BLUE);
+		Game.batch().draw(debug, currentX * 16 - 1, currentY * 16 - 1, 3, 3);
+		Game.batch().setColor(Color.WHITE);
 	}
 
 	public void renderPaths() {
@@ -47,8 +55,8 @@ public class DirectedInputComponent implements Component {
 
 	public void resetTarget(int i, int j) {
 		pathfinder.stop();
-		targetX = i;
-		targetY = j;
+		targetX = i + 0.5f;
+		targetY = j + 0.5f;
 	}
 
 	/** Sets the target to walk to
@@ -60,8 +68,8 @@ public class DirectedInputComponent implements Component {
 
 	@Override
 	public void update(Entity entity) {
-		currentX = (int) (entity.position.x / Config.tileWidth);
-		currentY = (int) (entity.position.y / Config.tileWidth);
+		currentX = (entity.position.x / Config.tileWidth);
+		currentY = (entity.position.y / Config.tileWidth);
 
 		// see if we're stuck, if so try rejiggering the pathfinder
 		if (((entity.position.epsilonEquals(lastPosition, 0.01f) && (targetX != currentX || targetY != currentY)))) {
@@ -85,45 +93,61 @@ public class DirectedInputComponent implements Component {
 
 		if (!choseNextNode) {
 			final PathNode lastNode = pathfinder.getSolution().get(pathfinder.getSolution().size - 1);
-			targetX = lastNode.x;
-			targetY = lastNode.y;
+			targetX = lastNode.x + 0.5f;
+			targetY = lastNode.y + 0.5f;
 			choseNextNode = true;
 		}
-		if (MathUtils.isEqual(targetX, currentX, TOLERANCE) && MathUtils.isEqual(targetY, currentY, TOLERANCE) && pathfinder.getSolution().size > 0) {
+		if (MathUtils.isEqual(targetX, currentX, 1) && MathUtils.isEqual(targetY, currentY, 1) && pathfinder.getSolution().size > 0) {
 			choseNextNode = false;
 			pathfinder.getSolution().removeIndex(pathfinder.getSolution().size - 1);
 			return;
 		}
 
 		// pick a new direction
-		if (currentX > targetX + TOLERANCE) {
-			if (currentY > targetY + TOLERANCE) {
-				direction = Direction.DOWNLEFT;
-			} else if (currentY < targetY - TOLERANCE) {
-				direction = Direction.UPLEFT;
+		float dX = Math.abs(targetX - currentX);
+		float dY = Math.abs(targetY - currentY);
+		direction = null;
+		boolean horizontal = dX > TOLERANCE;
+		boolean vertical = dY > TOLERANCE;
+		if (horizontal && !vertical) {
+			// left / right
+			if (targetX > currentX) {
+				direction = Direction.RIGHT;
 			} else {
 				direction = Direction.LEFT;
 			}
-		} else if (currentX < targetX - TOLERANCE) {
-			if (currentY > targetY + TOLERANCE) {
-				direction = Direction.DOWNRIGHT;
-			} else if (currentY < targetY - TOLERANCE) {
-				direction = Direction.UPRIGHT;
-			} else {
-				direction = Direction.RIGHT;
-			}
-		} else {
-			if (currentY > targetY) {
-				direction = Direction.DOWN;
-			} else if (currentY < targetY) {
+		} else if (!horizontal && vertical) {
+			if (targetY > currentY) {
 				direction = Direction.UP;
+			} else {
+				direction = Direction.DOWN;
 			}
+		} else if (horizontal && vertical) {
+			if (targetY > currentY) {
+				if (targetX > currentX) {
+					direction = Direction.UPRIGHT;
+				} else {
+					direction = Direction.UPLEFT;
+				}
+			} else {
+				if (targetX > currentX) {
+					direction = Direction.DOWNRIGHT;
+				} else {
+					direction = Direction.DOWNLEFT;
+				}
+			}
+
 		}
+		if (direction == null) {
+			return;
+		}
+
 		lastPosition.set(entity.position);
 		// update velocity
 		switch (direction) {
 		case DOWN:
 			entity.velocity.y = -2;
+			entity.velocity.x = 0;
 			break;
 		case DOWNLEFT:
 			entity.velocity.x = -2 * 0.707f;
@@ -135,12 +159,15 @@ public class DirectedInputComponent implements Component {
 			break;
 		case LEFT:
 			entity.velocity.x = -2;
+			entity.velocity.y = 0;
 			break;
 		case RIGHT:
 			entity.velocity.x = 2;
+			entity.velocity.y = 0;
 			break;
 		case UP:
 			entity.velocity.y = 2;
+			entity.velocity.x = 0;
 			break;
 		case UPLEFT:
 			entity.velocity.x = -2 * 0.707f;

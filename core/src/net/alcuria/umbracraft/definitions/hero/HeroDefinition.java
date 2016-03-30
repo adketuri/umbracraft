@@ -7,10 +7,12 @@ import net.alcuria.umbracraft.definitions.Definition;
 /** Defines a single hero.
  * @author Andrew Keturi */
 public class HeroDefinition extends Definition {
-	@Tooltip("A formula for the exp needed to level")
-	public String expNeeded;
+	@Tooltip("A function for the exp needed to level")
+	public String expNeededFunc;
 	@Tooltip("The hero's HP. More is better.")
 	public int hp;
+	@Tooltip("A function for the max HP of the hero")
+	public String maxHpFunc;
 	@Tooltip("The hero's displayed name.")
 	@Order(1)
 	public String name;
