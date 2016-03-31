@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.editor.modules;
 import net.alcuria.umbracraft.definitions.skill.SkillDefinition;
 import net.alcuria.umbracraft.definitions.skill.actions.SkillActionDefinition;
 import net.alcuria.umbracraft.definitions.skill.actions.SkillActionDefinition.SkillActionType;
+import net.alcuria.umbracraft.editor.widget.SkillTargetingWidget;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 import net.alcuria.umbracraft.util.StringUtils;
 
@@ -49,8 +50,18 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 		config.textFieldWidth = 200;
 		populate(content, SkillDefinition.class, definition, config);
 		content.row();
-		content.add(actionTable = new Table()).row();
-		content.add(actionDropdownTable = new Table()).row();
+		content.add(new Table() {
+			{
+				add(new SkillTargetingWidget(definition).getActor());
+				add(new Table() {
+					{
+						defaults().pad(20);
+						add(actionTable = new Table()).row();
+						add(actionDropdownTable = new Table()).row();
+					}
+				});
+			}
+		});
 		update();
 
 	}
