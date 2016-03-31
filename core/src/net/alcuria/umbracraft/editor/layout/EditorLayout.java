@@ -124,8 +124,10 @@ public class EditorLayout extends Layout implements EventListener {
 			tooltipLabel.setText(tooltipEvent.text);
 			tooltipWindow.pack();
 			tooltipWindow.setPosition(tooltipEvent.x, tooltipEvent.y);
+			tooltipWindow.clearActions();
 			tooltipWindow.addAction(Actions.alpha(1, 0.2f, Interpolation.fade));
 		} else if (event instanceof HideTooltip) {
+			tooltipWindow.clearActions();
 			tooltipWindow.addAction(Actions.sequence(Actions.alpha(0, 0.2f, Interpolation.fade), Actions.moveBy(4000, 0))); // this just moves it way offscreen so it doesn't get in the way
 		}
 	}

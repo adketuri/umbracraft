@@ -4,6 +4,20 @@ package net.alcuria.umbracraft.util;
  * @author Andrew Keturi */
 public class StringUtils {
 
+	/** Makes the name of the definition a little nicer.
+	 * @param name the class definition name
+	 * @return the name without "Definition" and some added whitespace */
+	public static CharSequence formatName(String name) {
+		name = name.replaceAll("Definition", "");
+		for (int i = 0; i < name.length(); i++) {
+			if (i != 0 && Character.isUpperCase(name.charAt(i))) {
+				name = name.replace(Character.toString(name.charAt(i)), " " + name.charAt(i));
+				i += 2;
+			}
+		}
+		return name;
+	}
+
 	/** Checks whether or not a string is empty.
 	 * @param string a string to check
 	 * @return <code>true</code> if the string is both non-null and contains

@@ -1,7 +1,12 @@
 package net.alcuria.umbracraft.definitions.skill.actions;
 
+import net.alcuria.umbracraft.annotations.Tooltip;
+
 public class ApproachSkillActionDefinition extends SkillActionDefinition {
-	public int x, y;
+	@Tooltip("The x coordinate to approach, in pixels, relative to the target.")
+	public int x;
+	@Tooltip("The y coordinate to approach, in pixels, relative to the target.")
+	public int y;
 
 	/** For serialization */
 	public ApproachSkillActionDefinition() {
