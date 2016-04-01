@@ -93,7 +93,7 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 
 	@Override
 	public void pause() {
-
+		Game.audio().pause();
 	}
 
 	@Override
@@ -108,6 +108,7 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 
 	@Override
 	public void show() {
+		Game.audio().playOverworld();
 
 	}
 }

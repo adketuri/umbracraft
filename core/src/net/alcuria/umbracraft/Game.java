@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft;
 
 import net.alcuria.umbracraft.engine.AreaBuilder;
+import net.alcuria.umbracraft.engine.audio.Audio;
 import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.events.EventPublisher;
 import net.alcuria.umbracraft.engine.map.Map;
@@ -22,6 +23,7 @@ public final class Game {
 
 	private static AreaBuilder areas;
 	private static AssetManager assets;
+	private static Audio audio;
 	private static SpriteBatch batch;
 	private static Battle battle;
 	private static Db db;
@@ -44,6 +46,10 @@ public final class Game {
 	/** @return the {@link AssetManager} */
 	public static AssetManager assets() {
 		return assets;
+	}
+
+	public static Audio audio() {
+		return audio;
 	}
 
 	/** @return the {@link SpriteBatch} used to render everything */
@@ -124,6 +130,11 @@ public final class Game {
 	/** @return the current {@link UmbraScreen} */
 	public static UmbraScreen screen() {
 		return screen;
+	}
+
+	/** Sets the audio type */
+	public static void setAudio(Audio audio) {
+		Game.audio = audio;
 	}
 
 	/** Sets the battle type */

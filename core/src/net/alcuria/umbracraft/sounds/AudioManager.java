@@ -12,12 +12,27 @@ public class AudioManager {
 
 	/** Volume of music */
 	private float bgmVol = 1;
+	/** The last played sound effect */
+	private String lastMusic;
 	/** Volume of sound effects */
 	private float sfxVol = 1;
 
-	/** Plays background music */
+	/** Plays background music, stopping any music that might have previously
+	 * been playing. */
 	public void music(String path) {
-		Game.assets().get(path, Music.class).play();
+		stop();
+		lastMusic = path;
+		final Music music = Game.assets().get(path, Music.class);
+		music.setLooping(true);
+		music.setVolume(bgmVol);
+		music.play();
+	}
+
+	/** Pauses whatever is currently playing. */
+	public void pause() {
+		if (lastMusic != null) {
+			Game.assets().get(lastMusic, Music.class).pause();
+		}
 	}
 
 	/** Sets the volume of bgm
@@ -36,5 +51,13 @@ public class AudioManager {
 	 * @param path the path to the asset */
 	public void sound(String path) {
 		Game.assets().get(path, Sound.class).play(sfxVol);
+	}
+
+	/** Stops any currently-playing music */
+	public void stop() {
+		if (lastMusic != null) {
+			Game.assets().get(lastMusic, Music.class).stop();
+			lastMusic = null;
+		}
 	}
 }

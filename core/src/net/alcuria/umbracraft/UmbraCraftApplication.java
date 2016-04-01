@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft;
 
+import net.alcuria.umbracraft.engine.audio.Audio;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
 import net.alcuria.umbracraft.hud.HUD;
 
@@ -21,6 +22,7 @@ public abstract class UmbraCraftApplication implements ApplicationListener {
 		game = new Game();
 		Game.setScreen(getFirstScreen(), false);
 		Game.setBattle(getBattle());
+		Game.setAudio(getAudio());
 		Game.setHUD(getHUD());
 	}
 
@@ -29,6 +31,10 @@ public abstract class UmbraCraftApplication implements ApplicationListener {
 		VisUI.dispose();
 		game.dispose();
 	}
+
+	/** Gets the audio interface
+	 * @return the {@link Audio} */
+	public abstract Audio getAudio();
 
 	/** This method is called when the application is created to specify a
 	 * {@link Battle} interface to tell the engine how to handle in-game
