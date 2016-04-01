@@ -6,4 +6,8 @@ import net.alcuria.umbracraft.engine.components.BattleAnimationGroupComponent.Ba
 public class PoseChangeActionDefinition extends SkillActionDefinition {
 	@Tooltip("The new pose to change to.")
 	public BattlePose pose;
+
+	public PoseChangeActionDefinition(BattlePose pose) {
+		this.pose = pose;
+	}
 }
