@@ -15,7 +15,7 @@ public abstract class SkillActionDefinition extends Definition {
 		GRID_EFFECT(PlaceGridEffectActionDefinition.class), //
 		POSE_CHANGE(PoseChangeActionDefinition.class), //
 		RETURN(ReturnSkillActionDefinition.class), //
-		SOUND(PlaySoundActionDefinition.class), //
+		SOUND(PlaySoundSkillActionDefinition.class), //
 		WAIT(WaitSkillActionDefinition.class);
 
 		/** The component type's corresponding {@link ComponentDefinition} */

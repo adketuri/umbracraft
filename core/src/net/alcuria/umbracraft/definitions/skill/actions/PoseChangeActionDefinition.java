@@ -7,6 +7,10 @@ public class PoseChangeActionDefinition extends SkillActionDefinition {
 	@Tooltip("The new pose to change to.")
 	public BattlePose pose;
 
+	/** For serialization */
+	public PoseChangeActionDefinition() {
+	}
+
 	public PoseChangeActionDefinition(BattlePose pose) {
 		this.pose = pose;
 	}

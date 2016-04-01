@@ -14,6 +14,7 @@ import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.hero.HeroDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
+import net.alcuria.umbracraft.definitions.skill.SkillDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 import net.alcuria.umbracraft.editor.Editor;
@@ -204,6 +205,21 @@ public final class Db {
 			throw new NullPointerException("Definitions not initialized");
 		}
 		return (ListDefinition<ScriptDefinition>) definitions.get("scripts");
+	}
+
+	/** Gets a {@link SkillDefinition} from the DB
+	 * @param id the skill's id
+	 * @return the {@link SkillDefinition} */
+	public SkillDefinition skill(String id) {
+		return (SkillDefinition) skills().get(id);
+	}
+
+	/** @return all {@link SkillDefinition} objects in the database */
+	public ListDefinition<SkillDefinition> skills() {
+		if (definitions == null) {
+			throw new NullPointerException("Definitions not initialized");
+		}
+		return (ListDefinition<SkillDefinition>) definitions.get("skills");
 	}
 
 	/** Gets a tileset TODO: refactor using keys

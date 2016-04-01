@@ -6,10 +6,25 @@ import net.alcuria.umbracraft.annotations.Tooltip;
  * camera.
  * @author Andrew Keturi */
 public class CameraChangeActionDefinition extends SkillActionDefinition {
-	public enum CameraPosition {
-		CENTER, FAR, NEAR
+
+	public static enum CameraDirection {
+		CENTER(CENTER_POS, CENTER_POS), FAR(CENTER_POS - OFFSET, CENTER_POS + OFFSET), NEAR(CENTER_POS + OFFSET, CENTER_POS - OFFSET);
+
+		private final int friendly, nonFriendly;
+
+		CameraDirection(int friendly, int nonFriendly) {
+			this.friendly = friendly;
+			this.nonFriendly = nonFriendly;
+		}
+
+		public int getPosition(final boolean isFriendly) {
+			return isFriendly ? friendly : nonFriendly;
+		}
 	}
 
+	private static final int CENTER_POS = 290; // center of the battle map
+	private static final int OFFSET = 40; // offset for the left/right grid focus
+
 	@Tooltip("The position of the camera on the field")
-	public CameraPosition position;
+	public CameraDirection position;
 }
