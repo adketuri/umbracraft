@@ -32,7 +32,7 @@ public class AnimationComponent implements Component {
 	@Override
 	public void create(Entity entity) {
 		if (definition != null) {
-			Texture texture = Game.assets().get("sprites/animations/" + definition.filename, Texture.class);
+			Texture texture = Game.assets().get("sprites/animations/" + definition.filename + ".png", Texture.class);
 			frames = new Array<TextureRegion>();
 			for (AnimationFrameDefinition frame : definition.frames) {
 				frames.add(new TextureRegion(new TextureRegion(texture, frame.x * definition.width, frame.y * definition.height, definition.width, definition.height)));

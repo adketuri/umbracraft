@@ -36,7 +36,7 @@ public class AnimationPreview extends Image {
 			count = 0;
 			idx = (idx + 1) % definition.frames.size;
 			final AnimationFrameDefinition frame = definition.frames.get(idx);
-			final String path = "sprites/animations/" + definition.filename;
+			final String path = "sprites/animations/" + definition.filename + ".png";
 			if (Gdx.files.internal(path).exists() && definition.filename.length() > 0 && path != null && !path.equals(lastPath)) {
 				textureRegion = new TextureRegion(new Texture(Gdx.files.internal(path)), frame.x * definition.width + (frame.mirror ? definition.width : 0), frame.y * definition.height, frame.mirror ? -definition.width : definition.width, definition.height);
 				setDrawable(new TextureRegionDrawable(textureRegion));

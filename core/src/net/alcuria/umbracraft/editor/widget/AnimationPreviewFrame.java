@@ -23,7 +23,7 @@ public class AnimationPreviewFrame extends Image {
 	 * @param definition
 	 * @param frame */
 	public void update(AnimationDefinition definition, AnimationFrameDefinition frame) {
-		final String path = "sprites/animations/" + definition.filename;
+		final String path = "sprites/animations/" + definition.filename + ".png";
 		if (definition != null && definition.filename != null && definition.filename.length() > 0 && Gdx.files.internal(path).exists()) {
 			Texture texture = new Texture(Gdx.files.internal(path));
 			TextureRegion region = new TextureRegion(texture, frame.x * definition.width + (frame.mirror ? definition.width : 0), frame.y * definition.height, frame.mirror ? -definition.width : definition.width, definition.height);

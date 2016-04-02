@@ -7,11 +7,13 @@ import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.widget.AnimationPreview;
 import net.alcuria.umbracraft.editor.widget.AnimationPreviewFrame;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.listeners.TypeListener;
+import net.alcuria.umbracraft.util.FileUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -69,7 +71,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 					}
 				});
 				if (definition.filename != null && definition.filename.length() > 0) {
-					String path = "sprites/animations/" + definition.filename;
+					String path = "sprites/animations/" + definition.filename + ".png";
 					if (Gdx.files.internal(path).exists()) {
 						image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));
 					}
@@ -117,6 +119,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 						}
 					}
 				});
+				cfg.suggestions.put("filename", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().spritePath, true));
 				cfg.labelWidth = 80;
 				cfg.textFieldWidth = 200;
 				return cfg;
@@ -332,7 +335,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 
 			@Override
 			public void invoke(String type) {
-				String path = "sprites/animations/" + definition.filename;
+				String path = "sprites/animations/" + definition.filename + ".png";
 				if (definition.filename != null && definition.filename.length() > 0 && Gdx.files.internal(path).exists()) {
 					image.setVisible(true);
 					image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));
