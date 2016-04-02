@@ -13,6 +13,7 @@ public class EditorLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = Config.editorWidth;
 		config.height = Config.editorHeight;
+		String path = arg.length > 0 ? arg[0] : "";
 		new LwjglApplication(new UmbraCraftEditor(), config);
 	}
 }

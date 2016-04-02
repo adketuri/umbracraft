@@ -37,7 +37,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 				textFieldWidth = 200;
 				cols = 1;
 				suggestions = new ObjectMap<String, Array<String>>();
-
+				suggestions.put("iconId", null);
 			}
 		};
 	}
@@ -76,13 +76,45 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 		actionTable.add(new Table() {
 			{
 				if (definition.actions != null) {
-					for (final SkillActionDefinition action : definition.actions) {
-						// populate component information
+					for (int i = 0; i < definition.actions.size; i++) {
+						final SkillActionDefinition action = definition.actions.get(i);
+						final int idx = i;
 						defaults().expandX().fill();
 						add(new VisLabel(StringUtils.formatName(action.getClass().getSimpleName()), Color.YELLOW)).row();
 						add(new Table() {
 							{
 								defaults().expandX().fillX().pad(5);
+								add(new Table() {
+									{
+										if (idx > 0) {
+											add(new VisTextButton("^") {
+												{
+													addListener(new ClickListener() {
+														@Override
+														public void clicked(InputEvent event, float x, float y) {
+															definition.actions.insert(idx - 1, definition.actions.removeIndex(idx));
+															update();
+														};
+													});
+												}
+											}).row();
+										}
+										if (idx < definition.actions.size - 1) {
+											add(new VisTextButton("v") {
+												{
+													addListener(new ClickListener() {
+														@Override
+														public void clicked(InputEvent event, float x, float y) {
+															definition.actions.insert(idx + 1, definition.actions.removeIndex(idx));
+															update();
+														};
+													});
+												}
+											}).row();
+										}
+									}
+								}).expand(false, false).left();
+								// populate component information
 								populate(this, action.getClass(), action, config());
 								add(new VisTextButton("X") {
 									{
@@ -96,8 +128,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 									}
 								}).width(20).expandX().right();
 							}
-						}).width(500);
-						row();
+						}).width(500).row();
 						WidgetUtils.divider(this, "blue");
 					}
 				}
