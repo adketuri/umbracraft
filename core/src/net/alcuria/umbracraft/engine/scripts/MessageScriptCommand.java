@@ -5,11 +5,13 @@ import java.util.Set;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
+import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
 import net.alcuria.umbracraft.engine.windows.message.MessageWindow;
 import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.util.FileUtils;
 import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.utils.Array;
@@ -81,7 +83,11 @@ public class MessageScriptCommand extends ScriptCommand {
 
 	@Override
 	public ObjectMap<String, Array<String>> getSuggestions() {
-		return null;
+		return new ObjectMap<String, Array<String>>() {
+			{
+				put("faceId", FileUtils.getDirectoriesAt(Editor.db().config().projectPath + Editor.db().config().facePath));
+			}
+		};
 	}
 
 	@Override

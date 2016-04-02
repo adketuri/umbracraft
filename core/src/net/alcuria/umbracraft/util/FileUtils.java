@@ -7,6 +7,18 @@ import com.badlogic.gdx.utils.Array;
 
 public class FileUtils {
 
+	public static Array<String> getDirectoriesAt(String path) {
+		File rootFile = new File(path);
+		File[] list = rootFile.listFiles();
+		Array<String> files = new Array<String>();
+		for (File f : list) {
+			if (f.isDirectory()) {
+				files.add(f.getName());
+			}
+		}
+		return files;
+	}
+
 	public static Array<String> getFilesAt(String path, boolean recursive) {
 		Array<String> files = new Array<String>();
 		walk(path, files, "", recursive);
