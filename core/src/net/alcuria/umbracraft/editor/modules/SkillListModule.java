@@ -3,12 +3,18 @@ package net.alcuria.umbracraft.editor.modules;
 import net.alcuria.umbracraft.definitions.skill.SkillDefinition;
 import net.alcuria.umbracraft.definitions.skill.actions.SkillActionDefinition;
 import net.alcuria.umbracraft.definitions.skill.actions.SkillActionDefinition.SkillActionType;
+import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.widget.SkillTargetingWidget;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
+import net.alcuria.umbracraft.listeners.TypeListener;
+import net.alcuria.umbracraft.util.FileUtils;
 import net.alcuria.umbracraft.util.StringUtils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
@@ -19,8 +25,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 
 public class SkillListModule extends ListModule<SkillDefinition> {
 
-	private Table actionDropdownTable;
-	private Table actionTable;
+	private Table actionDropdownTable, actionTable, iconTable;
 	private SkillDefinition definition;
 
 	@Override
@@ -37,7 +42,16 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 				textFieldWidth = 200;
 				cols = 1;
 				suggestions = new ObjectMap<String, Array<String>>();
-				suggestions.put("iconId", null);
+				suggestions.put("iconId", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().battleIconPath, false));
+				listener = new TypeListener<String>() {
+
+					@Override
+					public void invoke(String type) {
+						if (type.equals("iconId")) {
+							updateSkillIcon();
+						}
+					}
+				};
 			}
 		};
 	}
@@ -45,14 +59,19 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 	@Override
 	public void create(final SkillDefinition definition, Table content) {
 		this.definition = definition;
-		final PopulateConfig config = new PopulateConfig();
-		config.cols = 3;
-		config.textFieldWidth = 200;
-		populate(content, SkillDefinition.class, definition, config);
-		content.row();
+		populate(content, SkillDefinition.class, definition, config());
+		content.defaults().pad(20);
 		content.add(new Table() {
 			{
-				add(new SkillTargetingWidget(definition).getActor());
+				add(new Table() {
+					{
+						add(new VisLabel("Skill Icon:")).row();
+						add(iconTable = new Table()).row();
+						updateSkillIcon();
+						WidgetUtils.divider(this, "yellow");
+						add(new SkillTargetingWidget(definition).getActor()).row();
+					}
+				});
 				add(new Table() {
 					{
 						defaults().pad(20);
@@ -62,7 +81,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 				});
 			}
 		});
-		update();
+		updateActions();
 
 	}
 
@@ -71,7 +90,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 		return "Skills";
 	}
 
-	private void update() {
+	private void updateActions() {
 		actionTable.clear();
 		actionTable.add(new Table() {
 			{
@@ -93,7 +112,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 														@Override
 														public void clicked(InputEvent event, float x, float y) {
 															definition.actions.insert(idx - 1, definition.actions.removeIndex(idx));
-															update();
+															updateActions();
 														};
 													});
 												}
@@ -106,7 +125,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 														@Override
 														public void clicked(InputEvent event, float x, float y) {
 															definition.actions.insert(idx + 1, definition.actions.removeIndex(idx));
-															update();
+															updateActions();
 														};
 													});
 												}
@@ -122,7 +141,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 											@Override
 											public void clicked(InputEvent event, float x, float y) {
 												definition.actions.removeValue(action, true);
-												update();
+												updateActions();
 											};
 										});
 									}
@@ -149,7 +168,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 								definition.actions = new Array<SkillActionDefinition>();
 							}
 							definition.actions.add(list.getSelected().clazz.newInstance());
-							update();
+							updateActions();
 						} catch (InstantiationException | IllegalAccessException e) {
 							e.printStackTrace();
 						}
@@ -160,5 +179,14 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 			}
 		});
 
+	}
+
+	private void updateSkillIcon() {
+		iconTable.clear();
+		String path = Editor.db().config().projectPath + Editor.db().config().battleIconPath + definition.iconId + ".png";
+		if (Gdx.files.absolute(path).exists()) {
+			final Texture texture = new Texture(Gdx.files.absolute(path));
+			iconTable.add(new Image(texture)).size(texture.getWidth() * 2, texture.getHeight() * 2);
+		}
 	}
 }

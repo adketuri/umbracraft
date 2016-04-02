@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.skill;
 
+import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.definitions.skill.actions.SkillActionDefinition;
@@ -17,6 +18,7 @@ public class SkillDefinition extends Definition {
 	@Tooltip("The multiplier of the base damage")
 	public float damageMultiplier;
 	@Tooltip("A description of the skill to show in-battle")
+	@Order(2)
 	public String description;
 	@Tooltip("The EP generated (positive) or EP taken (negative) to use the skill")
 	public int ep;
@@ -25,8 +27,10 @@ public class SkillDefinition extends Definition {
 	@Tooltip("The icon to use for the skill")
 	public String iconId;
 	@Tooltip("The name of the skill")
+	@Order(1)
 	public String name;
 	@Tooltip("A tag for sorting")
+	@Order(3)
 	public String tag;
 	@Tooltip("Any restrictions on using the skill. For instance, the skill requires a target to cast or the skill must be cast into a blank space.")
 	public TargetRestriction targetRestriction = TargetRestriction.NO_RESTRICTION;

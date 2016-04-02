@@ -13,11 +13,17 @@ public class ConfigDefinition extends Definition {
 	@Tooltip("The path to icons. Relative")
 	@Order(501)
 	public String battleIconPath;
+	@Tooltip("The path to faces. Relative")
+	@Order(502)
+	public String facePath;
 	@Tooltip("The global entities")
 	public Array<String> globalEntities = new Array<String>();
 	@Tooltip("The path to the root of the game. Absolute.")
 	@Order(500)
 	public String projectPath;
+	@Tooltip("The path to sprites. Relative")
+	@Order(503)
+	public String spritePath;
 	@Tooltip("The name of the starting area")
 	public String startingArea;
 	@Tooltip("The name of the node to start on within the area")

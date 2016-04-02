@@ -30,6 +30,7 @@ public class ConfigModule extends Module<ConfigDefinition> {
 				populate(this, ConfigDefinition.class, rootDefinition, new PopulateConfig() {
 					{
 						cols = 1;
+						textFieldWidth = 300;
 					}
 				});
 			}
