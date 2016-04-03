@@ -5,17 +5,32 @@ import net.alcuria.umbracraft.Game;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 /** Handles playing in-game sound effects and music.
  * @author Andrew Keturi */
 public class AudioManager {
 
 	/** Volume of music */
-	private float bgmVol = 1;
+	private float bgmVol = 0.6f;
 	/** The last played sound effect */
 	private String lastMusic;
 	/** Volume of sound effects */
 	private float sfxVol = 1;
+
+	/** Plays a sound after some delay.
+	 * @param delay the delay, in seconds
+	 * @param path the path to the sound */
+	public void delayedSound(final float delay, final String path) {
+		Timer.schedule(new Task() {
+
+			@Override
+			public void run() {
+				sound(path);
+			}
+		}, delay);
+	}
 
 	/** Plays background music, stopping any music that might have previously
 	 * been playing. */

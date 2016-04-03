@@ -168,8 +168,6 @@ public class View implements EventListener {
 			}
 		}
 		if (shakeCounter > 0) {
-			float x = camera.position.x;
-			float y = camera.position.y;
 			final double motion = Math.sin(shakeCounter * shakeFrequency) * shakeAmplitude;
 			camera.translate((int) motion, 0, 0);
 			moved = true;

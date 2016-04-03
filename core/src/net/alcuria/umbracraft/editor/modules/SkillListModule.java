@@ -36,30 +36,10 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 		rootDefinition.add(skill);
 	}
 
-	private PopulateConfig config() {
-		return new PopulateConfig() {
-			{
-				textFieldWidth = 200;
-				cols = 1;
-				suggestions = new ObjectMap<String, Array<String>>();
-				suggestions.put("iconId", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().battleIconPath, false));
-				listener = new TypeListener<String>() {
-
-					@Override
-					public void invoke(String type) {
-						if (type.equals("iconId")) {
-							updateSkillIcon();
-						}
-					}
-				};
-			}
-		};
-	}
-
 	@Override
 	public void create(final SkillDefinition definition, Table content) {
 		this.definition = definition;
-		populate(content, SkillDefinition.class, definition, config());
+		populate(content, SkillDefinition.class, definition, skillConfig());
 		content.defaults().pad(20);
 		content.add(new Table() {
 			{
@@ -88,6 +68,38 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 	@Override
 	public String getTitle() {
 		return "Skills";
+	}
+
+	private PopulateConfig skillActionConfig() {
+		return new PopulateConfig() {
+			{
+				labelWidth = 80;
+				cols = 2;
+				textFieldWidth = 80;
+				suggestions = new ObjectMap<String, Array<String>>();
+				suggestions.put("sound", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().soundPath, false));
+			}
+		};
+	}
+
+	private PopulateConfig skillConfig() {
+		return new PopulateConfig() {
+			{
+				textFieldWidth = 200;
+				cols = 1;
+				suggestions = new ObjectMap<String, Array<String>>();
+				suggestions.put("iconId", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().battleIconPath, false));
+				listener = new TypeListener<String>() {
+
+					@Override
+					public void invoke(String type) {
+						if (type.equals("iconId")) {
+							updateSkillIcon();
+						}
+					}
+				};
+			}
+		};
 	}
 
 	private void updateActions() {
@@ -134,7 +146,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 									}
 								}).expand(false, false).left();
 								// populate component information
-								populate(this, action.getClass(), action, config());
+								populate(this, action.getClass(), action, skillActionConfig());
 								add(new VisTextButton("X") {
 									{
 										addListener(new ClickListener() {

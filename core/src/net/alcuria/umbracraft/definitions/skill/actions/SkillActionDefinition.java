@@ -36,5 +36,4 @@ public abstract class SkillActionDefinition extends Definition {
 	public String getTag() {
 		return "";
 	}
-
 }

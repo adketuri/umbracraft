@@ -21,7 +21,7 @@ public class BattleAnimationGroupComponent implements Component {
 	}
 
 	private ObjectMap<BattlePose, AnimationComponent> animations;
-	private AnimationComponent currentComponent;
+	private AnimationComponent currentAnim;
 	private final BattleAnimationGroupDefinition definition;
 	private BattlePose delayPose;
 	private float delaySeconds = 0;
@@ -49,7 +49,7 @@ public class BattleAnimationGroupComponent implements Component {
 				anim.setMirrorAll(isMirrored);
 				//anim.setOrigin(origin);
 			}
-			currentComponent = animations.get(BattlePose.IDLE);
+			currentAnim = animations.get(BattlePose.IDLE);
 		}
 	}
 
@@ -58,10 +58,15 @@ public class BattleAnimationGroupComponent implements Component {
 
 	}
 
+	/** @return the currentComponent */
+	public AnimationComponent getCurrentAnim() {
+		return currentAnim;
+	}
+
 	@Override
 	public void render(Entity entity) {
-		if (currentComponent != null) {
-			currentComponent.render(entity);
+		if (currentAnim != null) {
+			currentAnim.render(entity);
 		}
 	}
 
@@ -83,7 +88,7 @@ public class BattleAnimationGroupComponent implements Component {
 			for (AnimationComponent anim : animations.values()) {
 				anim.setMirrorAll(isMirrored);
 			}
-			currentComponent.setMirrorAll(isMirrored);
+			currentAnim.setMirrorAll(isMirrored);
 		}
 	}
 
@@ -91,16 +96,16 @@ public class BattleAnimationGroupComponent implements Component {
 	 * {@link BattleAnimationGroupComponent#create(Entity)} has been called.
 	 * @param pose the {@link BattlePose}. */
 	public void setPose(BattlePose pose) {
-		if (currentComponent != null) {
-			currentComponent = animations.get(pose);
-			currentComponent.reset();
+		if (currentAnim != null) {
+			currentAnim = animations.get(pose);
+			currentAnim.reset();
 		}
 	}
 
 	@Override
 	public void update(Entity entity) {
-		if (currentComponent != null) {
-			currentComponent.update(entity);
+		if (currentAnim != null) {
+			currentAnim.update(entity);
 		}
 		if (delaySeconds > 0) {
 			delaySeconds -= Gdx.graphics.getDeltaTime();
@@ -110,4 +115,5 @@ public class BattleAnimationGroupComponent implements Component {
 			}
 		}
 	}
+
 }
