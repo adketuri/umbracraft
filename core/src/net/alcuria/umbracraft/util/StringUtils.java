@@ -8,14 +8,10 @@ public class StringUtils {
 	 * @param name the class definition name
 	 * @return the name without "Definition" and some added whitespace */
 	public static CharSequence formatName(String name) {
-		name = name.replaceAll("Definition", "");
-		for (int i = 0; i < name.length(); i++) {
-			if (i != 0 && Character.isUpperCase(name.charAt(i))) {
-				name = name.replace(Character.toString(name.charAt(i)), " " + name.charAt(i));
-				i += 2;
-			}
+		if (name.contains("Definition")) {
+			name = name.replaceAll("Definition", "");
 		}
-		return name;
+		return splitCamelCase(name);
 	}
 
 	/** Checks whether or not a string is empty.
@@ -32,6 +28,13 @@ public class StringUtils {
 	 * @return <code>true</code> if the {@link String} is a number */
 	public static boolean isNumber(String str) {
 		return isNotEmpty(str) && str.matches("^[+-]?\\d+$");
+	}
+
+	/** Splits a string that's in camel-case.
+	 * @param s a {@link String}
+	 * @return */
+	public static String splitCamelCase(String s) {
+		return s.replaceAll(String.format("%s|%s|%s", "(?<=[A-Z])(?=[A-Z][a-z])", "(?<=[^A-Z])(?=[A-Z])", "(?<=[A-Za-z])(?=[^A-Za-z])"), " ");
 	}
 
 	/** Truncates a string, appending ellipses if it's too long. */

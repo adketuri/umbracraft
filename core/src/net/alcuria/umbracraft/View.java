@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class View implements EventListener {
 	private Rectangle bounds;
 	private final OrthographicCamera camera;
+	private float shakePeriod, shakeCounter, shakeFrequency, shakeAmplitude;
 	private Entity target;
 	private final OrthographicCamera uiCamera;
 	private final Viewport viewport;
@@ -115,6 +117,13 @@ public class View implements EventListener {
 		this.target = target;
 	}
 
+	public void shake(final float duration, final float frequency, final float amplitude) {
+		shakePeriod = duration;
+		shakeCounter = 0;
+		shakeFrequency = frequency;
+		shakeAmplitude = amplitude;
+	}
+
 	/** Updates the camera, moving towards a target if it exists and honoring any
 	 * map boundaries if present. */
 	public void update() {
@@ -150,6 +159,20 @@ public class View implements EventListener {
 					moved = true;
 				}
 			}
+		}
+
+		if (shakeCounter < shakePeriod) {
+			shakeCounter += Gdx.graphics.getDeltaTime();
+			if (shakeCounter >= shakePeriod) {
+				shakeCounter = shakePeriod = 0;
+			}
+		}
+		if (shakeCounter > 0) {
+			float x = camera.position.x;
+			float y = camera.position.y;
+			final double motion = Math.sin(shakeCounter * shakeFrequency) * shakeAmplitude;
+			camera.translate((int) motion, 0, 0);
+			moved = true;
 		}
 		if (moved) {
 			camera.update();
