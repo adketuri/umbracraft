@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.definitions.skill.actions;
 
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
+import net.alcuria.umbracraft.util.StringUtils;
 
 /** Defines an action for the game's battle system. No logic is contained within
  * the definition.
@@ -17,6 +18,7 @@ public abstract class SkillActionDefinition extends Definition {
 		RETURN(ReturnSkillActionDefinition.class), //
 		SHAKE(ShakeScreenSkillActionDefinition.class), //
 		SOUND(PlaySoundSkillActionDefinition.class), //
+		TIMED(TimedHitSkillActionDefinition.class), //
 		WAIT(WaitSkillActionDefinition.class);
 
 		/** The component type's corresponding {@link ComponentDefinition} */
@@ -24,6 +26,11 @@ public abstract class SkillActionDefinition extends Definition {
 
 		private SkillActionType(Class<? extends SkillActionDefinition> clazz) {
 			this.clazz = clazz;
+		}
+
+		@Override
+		public String toString() {
+			return StringUtils.splitCamelCase(clazz.getSimpleName().replace("SkillActionDefinition", "").replace("ActionDefinition", ""));
 		}
 	}
 
