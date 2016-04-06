@@ -34,6 +34,7 @@ public class BattleAnimationGroupListModule extends ListModule<BattleAnimationGr
 			suggestions.put("idle", suggestionsStr);
 			suggestions.put("attack", suggestionsStr);
 			suggestions.put("hurt", suggestionsStr);
+			suggestions.put("defend", suggestionsStr);
 			suggestions.put("dead", suggestionsStr);
 			suggestions.put("towards", suggestionsStr);
 			suggestions.put("away", suggestionsStr);

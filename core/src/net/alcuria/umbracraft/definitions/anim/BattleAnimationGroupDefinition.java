@@ -12,6 +12,8 @@ public class BattleAnimationGroupDefinition extends Definition {
 	public String away;
 	/** The dead animation */
 	public String dead;
+	/** The defend anim */
+	public String defend;
 	/** The hurt animation */
 	public String hurt;
 	/** The idle animation */

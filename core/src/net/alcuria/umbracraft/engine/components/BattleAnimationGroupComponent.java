@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class BattleAnimationGroupComponent implements Component {
 
 	public static enum BattlePose {
-		APPROACH, ATTACK, DEAD, HURT, IDLE, RETURN
+		APPROACH, ATTACK, DEAD, DEFEND, HURT, IDLE, RETURN
 	}
 
 	private ObjectMap<BattlePose, AnimationComponent> animations;
@@ -42,6 +42,7 @@ public class BattleAnimationGroupComponent implements Component {
 			animations.put(BattlePose.ATTACK, new AnimationComponent(Game.db().anim(definition.attack)));
 			animations.put(BattlePose.DEAD, new AnimationComponent(Game.db().anim(definition.dead)));
 			animations.put(BattlePose.HURT, new AnimationComponent(Game.db().anim(definition.hurt)));
+			animations.put(BattlePose.DEFEND, new AnimationComponent(Game.db().anim(definition.defend)));
 			animations.put(BattlePose.IDLE, new AnimationComponent(Game.db().anim(definition.idle)));
 			animations.put(BattlePose.RETURN, new AnimationComponent(Game.db().anim(definition.away)));
 			for (AnimationComponent anim : animations.values()) {
