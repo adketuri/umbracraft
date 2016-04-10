@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -35,6 +36,7 @@ public class AnimationPreview extends Image {
 		if (idx >= 0 && idx < definition.frames.size && count > definition.frames.get(idx).duration) {
 			count = 0;
 			idx = (idx + 1) % definition.frames.size;
+			setColor(definition.frames.get(idx).color != null ? definition.frames.get(idx).color : Color.WHITE);
 			final AnimationFrameDefinition frame = definition.frames.get(idx);
 			final String path = "sprites/animations/" + definition.filename + ".png";
 			if (Gdx.files.internal(path).exists() && definition.filename.length() > 0 && path != null && !path.equals(lastPath)) {

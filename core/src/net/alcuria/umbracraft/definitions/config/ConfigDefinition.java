@@ -18,14 +18,17 @@ public class ConfigDefinition extends Definition {
 	public String facePath;
 	@Tooltip("The global entities")
 	public Array<String> globalEntities = new Array<String>();
+	@Order(505)
+	@Tooltip("The path to particles. Relative")
+	public String particlePath;
 	@Tooltip("The path to the root of the game. Absolute.")
 	@Order(500)
 	public String projectPath;
-	@Tooltip("The path to sounds. Relative")
 	@Order(504)
+	@Tooltip("The path to sounds. Relative")
 	public String soundPath;
-	@Tooltip("The path to sprites. Relative")
 	@Order(503)
+	@Tooltip("The path to sprites. Relative")
 	public String spritePath;
 	@Tooltip("The name of the starting area")
 	public String startingArea;

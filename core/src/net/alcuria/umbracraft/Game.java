@@ -170,6 +170,14 @@ public final class Game {
 		}
 	}
 
+	/** Plays a sound effect
+	 * @param sound a sound asset location */
+	public static void sound(String sound) {
+		if (audio != null && audio.manager != null) {
+			audio.manager.sound(sound);
+		}
+	}
+
 	/** @return the {@link VariableManager} */
 	public static VariableManager variables() {
 		return variables;

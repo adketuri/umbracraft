@@ -14,17 +14,19 @@ public class ShadowComponent implements Component {
 
 	private static final int WIDTH = 16, HEIGHT = 16;
 	private boolean added;
+	private final boolean ignoreMap;
 	private MapCollisionComponent collision;
 	private TextureRegion shadow;
 	private final int xOffset, yOffset;
 
 	public ShadowComponent() {
-		this(0, 0);
+		this(0, 0, false);
 	}
 
-	public ShadowComponent(int x, int y) {
+	public ShadowComponent(int x, int y, boolean ignoreMap) {
 		xOffset = x;
 		yOffset = y;
+		this.ignoreMap = ignoreMap;
 	}
 
 	@Override
@@ -38,7 +40,7 @@ public class ShadowComponent implements Component {
 
 	@Override
 	public void render(Entity entity) {
-		final int altitude = Game.map() == null ? 0 : Game.map().getAltitudeAt((int) entity.position.x / Config.tileWidth, (int) entity.position.y / Config.tileWidth);
+		final int altitude = Game.map() == null || ignoreMap ? 0 : Game.map().getAltitudeAt((int) entity.position.x / Config.tileWidth, (int) entity.position.y / Config.tileWidth);
 		if (collision != null && collision.isOnStairs()) {
 			Game.batch().draw(shadow, entity.position.x - WIDTH / 2 + xOffset, entity.position.y - HEIGHT / 2 + yOffset + 2 + entity.position.z);
 		} else {

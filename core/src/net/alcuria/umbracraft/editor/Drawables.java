@@ -61,6 +61,7 @@ public class Drawables {
 		drawables.put("black", new TextureRegionDrawable(new TextureRegion(texture, 0, 0, 1, 1)));
 		drawables.put("yellow", new TextureRegionDrawable(new TextureRegion(texture, 1, 0, 1, 1)));
 		drawables.put("blue", new TextureRegionDrawable(new TextureRegion(texture, 2, 0, 1, 1)));
+		drawables.put("white", new TextureRegionDrawable(new TextureRegion(texture, 8, 0, 1, 1)));
 		drawables.put("entity", new TextureRegionDrawable(new TextureRegion(texture, 0, 1, 16, 16)));
 		if (Game.assets() != null) {
 			skin = Game.assets().get("skin/skin.atlas", TextureAtlas.class);

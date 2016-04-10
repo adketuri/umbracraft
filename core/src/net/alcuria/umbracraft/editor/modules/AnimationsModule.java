@@ -6,7 +6,6 @@ import java.util.Set;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
-import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.widget.AnimationPreview;
 import net.alcuria.umbracraft.editor.widget.AnimationPreviewFrame;
@@ -31,6 +30,8 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.kotcrab.vis.ui.widget.color.ColorPicker;
+import com.kotcrab.vis.ui.widget.color.ColorPickerListener;
 
 /** The module for all the animations.
  * @author Andrew Keturi */
@@ -38,10 +39,12 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 
 	private final Table animationListContents = new Table();
 	private final Array<VisTextButton> buttons = new Array<VisTextButton>();
+	private final ColorPicker colorPicker = new ColorPicker();
 	private Table currentAnimTable;
 	private final Set<String> expandedTags = new HashSet<String>();
+	private AnimationFrameDefinition frameColorChanging;
 	private String highlightedButton;
-	private Table previewTable;
+	private Table previewTable, colorPickerTable;
 	private final Table scroll = new Table();
 	private final Array<AnimationDefinition> sortedDefinitions = new Array<AnimationDefinition>();
 
@@ -51,6 +54,20 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 		if (rootDefinition == null) {
 			rootDefinition = new AnimationListDefinition();
 		}
+		colorPicker.setListener(new ColorPickerListener() {
+
+			@Override
+			public void canceled() {
+
+			}
+
+			@Override
+			public void finished(Color newColor) {
+				if (frameColorChanging != null) {
+					frameColorChanging.color = newColor;
+				}
+			}
+		});
 	}
 
 	private void addAnimationList(final Table content) {
@@ -148,75 +165,93 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 	private Table createFrames(final Table scroll, final AnimationDefinition definition) {
 		return new Table() {
 			{
-				if (definition.frames == null) {
-					definition.frames = new Array<AnimationFrameDefinition>();
-				}
-				for (int i = 0; i < definition.frames.size; i++) {
-					final int idx = i;
-					if (idx != 0) {
-						WidgetUtils.divider(this, "blue");
-					}
-					add(new Table() {
-						{
-							defaults().pad(5, 20, 5, 20);
-							final AnimationFrameDefinition frame = definition.frames.get(idx);
-							final AnimationPreviewFrame image = new AnimationPreviewFrame(definition, frame);
-							add(image).size(definition.width * 2, definition.height * 2);
-							add(new VisLabel("Frame " + (idx + 1)));
-							populate(this, AnimationFrameDefinition.class, frame, frameConfig(image, frame));
-							add(new VisTextButton("Delete") {
-								{
-									addListener(new ClickListener() {
-										@Override
-										public void clicked(InputEvent event, float x, float y) {
-											if (idx < definition.frames.size && idx >= 0) {
-												definition.frames.removeIndex(idx);
-											}
-											scroll.clear();
-											scroll.add(createFrames(scroll, definition));
-
-										};
-									});
-								}
-							});
-							add(new VisTextButton("Clone") {
-								{
-									addListener(new ClickListener() {
-										@Override
-										public void clicked(InputEvent event, float x, float y) {
-											if (idx < definition.frames.size && idx >= 0) {
-												definition.frames.insert(idx, definition.frames.get(idx).copy());
-											}
-											scroll.clear();
-											scroll.add(createFrames(scroll, definition));
-										};
-									});
-								}
-							});
-
-						}
-
-						private PopulateConfig frameConfig(final AnimationPreviewFrame image, final AnimationFrameDefinition frame) {
-							PopulateConfig cfg = new PopulateConfig();
-							cfg.listener = new TypeListener<String>() {
-
-								@Override
-								public void invoke(String type) {
-									image.update(definition, frame);
-								}
-							};
-							cfg.cols = 4;
-							cfg.labelWidth = 30;
-							cfg.textFieldWidth = 30;
-							return cfg;
-						}
-					}).row();
-				}
-				add(new Table() {
+				stack(new Table() {
 					{
-						setBackground(Drawables.get("blue"));
+						if (definition.frames == null) {
+							definition.frames = new Array<AnimationFrameDefinition>();
+						}
+						for (int i = 0; i < definition.frames.size; i++) {
+							final int idx = i;
+							if (idx != 0) {
+								WidgetUtils.divider(this, "blue");
+							}
+							add(new Table() {
+								{
+									defaults().pad(5, 20, 5, 20);
+									final AnimationFrameDefinition frame = definition.frames.get(idx);
+									final AnimationPreviewFrame image = new AnimationPreviewFrame(definition, frame) {
+										@Override
+										public void act(float delta) {
+											super.act(delta);
+											setColor(frame.color != null ? frame.color : Color.WHITE);
+										}
+									};
+									add(image).size(definition.width * 2, definition.height * 2);
+									add(new VisLabel("Frame " + (idx + 1)));
+									populate(this, AnimationFrameDefinition.class, frame, frameConfig(image, frame));
+									add(WidgetUtils.button("Color", new Listener() {
+
+										@Override
+										public void invoke() {
+											frameColorChanging = frame;
+											colorPickerTable.clear();
+											colorPickerTable.add(colorPicker);
+											colorPicker.fadeIn();
+										}
+									}));
+									add(new VisTextButton("Delete") {
+										{
+											addListener(new ClickListener() {
+												@Override
+												public void clicked(InputEvent event, float x, float y) {
+													if (idx < definition.frames.size && idx >= 0) {
+														definition.frames.removeIndex(idx);
+													}
+													scroll.clear();
+													scroll.add(createFrames(scroll, definition));
+
+												};
+											});
+										}
+									});
+									add(new VisTextButton("Clone") {
+										{
+											addListener(new ClickListener() {
+												@Override
+												public void clicked(InputEvent event, float x, float y) {
+													if (idx < definition.frames.size && idx >= 0) {
+														definition.frames.insert(idx, definition.frames.get(idx).copy());
+													}
+													scroll.clear();
+													scroll.add(createFrames(scroll, definition));
+												};
+											});
+										}
+									});
+
+								}
+
+								private PopulateConfig frameConfig(final AnimationPreviewFrame image, final AnimationFrameDefinition frame) {
+									PopulateConfig cfg = new PopulateConfig();
+									cfg.listener = new TypeListener<String>() {
+
+										@Override
+										public void invoke(String type) {
+											image.update(definition, frame);
+										}
+									};
+									cfg.cols = 3;
+									cfg.labelWidth = 30;
+									cfg.textFieldWidth = 30;
+									cfg.suggestions = new ObjectMap<String, Array<String>>();
+									cfg.suggestions.put("particle", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().particlePath, false));
+									return cfg;
+								}
+							}).row();
+						}
 					}
-				}).expand().fill().row();
+				}, colorPickerTable = new Table());
+
 			}
 		};
 	}

@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 public class AudioManager {
 
 	/** Volume of music */
-	private float bgmVol = 0.6f;
+	private float bgmVol = 0.3f;
 	/** The last played sound effect */
 	private String lastMusic;
 	/** Volume of sound effects */

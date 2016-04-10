@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class AnimationComponent implements Component {
 
-	private float alpha = 1;
+	//private float alpha = 1;
 	private Listener completeListener;
 	private int ct, idx;
 	private final AnimationDefinition definition;
@@ -52,14 +52,13 @@ public class AnimationComponent implements Component {
 	public void render(Entity entity) {
 		if (frames != null) {
 			final boolean mirror = mirrorAll ? !definition.frames.get(idx).mirror : definition.frames.get(idx).mirror;
-			if (alpha != 1) {
-				Game.batch().flush();
-				Game.batch().setColor(1, 1, 1, alpha);
+			final Color color = definition.frames.get(idx).color;
+			if (color != null) {
+				Game.batch().setColor(color);
 			}
 			//			Game.batch().draw(frames.get(0), entity.position.x - origin.x, entity.position.y - origin.y);
 			Game.batch().draw(frames.get(idx), entity.position.x + (mirror ? definition.width : 0) - origin.x, entity.position.y + entity.position.z - origin.y, mirror ? -definition.width : definition.width, definition.height);
-			if (alpha != 1) {
-				Game.batch().flush();
+			if (color != null) {
 				Game.batch().setColor(Color.WHITE);
 			}
 		}
@@ -68,12 +67,6 @@ public class AnimationComponent implements Component {
 	public void reset() {
 		ct = idx = 0;
 		played = false;
-	}
-
-	/** Sets the alpha of the animation when rendering
-	 * @param alpha the alpha, from 0 -1 (inclusive) */
-	public void setAlpha(float alpha) {
-		this.alpha = alpha;
 	}
 
 	/** Sets a listener to invoke once the animation has run thru. Note, for
@@ -103,6 +96,7 @@ public class AnimationComponent implements Component {
 		if (ct > definition.frames.get(idx).duration) {
 			ct = 0;
 			idx = (idx + 1) % definition.frames.size;
+
 			if (idx == 0 && !played && completeListener != null) {
 				completeListener.invoke();
 				played = true;
