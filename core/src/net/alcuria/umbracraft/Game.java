@@ -178,6 +178,14 @@ public final class Game {
 		}
 	}
 
+	/** Prints the stack */
+	public static void stack() {
+		final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+		for (int i = 1; i < stackTrace.length; i++) {
+			System.out.println(stackTrace[i].toString());
+		}
+	}
+
 	/** @return the {@link VariableManager} */
 	public static VariableManager variables() {
 		return variables;

@@ -197,6 +197,7 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 											colorPickerTable.clear();
 											colorPickerTable.add(colorPicker);
 											colorPicker.fadeIn();
+											colorPicker.setColor(frame.color != null ? frame.color : Color.WHITE);
 										}
 									}));
 									add(new VisTextButton("Delete") {

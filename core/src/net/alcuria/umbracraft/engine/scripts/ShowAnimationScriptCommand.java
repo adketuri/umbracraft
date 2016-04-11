@@ -81,7 +81,7 @@ public class ShowAnimationScriptCommand extends ScriptCommand {
 			final AnimationComponent component = new AnimationComponent(Game.db().anim(anim));
 			targetEntity.addComponent(component);
 			if (wait) {
-				component.setListener(new Listener() {
+				component.setCompleteListener(new Listener() {
 
 					@Override
 					public void invoke() {

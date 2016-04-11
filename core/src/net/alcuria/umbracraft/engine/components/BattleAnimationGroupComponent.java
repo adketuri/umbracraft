@@ -3,6 +3,8 @@ package net.alcuria.umbracraft.engine.components;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.anim.BattleAnimationGroupDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.listeners.TypeListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -71,6 +73,13 @@ public class BattleAnimationGroupComponent implements Component {
 		}
 	}
 
+	/** Sets the listener to invoke when a particular pose animates thru
+	 * @param pose
+	 * @param listener */
+	public void setAnimationCompleteListener(BattlePose pose, Listener listener) {
+		animations.get(pose).setCompleteListener(listener);
+	}
+
 	/** Delays for some time before changing the pose. Calls are not queued;
 	 * calling this multiple times before the pose has changed will cancel any
 	 * prior calls scheduled.
@@ -79,6 +88,12 @@ public class BattleAnimationGroupComponent implements Component {
 	public void setDelayedPose(float delaySeconds, BattlePose delayPose) {
 		this.delaySeconds = delaySeconds;
 		this.delayPose = delayPose;
+	}
+
+	public void setFrameChangedListener(TypeListener<String> listener) {
+		for (BattlePose key : animations.keys()) {
+			animations.get(key).setFrameChangedListener(listener);
+		}
 	}
 
 	/** Sets whether or not to mirror all animations

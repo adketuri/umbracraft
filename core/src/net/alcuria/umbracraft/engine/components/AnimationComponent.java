@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.listeners.TypeListener;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,8 +19,9 @@ public class AnimationComponent implements Component {
 
 	//private float alpha = 1;
 	private Listener completeListener;
-	private int ct, idx;
+	private int curFrameCount, curFrameIndex;
 	private final AnimationDefinition definition;
+	private TypeListener<String> frameChangedListener;	// invoked when a frame changes
 	private Array<TextureRegion> frames;
 	private boolean mirrorAll;
 	private final Vector2 origin = new Vector2();
@@ -39,7 +41,7 @@ public class AnimationComponent implements Component {
 			}
 			origin.x = definition.originX;
 			origin.y = definition.originY;
-			ct = idx = 0;
+			curFrameCount = curFrameIndex = 0;
 		}
 	}
 
@@ -48,32 +50,50 @@ public class AnimationComponent implements Component {
 
 	}
 
+	/** @return the {@link AnimationFrameDefinition} of the current frame playing */
+	public AnimationFrameDefinition getFrameDefinition() {
+		if (definition == null || definition.frames == null) {
+			throw new NullPointerException("Frames are null");
+		}
+		return definition.frames.get(curFrameIndex);
+	}
+
 	@Override
 	public void render(Entity entity) {
 		if (frames != null) {
-			final boolean mirror = mirrorAll ? !definition.frames.get(idx).mirror : definition.frames.get(idx).mirror;
-			final Color color = definition.frames.get(idx).color;
+			final boolean mirror = mirrorAll ? !definition.frames.get(curFrameIndex).mirror : definition.frames.get(curFrameIndex).mirror;
+			final Color color = definition.frames.get(curFrameIndex).color;
 			if (color != null) {
 				Game.batch().setColor(color);
 			}
 			//			Game.batch().draw(frames.get(0), entity.position.x - origin.x, entity.position.y - origin.y);
-			Game.batch().draw(frames.get(idx), entity.position.x + (mirror ? definition.width : 0) - origin.x, entity.position.y + entity.position.z - origin.y, mirror ? -definition.width : definition.width, definition.height);
+			Game.batch().draw(frames.get(curFrameIndex), entity.position.x + (mirror ? definition.width : 0) - origin.x, entity.position.y + entity.position.z - origin.y, mirror ? -definition.width : definition.width, definition.height);
 			if (color != null) {
 				Game.batch().setColor(Color.WHITE);
 			}
 		}
 	}
 
+	/** Resets an animation, invokes the frame change listener. */
 	public void reset() {
-		ct = idx = 0;
+		curFrameCount = curFrameIndex = 0;
 		played = false;
+		if (frameChangedListener != null) {
+			frameChangedListener.invoke(definition.frames.get(curFrameIndex).particle);
+		}
 	}
 
 	/** Sets a listener to invoke once the animation has run thru. Note, for
 	 * animations with keeplast this should still be invoked.
 	 * @param completeListener the listener */
-	public void setListener(Listener completeListener) {
+	public void setCompleteListener(Listener completeListener) {
 		this.completeListener = completeListener;
+	}
+
+	/** Sets a listener to invoke when an animation's frame changes.
+	 * @param frameChangedListener the listener to invoke on frame change */
+	public void setFrameChangedListener(TypeListener<String> frameChangedListener) {
+		this.frameChangedListener = frameChangedListener;
 	}
 
 	/** Set to true to flip all x images in the definition
@@ -92,17 +112,20 @@ public class AnimationComponent implements Component {
 
 	@Override
 	public void update(Entity entity) {
-		ct++;
-		if (ct > definition.frames.get(idx).duration) {
-			ct = 0;
-			idx = (idx + 1) % definition.frames.size;
-
-			if (idx == 0 && !played && completeListener != null) {
+		curFrameCount++;
+		if (curFrameCount > definition.frames.get(curFrameIndex).duration) {
+			curFrameCount = 0;
+			curFrameIndex = (curFrameIndex + 1) % definition.frames.size;
+			if (curFrameIndex == 0 && !played && completeListener != null) {
 				completeListener.invoke();
 				played = true;
 			}
-			if (definition.keepLast && idx == 0) {
-				idx = definition.frames.size - 1;
+			if (definition.keepLast && curFrameIndex == 0) {
+				curFrameIndex = definition.frames.size - 1;
+				return;
+			}
+			if (frameChangedListener != null) {
+				frameChangedListener.invoke(definition.frames.get(curFrameIndex).particle);
 			}
 		}
 	}

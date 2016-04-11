@@ -23,13 +23,15 @@ public class AnimationFrameDefinition extends Definition {
 	@Tooltip("the Y location on the grid")
 	public int y;
 
-	/** @return a copy of the frame. Sorta hacky but it works for now. */
+	/** @return a copy of the frame. */
 	public AnimationFrameDefinition copy() {
 		AnimationFrameDefinition def = new AnimationFrameDefinition();
 		def.duration = duration;
 		def.x = x;
 		def.y = y;
 		def.mirror = mirror;
+		def.color = color;
+		def.particle = particle;
 		return def;
 	}
 
