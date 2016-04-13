@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 /** A member of the {@link Party}.
  * @author Andrew Keturi */
 public class PartyMember {
+
 	private Entity battler;
 	private final HeroDefinition hero;
 	private final Array<SkillDefinition> skills = new Array<SkillDefinition>();

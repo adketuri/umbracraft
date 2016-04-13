@@ -10,6 +10,8 @@ import net.alcuria.umbracraft.engine.windows.WindowStack;
 import net.alcuria.umbracraft.flags.FlagManager;
 import net.alcuria.umbracraft.hud.HUD;
 import net.alcuria.umbracraft.party.Party;
+import net.alcuria.umbracraft.save.DiskSaveManager;
+import net.alcuria.umbracraft.save.model.Saveable;
 import net.alcuria.umbracraft.variables.VariableManager;
 
 import com.badlogic.gdx.Gdx;
@@ -34,6 +36,7 @@ public final class Game {
 	private static Map map;
 	private static Party party;
 	private static EventPublisher publisher;
+	private static Saveable save;
 	private static UmbraScreen screen;
 	private static VariableManager variables;
 	private static View view;
@@ -127,6 +130,11 @@ public final class Game {
 		return publisher;
 	}
 
+	/** @return the {@link Saveable} manager to handle saving game progress */
+	public static Saveable save() {
+		return save;
+	}
+
 	/** @return the current {@link UmbraScreen} */
 	public static UmbraScreen screen() {
 		return screen;
@@ -214,7 +222,7 @@ public final class Game {
 		areas = new AreaBuilder();
 		flags = new FlagManager();
 		variables = new VariableManager();
-
+		save = new DiskSaveManager();
 		// now subscribe
 		publisher.subscribe(view);
 	}
@@ -242,6 +250,7 @@ public final class Game {
 		if (variables != null) {
 			variables.dispose();
 		}
+		save.dispose();
 		publisher.removeAllListeners();
 		publisher = null;
 		db = null;
