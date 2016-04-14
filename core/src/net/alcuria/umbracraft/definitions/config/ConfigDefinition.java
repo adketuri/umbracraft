@@ -24,6 +24,9 @@ public class ConfigDefinition extends Definition {
 	@Tooltip("The path to the root of the game. Absolute.")
 	@Order(500)
 	public String projectPath;
+	@Order(506)
+	@Tooltip("The external path to save data")
+	public String savePath;
 	@Order(504)
 	@Tooltip("The path to sounds. Relative")
 	public String soundPath;

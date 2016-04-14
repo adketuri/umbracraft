@@ -23,6 +23,11 @@ public class Party {
 		return members.get(i);
 	}
 
+	/** @return all party members */
+	public Array<PartyMember> getMembers() {
+		return members;
+	}
+
 	/** @return the size of the party */
 	public int size() {
 		return members.size;
