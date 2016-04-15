@@ -13,6 +13,7 @@ import net.alcuria.umbracraft.party.Party;
 import net.alcuria.umbracraft.save.DiskSaveManager;
 import net.alcuria.umbracraft.save.model.Saveable;
 import net.alcuria.umbracraft.variables.VariableManager;
+import net.sourceforge.jeval.Evaluator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -31,6 +32,7 @@ public final class Game {
 	private static Db db;
 	private static boolean debug = false;
 	private static EntityManager entities;
+	private static final Evaluator eval = new Evaluator();
 	private static FlagManager flags;
 	private static HUD hud;
 	private static Map map;
@@ -51,6 +53,7 @@ public final class Game {
 		return assets;
 	}
 
+	/** @return the {@link Audio} */
 	public static Audio audio() {
 		return audio;
 	}
@@ -91,6 +94,11 @@ public final class Game {
 	 * @param string the message. */
 	public static void error(String string) {
 		System.err.println(string);
+	}
+
+	/** @return the {@link Evaluator} */
+	public static Evaluator eval() {
+		return eval;
 	}
 
 	/** @return the {@link FlagManager} */

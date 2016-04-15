@@ -12,9 +12,13 @@ import com.badlogic.gdx.utils.Array;
 public class PartyMember {
 
 	private Entity battler;
-	private final HeroDefinition hero;
+	private HeroDefinition hero;
 	private final Array<SkillDefinition> skills = new Array<SkillDefinition>();
-	private final MemberStats stats;
+	private MemberStats stats;
+
+	/** For deserialization */
+	public PartyMember() {
+	}
 
 	/** @param heroId the id of hero from the {@link HeroDefinition} */
 	public PartyMember(final String heroId) {

@@ -8,6 +8,8 @@ import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.KeyDownEvent;
 import net.alcuria.umbracraft.engine.events.TouchpadCreatedEvent;
 import net.alcuria.umbracraft.engine.manager.input.InputHalter;
+import net.alcuria.umbracraft.party.PartyMember;
+import net.alcuria.umbracraft.save.model.SaveProfile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -15,6 +17,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.utils.Array;
 
 /** A component specifically for handling object input from the player.
  * @author Andrew Keturi */
@@ -151,6 +154,14 @@ public class ControlledInputComponent implements Component, EventListener {
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.F1)) {
 			Game.setDebug(!Game.isDebug());
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.F2)) {
+			final Array<SaveProfile> profiles = Game.save().getProfiles();
+			Game.party().clear();
+			for (PartyMember member : profiles.get(0).party) {
+				Game.party().addMember(member);
+			}
+			Game.log("Loaded slot 1!");
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.ENTER)) {
 			inspect();

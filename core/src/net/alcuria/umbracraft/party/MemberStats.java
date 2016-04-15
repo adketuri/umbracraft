@@ -3,16 +3,18 @@ package net.alcuria.umbracraft.party;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.hero.HeroDefinition;
 import net.sourceforge.jeval.EvaluationException;
-import net.sourceforge.jeval.Evaluator;
 
 /** A collection of current character stats
  * @author Andrew Keturi */
 public class MemberStats {
-	private final Evaluator eval = new Evaluator();
 	private int expNeeded;
-	private final HeroDefinition hero;
+	private HeroDefinition hero;
 	public int hp, level, ep, maxEp, exp;
 	private int maxHp;
+
+	/** For deserialization */
+	public MemberStats() {
+	}
 
 	public MemberStats(HeroDefinition hero) {
 		this.hero = hero;
@@ -51,7 +53,7 @@ public class MemberStats {
 
 	private int parse(String expression) {
 		try {
-			return (int) eval.getNumberResult(replaceVariables(expression));
+			return (int) Game.eval().getNumberResult(replaceVariables(expression));
 		} catch (EvaluationException e) {
 			System.err.println("Could not parse expression: " + expression);
 			e.printStackTrace();

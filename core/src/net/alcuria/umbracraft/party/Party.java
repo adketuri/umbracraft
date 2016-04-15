@@ -14,6 +14,11 @@ public class Party {
 		members.add(member);
 	}
 
+	/** Clears out the party */
+	public void clear() {
+		members.clear();
+	}
+
 	/** @param i an index into the party
 	 * @return the given {@link PartyMember} */
 	public PartyMember get(int i) {
