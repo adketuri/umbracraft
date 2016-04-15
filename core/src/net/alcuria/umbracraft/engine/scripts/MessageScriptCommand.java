@@ -7,8 +7,6 @@ import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.entities.Entity;
-import net.alcuria.umbracraft.engine.events.WindowHideEvent;
-import net.alcuria.umbracraft.engine.events.WindowShowEvent;
 import net.alcuria.umbracraft.engine.windows.message.MessageWindow;
 import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.util.FileUtils;
@@ -92,14 +90,13 @@ public class MessageScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onCompleted() {
-		Game.publisher().publish(new WindowHideEvent(window));
 	}
 
 	@Override
 	public void onStarted(Entity entity) {
 		window = new MessageWindow(message, name, faceId, emotion);
 		window.addCloseListener(close());
-		Game.publisher().publish(new WindowShowEvent(window));
+		Game.windows().push(window);
 	}
 
 	@Override

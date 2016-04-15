@@ -1,6 +1,5 @@
 package net.alcuria.umbracraft.engine.windows.message;
 
-import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand.MessageEmotion;
 import net.alcuria.umbracraft.engine.windows.InputCode;
 import net.alcuria.umbracraft.engine.windows.Window;
@@ -29,7 +28,7 @@ public class MessageWindow extends Window<MessageWindowLayout> {
 	private void advance() {
 		boolean complete = layout.advance();
 		if (complete) {
-			Game.windows().pop(this);
+			close();
 		}
 	}
 

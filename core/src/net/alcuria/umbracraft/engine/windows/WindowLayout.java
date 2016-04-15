@@ -20,7 +20,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  * @author Andrew Keturi */
 public abstract class WindowLayout extends InputAdapter {
 	protected Table content;
-	private boolean isActive;
 	private boolean isTouching;
 	protected Table root;
 	protected Stage stage;
@@ -62,16 +61,6 @@ public abstract class WindowLayout extends InputAdapter {
 	/** Draws the stage. */
 	public void render() {
 		stage.draw();
-	}
-
-	/** Sets whether or not the window is active and accepting input. Note, this
-	 * is false for the first frame the window is created then set to true. This
-	 * fixes an issue where inputs are getting consumed twice due to not
-	 * actually using an InputProcessor and relying on Gdx.isKeyJustPressed.
-	 * It's a limitation and sort of a hack but it works for the time.
-	 * @param isActive */
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
 	}
 
 	public void setTypeListener(TypeListener<InputCode> typeListener) {

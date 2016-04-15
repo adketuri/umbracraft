@@ -5,7 +5,6 @@ import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.WindowHideEvent;
 import net.alcuria.umbracraft.engine.events.WindowShowEvent;
-import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -49,30 +48,24 @@ public class WindowStack implements EventListener {
 
 	public void pop(final Window<?> window) {
 		if (window != null) {
-			window.close(new Listener() {
-
-				@Override
-				public void invoke() {
-					window.onClose();
-					// remove window
-					windows.removeValue(window, true);
-					// check if we should reset touchable
-					if (containsTouchable) {
-						boolean isTouchable = false;
-						for (Window<?> w : windows) {
-							if (w.isTouchable()) {
-								isTouchable = true;
-								break;
-							}
-						}
-						if (!isTouchable && savedInputProcessor != null) {
-							containsTouchable = false;
-							Gdx.input.setInputProcessor(savedInputProcessor);
-							Game.log("Setting back to saved input processor");
-						}
+			window.onClose();
+			// remove window
+			windows.removeValue(window, true);
+			// check if we should reset touchable
+			if (containsTouchable) {
+				boolean isTouchable = false;
+				for (Window<?> w : windows) {
+					if (w.isTouchable()) {
+						isTouchable = true;
+						break;
 					}
 				}
-			});
+				if (!isTouchable && savedInputProcessor != null) {
+					containsTouchable = false;
+					Gdx.input.setInputProcessor(savedInputProcessor);
+					Game.log("Setting back to saved input processor");
+				}
+			}
 		}
 	}
 

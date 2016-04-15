@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.engine.windows;
 
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.listeners.TypeListener;
 
@@ -18,9 +19,15 @@ public abstract class Window<T extends WindowLayout> implements TypeListener<Inp
 		this.layout = layout;
 	}
 
-	void close(Listener listener) {
-		layout.hide(listener);
-		Gdx.input.setInputProcessor(lastInputProcessor);
+	/** Called to close the window */
+	protected void close() {
+		layout.hide(new Listener() {
+			@Override
+			public void invoke() {
+				Gdx.input.setInputProcessor(lastInputProcessor);
+				Game.windows().pop(Window.this);
+			}
+		});
 	}
 
 	/** called to dispose any resources */
