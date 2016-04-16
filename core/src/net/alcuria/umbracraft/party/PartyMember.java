@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class PartyMember {
 
-	private Entity battler;
-	private HeroDefinition hero;
+	private transient Entity battler;
+	private String heroId;
 	private final Array<SkillDefinition> skills = new Array<SkillDefinition>();
 	private MemberStats stats;
 
@@ -22,8 +22,8 @@ public class PartyMember {
 
 	/** @param heroId the id of hero from the {@link HeroDefinition} */
 	public PartyMember(final String heroId) {
-		hero = Game.db().hero(heroId);
-		stats = new MemberStats(hero);
+		stats = new MemberStats(heroId);
+		this.heroId = heroId;
 	}
 
 	/** Gets the battler set from battle
@@ -37,7 +37,7 @@ public class PartyMember {
 
 	/** @return the {@link HeroDefinition} used to define this party member */
 	public HeroDefinition getDefinition() {
-		return hero;
+		return Game.db().hero(heroId);
 	}
 
 	/** @return the {@link MemberStats} of this party member */

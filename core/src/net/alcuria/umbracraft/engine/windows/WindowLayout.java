@@ -11,6 +11,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -19,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  * are created/destroyed and when a key is pressed.
  * @author Andrew Keturi */
 public abstract class WindowLayout extends InputAdapter {
+	protected Button close;
 	protected Table content;
 	private boolean isTouching;
 	protected Table root;

@@ -1,12 +1,15 @@
 package net.alcuria.umbracraft.engine.windows;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.engine.audio.Audio.CommonSound;
 import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.listeners.TypeListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 /** An abstract window.
  * @author Andrew Keturi
@@ -21,6 +24,9 @@ public abstract class Window<T extends WindowLayout> implements TypeListener<Inp
 
 	/** Called to close the window */
 	protected void close() {
+		if (layout.close != null) {
+			layout.close.setDisabled(true);
+		}
 		layout.hide(new Listener() {
 			@Override
 			public void invoke() {
@@ -61,6 +67,17 @@ public abstract class Window<T extends WindowLayout> implements TypeListener<Inp
 		lastInputProcessor = Gdx.input.getInputProcessor();
 		Gdx.input.setInputProcessor(new InputMultiplexer(layout.getStage(), layout));
 		onOpen();
+		if (layout.close != null) {
+			layout.close.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					if (!layout.close.isDisabled()) {
+						Game.audio().sound(CommonSound.CLOSE);
+						close();
+					}
+				}
+			});
+		}
 	}
 
 	/** called to draw the layout */

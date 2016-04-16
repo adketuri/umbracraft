@@ -7,6 +7,10 @@ import net.alcuria.umbracraft.sounds.AudioManager;
  * @author Andrew Keturi */
 public abstract class Audio {
 
+	public static enum CommonSound {
+		CLOSE
+	}
+
 	public AudioManager manager = new AudioManager();
 
 	/** Pause the music */
@@ -22,5 +26,8 @@ public abstract class Audio {
 
 	/** Play the victory theme */
 	public abstract void playVictory();
+
+	/** Play some common sound effect for UI or something */
+	public abstract void sound(CommonSound sound);
 
 }

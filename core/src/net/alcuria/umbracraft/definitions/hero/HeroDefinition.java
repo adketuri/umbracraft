@@ -12,7 +12,7 @@ public class HeroDefinition extends Definition {
 	@Tooltip("A function for the exp needed to level")
 	public String expNeededFunc;
 	@Tooltip("The intelligence function")
-	public String intFunc;
+	public String wisFunc;
 	@Tooltip("A function for the max HP of the hero")
 	public String maxHpFunc;
 	@Tooltip("The hero's displayed name.")
