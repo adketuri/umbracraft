@@ -10,6 +10,7 @@ import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
 import net.alcuria.umbracraft.definitions.anim.BattleAnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.config.ConfigDefinition;
+import net.alcuria.umbracraft.definitions.enemy.EnemyDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.hero.HeroDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
@@ -19,6 +20,7 @@ import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.modules.VariableDefinition;
+import net.alcuria.umbracraft.util.O;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -32,6 +34,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * {@link Game} and {@link Editor} contain a reference to a Db object, so any
  * additional copies are likely unnecessary.
  * @author Andrew Keturi */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public final class Db {
 
 	private final ObjectMap<String, Definition> definitions;
@@ -51,6 +54,8 @@ public final class Db {
 		classes.put("scripts", ListDefinition.class);
 		classes.put("heroes", ListDefinition.class);
 		classes.put("skills", ListDefinition.class);
+		classes.put("enemies", ListDefinition.class);
+		classes.put("enemygroups", ListDefinition.class);
 		classes.put("configuration", ConfigDefinition.class);
 		classes.put("tilesets", TilesetListDefinition.class);
 
@@ -119,25 +124,39 @@ public final class Db {
 		return (AreaDefinition) areas().get(id);
 	}
 
+	/** @return all {@link AreaDefinition} objects */
 	public ListDefinition<AreaDefinition> areas() {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
-		ListDefinition<AreaDefinition> definition = (ListDefinition<AreaDefinition>) definitions.get("areas");
-		return definition;
+		O.notNull(definitions);
+		return (ListDefinition<AreaDefinition>) definitions.get("areas");
 	}
 
+	/** @param id the identifier in the db
+	 * @return a single {@link BattleAnimationGroupDefinition} */
 	public BattleAnimationGroupDefinition battleAnimGroup(String id) {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
-		ListDefinition<BattleAnimationGroupDefinition> definition = (ListDefinition<BattleAnimationGroupDefinition>) definitions.get("battleanimationgroup");
-		return (BattleAnimationGroupDefinition) definition.get(id);
+		return (BattleAnimationGroupDefinition) battleAnimGroups().get(id);
+	}
+
+	/** @return all {@link BattleAnimationGroupDefinition} objects in the db */
+	public ListDefinition battleAnimGroups() {
+		O.notNull(definitions);
+		return (ListDefinition<BattleAnimationGroupDefinition>) definitions.get("battleanimationgroup");
 	}
 
 	/** @return the {@link ConfigDefinition} from the database. */
 	public ConfigDefinition config() {
 		return (ConfigDefinition) definitions.get("configuration");
+	}
+
+	/** @return all enemies */
+	public ListDefinition enemies() {
+		O.notNull(definitions);
+		return (ListDefinition<EnemyDefinition>) definitions.get("enemies");
+	}
+
+	/** @param name the id of the {@link EnemyDefinition}
+	 * @return a single {@link EnemyDefinition} */
+	public EnemyDefinition enemy(String name) {
+		return (EnemyDefinition) enemies().get(name);
 	}
 
 	/** @return all {@link EntityDefinition} objects in the database. */
@@ -238,9 +257,7 @@ public final class Db {
 
 	/** @return all {@link VariableDefinition} objects in the database */
 	public ListDefinition<VariableDefinition> variables() {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
+		O.notNull(definitions);
 		return (ListDefinition<VariableDefinition>) definitions.get("variables");
 	}
 

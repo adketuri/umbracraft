@@ -25,6 +25,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 /** A module to display a generic list of some definition types.
  * @author Andrew Keturi
  * @param <T> */
+@SuppressWarnings("rawtypes")
 public abstract class ListModule<T extends Definition> extends Module<ListDefinition> {
 	private final Array<VisTextButton> buttons = new Array<VisTextButton>();
 	private Definition currentIndex;

@@ -10,6 +10,7 @@ import net.alcuria.umbracraft.editor.modules.AnimationsModule;
 import net.alcuria.umbracraft.editor.modules.AreaListModule;
 import net.alcuria.umbracraft.editor.modules.BattleAnimationGroupListModule;
 import net.alcuria.umbracraft.editor.modules.ConfigModule;
+import net.alcuria.umbracraft.editor.modules.EnemyListModule;
 import net.alcuria.umbracraft.editor.modules.EntityListModule;
 import net.alcuria.umbracraft.editor.modules.FlagListModule;
 import net.alcuria.umbracraft.editor.modules.HeroListModule;
@@ -98,18 +99,20 @@ public class EditorLayout extends Layout implements EventListener {
 	private void addModules() {
 		modules.add(new HeroListModule());
 		modules.add(new SkillListModule());
-		modules.add(new ConfigModule());
-		modules.add(new TilesetsModule());
 		modules.add(new AnimationsModule());
 		modules.add(new AnimationGroupListModule());
 		modules.add(new BattleAnimationGroupListModule());
 		modules.add(new AnimationCollectionListModule());
-		modules.add(new AreaListModule());
+		modules.add(new EnemyListModule());
+		modules.add(new EnemyGroupListModule());
+		modules.add(new TilesetsModule());
 		modules.add(new MapListModule());
+		modules.add(new AreaListModule());
 		modules.add(new EntityListModule());
 		modules.add(new ScriptListModule());
 		modules.add(new FlagListModule());
 		modules.add(new VariableListModule());
+		modules.add(new ConfigModule());
 	}
 
 	@Override

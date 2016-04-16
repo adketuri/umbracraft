@@ -1,8 +1,7 @@
 package net.alcuria.umbracraft.engine;
 
-import java.io.Serializable;
 
-public class TeleportLocation implements Serializable {
+public class TeleportLocation {
 
 	private final String name;
 	private final int x;

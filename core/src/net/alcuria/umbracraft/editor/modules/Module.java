@@ -37,6 +37,7 @@ import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
  * classes.
  * @author Andrew Keturi
  * @param <T> */
+@SuppressWarnings("unchecked")
 public abstract class Module<T extends Definition> {
 
 	public static enum FieldType {
