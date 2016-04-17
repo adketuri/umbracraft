@@ -14,6 +14,7 @@ import net.alcuria.umbracraft.editor.modules.EnemyListModule;
 import net.alcuria.umbracraft.editor.modules.EntityListModule;
 import net.alcuria.umbracraft.editor.modules.FlagListModule;
 import net.alcuria.umbracraft.editor.modules.HeroListModule;
+import net.alcuria.umbracraft.editor.modules.ItemListModule;
 import net.alcuria.umbracraft.editor.modules.MapListModule;
 import net.alcuria.umbracraft.editor.modules.Module;
 import net.alcuria.umbracraft.editor.modules.ScriptListModule;
@@ -98,6 +99,7 @@ public class EditorLayout extends Layout implements EventListener {
 
 	private void addModules() {
 		modules.add(new HeroListModule());
+		modules.add(new ItemListModule());
 		modules.add(new SkillListModule());
 		modules.add(new AnimationsModule());
 		modules.add(new AnimationGroupListModule());

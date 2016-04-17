@@ -13,14 +13,14 @@ public class ConfigDefinition extends Definition {
 	@Tooltip("The path to battle faces on the turn order table. Relative")
 	@Order(507)
 	public String battleFacePath;
-	@Tooltip("The path to icons. Relative")
-	@Order(501)
-	public String battleIconPath;
 	@Tooltip("The path to faces. Relative")
 	@Order(502)
 	public String facePath;
 	@Tooltip("The global entities")
 	public Array<String> globalEntities = new Array<String>();
+	@Tooltip("The path to icons. Relative")
+	@Order(501)
+	public String iconPath;
 	@Order(505)
 	@Tooltip("The path to particles. Relative")
 	public String particlePath;

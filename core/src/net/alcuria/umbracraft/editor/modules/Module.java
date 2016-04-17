@@ -275,7 +275,6 @@ public abstract class Module<T extends Definition> {
 								if (config.listener != null) {
 									config.listener.invoke(field.getName());
 								}
-								//page.trigger = ((SelectBox<ScriptTrigger>) event.getTarget()).getSelected();
 								return true;
 							}
 							return false;

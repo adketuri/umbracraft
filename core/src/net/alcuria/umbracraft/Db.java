@@ -14,6 +14,7 @@ import net.alcuria.umbracraft.definitions.enemy.EnemyDefinition;
 import net.alcuria.umbracraft.definitions.enemy.EnemyGroupDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.hero.HeroDefinition;
+import net.alcuria.umbracraft.definitions.items.ItemDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.definitions.skill.SkillDefinition;
@@ -21,6 +22,7 @@ import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.modules.VariableDefinition;
+import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.util.O;
 
 import com.badlogic.gdx.Application.ApplicationType;
@@ -33,7 +35,8 @@ import com.badlogic.gdx.utils.ObjectMap;
  * returned objects are never copied to new objects, so care should be taken
  * when modifying Definitions returned from this class. By default, the
  * {@link Game} and {@link Editor} contain a reference to a Db object, so any
- * additional copies are likely unnecessary.
+ * additional copies are likely unnecessary. TODO: refactor this using generics,
+ * enumerate all the types, or something.
  * @author Andrew Keturi */
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public final class Db {
@@ -90,37 +93,40 @@ public final class Db {
 		return anims().get(name);
 	}
 
+	/** @param name the id of an {@link AnimationCollectionDefinition}
+	 * @return an {@link AnimationCollectionDefinition} from the db */
 	public AnimationCollectionDefinition animCollection(String name) {
 		return (AnimationCollectionDefinition) animCollections().get(name);
 	}
 
+	/** @return all {@link AnimationCollectionDefinition} objects in the db */
 	public ListDefinition<AnimationCollectionDefinition> animCollections() {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
+		O.notNull(definitions);
 		ListDefinition<AnimationCollectionDefinition> definition = (ListDefinition<AnimationCollectionDefinition>) definitions.get("animationcollection");
 		return definition;
 	}
 
+	/** @param id the identifier of the {@link AnimationGroupDefinition}
+	 * @return an {@link AnimationGroupDefinition} from the db */
 	public AnimationGroupDefinition animGroup(String id) {
 		return (AnimationGroupDefinition) animGroups().get(id);
 	}
 
+	/** @return all {@link AnimationGroupDefinition} objects in the db */
 	public ListDefinition<AnimationGroupDefinition> animGroups() {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
+		O.notNull(definitions);
 		ListDefinition<AnimationGroupDefinition> definition = (ListDefinition<AnimationGroupDefinition>) definitions.get("animationgroup");
 		return definition;
 	}
 
+	/** @return all {@link AnimationDefinition} objects in the db */
 	public ObjectMap<String, AnimationDefinition> anims() {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
+		O.notNull(definitions);
 		return ((AnimationListDefinition) definitions.get("animations")).animations;
 	}
 
+	/** @param id the identifier of the area
+	 * @return the {@link AreaDefinition} in the db */
 	public AreaDefinition area(final String id) {
 		return (AreaDefinition) areas().get(id);
 	}
@@ -166,6 +172,7 @@ public final class Db {
 		return (EnemyGroupDefinition) enemyGroups().get(id);
 	}
 
+	/** @return all {@link EnemyGroupDefinition} objects in the db */
 	public ListDefinition<EnemyGroupDefinition> enemyGroups() {
 		O.notNull(definitions);
 		return (ListDefinition<EnemyGroupDefinition>) definitions.get("enemygroups");
@@ -174,29 +181,27 @@ public final class Db {
 
 	/** @return all {@link EntityDefinition} objects in the database. */
 	public ListDefinition<EntityDefinition> entities() {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
+		O.notNull(definitions);
 		return (ListDefinition<EntityDefinition>) definitions.get("entities");
 	}
 
-	public EntityDefinition entity(String name) {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
+	/** @param id the {@link EntityDefinition}'s id
+	 * @return an {@link Entity} in the db */
+	public EntityDefinition entity(String id) {
+		O.notNull(definitions);
 		ListDefinition<EntityDefinition> definition = (ListDefinition<EntityDefinition>) definitions.get("entities");
-		return (EntityDefinition) definition.get(name);
+		return (EntityDefinition) definition.get(id);
 	}
 
+	/** @param id the identifier of the flag
+	 * @return the {@link FlagDefinition} in the db */
 	public FlagDefinition flag(String id) {
 		return (FlagDefinition) flags().get(id);
 	}
 
 	/** @return all {@link FlagDefinition} objects in the database */
 	public ListDefinition<FlagDefinition> flags() {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
+		O.notNull(definitions);
 		return (ListDefinition<FlagDefinition>) definitions.get("flags");
 	}
 
@@ -206,20 +211,29 @@ public final class Db {
 		return (HeroDefinition) heroes().get(id);
 	}
 
+	/** @return all {@link HeroDefinition} objects in the db */
 	public ListDefinition<HeroDefinition> heroes() {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
+		O.notNull(definitions);
 		ListDefinition<HeroDefinition> definition = (ListDefinition<HeroDefinition>) definitions.get("heroes");
 		return definition;
+	}
+
+	/** @param id the {@link ItemDefinition} id
+	 * @return the {@link ItemDefinition} in the db */
+	public ItemDefinition item(String id) {
+		return (ItemDefinition) items().get(id);
+	}
+
+	/** @return all {@link ItemDefinition} objects in the db */
+	public ListDefinition<ItemDefinition> items() {
+		O.notNull(definitions);
+		return (ListDefinition<ItemDefinition>) definitions.get("items");
 	}
 
 	/** @param name the name of the map
 	 * @return the {@link MapDefinition} from the database */
 	public MapDefinition map(String name) {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
+		O.notNull(definitions);
 		ListDefinition<MapDefinition> definition = (ListDefinition<MapDefinition>) definitions.get("map");
 		return (MapDefinition) definition.get(name);
 	}
@@ -233,9 +247,7 @@ public final class Db {
 
 	/** @return all {@link FlagDefinition} objects in the database */
 	public ListDefinition<ScriptDefinition> scripts() {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
+		O.notNull(definitions);
 		return (ListDefinition<ScriptDefinition>) definitions.get("scripts");
 	}
 
@@ -248,9 +260,7 @@ public final class Db {
 
 	/** @return all {@link SkillDefinition} objects in the database */
 	public ListDefinition<SkillDefinition> skills() {
-		if (definitions == null) {
-			throw new NullPointerException("Definitions not initialized");
-		}
+		O.notNull(definitions);
 		return (ListDefinition<SkillDefinition>) definitions.get("skills");
 	}
 

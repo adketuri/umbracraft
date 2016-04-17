@@ -1,9 +1,8 @@
-package net.alcuria.umbracraft.editor.modules;
+package net.alcuria.umbracraft.engine.scripts;
 
 import java.util.Set;
 
 import net.alcuria.umbracraft.engine.entities.Entity;
-import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;

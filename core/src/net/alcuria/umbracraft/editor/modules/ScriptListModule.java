@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.definitions.npc.ScriptPageDefinition.ScriptTrigger
 import net.alcuria.umbracraft.editor.widget.ScriptPagePropertiesWidget;
 import net.alcuria.umbracraft.editor.widget.ScriptPageWidget;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
+import net.alcuria.umbracraft.engine.scripts.EmptyCommand;
 import net.alcuria.umbracraft.listeners.Listener;
 
 import com.badlogic.gdx.graphics.Color;

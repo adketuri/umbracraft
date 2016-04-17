@@ -88,7 +88,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 				textFieldWidth = 200;
 				cols = 1;
 				suggestions = new ObjectMap<String, Array<String>>();
-				suggestions.put("iconId", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().battleIconPath, false));
+				suggestions.put("iconId", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().iconPath, false));
 				listener = new TypeListener<String>() {
 
 					@Override
@@ -195,7 +195,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 
 	private void updateSkillIcon() {
 		iconTable.clear();
-		String path = Editor.db().config().projectPath + Editor.db().config().battleIconPath + definition.iconId + ".png";
+		String path = Editor.db().config().projectPath + Editor.db().config().iconPath + definition.iconId + ".png";
 		if (Gdx.files.absolute(path).exists()) {
 			final Texture texture = new Texture(Gdx.files.absolute(path));
 			iconTable.add(new Image(texture)).size(texture.getWidth() * 2, texture.getHeight() * 2);

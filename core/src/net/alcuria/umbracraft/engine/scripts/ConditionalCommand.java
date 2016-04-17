@@ -6,7 +6,6 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.editor.Editor;
-import net.alcuria.umbracraft.editor.modules.EmptyCommand;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.util.StringUtils;
 
