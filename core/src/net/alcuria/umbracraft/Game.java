@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.engine.AreaBuilder;
 import net.alcuria.umbracraft.engine.audio.Audio;
 import net.alcuria.umbracraft.engine.entities.EntityManager;
 import net.alcuria.umbracraft.engine.events.EventPublisher;
+import net.alcuria.umbracraft.engine.inventory.Inventory;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
 import net.alcuria.umbracraft.engine.windows.WindowStack;
@@ -35,6 +36,7 @@ public final class Game {
 	private static final Evaluator eval = new Evaluator();
 	private static FlagManager flags;
 	private static HUD hud;
+	private static Inventory inventory;
 	private static Map map;
 	private static Party party;
 	private static EventPublisher publisher;
@@ -114,6 +116,11 @@ public final class Game {
 	/** @return whether or not the game is in debug mode. */
 	public static boolean isDebug() {
 		return debug;
+	}
+
+	/** @return the game {@link Inventory} */
+	public static Inventory items() {
+		return inventory;
 	}
 
 	/** Prints to stdout
@@ -231,10 +238,12 @@ public final class Game {
 		flags = new FlagManager();
 		variables = new VariableManager();
 		save = new DiskSaveManager();
+		inventory = new Inventory();
 		// now subscribe
 		publisher.subscribe(view);
 	}
 
+	/** Destroys everything */
 	public void dispose() {
 		if (assets != null) {
 			assets.dispose();
@@ -258,6 +267,7 @@ public final class Game {
 		if (variables != null) {
 			variables.dispose();
 		}
+		inventory = null;
 		save.dispose();
 		publisher.removeAllListeners();
 		publisher = null;

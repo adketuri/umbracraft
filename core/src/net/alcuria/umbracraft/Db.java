@@ -62,6 +62,7 @@ public final class Db {
 		classes.put("enemygroups", ListDefinition.class);
 		classes.put("configuration", ConfigDefinition.class);
 		classes.put("tilesets", TilesetListDefinition.class);
+		classes.put("items", ListDefinition.class);
 
 		// deserialize all definitions
 		definitions = new ObjectMap<>();

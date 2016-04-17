@@ -21,6 +21,8 @@ public class ConfigDefinition extends Definition {
 	@Tooltip("The path to icons. Relative")
 	@Order(501)
 	public String iconPath;
+	@Tooltip("How much stuff the player may hold to begin with")
+	public int maxWeight;
 	@Order(505)
 	@Tooltip("The path to particles. Relative")
 	public String particlePath;

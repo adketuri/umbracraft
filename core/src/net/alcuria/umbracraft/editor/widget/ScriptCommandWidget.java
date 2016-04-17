@@ -11,6 +11,7 @@ import net.alcuria.umbracraft.engine.scripts.ConditionalCommand;
 import net.alcuria.umbracraft.engine.scripts.ControlVariableCommand;
 import net.alcuria.umbracraft.engine.scripts.EmptyCommand;
 import net.alcuria.umbracraft.engine.scripts.FlagScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.ItemChangeScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.LogScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.MoveScriptCommand;
@@ -37,9 +38,9 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 public class ScriptCommandWidget extends Module<ScriptCommand> {
 	public static enum Commands {
 		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), CONDITIONAL("Conditional", ConditionalCommand.class), //
-		FLAG("Flag", FlagScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), //
-		PAUSE("Pause", PauseScriptCommand.class), RECOVER("Heal/Recover Party", RecoverScriptCommand.class), REMOVE("Remove Entity", RemoveEntityCommand.class), //
-		SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
+		FLAG("Flag", FlagScriptCommand.class), ITEM("Change Items/Inventory", ItemChangeScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), //
+		MOVE("Move", MoveScriptCommand.class), PAUSE("Pause", PauseScriptCommand.class), RECOVER("Heal/Recover Party", RecoverScriptCommand.class), //
+		REMOVE("Remove Entity", RemoveEntityCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
 
 		public static Commands from(final String name) {
 			for (Commands c : Commands.values()) {
