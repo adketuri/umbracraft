@@ -38,7 +38,7 @@ public class EnemyGroupListModule extends ListModule<EnemyGroupDefinition> {
 
 	@Override
 	public String getTitle() {
-		return "EnemyGroup";
+		return "EnemyGroups";
 	}
 
 }

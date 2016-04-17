@@ -11,6 +11,7 @@ import net.alcuria.umbracraft.definitions.anim.BattleAnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.area.AreaDefinition;
 import net.alcuria.umbracraft.definitions.config.ConfigDefinition;
 import net.alcuria.umbracraft.definitions.enemy.EnemyDefinition;
+import net.alcuria.umbracraft.definitions.enemy.EnemyGroupDefinition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.definitions.hero.HeroDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
@@ -157,6 +158,18 @@ public final class Db {
 	 * @return a single {@link EnemyDefinition} */
 	public EnemyDefinition enemy(String name) {
 		return (EnemyDefinition) enemies().get(name);
+	}
+
+	/** @param id the id of the {@link EnemyGroupDefinition}
+	 * @return the {@link EnemyGroupDefinition} */
+	public EnemyGroupDefinition enemyGroup(String id) {
+		return (EnemyGroupDefinition) enemyGroups().get(id);
+	}
+
+	public ListDefinition<EnemyGroupDefinition> enemyGroups() {
+		O.notNull(definitions);
+		return (ListDefinition<EnemyGroupDefinition>) definitions.get("enemygroups");
+
 	}
 
 	/** @return all {@link EntityDefinition} objects in the database. */

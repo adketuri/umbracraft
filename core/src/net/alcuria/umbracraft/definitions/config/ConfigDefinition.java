@@ -10,6 +10,9 @@ import com.badlogic.gdx.utils.Array;
  * location, starting sprites, and so on.
  * @author Andrew Keturi */
 public class ConfigDefinition extends Definition {
+	@Tooltip("The path to battle faces on the turn order table. Relative")
+	@Order(507)
+	public String battleFacePath;
 	@Tooltip("The path to icons. Relative")
 	@Order(501)
 	public String battleIconPath;
@@ -39,7 +42,6 @@ public class ConfigDefinition extends Definition {
 	public String startingNode;
 	@Tooltip("The starting party")
 	public Array<String> startingParty = new Array<String>();
-
 	@Tooltip("The player's starting x coordinate, in tiles")
 	public int startingX;
 	@Tooltip("The player's starting y coordinate, in tiles")

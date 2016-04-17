@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.editor.modules;
 
 import net.alcuria.umbracraft.definitions.enemy.EnemyDefinition;
 import net.alcuria.umbracraft.editor.Editor;
+import net.alcuria.umbracraft.util.FileUtils;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
@@ -22,6 +23,7 @@ public class EnemyListModule extends ListModule<EnemyDefinition> {
 		config.textFieldWidth = 200;
 		config.suggestions = new ObjectMap<String, Array<String>>();
 		config.suggestions.put("animGroup", Editor.db().battleAnimGroups().keys());
+		config.suggestions.put("faceId", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().battleFacePath, false));
 		populate(content, EnemyDefinition.class, definition, config);
 	}
 

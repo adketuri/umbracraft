@@ -8,12 +8,19 @@ import com.badlogic.gdx.utils.Array;
 
 public class EnemyDefinition extends Definition {
 
+	public static enum EnemyPositionPreference {
+		BACK, FRONT, MIDDLE;
+	}
+
 	@Tooltip("The BattleAnimationGroup")
 	@Order(3)
 	public String animGroup;
 	@Tooltip("Secondary stats")
 	@Order(7)
 	public int atk, matk, def, mdef;
+	@Tooltip("The face to use along the turn order table")
+	@Order(10)
+	public String faceId;
 	@Tooltip("Max HP of the monster")
 	@Order(5)
 	public int hp;
@@ -23,6 +30,9 @@ public class EnemyDefinition extends Definition {
 	@Tooltip("The name of the monster")
 	@Order(1)
 	public String name;
+	@Tooltip("The grid position preferences")
+	@Order(9)
+	public EnemyPositionPreference position;
 	public Array<String> skills;
 	@Tooltip("Additional percentage-based stats")
 	@Order(8)
