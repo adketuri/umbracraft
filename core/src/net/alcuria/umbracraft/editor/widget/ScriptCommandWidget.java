@@ -15,6 +15,7 @@ import net.alcuria.umbracraft.engine.scripts.LogScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.MoveScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.PauseScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.RecoverScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.RemoveEntityCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ShowAnimationScriptCommand;
@@ -37,8 +38,8 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 	public static enum Commands {
 		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), CONDITIONAL("Conditional", ConditionalCommand.class), //
 		FLAG("Flag", FlagScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), //
-		PAUSE("Pause", PauseScriptCommand.class), REMOVE("Remove Entity", RemoveEntityCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), //
-		TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
+		PAUSE("Pause", PauseScriptCommand.class), RECOVER("Heal/Recover Party", RecoverScriptCommand.class), REMOVE("Remove Entity", RemoveEntityCommand.class), //
+		SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
 
 		public static Commands from(final String name) {
 			for (Commands c : Commands.values()) {
