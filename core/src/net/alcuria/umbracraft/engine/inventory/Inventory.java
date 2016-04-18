@@ -92,6 +92,16 @@ public class Inventory {
 		return true;
 	}
 
+	/** @return the current weight capacity */
+	public int getCurrentWeight() {
+		return currentWeight;
+	}
+
+	/** @return the maximum weight capacity */
+	public int getMaxWeight() {
+		return maxWeight;
+	}
+
 	/** @return The amount of money in our inventory */
 	public long getMoney() {
 		return money;
