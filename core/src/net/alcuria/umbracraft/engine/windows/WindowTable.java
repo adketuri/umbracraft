@@ -29,14 +29,25 @@ public class WindowTable extends Table {
 				setBackground(Drawables.ninePatch("ui/frame"));
 				add(content = new Table()).expand().fill();
 			}
-		});
+		}).expand().fill();
 
+	}
+
+	public Cell<?> newLine() {
+		return content.row();
 	}
 
 	/** Equivalent to add, but puts the content in the correct spot.
 	 * @param actor the actor to add to the table.
 	 * @return a {@link Cell} */
 	public <T extends Actor> Cell<T> put(T actor) {
-		return content.add(actor);
+		return put(actor, false);
+	}
+
+	/** Equivalent to add, but puts the content in the correct spot.
+	 * @param actor the actor to add to the table.
+	 * @return a {@link Cell} */
+	public <T extends Actor> Cell<T> put(T actor, boolean expand) {
+		return content.add(actor).expand(expand, expand).fill(expand, expand);
 	}
 }
