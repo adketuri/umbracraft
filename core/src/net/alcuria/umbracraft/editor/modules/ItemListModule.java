@@ -68,6 +68,15 @@ public class ItemListModule extends ListModule<ItemDefinition> {
 			break;
 		case EQUIPMENT:
 			config.filter.add("equipType");
+			config.filter.add("atk");
+			config.filter.add("def");
+			config.filter.add("matk");
+			config.filter.add("mdef");
+			config.filter.add("accuracy");
+			config.filter.add("focus");
+			config.filter.add("evasion");
+			config.filter.add("critical");
+			config.filter.add("speed");
 			break;
 		case SCRIPT:
 			break;

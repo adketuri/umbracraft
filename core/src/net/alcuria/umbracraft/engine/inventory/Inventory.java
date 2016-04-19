@@ -36,6 +36,16 @@ public class Inventory {
 			return quantity > 0;
 		}
 
+		/** @return the id of this {@link ItemDescriptor} */
+		public String getId() {
+			return id;
+		}
+
+		/** @return the quantity of this descriptor */
+		public int getQuantity() {
+			return quantity;
+		}
+
 		public void increment(int amt) {
 			quantity += amt;
 		}
@@ -90,6 +100,12 @@ public class Inventory {
 			}
 		}
 		return true;
+	}
+
+	/** @return all the items in the player's inventory. Note, this returns the
+	 *         internal array so modification should be done with care. */
+	public Array<ItemDescriptor> get() {
+		return items;
 	}
 
 	/** @return the current weight capacity */

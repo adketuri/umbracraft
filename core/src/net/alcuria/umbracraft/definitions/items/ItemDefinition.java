@@ -11,7 +11,7 @@ public class ItemDefinition extends Definition {
 	/** Enumerates the {@link ItemType#EQUIPMENT} type
 	 * @author Andrew Keturi */
 	public static enum EquipType {
-		ACCESSORY, BOTTOM, HELM, SHIELD, TOP, WEAPON
+		ACCESSORY, BOTTOM, GLOVES, HELM, SHIELD, TOP, WEAPON
 	}
 
 	/** Enumerates different types of items.
@@ -31,6 +31,9 @@ public class ItemDefinition extends Definition {
 		}
 	}
 
+	@Tooltip("Equip stats stats")
+	@Order(200)
+	public int atk, matk, def, mdef;
 	@Tooltip("A description for the item")
 	@Order(7)
 	public String description;
@@ -55,6 +58,9 @@ public class ItemDefinition extends Definition {
 	@Order(102)
 	@Tooltip("A script to call when invoking")
 	public String script;
+	@Tooltip("Secondary percent-based stats")
+	@Order(201)
+	public float speed, critical, accuracy, focus, evasion;
 	@Tooltip("The tag, for sorting")
 	@Order(2)
 	public String tag;
