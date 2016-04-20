@@ -11,7 +11,16 @@ public class ItemDefinition extends Definition {
 	/** Enumerates the {@link ItemType#EQUIPMENT} type
 	 * @author Andrew Keturi */
 	public static enum EquipType {
-		ACCESSORY, BOTTOM, GLOVES, HELM, SHIELD, TOP, WEAPON
+		ACCESSORY("silhouette_ring"), BOTTOM("silhouette_shoe"), GLOVES("silhouette_fist"), HELM("silhouette_helm"), SHIELD("silhouette_shield"), TOP("silhouette_armor"), WEAPON("silhouette_sword");
+		private final String emptyFilename;
+
+		EquipType(String emptyFilename) {
+			this.emptyFilename = emptyFilename;
+		}
+
+		public String getEmptyFilename() {
+			return emptyFilename;
+		}
 	}
 
 	/** Enumerates different types of items.

@@ -56,6 +56,12 @@ public class Inventory {
 	private int maxWeight = Game.db().config().maxWeight;
 	private long money;
 
+	/** Adds a descriptor to the inventory
+	 * @param descriptor */
+	public void add(ItemDescriptor descriptor) {
+		items.add(descriptor);
+	}
+
 	/** Adds an item to our inventory
 	 * @param id the item's id
 	 * @param quantity the amount to add
@@ -121,6 +127,13 @@ public class Inventory {
 	/** @return The amount of money in our inventory */
 	public long getMoney() {
 		return money;
+	}
+
+	/** Removes a descriptor
+	 * @param descriptor */
+	public void remove(ItemDescriptor descriptor) {
+		items.removeValue(descriptor, true);
+
 	}
 
 	/** Removes an item from our inventory. This should not do any partial
