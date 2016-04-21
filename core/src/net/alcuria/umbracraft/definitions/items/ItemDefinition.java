@@ -40,6 +40,57 @@ public class ItemDefinition extends Definition {
 		}
 	}
 
+	/** Enumerates on all the secondary item stats that are added to gear
+	 * @author Andrew Keturi */
+	public static enum SecondaryStat {
+		ACC("Hit"), ATK("Attack"), CRIT("Crit"), DEF("Defense"), EVA("Evade"), FOC("Focus"), MATK("M.Attack"), MDEF("M.Defense"), SPD("Speed");
+
+		private final String name;
+
+		SecondaryStat(String name) {
+			this.name = name;
+		}
+
+		/** Given an item definition, return its stat
+		 * @param item the {@link ItemDefinition}
+		 * @return the stat value */
+		public float from(ItemDefinition item) {
+			switch (this) {
+			case ACC:
+				return item.accuracy;
+			case ATK:
+				return item.atk;
+			case CRIT:
+				return item.critical;
+			case DEF:
+				return item.def;
+			case EVA:
+				return item.evasion;
+			case FOC:
+				return item.focus;
+			case MATK:
+				return item.matk;
+			case MDEF:
+				return item.mdef;
+			case SPD:
+				return item.speed;
+			default:
+				break;
+			}
+			throw new NullPointerException("Stat doesn't exist in ItemDefinition: " + this);
+		}
+
+		/** @return <code>true</code> if this should be displayed as a percentage */
+		public boolean isPercent() {
+			return this == SPD || this == EVA || this == ACC || this == FOC || this == CRIT;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+	}
+
 	@Tooltip("Equip stats stats")
 	@Order(200)
 	public int atk, matk, def, mdef;

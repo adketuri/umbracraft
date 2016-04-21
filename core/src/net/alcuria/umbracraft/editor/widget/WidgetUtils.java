@@ -9,9 +9,12 @@ import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -127,6 +130,13 @@ public class WidgetUtils {
 				});
 			}
 		}).expand().fillX().top().row();
+	}
+
+	/** Pulses the actor down on a touch
+	 * @param actor some {@link Actor}. Be sure it is transformable. */
+	public static Action pulse(Actor actor) {
+		actor.setOrigin(actor.getWidth() / 2, actor.getHeight() / 2);
+		return Actions.sequence(Actions.scaleTo(0.8f, 0.8f, 0.1f, Interpolation.pow2Out), Actions.scaleTo(1.2f, 1.2f, 0.08f, Interpolation.pow2Out), Actions.scaleTo(1f, 1f, 0.05f, Interpolation.pow2Out));
 	}
 
 	/** Creates a tooltip with the given {@link String} value on hover. Note,
