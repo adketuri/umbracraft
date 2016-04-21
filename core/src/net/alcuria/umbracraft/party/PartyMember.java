@@ -45,7 +45,7 @@ public class PartyMember {
 	}
 
 	private transient Entity battler;
-	private final ObjectMap<EquipSlot, ItemDescriptor> equipment = new ObjectMap<EquipSlot, ItemDescriptor>();
+	private final ObjectMap<String, ItemDescriptor> equipment = new ObjectMap<String, ItemDescriptor>();
 	private String heroId;
 	private final Array<SkillDefinition> skills = new Array<SkillDefinition>();
 	private MemberStats stats;
@@ -100,7 +100,7 @@ public class PartyMember {
 	}
 
 	/** @return the equipment {@link ObjectMap} */
-	public ObjectMap<EquipSlot, ItemDescriptor> getEquipment() {
+	public ObjectMap<String, ItemDescriptor> getEquipment() {
 		return equipment;
 	}
 
@@ -108,7 +108,7 @@ public class PartyMember {
 	 * @param stat
 	 * @return the value of the {@link SecondaryStat} */
 	public float getSecondaryStat(SecondaryStat stat) {
-		int total = 0;
+		float total = 0;
 		//add it up from gear
 		for (ItemDescriptor equip : equipment.values()) {
 			final ItemDefinition item = Game.db().item(equip.getId());
@@ -120,6 +120,18 @@ public class PartyMember {
 	/** @return the {@link MemberStats} of this party member */
 	public MemberStats getStats() {
 		return stats;
+	}
+
+	/** Removes the first instance of an equip. TODO: Accessories!!
+	 * @param descriptor the {@link ItemDescriptor} */
+	public void removeEquipment(ItemDescriptor descriptor) {
+		final ItemDefinition definition = Game.db().item(descriptor.getId());
+		for (String key : equipment.keys()) {
+			if (equipment.get(key).equals(descriptor)) {
+				equipment.remove(key);
+				return;
+			}
+		}
 	}
 
 	/** Sets a reference to the entity used for battling. (Used elsewhere to

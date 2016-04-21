@@ -43,12 +43,20 @@ public class ItemDefinition extends Definition {
 	/** Enumerates on all the secondary item stats that are added to gear
 	 * @author Andrew Keturi */
 	public static enum SecondaryStat {
-		ACC("Hit"), ATK("Attack"), CRIT("Crit"), DEF("Defense"), EVA("Evade"), FOC("Focus"), MATK("M.Attack"), MDEF("M.Defense"), SPD("Speed");
+		ACC("Hit"), ATK("Atk"), CRIT("Crit"), DEF("Def"), EVA("Evade"), FOC("Focus"), MATK("M.Atk"), MDEF("M.Def"), SPD("Speed");
 
 		private final String name;
 
 		SecondaryStat(String name) {
 			this.name = name;
+		}
+
+		/** @return the baseline for which stats calculate from */
+		public float baseline() {
+			if (this == ACC || this == FOC || this == SPD) {
+				return 1;
+			}
+			return 0;
 		}
 
 		/** Given an item definition, return its stat
