@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.definitions.items;
 import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
+import net.alcuria.umbracraft.party.PartyMember.EquipSlot;
 
 /** Defines a collectible item.
  * @author Andrew Keturi */
@@ -20,6 +21,27 @@ public class ItemDefinition extends Definition {
 
 		public String getEmptyFilename() {
 			return emptyFilename;
+		}
+
+		public EquipSlot getSlot() {
+			switch (this) {
+			case ACCESSORY:
+				return EquipSlot.ACCESSORY_1; //TODO: intelligently determine which slot should be used here
+			case BOTTOM:
+				return EquipSlot.BOTTOM;
+			case GLOVES:
+				return EquipSlot.GLOVES;
+			case HELM:
+				return EquipSlot.HELM;
+			case SHIELD:
+				return EquipSlot.SHIELD;
+			case TOP:
+				return EquipSlot.TOP;
+			case WEAPON:
+				return EquipSlot.WEAPON;
+			default:
+				throw new NullPointerException("No slot type for " + this);
+			}
 		}
 	}
 
