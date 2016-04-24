@@ -125,7 +125,6 @@ public class PartyMember {
 	/** Removes the first instance of an equip. TODO: Accessories!!
 	 * @param descriptor the {@link ItemDescriptor} */
 	public void removeEquipment(ItemDescriptor descriptor) {
-		final ItemDefinition definition = Game.db().item(descriptor.getId());
 		for (String key : equipment.keys()) {
 			if (equipment.get(key).equals(descriptor)) {
 				equipment.remove(key);

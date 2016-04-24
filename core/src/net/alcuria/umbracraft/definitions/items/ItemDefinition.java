@@ -67,6 +67,11 @@ public class ItemDefinition extends Definition {
 	public static enum SecondaryStat {
 		ACC("Hit"), ATK("Atk"), CRIT("Crit"), DEF("Def"), EVA("Evade"), FOC("Focus"), MATK("M.Atk"), MDEF("M.Def"), SPD("Speed");
 
+		public static SecondaryStat[] sortedValues() {
+			SecondaryStat[] stats = { ATK, MATK, DEF, MDEF, ACC, CRIT, SPD, EVA, FOC };
+			return stats;
+		}
+
 		private final String name;
 
 		SecondaryStat(String name) {
