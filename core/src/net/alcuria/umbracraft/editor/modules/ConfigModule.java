@@ -31,6 +31,7 @@ public class ConfigModule extends Module<ConfigDefinition> {
 					{
 						cols = 1;
 						textFieldWidth = 300;
+						labelWidth = 200;
 					}
 				});
 			}

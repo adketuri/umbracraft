@@ -13,6 +13,9 @@ public class ConfigDefinition extends Definition {
 	@Tooltip("The path to battle faces on the turn order table. Relative")
 	@Order(507)
 	public String battleFacePath;
+	@Tooltip("A function for the exp needed to level")
+	@Order(700)
+	public String expNeededFunc;
 	@Tooltip("The path to faces. Relative")
 	@Order(502)
 	public String facePath;
@@ -21,11 +24,20 @@ public class ConfigDefinition extends Definition {
 	@Tooltip("The path to icons. Relative")
 	@Order(501)
 	public String iconPath;
+	@Tooltip("A function for magical damage calculations")
+	@Order(702)
+	public String magicalDamageFunc;
+	@Tooltip("A function for the max HP of the heroes")
+	@Order(701)
+	public String maxHpFunc;
 	@Tooltip("How much stuff the player may hold to begin with")
 	public int maxWeight;
 	@Order(505)
 	@Tooltip("The path to particles. Relative")
 	public String particlePath;
+	@Tooltip("A function for physical damage calculations")
+	@Order(704)
+	public String physicalDamageFunc;
 	@Tooltip("The path to the root of the game. Absolute.")
 	@Order(500)
 	public String projectPath;

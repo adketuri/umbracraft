@@ -9,12 +9,6 @@ import net.alcuria.umbracraft.definitions.Definition;
 public class HeroDefinition extends Definition {
 	@Tooltip("The agility function")
 	public String agiFunc;
-	@Tooltip("A function for the exp needed to level")
-	public String expNeededFunc;
-	@Tooltip("The intelligence function")
-	public String wisFunc;
-	@Tooltip("A function for the max HP of the hero")
-	public String maxHpFunc;
 	@Tooltip("The hero's displayed name.")
 	@Order(1)
 	public String name;
@@ -28,6 +22,8 @@ public class HeroDefinition extends Definition {
 	public String tag;
 	@Tooltip("The vitality function")
 	public String vitFunc;
+	@Tooltip("The intelligence function")
+	public String wisFunc;
 
 	@Override
 	public String getName() {

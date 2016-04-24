@@ -46,8 +46,8 @@ public class MemberStats {
 		ep = 10;
 		exp = 0;
 		baseStats = new ObjectMap<MemberStats.BaseStat, Integer>();
-		expNeeded = parse(Game.db().hero(hero).expNeededFunc);
-		maxHp = parse(Game.db().hero(hero).maxHpFunc);
+		expNeeded = parse(Game.db().config().expNeededFunc);
+		maxHp = parse(Game.db().config().maxHpFunc);
 		hp = maxHp;
 	}
 
@@ -60,7 +60,7 @@ public class MemberStats {
 			if (exp < 0) {
 				exp = 0;
 			}
-			expNeeded = parse(Game.db().hero(hero).expNeededFunc);
+			expNeeded = parse(Game.db().config().expNeededFunc);
 			Game.log(Game.db().hero(hero).name + " reached level " + level + " | " + exp + "/" + expNeeded);
 		}
 
@@ -70,7 +70,7 @@ public class MemberStats {
 	 *         probably a good idea to cache the result if it needs to be called
 	 *         often. */
 	public int getExpNeeded() {
-		expNeeded = parse(Game.db().hero(hero).expNeededFunc);
+		expNeeded = parse(Game.db().config().expNeededFunc);
 		return expNeeded;
 	}
 
@@ -78,7 +78,7 @@ public class MemberStats {
 	 *         calculate, so it's probably a good idea to cache the result if it
 	 *         needs to be called often. */
 	public int getMaxHp() {
-		maxHp = parse(Game.db().hero(hero).maxHpFunc);
+		maxHp = parse(Game.db().config().maxHpFunc);
 		return maxHp;
 	}
 
