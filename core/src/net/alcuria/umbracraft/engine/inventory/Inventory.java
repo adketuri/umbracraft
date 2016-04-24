@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.engine.inventory;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.items.ItemDefinition;
+import net.alcuria.umbracraft.definitions.items.ItemDefinition.ItemType;
 import net.alcuria.umbracraft.util.O;
 
 import com.badlogic.gdx.utils.Array;
@@ -212,5 +213,19 @@ public class Inventory {
 		currentWeight = inventory.currentWeight;
 		maxWeight = inventory.maxWeight;
 		money = inventory.money;
+	}
+
+	/** @param type an {@link ItemType}
+	 * @return the number of unique types of items we have of that particular
+	 *         {@link ItemType} */
+	public int typeSize(ItemType type) {
+		O.notNull(type);
+		int total = 0;
+		for (int i = 0; i < items.size; i++) {
+			if (Game.db().item(items.get(i).getId()).type == type) {
+				total++;
+			}
+		}
+		return total;
 	}
 }

@@ -1,8 +1,27 @@
 package net.alcuria.umbracraft.util;
 
+import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.listeners.TypeListener;
+
 /** Object-level utility functions for parameter validation.
  * @author Andrew Keturi */
 public final class O {
+
+	/** Helpers to invoke listeners while adding null checks
+	 * @author Andrew Keturi */
+	public static final class L {
+		public static void $(Listener listener) {
+			if (listener != null) {
+				listener.invoke();
+			}
+		}
+
+		public static <T> void $(TypeListener<T> listener, T arg) {
+			if (listener != null) {
+				listener.invoke(arg);
+			}
+		}
+	}
 
 	/** Ensures the object is not null. For parameter validation.
 	 * @param object */
