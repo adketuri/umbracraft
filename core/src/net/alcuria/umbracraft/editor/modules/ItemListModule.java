@@ -7,15 +7,20 @@ import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.listeners.TypeListener;
 import net.alcuria.umbracraft.util.FileUtils;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 /** A module for displaying all items in the editor. Fields are filtered based on
  * the type of the item.
  * @author Andrew Keturi */
 public class ItemListModule extends ListModule<ItemDefinition> {
-	private Table content;
+	private Table content, iconTable;
 	private ItemDefinition definition;
 
 	@Override
@@ -87,5 +92,24 @@ public class ItemListModule extends ListModule<ItemDefinition> {
 		config.suggestions = new ObjectMap<String, Array<String>>();
 		config.suggestions.put("icon", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().iconPath, false));
 		populate(content, ItemDefinition.class, definition, config);
+		content.row();
+		content.add(iconTable = new Table()).row();
+		updateIcon();
+	}
+
+	private void updateIcon() {
+		iconTable.clear();
+		String path = Editor.db().config().projectPath + Editor.db().config().iconPath + definition.icon + ".png";
+		if (Gdx.files.absolute(path).exists()) {
+			final Texture texture = new Texture(Gdx.files.absolute(path));
+			iconTable.add(new Image(texture)).size(texture.getWidth() * 2, texture.getHeight() * 2);
+		}
+		Timer.schedule(new Task() {
+
+			@Override
+			public void run() {
+				updateIcon(); // lazy af
+			}
+		}, 1);
 	}
 }

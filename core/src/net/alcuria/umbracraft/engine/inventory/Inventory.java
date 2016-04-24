@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.definitions.items.ItemDefinition.ItemType;
 import net.alcuria.umbracraft.util.O;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** Maintains the state of the party's inventory
  * @author Andrew Keturi */
@@ -37,6 +38,14 @@ public class Inventory {
 			return quantity > 0;
 		}
 
+		public ItemDefinition getDefinition() {
+			final ItemDefinition item = Game.db().item(id);
+			if (item == null) {
+				throw new NullPointerException("Cannot find item with id:" + id);
+			}
+			return item;
+		}
+
 		/** @return the id of this {@link ItemDescriptor} */
 		public String getId() {
 			return id;
@@ -53,14 +62,18 @@ public class Inventory {
 	}
 
 	private int currentWeight;
-	private final Array<ItemDescriptor> items = new Array<ItemDescriptor>();
+	private final ObjectMap<String, Array<ItemDescriptor>> items = new ObjectMap<String, Array<ItemDescriptor>>();
 	private int maxWeight = Game.db().config().maxWeight;
 	private long money;
 
-	/** Adds a descriptor to the inventory
+	/** Adds a descriptor to the items hash.
 	 * @param descriptor */
 	public void add(ItemDescriptor descriptor) {
-		items.add(descriptor);
+		ItemDefinition item = Game.db().item(descriptor.getId());
+		if (!items.containsKey(item.type.toString())) {
+			items.put(item.type.toString(), new Array<ItemDescriptor>());
+		}
+		items.get(item.type.toString()).add(descriptor);
 	}
 
 	/** Adds an item to our inventory
@@ -80,11 +93,15 @@ public class Inventory {
 			Game.error("Full capacity!");
 			return false;
 		}
+		// see if we need to add a new key
+		if (!items.containsKey(item.type.toString())) {
+			items.put(item.type.toString(), new Array<ItemDescriptor>());
+		}
 
 		// insertion
 		if (item.type.isStackable()) {
 			boolean found = false;
-			for (ItemDescriptor descriptor : items) {
+			for (ItemDescriptor descriptor : items.get(item.type.toString())) {
 				if (descriptor.id.equals(id)) {
 					// update existing descriptor
 					descriptor.increment(quantity);
@@ -95,13 +112,13 @@ public class Inventory {
 			}
 			if (!found) {
 				// add new stack
-				items.add(new ItemDescriptor(id, quantity));
+				items.get(item.type.toString()).add(new ItemDescriptor(id, quantity));
 				currentWeight += item.weight * quantity;
 			}
 		} else {
 			// not stackable, let's add a whole bunch of instances
 			while (quantity > 0) {
-				items.add(new ItemDescriptor(id, 1));
+				items.get(item.type.toString()).add(new ItemDescriptor(id, 1));
 				currentWeight += item.weight;
 				quantity--;
 			}
@@ -111,8 +128,12 @@ public class Inventory {
 
 	/** @return all the items in the player's inventory. Note, this returns the
 	 *         internal array so modification should be done with care. */
-	public Array<ItemDescriptor> get() {
-		return items;
+	public Array<ItemDescriptor> get(ItemType type) {
+		O.notNull(type);
+		if (!items.containsKey(type.toString())) {
+			items.put(type.toString(), new Array<ItemDescriptor>());
+		}
+		return items.get(type.toString());
 	}
 
 	/** @return the current weight capacity */
@@ -133,7 +154,7 @@ public class Inventory {
 	/** Removes a descriptor
 	 * @param descriptor */
 	public void remove(ItemDescriptor descriptor) {
-		items.removeValue(descriptor, true);
+		items.get(descriptor.getDefinition().type.toString()).removeValue(descriptor, true);
 
 	}
 
@@ -153,13 +174,13 @@ public class Inventory {
 		// removal
 		if (item.type.isStackable()) {
 			boolean found = false;
-			for (ItemDescriptor descriptor : items) {
+			for (ItemDescriptor descriptor : items.get(item.type.toString())) {
 				if (descriptor.id.equals(id)) {
 					// update existing descriptor
 					if (descriptor.quantity >= quantity) {
 						boolean stillOwns = descriptor.consume(quantity);
 						if (!stillOwns) {
-							items.removeValue(descriptor, true);
+							items.get(item.type.toString()).removeValue(descriptor, true);
 						}
 						currentWeight -= quantity * item.weight;
 						found = true;
@@ -177,7 +198,7 @@ public class Inventory {
 		} else {
 			// not stackable, count how many we have first
 			int counted = 0;
-			for (ItemDescriptor descriptor : items) {
+			for (ItemDescriptor descriptor : items.get(item.type.toString())) {
 				if (descriptor.id.equals(id)) {
 					counted++;
 				}
@@ -188,9 +209,9 @@ public class Inventory {
 			}
 			// find instances and remove
 			while (quantity > 0) {
-				for (ItemDescriptor descriptor : items) {
+				for (ItemDescriptor descriptor : items.get(item.type.toString())) {
 					if (descriptor.id.equals(id)) {
-						items.removeValue(descriptor, true);
+						items.get(item.type.toString()).removeValue(descriptor, true);
 						currentWeight -= item.weight;
 						break;
 					}
@@ -201,31 +222,18 @@ public class Inventory {
 	}
 
 	/** Resets the inventory, when reloading from disk
-	 * @param inventory the new inventory to use */
-	public void reset(Inventory inventory) {
+	 * @param otherItems the new inventory to use */
+	public void reset(Inventory otherItems) {
 		items.clear();
-		if (inventory == null) {
+		if (otherItems == null) {
 			return;
 		}
-		for (ItemDescriptor descriptor : inventory.items) {
-			items.add(descriptor);
+		for (String key : otherItems.items.keys()) {
+			items.put(key, otherItems.items.get(key));
 		}
-		currentWeight = inventory.currentWeight;
-		maxWeight = inventory.maxWeight;
-		money = inventory.money;
+		currentWeight = otherItems.currentWeight;
+		maxWeight = otherItems.maxWeight;
+		money = otherItems.money;
 	}
 
-	/** @param type an {@link ItemType}
-	 * @return the number of unique types of items we have of that particular
-	 *         {@link ItemType} */
-	public int typeSize(ItemType type) {
-		O.notNull(type);
-		int total = 0;
-		for (int i = 0; i < items.size; i++) {
-			if (Game.db().item(items.get(i).getId()).type == type) {
-				total++;
-			}
-		}
-		return total;
-	}
 }

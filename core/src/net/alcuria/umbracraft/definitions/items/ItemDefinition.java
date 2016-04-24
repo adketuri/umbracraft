@@ -12,7 +12,7 @@ public class ItemDefinition extends Definition {
 	/** Enumerates the {@link ItemType#EQUIPMENT} type
 	 * @author Andrew Keturi */
 	public static enum EquipType {
-		ACCESSORY("silhouette_ring"), BOTTOM("silhouette_shoe"), GLOVES("silhouette_fist"), HELM("silhouette_helm"), SHIELD("silhouette_shield"), TOP("silhouette_armor"), WEAPON("silhouette_sword");
+		ACCESSORY("silhouette_ring"), SHOES("silhouette_shoe"), GLOVES("silhouette_fist"), HELM("silhouette_helm"), SHIELD("silhouette_shield"), TOP("silhouette_armor"), WEAPON("silhouette_sword");
 		private final String emptyFilename;
 
 		EquipType(String emptyFilename) {
@@ -27,8 +27,8 @@ public class ItemDefinition extends Definition {
 			switch (this) {
 			case ACCESSORY:
 				return EquipSlot.ACCESSORY_1; //TODO: intelligently determine which slot should be used here
-			case BOTTOM:
-				return EquipSlot.BOTTOM;
+			case SHOES:
+				return EquipSlot.SHOES;
 			case GLOVES:
 				return EquipSlot.GLOVES;
 			case HELM:

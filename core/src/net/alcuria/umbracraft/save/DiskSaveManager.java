@@ -55,7 +55,11 @@ public class DiskSaveManager implements Saveable {
 
 	@Override
 	public void setProfile(SaveProfile profile, int index) {
-		profiles.set(index, profile);
+		if (profiles.size <= index) {
+			profiles.insert(index, profile);
+		} else {
+			profiles.set(index, profile);
+		}
 	}
 
 }

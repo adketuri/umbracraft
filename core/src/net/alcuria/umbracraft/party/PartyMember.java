@@ -19,15 +19,15 @@ public class PartyMember {
 	/** Enumerates an equipment slot in the equip screen.
 	 * @author Andrew Keturi */
 	public static enum EquipSlot {
-		ACCESSORY_1, ACCESSORY_2, BOTTOM, GLOVES, HELM, SHIELD, TOP, WEAPON;
+		ACCESSORY_1, ACCESSORY_2, SHOES, GLOVES, HELM, SHIELD, TOP, WEAPON;
 
 		public EquipType getType() {
 			switch (this) {
 			case ACCESSORY_1:
 			case ACCESSORY_2:
 				return EquipType.ACCESSORY;
-			case BOTTOM:
-				return EquipType.BOTTOM;
+			case SHOES:
+				return EquipType.SHOES;
 			case GLOVES:
 				return EquipType.GLOVES;
 			case HELM:
