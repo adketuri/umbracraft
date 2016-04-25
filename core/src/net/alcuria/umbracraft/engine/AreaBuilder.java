@@ -75,6 +75,16 @@ public class AreaBuilder {
 
 	}
 
+	/** @return the current {@link AreaDefinition} id */
+	public String getArea() {
+		return currentArea;
+	}
+
+	/** @return the current {@link AreaNodeDefinition} id */
+	public String getNode() {
+		return currentNode;
+	}
+
 	/** Determines if from the current node the player is able to teleport in a
 	 * particular direction.
 	 * @param direction the {@link TeleportDirection} the player is trying to

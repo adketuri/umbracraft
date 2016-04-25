@@ -1,9 +1,13 @@
 package net.alcuria.umbracraft.save.model;
 
+import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 import net.alcuria.umbracraft.engine.inventory.Inventory;
 import net.alcuria.umbracraft.party.PartyMember;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 public class SaveProfile {
@@ -13,6 +17,7 @@ public class SaveProfile {
 		SaveProfile profile = new SaveProfile();
 		profile.party = Game.party().getMembers();
 		profile.inventory = Game.items();
+		profile.location = new Location(Game.areas().getArea(), Game.areas().getNode(), Game.map().getName(), Game.entities().find(Entity.PLAYER).position);
 		return profile;
 	}
 
@@ -25,12 +30,23 @@ public class SaveProfile {
 		}
 		// reset inventory
 		Game.items().reset(profile.inventory);
+		Game.areas().setAreaAndNode(profile.location.area, profile.location.node);
+		Game.map().create(profile.location.area);
+		Game.entities().dispose(EntityScope.MAP);
+		Game.entities().create(EntityScope.MAP, profile.location.map);
+		Game.entities().find(Entity.PLAYER).position.set(profile.location.position);
+		Game.view().clearBounds();
+		Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
+		Game.view().setTarget(Game.entities().find(Entity.PLAYER));
+		Game.view().focus();
 		Game.log("Loaded slot 1!");
 
 	}
 
 	/** The inventory, including money */
 	public Inventory inventory;
+	/** The location of the character */
+	public Location location;
 	/** The current party */
 	public Array<PartyMember> party;
 }
