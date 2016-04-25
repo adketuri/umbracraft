@@ -5,6 +5,8 @@ import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.party.PartyMember.EquipSlot;
 
+import com.badlogic.gdx.utils.Array;
+
 /** Defines a collectible item.
  * @author Andrew Keturi */
 public class ItemDefinition extends Definition {
@@ -12,7 +14,7 @@ public class ItemDefinition extends Definition {
 	/** Enumerates the {@link ItemType#EQUIPMENT} type
 	 * @author Andrew Keturi */
 	public static enum EquipType {
-		ACCESSORY("silhouette_ring"), SHOES("silhouette_shoe"), GLOVES("silhouette_fist"), HELM("silhouette_helm"), SHIELD("silhouette_shield"), TOP("silhouette_armor"), WEAPON("silhouette_sword");
+		ACCESSORY("silhouette_ring"), GLOVES("silhouette_fist"), HELM("silhouette_helm"), SHIELD("silhouette_shield"), SHOES("silhouette_shoe"), TOP("silhouette_armor"), WEAPON("silhouette_sword");
 		private final String emptyFilename;
 
 		EquipType(String emptyFilename) {
@@ -162,6 +164,8 @@ public class ItemDefinition extends Definition {
 	@Tooltip("The type of item")
 	@Order(3)
 	public ItemType type = ItemType.COLLECTIBLE;
+	@Order(900)
+	public Array<String> usageFilter;
 	@Tooltip("The item's weight")
 	@Order(5)
 	public int weight;

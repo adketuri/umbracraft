@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import net.alcuria.umbracraft.definitions.items.ItemDefinition;
 import net.alcuria.umbracraft.editor.Editor;
+import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 import net.alcuria.umbracraft.listeners.TypeListener;
 import net.alcuria.umbracraft.util.FileUtils;
 
@@ -15,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.kotcrab.vis.ui.widget.VisLabel;
 
 /** A module for displaying all items in the editor. Fields are filtered based on
  * the type of the item.
@@ -27,6 +29,7 @@ public class ItemListModule extends ListModule<ItemDefinition> {
 	public void addListItem() {
 		final ItemDefinition item = new ItemDefinition();
 		item.name = "Item " + rootDefinition.size();
+		item.usageFilter = new Array<String>();
 		rootDefinition.add(item);
 	}
 
@@ -93,6 +96,17 @@ public class ItemListModule extends ListModule<ItemDefinition> {
 		config.suggestions.put("icon", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().iconPath, false));
 		populate(content, ItemDefinition.class, definition, config);
 		content.row();
+		if (definition.usageFilter == null) {
+			definition.usageFilter = new Array<String>();
+		}
+		content.row();
+		content.add(new Table() {
+			{
+				add(WidgetUtils.tooltip("A list of players which can use this item. If empty, assumes all players can use it."));
+				add(new VisLabel("usageFilter"));
+				WidgetUtils.modifiableList(this, definition.usageFilter, Editor.db().heroes().keys());
+			}
+		}).row();
 		content.add(iconTable = new Table()).row();
 		updateIcon();
 	}
