@@ -52,8 +52,8 @@ public class MemberStats {
 	}
 
 	/** Increments the member's level, updating exp and needed exp */
-	public void awardExp(int expAwarded) {
-		exp += expAwarded;
+	public void awardExp(long amount) {
+		exp += amount;
 		while (exp >= expNeeded) {
 			level++;
 			exp -= expNeeded;

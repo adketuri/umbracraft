@@ -21,6 +21,9 @@ public class EnemyDefinition extends Definition {
 	@Tooltip("Drops for the monster")
 	@Order(301)
 	public String commonDrop, uncommonDrop, rareDrop, epicDrop;
+	@Tooltip("Amount of exp earned for the party when killed")
+	@Order(302)
+	public int exp;
 	@Tooltip("The face to use along the turn order table")
 	@Order(10)
 	public String faceId;
