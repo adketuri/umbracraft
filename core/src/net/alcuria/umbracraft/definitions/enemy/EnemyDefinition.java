@@ -18,6 +18,9 @@ public class EnemyDefinition extends Definition {
 	@Tooltip("Secondary stats")
 	@Order(7)
 	public int atk, matk, def, mdef;
+	@Tooltip("Drops for the monster")
+	@Order(301)
+	public String commonDrop, uncommonDrop, rareDrop, epicDrop;
 	@Tooltip("The face to use along the turn order table")
 	@Order(10)
 	public String faceId;
@@ -27,6 +30,9 @@ public class EnemyDefinition extends Definition {
 	@Tooltip("Level of the monster")
 	@Order(4)
 	public int level;
+	@Tooltip("Approximately how much money the enemy will drop")
+	@Order(300)
+	public int money;
 	@Tooltip("The name of the monster")
 	@Order(1)
 	public String name;
