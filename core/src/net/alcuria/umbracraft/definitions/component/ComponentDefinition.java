@@ -8,6 +8,7 @@ import net.alcuria.umbracraft.engine.components.Component;
 import net.alcuria.umbracraft.engine.components.ControlledInputComponent;
 import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.components.EntityCollisionComponent;
+import net.alcuria.umbracraft.engine.components.IndicatorComponent;
 import net.alcuria.umbracraft.engine.components.MapCollisionComponent;
 import net.alcuria.umbracraft.engine.components.ScriptComponent;
 import net.alcuria.umbracraft.engine.entities.ShadowComponent;
@@ -48,6 +49,7 @@ public abstract class ComponentDefinition extends Definition {
 		CONTROLLED_INPUT(ControlledInputComponentDefinition.class), //
 		DIRECTED_INPUT(DirectedInputComponentDefinition.class), //
 		ENTITY_COLLISION(EntityCollisionComponentDefinition.class), //
+		INDICATOR(IndicatorOperationComponentDefinition.class), //
 		MAP_COLLISION(MapCollisionComponentDefinition.class), //
 		SCRIPT(ScriptComponentDefinition.class), //
 		SHADOW(ShadowComponentDefinition.class);
@@ -78,6 +80,8 @@ public abstract class ComponentDefinition extends Definition {
 				return "Script";
 			case SHADOW:
 				return "Shadow";
+			case INDICATOR:
+				return "Indicator";
 			default:
 				return "Unknown";
 			}
@@ -108,6 +112,15 @@ public abstract class ComponentDefinition extends Definition {
 		@Override
 		public Component create() {
 			return new EntityCollisionComponent();
+		}
+	}
+
+	/** Defines the {@link ScriptComponent} for an entity. */
+	public static class IndicatorOperationComponentDefinition extends ComponentDefinition {
+
+		@Override
+		public Component create() {
+			return new IndicatorComponent();
 		}
 	}
 
