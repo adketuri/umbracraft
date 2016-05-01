@@ -89,8 +89,11 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 				});
 				if (definition.filename != null && definition.filename.length() > 0) {
 					String path = "sprites/animations/" + definition.filename + ".png";
+					String extPath = Editor.db().config().projectPath + Editor.db().config().spritePath + definition.filename + ".png";
 					if (Gdx.files.internal(path).exists()) {
 						image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));
+					} else if (Gdx.files.absolute(extPath).exists()) {
+						image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.absolute(extPath)))));
 					}
 				}
 				populate(this, AnimationDefinition.class, definition, animationPopulateConfig(image));

@@ -5,6 +5,8 @@ import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class IndicatorComponent implements Component {
@@ -13,11 +15,11 @@ public class IndicatorComponent implements Component {
 		ITEM
 	}
 
+	private final Vector2 delta = new Vector2();
 	private Entity entity;
 	private Image icon;
-	private float time = 0;
+	private final Vector2 pos = new Vector2();
 	private IndicatorType type;
-	private int x, y;
 
 	@Override
 	public void create(Entity entity) {
@@ -32,7 +34,6 @@ public class IndicatorComponent implements Component {
 	@Override
 	public void render(Entity entity) {
 		if (type != null) {
-			//			Game.batch().draw(icon, x, y, icon.getRegionWidth() / 2, icon.getRegionHeight() / 2, icon.getRegionWidth(), icon.getRegionHeight(), 1, 1, 0);
 			icon.draw(Game.batch(), 1);
 		}
 	}
@@ -42,19 +43,19 @@ public class IndicatorComponent implements Component {
 		switch (type) {
 		case ITEM:
 			icon = new Image(Drawables.skin("icons/" + id));
+			updatePos(pos);
+			icon.setPosition(pos.x, pos.y);
+			icon.addAction(Actions.forever(Actions.sequence(Actions.moveBy(0, -20, 1), Actions.moveBy(0, 20, 1))));
 			break;
 		default:
 			break;
 		}
-		time = 0;
-		x = (int) entity.position.x;
-		y = (int) (entity.position.y + entity.position.z);
-		icon.setPosition(x, y);
 	}
 
 	public void stop(IndicatorType type) {
 		switch (type) {
 		case ITEM:
+			icon.clearActions();
 			icon = null;
 			break;
 		default:
@@ -65,10 +66,16 @@ public class IndicatorComponent implements Component {
 	@Override
 	public void update(Entity entity) {
 		if (icon != null) {
-			x = (int) entity.position.x;
-			y = (int) (entity.position.y + entity.position.z);
-			icon.setPosition(x, y);
+			updatePos(delta);
+			delta.sub(pos);
+			icon.moveBy(delta.x, delta.y);
 			icon.act(Gdx.graphics.getDeltaTime());
+			updatePos(pos);
 		}
+	}
+
+	private void updatePos(Vector2 vec) {
+		vec.x = (entity.position.x - icon.getWidth() / 2);
+		vec.y = (entity.position.y + entity.position.z - icon.getHeight() / 2);
 	}
 }
