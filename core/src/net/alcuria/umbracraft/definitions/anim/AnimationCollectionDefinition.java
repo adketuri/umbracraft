@@ -13,6 +13,8 @@ public class AnimationCollectionDefinition extends Definition {
 	public String falling;
 	@Tooltip("The idle pose from AnimationGroupDefinition")
 	public String idle;
+	@Tooltip("The inspect pose")
+	public String inspect;
 	@Tooltip("The jumping pose from AnimationGroupDefinition")
 	public String jumping;
 	@Tooltip("The identifier for this definition")

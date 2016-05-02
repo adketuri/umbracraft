@@ -96,6 +96,7 @@ public final class Game {
 	 * @param string the message. */
 	public static void error(String string) {
 		System.err.println(string);
+		stack(2);
 	}
 
 	/** @return the {@link Evaluator} */
@@ -203,8 +204,13 @@ public final class Game {
 
 	/** Prints the stack */
 	public static void stack() {
+		stack(1);
+	}
+
+	/** Prints the stack, starts at a certain index */
+	private static void stack(int index) {
 		final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-		for (int i = 1; i < stackTrace.length; i++) {
+		for (int i = index; i < stackTrace.length; i++) {
 			System.out.println(stackTrace[i].toString());
 		}
 	}

@@ -7,6 +7,8 @@ import net.alcuria.umbracraft.definitions.Definition;
  * @author Andrew Keturi */
 @SuppressWarnings("unused")
 public class AnimationGroupDefinition extends Definition {
+	@Tooltip("If true, ignores diagonals")
+	public boolean cardinalOnly;
 	/** The id of the animation facing down */
 	public String down;
 	/** The id of the animation facing downleft */

@@ -38,7 +38,10 @@ public abstract class ScriptCommand extends Definition implements Cloneable {
 	/** Used internally by the script components to mark a command as complete.
 	 * Any implementing class that requires custom work to be done when a
 	 * command is complete should do so in the
-	 * {@link ScriptCommand#onCompleted()} callback. */
+	 * {@link ScriptCommand#onCompleted()} callback. Any implementing
+	 * {@link ScriptCommand} should be <b>absolutely sure</b> to call this at
+	 * some point in {@link ScriptCommand#onStarted(Entity)} or
+	 * {@link ScriptCommand#update()}, otherwise infinite loops will ensue. */
 	public final void complete() {
 		state = CommandState.COMPLETE;
 		onCompleted();

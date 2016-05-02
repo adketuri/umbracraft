@@ -13,7 +13,36 @@ public class AnimationGroupComponent implements Component {
 	/** Various animation facing directions
 	 * @author Andrew Keturi */
 	public static enum Direction {
-		DOWN, DOWNLEFT, DOWNRIGHT, LEFT, RIGHT, UP, UPLEFT, UPRIGHT
+		DOWN, DOWNLEFT, DOWNRIGHT, LEFT, RIGHT, UP, UPLEFT, UPRIGHT;
+
+		/** Given an angle in degrees, returns the direction at that angle. 0
+		 * degrees = west, 90 degrees = south, 180 degrees = east, 270 degrees =
+		 * north
+		 * @param angle
+		 * @return */
+		public static Direction from(int angle) {
+			switch (angle) {
+			case 0:
+			case 360:
+				return Direction.LEFT;
+			case 45:
+				return Direction.DOWNLEFT;
+			case 90:
+				return Direction.DOWN;
+			case 135:
+				return Direction.DOWNRIGHT;
+			case 180:
+				return Direction.RIGHT;
+			case 225:
+				return Direction.UPRIGHT;
+			case 270:
+				return Direction.UP;
+			case 315:
+				return Direction.UPLEFT;
+			default:
+				return Direction.DOWN;
+			}
+		}
 	}
 
 	private ObjectMap<Direction, AnimationComponent> animations;

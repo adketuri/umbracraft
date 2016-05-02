@@ -40,6 +40,7 @@ public class AnimationCollectionListModule extends ListModule<AnimationCollectio
 			suggestions.put("jumping", suggestionsStr);
 			suggestions.put("running", suggestionsStr);
 			suggestions.put("walking", suggestionsStr);
+			suggestions.put("inspect", suggestionsStr);
 		}
 		config.cols = 1;
 		config.textFieldWidth = 200;

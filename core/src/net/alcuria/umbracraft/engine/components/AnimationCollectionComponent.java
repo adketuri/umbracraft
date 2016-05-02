@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.util.O;
 
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -68,6 +69,13 @@ public class AnimationCollectionComponent implements Component {
 		if (currentGroup != null) {
 			currentGroup.render(entity);
 		}
+	}
+
+	/** Sets a direction for the current active group in the collection.
+	 * @param direction the {@link Direction} we want to change to */
+	public void setDirection(Direction direction) {
+		O.notNull(direction);
+		currentGroup.setDirection(direction);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import net.alcuria.umbracraft.editor.modules.Module;
 import net.alcuria.umbracraft.engine.scripts.BattleScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.BlockCommand;
 import net.alcuria.umbracraft.engine.scripts.CameraTargetScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.ChangeDirectionScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ConditionalCommand;
 import net.alcuria.umbracraft.engine.scripts.ControlVariableCommand;
 import net.alcuria.umbracraft.engine.scripts.EmptyCommand;
@@ -39,9 +40,10 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 public class ScriptCommandWidget extends Module<ScriptCommand> {
 	public static enum Commands {
 		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), CONDITIONAL("Conditional", ConditionalCommand.class), //
-		FLAG("Flag", FlagScriptCommand.class), INDICATOR("Indicator Operations", IndicatorOperationCommand.class), ITEM("Change Items/Inventory", ItemChangeScriptCommand.class), //
-		LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), PAUSE("Pause", PauseScriptCommand.class), //
-		RECOVER("Heal/Recover Party", RecoverScriptCommand.class), REMOVE("Remove Entity", RemoveEntityCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
+		DIRECTION("Change Direction", ChangeDirectionScriptCommand.class), FLAG("Flag", FlagScriptCommand.class), INDICATOR("Indicator Operations", IndicatorOperationCommand.class), //
+		ITEM("Change Items/Inventory", ItemChangeScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), //
+		PAUSE("Pause", PauseScriptCommand.class), RECOVER("Heal/Recover Party", RecoverScriptCommand.class), REMOVE("Remove Entity", RemoveEntityCommand.class), //
+		SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
 
 		public static Commands from(final String name) {
 			for (Commands c : Commands.values()) {

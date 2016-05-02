@@ -50,7 +50,6 @@ public class ScriptPageDefinition extends Definition {
 			return start;
 		} else {
 			ScriptCommand parent = null;
-
 			if (start instanceof BlockCommand) {
 				parent = getPrevious(((BlockCommand) start).block, target);
 			}

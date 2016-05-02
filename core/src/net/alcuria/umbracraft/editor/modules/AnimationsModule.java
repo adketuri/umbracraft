@@ -374,12 +374,18 @@ public class AnimationsModule extends Module<AnimationListDefinition> {
 
 			@Override
 			public void invoke(String type) {
-				String path = "sprites/animations/" + definition.filename + ".png";
-				if (definition.filename != null && definition.filename.length() > 0 && Gdx.files.internal(path).exists()) {
-					image.setVisible(true);
-					image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));
-				} else {
-					image.setVisible(false);
+				if (definition.filename != null && definition.filename.length() > 0) {
+					String path = "sprites/animations/" + definition.filename + ".png";
+					String extPath = Editor.db().config().projectPath + Editor.db().config().spritePath + definition.filename + ".png";
+					if (Gdx.files.internal(path).exists()) {
+						image.setVisible(true);
+						image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(path)))));
+					} else if (Gdx.files.absolute(extPath).exists()) {
+						image.setVisible(true);
+						image.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.absolute(extPath)))));
+					} else {
+						image.setVisible(false);
+					}
 				}
 				scroll.clear();
 				scroll.add(createFrames(scroll, definition));
