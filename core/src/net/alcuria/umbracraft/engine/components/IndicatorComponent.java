@@ -4,6 +4,7 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.items.ItemDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Interpolation;
@@ -44,6 +45,7 @@ public class IndicatorComponent implements Component {
 		this.type = type;
 		switch (type) {
 		case ITEM:
+			id = StringUtils.replaceArgs(id, entity.getArguments());
 			ItemDefinition item = Game.db().item(id);
 			icon = new Image(Drawables.skin("icons/" + item.icon));
 			updatePos(pos);

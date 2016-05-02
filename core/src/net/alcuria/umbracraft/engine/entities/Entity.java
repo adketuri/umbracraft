@@ -79,6 +79,11 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		}
 	}
 
+	/** @return arguments passed into the entity for creation from the map editor */
+	public Array<String> getArguments() {
+		return args;
+	}
+
 	/** Gets a component. Returns <code>null</code> if the component is not
 	 * present. Be sure to check the return value before making assumptions.
 	 * @param clazz the {@link Component} type

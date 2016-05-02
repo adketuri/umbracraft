@@ -1,5 +1,9 @@
 package net.alcuria.umbracraft.util;
 
+import net.alcuria.umbracraft.engine.entities.Entity;
+
+import com.badlogic.gdx.utils.Array;
+
 /** Utility functions for {@link String} objects.
  * @author Andrew Keturi */
 public class StringUtils {
@@ -30,6 +34,29 @@ public class StringUtils {
 		return isNotEmpty(str) && str.matches("^[+-]?\\d+$");
 	}
 
+	/** Given an id in the form {argN} where N is an index into the args array,
+	 * this returns the arg at that index.
+	 * @param id the zero-based index
+	 * @param arguments the {@link Entity} object's arguments
+	 * @return the argument at that index */
+	public static String replaceArgs(String id, Array<String> arguments) {
+		if (id.startsWith("{arg") && id.endsWith("}")) {
+			id = id.replace("{arg", "").replace("}", "");
+			if (StringUtils.isNumber(id)) {
+				int idx = Integer.valueOf(id);
+				if (idx >= 0 && idx < arguments.size) {
+					return arguments.get(idx);
+				} else {
+					throw new ArrayIndexOutOfBoundsException("No argument at index: " + idx + ". size: " + arguments.size);
+				}
+			} else {
+				throw new NumberFormatException("String is not a number: " + id);
+			}
+		} else {
+			return id;
+		}
+	}
+
 	/** Splits a string that's in camel-case.
 	 * @param s a {@link String}
 	 * @return */
@@ -44,5 +71,4 @@ public class StringUtils {
 		}
 		return string.length() < length ? string : string.substring(0, length) + "...";
 	}
-
 }

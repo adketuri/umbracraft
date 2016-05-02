@@ -7,6 +7,7 @@ import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -54,6 +55,7 @@ public class ItemChangeScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
+		id = StringUtils.replaceArgs(id, entity.getArguments());
 		if (amount > 0) {
 			Game.items().add(id, amount);
 		} else if (amount < 0) {
