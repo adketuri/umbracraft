@@ -5,6 +5,7 @@ import java.util.Set;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.editor.Editor;
+import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.listeners.Listener;
@@ -15,7 +16,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 /** Given an {@link Entity} name and the name of an {@link AnimationDefinition},
  * this script removes an existing animation component and adds a new animation
- * component.
+ * component. If there is an {@link AnimationCollectionComponent} attached to
+ * the targeting component, it is set to hidden.
  * @author Andrew Keturi */
 public class ShowAnimationScriptCommand extends ScriptCommand {
 
@@ -82,6 +84,11 @@ public class ShowAnimationScriptCommand extends ScriptCommand {
 			if (StringUtils.isNotEmpty(anim)) {
 				final AnimationComponent component = new AnimationComponent(Game.db().anim(anim));
 				targetEntity.addComponent(component);
+				// hide the collection from appearing
+				AnimationCollectionComponent collection = targetEntity.getComponent(AnimationCollectionComponent.class);
+				if (collection != null) {
+					collection.setVisible(false);
+				}
 				if (wait) {
 					component.setCompleteListener(new Listener() {
 

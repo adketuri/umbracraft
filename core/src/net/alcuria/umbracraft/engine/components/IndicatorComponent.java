@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.definitions.items.ItemDefinition;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
@@ -43,10 +44,12 @@ public class IndicatorComponent implements Component {
 		this.type = type;
 		switch (type) {
 		case ITEM:
-			icon = new Image(Drawables.skin("icons/" + id));
+			ItemDefinition item = Game.db().item(id);
+			icon = new Image(Drawables.skin("icons/" + item.icon));
 			updatePos(pos);
 			icon.setPosition(pos.x, pos.y);
-			icon.addAction(Actions.sequence(Actions.parallel(Actions.sequence(Actions.scaleTo(1.2f, 1.2f, 0.3f, Interpolation.pow2Out), Actions.scaleTo(1f, 1f, 0.3f, Interpolation.pow2In)), Actions.moveBy(0, 30, 0.5f, Interpolation.pow2In)), Actions.forever(Actions.sequence(Actions.moveBy(0, -20, 1), Actions.moveBy(0, 20, 1)))));
+			icon.setOrigin(icon.getWidth() / 2, icon.getHeight() / 2);
+			icon.addAction(Actions.sequence(Actions.parallel(Actions.sequence(Actions.scaleTo(1.4f, 1.4f, 0.3f, Interpolation.pow2Out), Actions.scaleTo(1f, 1f, 0.3f, Interpolation.pow2In)), Actions.moveBy(0, 45, 0.5f, Interpolation.pow2Out)), Actions.forever(Actions.sequence(Actions.moveBy(0, -10, 0.3f, Interpolation.sineOut), Actions.moveBy(0, 10, 0.3f, Interpolation.sineOut)))));
 			break;
 		default:
 			break;

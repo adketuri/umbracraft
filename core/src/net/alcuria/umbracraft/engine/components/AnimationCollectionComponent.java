@@ -24,6 +24,7 @@ public class AnimationCollectionComponent implements Component {
 	private Pose currentPose;
 	private final AnimationCollectionDefinition definition;
 	private ObjectMap<Pose, AnimationGroupComponent> groups;
+	private boolean visible = true;
 
 	public AnimationCollectionComponent(AnimationCollectionDefinition definition) {
 		this.definition = definition;
@@ -66,7 +67,7 @@ public class AnimationCollectionComponent implements Component {
 
 	@Override
 	public void render(Entity entity) {
-		if (currentGroup != null) {
+		if (currentGroup != null && visible) {
 			currentGroup.render(entity);
 		}
 	}
@@ -78,9 +79,19 @@ public class AnimationCollectionComponent implements Component {
 		currentGroup.setDirection(direction);
 	}
 
+	/** Sets the current {@link Pose} and marks the
+	 * {@link AnimationCollectionComponent} as visible.
+	 * @param pose */
 	public void setPose(Pose pose) {
+		setVisible(true);
 		currentGroup = groups.get(pose);
 		currentGroup.setDirection(currentDirection);
+	}
+
+	/** @param visible whether or not the {@link AnimationCollectionComponent}
+	 *        gets rendered */
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 	@Override

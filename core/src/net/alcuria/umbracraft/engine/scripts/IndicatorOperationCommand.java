@@ -7,7 +7,6 @@ import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.components.IndicatorComponent;
 import net.alcuria.umbracraft.engine.components.IndicatorComponent.IndicatorType;
 import net.alcuria.umbracraft.engine.entities.Entity;
-import net.alcuria.umbracraft.util.FileUtils;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -44,7 +43,7 @@ public class IndicatorOperationCommand extends ScriptCommand {
 		return new ObjectMap<String, Array<String>>() {
 			{
 				put("target", Editor.db().entities().keys());
-				put("param", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().iconPath, false));
+				put("param", Editor.db().items().keys());
 			}
 		};
 	}
