@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class AnimationCollectionComponent implements Component {
 
 	public static enum Pose {
-		FALLING, IDLE, JUMPING, RUNNING, WALKING
+		FALLING, IDLE, INSPECT, JUMPING, RUNNING, WALKING
 	}
 
 	private MapCollisionComponent collision;
@@ -40,6 +40,7 @@ public class AnimationCollectionComponent implements Component {
 			groups.put(Pose.FALLING, new AnimationGroupComponent(Game.db().animGroup(definition.falling)));
 			groups.put(Pose.JUMPING, new AnimationGroupComponent(Game.db().animGroup(definition.jumping)));
 			groups.put(Pose.RUNNING, new AnimationGroupComponent(Game.db().animGroup(definition.running)));
+			groups.put(Pose.INSPECT, new AnimationGroupComponent(Game.db().animGroup(definition.inspect)));
 			for (AnimationGroupComponent anim : groups.values()) {
 				anim.create(entity);
 			}
@@ -61,7 +62,6 @@ public class AnimationCollectionComponent implements Component {
 			return true;
 		}
 		return entity.velocity.x != 0 || entity.velocity.y != 0;
-
 	}
 
 	@Override
@@ -78,15 +78,22 @@ public class AnimationCollectionComponent implements Component {
 		currentGroup.setDirection(direction);
 	}
 
+	public void setPose(Pose pose) {
+		currentGroup = groups.get(pose);
+		currentGroup.setDirection(currentDirection);
+	}
+
 	@Override
 	public void update(Entity entity) {
 		//save off last pose and get current pose/direction
 		Pose lastPose = currentPose;
-		if (!isMoving(entity)) {
-			currentPose = Pose.IDLE;
-		} else {
-			currentPose = Pose.WALKING;
-			currentDirection = currentGroup.getDirection();
+		if (lastPose != Pose.INSPECT) {
+			if (!isMoving(entity)) {
+				currentPose = Pose.IDLE;
+			} else {
+				currentPose = Pose.WALKING;
+				currentDirection = currentGroup.getDirection();
+			}
 		}
 		// if the pose has updated, update reference to currentGroup and set direction
 		if (currentPose != lastPose) {

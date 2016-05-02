@@ -63,10 +63,10 @@ public class AnimationGroupComponent implements Component {
 			animations.put(Direction.LEFT, new AnimationComponent(Game.db().anim(definition.left)));
 			animations.put(Direction.RIGHT, new AnimationComponent(Game.db().anim(definition.right)));
 			animations.put(Direction.UP, new AnimationComponent(Game.db().anim(definition.up)));
-			animations.put(Direction.DOWNLEFT, new AnimationComponent(Game.db().anim(definition.downLeft)));
-			animations.put(Direction.DOWNRIGHT, new AnimationComponent(Game.db().anim(definition.downRight)));
-			animations.put(Direction.UPLEFT, new AnimationComponent(Game.db().anim(definition.upLeft)));
-			animations.put(Direction.UPRIGHT, new AnimationComponent(Game.db().anim(definition.upRight)));
+			animations.put(Direction.DOWNLEFT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.downLeft)));
+			animations.put(Direction.DOWNRIGHT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.downRight)));
+			animations.put(Direction.UPLEFT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.upLeft)));
+			animations.put(Direction.UPRIGHT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.upRight)));
 			for (AnimationComponent anim : animations.values()) {
 				anim.create(entity);
 			}

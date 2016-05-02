@@ -19,6 +19,10 @@ public class FileUtils {
 		return files;
 	}
 
+	public static Array<String> getFilesAt(String path) {
+		return getFilesAt(path, false);
+	}
+
 	public static Array<String> getFilesAt(String path, boolean recursive) {
 		Array<String> files = new Array<String>();
 		walk(path, files, "", recursive);

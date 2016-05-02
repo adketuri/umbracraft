@@ -8,6 +8,7 @@ import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -78,19 +79,23 @@ public class ShowAnimationScriptCommand extends ScriptCommand {
 		final Entity targetEntity = self ? entity : Game.entities().find(target);
 		if (targetEntity != null) {
 			targetEntity.removeComponent(AnimationComponent.class);
-			final AnimationComponent component = new AnimationComponent(Game.db().anim(anim));
-			targetEntity.addComponent(component);
-			if (wait) {
-				component.setCompleteListener(new Listener() {
+			if (StringUtils.isNotEmpty(anim)) {
+				final AnimationComponent component = new AnimationComponent(Game.db().anim(anim));
+				targetEntity.addComponent(component);
+				if (wait) {
+					component.setCompleteListener(new Listener() {
 
-					@Override
-					public void invoke() {
-						if (removeAfter) {
-							targetEntity.removeComponent(AnimationComponent.class);
+						@Override
+						public void invoke() {
+							if (removeAfter) {
+								targetEntity.removeComponent(AnimationComponent.class);
+							}
+							complete();
 						}
-						complete();
-					}
-				});
+					});
+				} else {
+					complete();
+				}
 			} else {
 				complete();
 			}

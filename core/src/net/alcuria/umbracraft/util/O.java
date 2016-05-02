@@ -24,11 +24,13 @@ public final class O {
 	}
 
 	/** Ensures the object is not null. For parameter validation.
+	 * @param <T>
 	 * @param object */
-	public static void notNull(Object object) {
+	public static <T> T notNull(T object) {
 		if (object == null) {
 			throw new NullPointerException("Parameter cannot be null: " + object);
 		}
+		return object;
 	}
 
 	/** Ensures the value is positive. For parameter validation.

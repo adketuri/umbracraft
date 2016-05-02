@@ -5,6 +5,7 @@ import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -33,7 +34,7 @@ public class IndicatorComponent implements Component {
 
 	@Override
 	public void render(Entity entity) {
-		if (type != null) {
+		if (type != null && icon != null) {
 			icon.draw(Game.batch(), 1);
 		}
 	}
@@ -45,7 +46,7 @@ public class IndicatorComponent implements Component {
 			icon = new Image(Drawables.skin("icons/" + id));
 			updatePos(pos);
 			icon.setPosition(pos.x, pos.y);
-			icon.addAction(Actions.forever(Actions.sequence(Actions.moveBy(0, -20, 1), Actions.moveBy(0, 20, 1))));
+			icon.addAction(Actions.sequence(Actions.parallel(Actions.sequence(Actions.scaleTo(1.2f, 1.2f, 0.3f, Interpolation.pow2Out), Actions.scaleTo(1f, 1f, 0.3f, Interpolation.pow2In)), Actions.moveBy(0, 30, 0.5f, Interpolation.pow2In)), Actions.forever(Actions.sequence(Actions.moveBy(0, -20, 1), Actions.moveBy(0, 20, 1)))));
 			break;
 		default:
 			break;

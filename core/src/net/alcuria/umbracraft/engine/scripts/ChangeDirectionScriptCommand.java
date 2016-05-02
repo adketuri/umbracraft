@@ -21,7 +21,7 @@ public class ChangeDirectionScriptCommand extends ScriptCommand {
 	@Tooltip("If we want to only use the 4 cardinal directions")
 	public boolean cardinal;
 	@Tooltip("The direction to face, if fixed. Ignored if the target field is specified")
-	public Direction direction;
+	public Direction direction = Direction.DOWN;
 	@Tooltip("The entity we want to change the direction of")
 	public String entity;
 	@Tooltip("If not empty, the entity we want to face")
@@ -37,6 +37,14 @@ public class ChangeDirectionScriptCommand extends ScriptCommand {
 		return cmd;
 	}
 
+	private String direction() {
+		return StringUtils.isNotEmpty(target) ? target : (direction != null ? direction.toString() : "");
+	}
+
+	private String entity() {
+		return StringUtils.isNotEmpty(entity) ? entity : "";
+	}
+
 	@Override
 	public Set<String> getFilter() {
 		return null;
@@ -44,7 +52,7 @@ public class ChangeDirectionScriptCommand extends ScriptCommand {
 
 	@Override
 	public String getName() {
-		return "Change Direction";
+		return "Change Direction: " + entity() + ", " + direction();
 	}
 
 	@Override

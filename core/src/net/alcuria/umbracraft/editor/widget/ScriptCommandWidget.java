@@ -8,6 +8,7 @@ import net.alcuria.umbracraft.engine.scripts.BattleScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.BlockCommand;
 import net.alcuria.umbracraft.engine.scripts.CameraTargetScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ChangeDirectionScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.ChangePoseScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ConditionalCommand;
 import net.alcuria.umbracraft.engine.scripts.ControlVariableCommand;
 import net.alcuria.umbracraft.engine.scripts.EmptyCommand;
@@ -18,6 +19,7 @@ import net.alcuria.umbracraft.engine.scripts.LogScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.MoveScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.PauseScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.PlaySoundScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.RecoverScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.RemoveEntityCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
@@ -42,8 +44,9 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), CONDITIONAL("Conditional", ConditionalCommand.class), //
 		DIRECTION("Change Direction", ChangeDirectionScriptCommand.class), FLAG("Flag", FlagScriptCommand.class), INDICATOR("Indicator Operations", IndicatorOperationCommand.class), //
 		ITEM("Change Items/Inventory", ItemChangeScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), //
-		PAUSE("Pause", PauseScriptCommand.class), RECOVER("Heal/Recover Party", RecoverScriptCommand.class), REMOVE("Remove Entity", RemoveEntityCommand.class), //
-		SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
+		PAUSE("Pause", PauseScriptCommand.class), POSE("Change Pose", ChangePoseScriptCommand.class), RECOVER("Heal/Recover Party", RecoverScriptCommand.class), //
+		REMOVE("Remove Entity", RemoveEntityCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), SOUND("Play Sound", PlaySoundScriptCommand.class), //
+		TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
 
 		public static Commands from(final String name) {
 			for (Commands c : Commands.values()) {
