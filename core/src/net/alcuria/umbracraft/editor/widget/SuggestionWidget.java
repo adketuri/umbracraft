@@ -83,12 +83,12 @@ public class SuggestionWidget {
 				add(suggestionTable = new Table() {
 					@Override
 					public void act(float delta) {
-						if (Gdx.input.isKeyJustPressed(Keys.DOWN)) {
+						if (Gdx.input.isKeyJustPressed(Keys.DOWN) && curSuggestions.size > 0) {
 							if (highlightIndex < curSuggestions.size - 1) {
 								highlightIndex++;
 							}
 						}
-						if (Gdx.input.isKeyJustPressed(Keys.UP)) {
+						if (Gdx.input.isKeyJustPressed(Keys.UP) && curSuggestions.size > 0) {
 							if (highlightIndex > 0) {
 								highlightIndex--;
 							}
@@ -125,6 +125,7 @@ public class SuggestionWidget {
 		if (selectListener != null) {
 			selectListener.invoke();
 		}
+		curSuggestions.clear();
 		suggestionTable.clear();
 	}
 
