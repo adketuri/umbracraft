@@ -1,5 +1,7 @@
 package net.alcuria.umbracraft.save.model;
 
+import java.util.Set;
+
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
@@ -9,6 +11,7 @@ import net.alcuria.umbracraft.party.PartyMember;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public class SaveProfile {
 
@@ -18,6 +21,8 @@ public class SaveProfile {
 		profile.party = Game.party().getMembers();
 		profile.inventory = Game.items();
 		profile.location = new Location(Game.areas().getArea(), Game.areas().getNode(), Game.map().getName(), Game.entities().find(Entity.PLAYER).position);
+		profile.flags = Game.flags().getAll();
+		profile.variables = Game.variables().getAll();
 		return profile;
 	}
 
@@ -28,8 +33,12 @@ public class SaveProfile {
 		for (PartyMember member : profile.party) {
 			Game.party().addMember(member);
 		}
+		// reset flags/vars
+		Game.variables().setAll(profile.variables);
+		Game.flags().setAll(profile.flags);
 		// reset inventory
 		Game.items().reset(profile.inventory);
+		// set location
 		Game.areas().setAreaAndNode(profile.location.area, profile.location.node);
 		Game.map().create(profile.location.area);
 		Game.entities().dispose(EntityScope.MAP);
@@ -43,10 +52,15 @@ public class SaveProfile {
 
 	}
 
+	/** All flags enabled */
+	public Set<String> flags;
 	/** The inventory, including money */
 	public Inventory inventory;
 	/** The location of the character */
 	public Location location;
 	/** The current party */
 	public Array<PartyMember> party;
+	/** All variables used */
+	public ObjectMap<String, Integer> variables;
+
 }

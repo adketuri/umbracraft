@@ -47,6 +47,11 @@ public class VariableManager {
 
 	}
 
+	/** @return all variables in-use */
+	public ObjectMap<String, Integer> getAll() {
+		return activeVariables;
+	}
+
 	/** Sets the value of the variable, overwriting whatever was previously
 	 * stored at the id
 	 * @param id the variable's id
@@ -56,6 +61,15 @@ public class VariableManager {
 			throw new IllegalArgumentException("id cannot be null and must be valid");
 		}
 		activeVariables.put(id, value);
+	}
+
+	/** Adds all variables to the map
+	 * @param variables */
+	public void setAll(ObjectMap<String, Integer> variables) {
+		activeVariables.clear();
+		if (variables != null) {
+			activeVariables.putAll(variables);
+		}
 	}
 
 }

@@ -44,6 +44,11 @@ public class FlagManager {
 		enabledFlags.add(flag);
 	}
 
+	/** @return all enabled flags */
+	public Set<String> getAll() {
+		return enabledFlags;
+	}
+
 	/** @param id the flag ID
 	 * @return <code>true</code> if the flag is set */
 	public boolean isSet(String id) {
@@ -58,6 +63,15 @@ public class FlagManager {
 			enable(id);
 		} else {
 			disable(id);
+		}
+	}
+
+	/** Adds several flags
+	 * @param flags */
+	public void setAll(Set<String> flags) {
+		enabledFlags.clear();
+		if (flags != null) {
+			enabledFlags.addAll(flags);
 		}
 	}
 }
