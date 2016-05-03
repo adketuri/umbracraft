@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.alcuria.umbracraft.Db;
-import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.util.StringUtils;
 
@@ -42,11 +41,7 @@ public class FlagManager {
 	 * not found, nothing is enabled or added to the set.
 	 * @param flag the {@link Db} name of the flag we want to enable. */
 	public void enable(String flag) {
-		if (Game.db().flag(flag) != null) {
-			enabledFlags.add(flag);
-		} else {
-			Game.error("Flag not found in db: " + flag);
-		}
+		enabledFlags.add(flag);
 	}
 
 	/** @param id the flag ID

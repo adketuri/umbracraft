@@ -7,6 +7,7 @@ import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.components.IndicatorComponent;
 import net.alcuria.umbracraft.engine.components.IndicatorComponent.IndicatorType;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -61,7 +62,7 @@ public class IndicatorOperationCommand extends ScriptCommand {
 			IndicatorComponent component = targetEntity.getComponent(IndicatorComponent.class);
 			if (component != null) {
 				if (start) {
-					component.start(type, param);
+					component.start(type, StringUtils.replaceArgs(param, entity.getArguments()));
 				} else {
 					component.stop(type);
 				}

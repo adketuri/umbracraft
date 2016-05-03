@@ -18,7 +18,7 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	public static final String PLAYER = "Player";
 	private final Array<String> args = new Array<String>();
 	private final Array<Component> components;
-	private String name, tag;
+	private String name, tag, id;
 	public Vector3 position, velocity;
 
 	/** Creates an entity with no components */
@@ -97,6 +97,12 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		return null;
 	}
 
+	/** @return a unique identifier for this entity. Set only from
+	 *         {@link EntityReferenceDefinition}. */
+	public String getId() {
+		return id;
+	}
+
 	/** @return the name */
 	public String getName() {
 		return name;
@@ -138,9 +144,11 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	/** Given an {@link EntityReferenceDefinition}, sets the relevant fields of
 	 * the entity.
 	 * @param reference an {@link EntityReferenceDefinition} to use when
-	 *        updating this entity. */
-	public void setFromReference(EntityReferenceDefinition reference) {
+	 *        updating this entity.
+	 * @param mapId */
+	public void setFromReference(EntityReferenceDefinition reference, String mapId) {
 		setName(reference.name);
+		id = String.format("%s@%s(%d,%d)", reference.name, mapId, reference.x, reference.y);
 		position.x = reference.x * Config.tileWidth;
 		position.y = reference.y * Config.tileWidth;
 		args.clear();

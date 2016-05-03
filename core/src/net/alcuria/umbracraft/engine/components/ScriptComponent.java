@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class ScriptComponent implements Component, EventListener {
 
+	public static final String[] LOCAL_FLAGS = { "S1", "S2", "S3" };
 	private boolean active = false;
 	private final Rectangle collisionRect = new Rectangle();
 	private final Array<ScriptCommand> commandStack = new Array<ScriptCommand>();
@@ -79,7 +80,12 @@ public class ScriptComponent implements Component, EventListener {
 		ScriptPageDefinition oldPage = currentPage;
 		// go thru the pages in reverse, finding the first page that has its preconditions met
 		for (int i = script.pages.size - 1; i >= 0; i--) {
-			final String precondition = script.pages.get(i).precondition;
+			String precondition = script.pages.get(i).precondition;
+			for (String local : LOCAL_FLAGS) {
+				if (StringUtils.isNotEmpty(precondition) && precondition.equals(local)) {
+					precondition = precondition + entity.getId();
+				}
+			}
 			if (precondition == null || !StringUtils.isNotEmpty(precondition) || Game.flags().isSet(precondition)) {
 				currentPage = script.pages.get(i);
 				break;

@@ -94,7 +94,7 @@ public class MessageScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
-		window = new MessageWindow(message, name, faceId, emotion);
+		window = new MessageWindow(StringUtils.replaceArgs(message, entity.getArguments()), name, faceId, emotion);
 		window.addCloseListener(close());
 		Game.windows().push(window);
 	}
