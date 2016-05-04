@@ -12,6 +12,7 @@ import net.alcuria.umbracraft.flags.FlagManager;
 import net.alcuria.umbracraft.hud.HUD;
 import net.alcuria.umbracraft.party.Party;
 import net.alcuria.umbracraft.save.DiskSaveManager;
+import net.alcuria.umbracraft.save.model.GameStatsManager;
 import net.alcuria.umbracraft.save.model.Saveable;
 import net.alcuria.umbracraft.variables.VariableManager;
 import net.sourceforge.jeval.Evaluator;
@@ -42,6 +43,7 @@ public final class Game {
 	private static EventPublisher publisher;
 	private static Saveable save;
 	private static UmbraScreen screen;
+	private static GameStatsManager stats;
 	private static VariableManager variables;
 	private static View view;
 
@@ -215,6 +217,11 @@ public final class Game {
 		}
 	}
 
+	/** @return the game stats */
+	public static GameStatsManager stats() {
+		return stats;
+	}
+
 	/** @return the {@link VariableManager} */
 	public static VariableManager variables() {
 		return variables;
@@ -244,6 +251,7 @@ public final class Game {
 		flags = new FlagManager();
 		variables = new VariableManager();
 		save = new DiskSaveManager();
+		stats = new GameStatsManager();
 		inventory = new Inventory();
 		// now subscribe
 		publisher.subscribe(view);
@@ -273,6 +281,7 @@ public final class Game {
 		if (variables != null) {
 			variables.dispose();
 		}
+		stats = null;
 		inventory = null;
 		save.dispose();
 		publisher.removeAllListeners();

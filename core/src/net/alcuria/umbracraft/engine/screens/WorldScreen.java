@@ -10,7 +10,9 @@ import net.alcuria.umbracraft.engine.manager.input.OnscreenInputManager;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.windows.WindowStack;
 import net.alcuria.umbracraft.party.PartyMember;
+import net.alcuria.umbracraft.save.model.GameStatsManager.GameStat;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 
 /** All objects live in the World. Enitities are rendered, the view unprojects,
@@ -20,6 +22,7 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 	private final OnscreenInputManager in;
 	private Map map;
 	private final Teleporter teleporter;
+	private float time;
 	private final WindowStack windows;
 
 	public WorldScreen() {
@@ -89,6 +92,11 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 		Game.view().update();
 		windows.update();
 		teleporter.update();
+		time += Gdx.graphics.getDeltaTime();
+		if (time > 1) {
+			time -= 1;
+			Game.stats().increment(GameStat.TIME_PLAYED, 1);
+		}
 	}
 
 	@Override
@@ -103,7 +111,6 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 
 	@Override
 	public void resume() {
-
 	}
 
 	@Override

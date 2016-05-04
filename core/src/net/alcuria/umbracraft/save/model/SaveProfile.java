@@ -18,6 +18,7 @@ public class SaveProfile {
 	/** @return a {@link SaveProfile} from the current game. */
 	public static SaveProfile fromGame() {
 		SaveProfile profile = new SaveProfile();
+		profile.stats = Game.stats();
 		profile.party = Game.party().getMembers();
 		profile.inventory = Game.items();
 		profile.location = new Location(Game.areas().getArea(), Game.areas().getNode(), Game.map().getName(), Game.entities().find(Entity.PLAYER).position);
@@ -28,6 +29,8 @@ public class SaveProfile {
 
 	/** Sets everything up when loading */
 	public static void toGame(SaveProfile profile) {
+		// set stats
+		Game.stats().copy(profile.stats);
 		// reset party
 		Game.party().clear();
 		for (PartyMember member : profile.party) {
@@ -60,6 +63,8 @@ public class SaveProfile {
 	public Location location;
 	/** The current party */
 	public Array<PartyMember> party;
+	/** Game Stats, like time played, etc */
+	public GameStatsManager stats;
 	/** All variables used */
 	public ObjectMap<String, Integer> variables;
 
