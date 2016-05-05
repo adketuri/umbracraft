@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Andrew Keturi */
 public class DebugText extends OnscreenInput {
 
+	public static long renderTime;
 	private Entity entity;
 	private final LabelStyle style = new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE);
 	private final Table table;
@@ -53,6 +54,7 @@ public class DebugText extends OnscreenInput {
 			text.get(5).setText("Velocity: " + entity.velocity);
 			text.get(6).setText("FPS: " + Gdx.graphics.getFramesPerSecond());
 			text.get(7).setText("Render Calls: " + Game.batch().renderCalls);
+			text.get(8).setText("Render time:" + renderTime);
 
 		}
 	}

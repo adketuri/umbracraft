@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
+import net.alcuria.umbracraft.engine.manager.input.DebugText;
 import net.alcuria.umbracraft.engine.manager.input.OnscreenInputManager;
 import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.windows.WindowStack;
@@ -76,7 +77,9 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 
 	@Override
 	public void onRender() {
+		long lastTime = System.nanoTime();
 		Game.entities().render();
+		DebugText.renderTime = System.nanoTime() - lastTime; //sry
 		if (Game.isDebug()) {
 			Game.entities().renderPaths();
 		}
