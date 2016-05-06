@@ -67,8 +67,9 @@ public class Pathfinder {
 	}
 
 	private boolean isTraversible(Map map, PathNode cur, int destX, int destY) {
-		if (map.isStairs(cur.x, cur.y) && map.isStairs(destX, destY)) {
-			return true;
+		if (map.isStairs(cur.x, cur.y) || map.isStairs(destX, destY)) {
+			// stair to stair is ok only for 4-way movement
+			return (cur.x == destX || cur.y == destY);
 		}
 		return (map.getAltitudeAt(destX, destY) - 1) <= map.getAltitudeAt(cur.x, cur.y);
 	}

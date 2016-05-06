@@ -1,5 +1,8 @@
 package net.alcuria.umbracraft.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.utils.Array;
@@ -41,21 +44,24 @@ public class StringUtils {
 	 * @return the argument at that index */
 	public static String replaceArgs(String id, Array<String> arguments) {
 		//TODO: use a regex we want to find and replace {arg*} patterns
-		if (id.startsWith("{arg") && id.endsWith("}")) {
-			id = id.replace("{arg", "").replace("}", "");
-			if (StringUtils.isNumber(id)) {
-				int idx = Integer.valueOf(id);
+		Pattern pattern = Pattern.compile("\\{arg[0-9]\\}");
+		Matcher matcher = pattern.matcher(id);
+		while (matcher.find()) {
+			String match = matcher.group();
+			String number = match.replace("{arg", "").replace("}", "");
+			if (StringUtils.isNumber(number)) {
+				int idx = Integer.valueOf(number);
 				if (idx >= 0 && idx < arguments.size) {
-					return arguments.get(idx);
+					id = id.replace(match, arguments.get(idx));
 				} else {
 					throw new ArrayIndexOutOfBoundsException("No argument at index: " + idx + ". size: " + arguments.size);
 				}
 			} else {
 				throw new NumberFormatException("String is not a number: " + id);
 			}
-		} else {
-			return id;
 		}
+		return id;
+
 	}
 
 	/** Splits a string that's in camel-case.
