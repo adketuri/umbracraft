@@ -43,7 +43,6 @@ public class StringUtils {
 	 * @param arguments the {@link Entity} object's arguments
 	 * @return the argument at that index */
 	public static String replaceArgs(String id, Array<String> arguments) {
-		//TODO: use a regex we want to find and replace {arg*} patterns
 		Pattern pattern = Pattern.compile("\\{arg[0-9]\\}");
 		Matcher matcher = pattern.matcher(id);
 		while (matcher.find()) {

@@ -26,6 +26,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.kotcrab.vis.ui.widget.VisCheckBox;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
@@ -241,14 +243,24 @@ public abstract class Module<T extends Definition> {
 								}
 								final SuggestionWidget w = widget;
 								final FieldType type = FieldType.from(field);
+								final VisTextField textRef = textField;
+								final Task saveTask = new Task() {
+
+									@Override
+									public void run() {
+										saveField(type, field, definition, textRef, config);
+									}
+
+								};
 								textField.setTextFieldListener(new TextFieldListener() {
 
 									@Override
-									public void keyTyped(VisTextField textField, char c) {
+									public void keyTyped(final VisTextField textField, char c) {
 										if (c == '\t') {
 											return;
 										}
-										saveField(type, field, definition, textField, config);
+										Timer.instance().clear();
+										Timer.schedule(saveTask, 0.5f);
 										if (w != null) {
 											w.populateSuggestions();
 										}
