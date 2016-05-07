@@ -1,6 +1,5 @@
 package net.alcuria.umbracraft.engine.screens;
 
-import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 import net.alcuria.umbracraft.engine.events.Event;
@@ -14,7 +13,6 @@ import net.alcuria.umbracraft.party.PartyMember;
 import net.alcuria.umbracraft.save.model.GameStatsManager.GameStat;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Rectangle;
 
 /** All objects live in the World. Enitities are rendered, the view unprojects,
  * and then ui elements are displayed.
@@ -42,7 +40,7 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 		// create global entities
 		Game.entities().create(EntityScope.GLOBAL, null);
 		Game.map().create(WorldUtils.getStartingMapName());
-		Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
+		Game.view().setBounds(Game.map().getBounds());
 		Game.view().focus();
 		Game.areas().setAreaAndNode(Game.db().config().startingArea, Game.db().config().startingNode);
 		in = new OnscreenInputManager();

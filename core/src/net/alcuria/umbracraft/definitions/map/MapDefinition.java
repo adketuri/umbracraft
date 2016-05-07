@@ -9,6 +9,8 @@ import com.badlogic.gdx.utils.Array;
 /** Defines a user-created map
  * @author Andrew Keturi */
 public class MapDefinition extends Definition {
+	@Tooltip("The number of tiles we do not render along the bottom of the map")
+	public int bottomClamp;
 	/** Where on the map we enter from the four cardinal directions */
 	@IgnorePopulate
 	public int eastX, eastY, northX, northY, southX, southY, westX, westY;
@@ -16,7 +18,7 @@ public class MapDefinition extends Definition {
 	public Array<EntityReferenceDefinition> entities;
 	/** The height of the map */
 	private int height;
-	/** The name of the map */
+	@Tooltip("The name of the map")
 	public String name;
 	@Tooltip("A tag for sorting")
 	public String tag;

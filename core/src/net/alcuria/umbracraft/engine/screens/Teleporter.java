@@ -9,7 +9,6 @@ import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.TintScreenEvent;
 import net.alcuria.umbracraft.listeners.Listener;
 
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 
 /** The teleporter is responsible for determining when the player entity reaches
@@ -77,7 +76,7 @@ public class Teleporter implements Disposable {
 			@Override
 			public void invoke() {
 				Game.areas().changeNode(direction);
-				Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
+				Game.view().setBounds(Game.map().getBounds());
 				Game.view().focus();
 				Game.publisher().publish(new TintScreenEvent(0, FADE_TIME, new Listener() {
 

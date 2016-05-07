@@ -2,14 +2,12 @@ package net.alcuria.umbracraft.save.model;
 
 import java.util.Set;
 
-import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 import net.alcuria.umbracraft.engine.inventory.Inventory;
 import net.alcuria.umbracraft.party.PartyMember;
 
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -48,7 +46,7 @@ public class SaveProfile {
 		Game.entities().create(EntityScope.MAP, profile.location.map);
 		Game.entities().find(Entity.PLAYER).position.set(profile.location.position);
 		Game.view().clearBounds();
-		Game.view().setBounds(new Rectangle(0, 0, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth));
+		Game.view().setBounds(Game.map().getBounds());
 		Game.view().setTarget(Game.entities().find(Entity.PLAYER));
 		Game.view().focus();
 		Game.log("Loaded slot 1!");

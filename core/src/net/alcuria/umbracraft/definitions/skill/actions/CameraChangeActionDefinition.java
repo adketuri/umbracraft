@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.skill.actions;
 
+import net.alcuria.umbracraft.annotations.IgnorePopulate;
 import net.alcuria.umbracraft.annotations.Tooltip;
 
 /** Contains constants to define a {@link SkillActionDefinition} that moves the
@@ -22,9 +23,10 @@ public class CameraChangeActionDefinition extends SkillActionDefinition {
 		}
 	}
 
+	@IgnorePopulate
 	private static final int CENTER_POS = 290; // center of the battle map
+	@IgnorePopulate
 	private static final int OFFSET = 40; // offset for the left/right grid focus
-
 	@Tooltip("The position of the camera on the field")
 	public CameraDirection position;
 }

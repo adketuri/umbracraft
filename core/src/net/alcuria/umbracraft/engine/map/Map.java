@@ -9,6 +9,7 @@ import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Json;
@@ -410,6 +411,11 @@ public class Map implements Disposable {
 		} catch (NullPointerException npe) {
 			return 0;
 		}
+	}
+
+	/** @return A rectangle to use as the bounds of the map. */
+	public Rectangle getBounds() {
+		return new Rectangle(0, mapDef.bottomClamp * Config.tileWidth, Game.map().getWidth() * Config.tileWidth, Game.map().getHeight() * Config.tileWidth);
 	}
 
 	/** @return the current {@link TilesetDefinition} */
