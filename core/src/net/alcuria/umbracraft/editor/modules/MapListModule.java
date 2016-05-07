@@ -3,7 +3,6 @@ package net.alcuria.umbracraft.editor.modules;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.editor.widget.MapEditorWidget;
-import net.alcuria.umbracraft.editor.widget.MapEditorWidget.EditMode;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
 import net.alcuria.umbracraft.listeners.Listener;
 
@@ -78,23 +77,6 @@ public class MapListModule extends ListModule<MapDefinition> {
 								} catch (Exception e) {
 									Game.log("Error parsing.");
 								}
-							};
-						});
-					}
-				}).padLeft(10);
-			}
-		}).row();
-		headerButtons.add(new Table() {
-			{
-				// mode table -- toggles between entity/altitude
-				add(new VisLabel("Current Edit Mode:"));
-				add(new VisTextButton(mapWidget != null ? mapWidget.getEditMode().toString() : EditMode.ALTITUDE.toString()) {
-					{
-						addListener(new ClickListener() {
-							@Override
-							public void clicked(InputEvent event, float x, float y) {
-								mapWidget.setEditMode(mapWidget.getEditMode() == EditMode.ALTITUDE ? EditMode.ENTITY : EditMode.ALTITUDE);
-								setText(mapWidget.getEditMode().toString());
 							};
 						});
 					}
