@@ -58,6 +58,10 @@ public class AnimationCollectionComponent implements Component {
 		return currentGroup;
 	}
 
+	private boolean isJumping(Entity entity) {
+		return !collision.isOnGround();
+	}
+
 	private boolean isMoving(Entity entity) {
 		if (collision != null && collision.isOnStairs() && entity.velocity.z != 0) {
 			return true;
@@ -101,10 +105,12 @@ public class AnimationCollectionComponent implements Component {
 		if (lastPose != Pose.INSPECT) {
 			if (!isMoving(entity)) {
 				currentPose = Pose.IDLE;
+			} else if (isJumping(entity)) {
+				currentPose = Pose.JUMPING;
 			} else {
 				currentPose = Pose.WALKING;
-				currentDirection = currentGroup.getDirection();
 			}
+			currentDirection = currentGroup.getDirection();
 		}
 		// if the pose has updated, update reference to currentGroup and set direction
 		if (currentPose != lastPose) {

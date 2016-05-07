@@ -25,7 +25,7 @@ public class MapDefinition extends Definition {
 	/** The map tiles */
 	public Array<Array<MapTileDefinition>> tiles;
 	@Tooltip("The default level of the water, in tiles. Floating-point.")
-	public float waterLevel = 1;
+	public float waterLevel;
 	/** The width of the map */
 	private int width;
 

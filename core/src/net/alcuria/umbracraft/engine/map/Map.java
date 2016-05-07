@@ -525,7 +525,6 @@ public class Map implements Disposable {
 		if (layers == null) {
 			return;
 		}
-		mapDef.waterLevel = 0f;
 		;
 		for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth + 1; i < n; i++) {
 			int alt = getAltitudeAt(i, row);
