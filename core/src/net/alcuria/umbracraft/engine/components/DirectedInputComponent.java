@@ -42,13 +42,11 @@ public class DirectedInputComponent implements Component {
 
 	@Override
 	public void render(Entity entity) {
-		if (Game.isDebug()) {
-			Game.batch().setColor(Color.RED);
-			Game.batch().draw(debug, targetX * 16 - 1, targetY * 16 - 1, 3, 3);
-			Game.batch().setColor(Color.BLUE);
-			Game.batch().draw(debug, currentX * 16 - 1, currentY * 16 - 1, 3, 3);
-			Game.batch().setColor(Color.WHITE);
-		}
+		Game.batch().setColor(Color.RED);
+		Game.batch().draw(debug, targetX * 16 - 1, targetY * 16 - 1, 3, 3);
+		Game.batch().setColor(Color.BLUE);
+		Game.batch().draw(debug, currentX * 16 - 1, currentY * 16 - 1, 3, 3);
+		Game.batch().setColor(Color.WHITE);
 	}
 
 	public void renderPaths() {

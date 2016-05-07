@@ -34,9 +34,7 @@ public class Pathfinder {
 			batch.setColor(color);
 			final int w = Config.tileWidth;
 			//			Game.debug(color + " " + x + " " + y);
-			if (Game.isDebug()) {
-				batch.draw(Game.assets().get("debug.png", Texture.class), x * w, y * w + altitude * w, w, w);
-			}
+			batch.draw(Game.assets().get("debug.png", Texture.class), x * w, y * w + altitude * w, w, w);
 			batch.setColor(Color.WHITE);
 		}
 
