@@ -55,7 +55,7 @@ public class MapEditorWidget {
 
 	}
 
-	private static EditMode editMode = EditMode.ENTITY;
+	private static EditMode editMode = EditMode.ALTITUDE;
 
 	private static Pair<Vector2, MapTileDefinition> tile(final int x, final int y, final MapTileDefinition tile) {
 		return new Pair<Vector2, MapTileDefinition>(new Vector2(x, y), tile);
