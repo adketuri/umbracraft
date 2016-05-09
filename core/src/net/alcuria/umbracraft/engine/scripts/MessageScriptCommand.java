@@ -26,6 +26,12 @@ public class MessageScriptCommand extends ScriptCommand {
 		ANGRY, HAPPY, NEUTRAL, SAD
 	}
 
+	@Tooltip("If true, tapping will not advance the message window; it must auto-close via the duration field instead.")
+	@Order(6)
+	public boolean disableDismiss;
+	@Tooltip("The duration after which the message auto-closes. 0 ignores.")
+	@Order(5)
+	public float duration = 0;
 	@Tooltip("The expression to display on the character's portrait")
 	@Order(4)
 	public MessageEmotion emotion = MessageEmotion.NEUTRAL;

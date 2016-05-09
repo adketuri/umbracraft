@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.scripts;
 import java.util.Set;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.annotations.IgnorePopulate;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
 import net.alcuria.umbracraft.engine.events.TintScreenEvent;
@@ -15,8 +16,12 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi */
 public class TeleportScriptCommand extends ScriptCommand {
 
+	@IgnorePopulate
 	private final float FADE_TIME = 0.5f;
 	public String id = "";
+
+	public TeleportScriptCommand() {
+	}
 
 	public TeleportScriptCommand(final String id) {
 		this.id = id;
@@ -34,7 +39,7 @@ public class TeleportScriptCommand extends ScriptCommand {
 
 	@Override
 	public String getName() {
-		return "teleport";
+		return "Teleport: " + id;
 	}
 
 	@Override
