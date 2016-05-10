@@ -34,6 +34,7 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 		for (String hero : Game.db().config().startingParty) {
 			Game.party().addMember(new PartyMember(hero));
 		}
+
 		// set the starting area/map location
 		Game.entities().create(EntityScope.MAP, WorldUtils.getStartingMapName());
 		Game.entities().create(EntityScope.AREA, Game.db().config().startingArea);
@@ -80,6 +81,8 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 			Game.view().setBounds(Game.map().getBounds());
 			Game.view().setTarget(Game.entities().find(Entity.PLAYER));
 			Game.view().focus();
+			Game.entities().dispose(EntityScope.MAP);
+			Game.entities().create(EntityScope.MAP, node.mapDefinition);
 			Game.entities().find(Entity.PLAYER).position.set(evt.x, evt.y, 0);
 		}
 	}

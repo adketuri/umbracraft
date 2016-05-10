@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.Json;
 
 /** An internal representation of a playable, explorable map. It consists largely
  * of an array of {@link Layer} objects and an array of {@link TextureRegion}
@@ -39,7 +38,6 @@ public class Map implements Disposable {
 		}
 		name = id;
 		// json -> object
-		Json json = new Json();
 		tilesetDefinition = Game.db().tileset(0);
 		String filename = tilesetDefinition.filename;
 

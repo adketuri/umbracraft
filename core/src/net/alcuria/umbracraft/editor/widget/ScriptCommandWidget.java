@@ -25,6 +25,7 @@ import net.alcuria.umbracraft.engine.scripts.RemoveEntityCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ShowAnimationScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.TeleportScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.TintScreenCommand;
 import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.listeners.TypeListener;
 
@@ -46,7 +47,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		ITEM("Change Items/Inventory", ItemChangeScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), //
 		PAUSE("Pause", PauseScriptCommand.class), POSE("Change Pose", ChangePoseScriptCommand.class), RECOVER("Heal/Recover Party", RecoverScriptCommand.class), //
 		REMOVE("Remove Entity", RemoveEntityCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), SOUND("Play Sound", PlaySoundScriptCommand.class), //
-		TELEPORT("Teleport", TeleportScriptCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
+		TELEPORT("Teleport", TeleportScriptCommand.class), TINT("Tint Screen", TintScreenCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
 
 		public static Commands from(final String name) {
 			for (Commands c : Commands.values()) {
