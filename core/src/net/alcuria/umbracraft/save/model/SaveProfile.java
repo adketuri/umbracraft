@@ -45,7 +45,6 @@ public class SaveProfile {
 		Game.entities().dispose(EntityScope.MAP);
 		Game.entities().create(EntityScope.MAP, profile.location.map);
 		Game.entities().find(Entity.PLAYER).position.set(profile.location.position);
-		Game.view().clearBounds();
 		Game.view().setBounds(Game.map().getBounds());
 		Game.view().setTarget(Game.entities().find(Entity.PLAYER));
 		Game.view().focus();

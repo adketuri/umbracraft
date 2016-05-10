@@ -1,13 +1,15 @@
 package net.alcuria.umbracraft.engine.screens;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.definitions.area.AreaDefinition;
+import net.alcuria.umbracraft.definitions.area.AreaNodeDefinition;
+import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.MapChangedEvent;
 import net.alcuria.umbracraft.engine.manager.input.DebugText;
 import net.alcuria.umbracraft.engine.manager.input.OnscreenInputManager;
-import net.alcuria.umbracraft.engine.map.Map;
 import net.alcuria.umbracraft.engine.windows.WindowStack;
 import net.alcuria.umbracraft.party.PartyMember;
 import net.alcuria.umbracraft.save.model.GameStatsManager.GameStat;
@@ -19,7 +21,6 @@ import com.badlogic.gdx.Gdx;
  * @author Andrew Keturi */
 public class WorldScreen extends UmbraScreen implements EventListener {
 	private final OnscreenInputManager in;
-	private Map map;
 	private final Teleporter teleporter;
 	private float time;
 	private final WindowStack windows;
@@ -68,9 +69,19 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 	@Override
 	public void onEvent(Event event) {
 		if (event instanceof MapChangedEvent) {
-			map.create(((MapChangedEvent) event).id);
+			MapChangedEvent evt = (MapChangedEvent) event;
+			Game.areas().setAreaAndNode(evt.area, evt.node);
+			AreaDefinition area = Game.db().area(evt.area);
+			AreaNodeDefinition node = area.find(area.root, evt.node);
+			if (node == null) {
+				throw new NullPointerException("Node not found in area " + area);
+			}
+			Game.map().create(node.mapDefinition);
+			Game.view().setBounds(Game.map().getBounds());
+			Game.view().setTarget(Game.entities().find(Entity.PLAYER));
+			Game.view().focus();
+			Game.entities().find(Entity.PLAYER).position.set(evt.x, evt.y, 0);
 		}
-
 	}
 
 	@Override

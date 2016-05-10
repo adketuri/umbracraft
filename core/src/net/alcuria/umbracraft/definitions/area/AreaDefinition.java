@@ -99,6 +99,17 @@ public class AreaDefinition extends Definition {
 		return name != null ? name : "";
 	}
 
+	/** @return an {@link Array} containing the name of all nodes */
+	public Array<String> getNodeNames() {
+		Array<AreaNodeDefinition> nodes = new Array<>();
+		addNodes(nodes, root);
+		Array<String> nodeNames = new Array<String>();
+		for (AreaNodeDefinition def : nodes) {
+			nodeNames.add(def.name);
+		}
+		return nodeNames;
+	}
+
 	/** @return an {@link Array} containing all nodes */
 	public Array<AreaNodeDefinition> getNodes() {
 		Array<AreaNodeDefinition> nodes = new Array<>();

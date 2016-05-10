@@ -134,8 +134,7 @@ public final class Db {
 
 	/** @return all {@link AreaDefinition} objects */
 	public ListDefinition<AreaDefinition> areas() {
-		O.notNull(definitions);
-		return (ListDefinition<AreaDefinition>) definitions.get("areas");
+		return (ListDefinition<AreaDefinition>) O.notNull(definitions).get("areas");
 	}
 
 	/** @param id the identifier in the db
