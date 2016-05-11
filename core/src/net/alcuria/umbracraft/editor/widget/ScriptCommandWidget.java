@@ -34,11 +34,14 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextField;
+import com.kotcrab.vis.ui.widget.color.ColorPicker;
+import com.kotcrab.vis.ui.widget.color.ColorPickerListener;
 
 public class ScriptCommandWidget extends Module<ScriptCommand> {
 	public static enum Commands {
@@ -48,6 +51,15 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		PAUSE("Pause", PauseScriptCommand.class), POSE("Change Pose", ChangePoseScriptCommand.class), RECOVER("Heal/Recover Party", RecoverScriptCommand.class), //
 		REMOVE("Remove Entity", RemoveEntityCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), SOUND("Play Sound", PlaySoundScriptCommand.class), //
 		TELEPORT("Teleport", TeleportScriptCommand.class), TINT("Tint Screen", TintScreenCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
+
+		public static Commands from(Class<? extends ScriptCommand> clazz) {
+			for (Commands c : Commands.values()) {
+				if (c.clazz.equals(clazz)) {
+					return c;
+				}
+			}
+			return null;
+		}
 
 		public static Commands from(final String name) {
 			for (Commands c : Commands.values()) {
@@ -81,6 +93,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		}
 
 		private Class<?> clazz;
+
 		private String name;
 
 		private Commands(String name, Class<?> clazz) {
@@ -105,9 +118,10 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 
 	private static boolean consumedDown = false;
 	private static ScriptCommand copiedCommand;
+	private final ColorPicker colorPicker = new ColorPicker();
 	private final ScriptCommand command;
 	private final ScriptPageWidget commandsWidget;
-	private final Table content, popup, buttonTable = new Table(), popupFields = new Table();
+	private final Table content, popup, buttonTable = new Table(), popupFields = new Table(), colorPickerTable = new Table();
 	private ScriptCommand createdCommand;
 	private ScriptCommandWidget nextWidget;
 	private final ScriptPageDefinition page;
@@ -119,6 +133,20 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		this.page = page;
 		this.content = content;
 		this.commandsWidget = commandsWidget;
+		colorPicker.setListener(new ColorPickerListener() {
+
+			@Override
+			public void canceled() {
+
+			}
+
+			@Override
+			public void finished(Color newColor) {
+				if (createdCommand instanceof TintScreenCommand) {
+					((TintScreenCommand) createdCommand).color = newColor.toString();
+				}
+			}
+		});
 	}
 
 	public void addActor() {
@@ -164,6 +192,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 					if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 						createPopup("Edit Command", Commands.getNameFrom(command));
 						populate(popupFields, command.getClass(), command, populateConfig());
+						specialPopulate(Commands.from(command.getClass()));
 						buttonTable.clear();
 						buttonTable.add(WidgetUtils.button("Update", commandUpdated()));
 					} else if (!(command instanceof EmptyCommand) && (Gdx.input.isKeyJustPressed(Keys.DEL) || Gdx.input.isKeyJustPressed(Keys.BACKSPACE))) {
@@ -332,6 +361,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 							createdCommand = localCommand.getCommandInstance();
 						}
 						populate(popupFields, localCommand.getCommandClass(), createdCommand, populateConfig());
+						specialPopulate(localCommand);
 						buttonTable.clear();
 						buttonTable.add(WidgetUtils.button("Create", commandCreated()));
 					} else {
@@ -375,6 +405,7 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 					Commands localCommand = Commands.from(textField.getText());
 					popupFields.clear();
 					populate(popupFields, localCommand.getCommandClass(), createdCommand, populateConfig());
+					specialPopulate(localCommand);
 				}
 			}
 		};
@@ -400,5 +431,41 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			config.listener = listener(suggestionsWidget.getTextField());
 		}
 		return config;
+	}
+
+	private void specialPopulate(Commands localCommand) {
+		// now we can do special populates here that the default populate doesn't handle
+		// example: color picker for TintScreenCommand
+		if (localCommand == Commands.TINT) {
+			String color = ((TintScreenCommand) createdCommand).color;
+			final Color finalColor = color != null ? Color.valueOf(color) : Color.WHITE;
+			popupFields.row();
+			popupFields.add(new Image(Drawables.get("white")) {
+				{
+					addListener(new ClickListener() {
+						@Override
+						public void clicked(InputEvent event, float x, float y) {
+							colorPickerTable.clear();
+							colorPickerTable.add(colorPicker);
+							colorPicker.setColor(finalColor);
+							colorPicker.fadeIn();
+						}
+					});
+				}
+
+				@Override
+				public void act(float delta) {
+					super.act(delta);
+					String color = ((TintScreenCommand) createdCommand).color;
+					if (color != null && color.length() == 8) {
+						setColor(Color.valueOf(color));
+					} else {
+						setColor(Color.WHITE);
+					}
+				}
+			}).size(30);
+			popupFields.row();
+			popupFields.add(colorPickerTable);
+		}
 	}
 }

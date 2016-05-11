@@ -10,6 +10,7 @@ import net.alcuria.umbracraft.engine.events.TintScreenEvent;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -36,11 +37,15 @@ public class OverlayManager implements EventListener, BaseEntity, Disposable {
 		Game.publisher().unsubscribe(this);
 	}
 
+	private Action getAction(TintScreenEvent event) {
+		return event.color != null ? Actions.color(event.color, event.duration) : Actions.alpha(event.target, event.duration);
+	}
+
 	@Override
 	public void onEvent(Event event) {
 		if (event instanceof TintScreenEvent) {
 			final TintScreenEvent tint = (TintScreenEvent) event;
-			overlay.addAction(Actions.sequence(Actions.alpha(tint.target, tint.duration), Actions.run(new Runnable() {
+			overlay.addAction(Actions.sequence(getAction(tint), Actions.run(new Runnable() {
 				@Override
 				public void run() {
 					if (tint.listener != null) {
@@ -60,5 +65,4 @@ public class OverlayManager implements EventListener, BaseEntity, Disposable {
 	public void update() {
 		stage.act(Gdx.graphics.getDeltaTime());
 	}
-
 }
