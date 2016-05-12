@@ -32,9 +32,10 @@ public class EntityCollisionComponent implements Component {
 	@Override
 	public void render(Entity entity) {
 		if (Game.isDebug()) {
+			Color oldColor = Game.batch().getColor();
 			Game.batch().setColor(Color.RED);
 			Game.batch().draw(Game.assets().get("debug.png", Texture.class), r1.x, r1.y, r1.width, r1.height);
-			Game.batch().setColor(Color.WHITE);
+			Game.batch().setColor(oldColor);
 		}
 	}
 

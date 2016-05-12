@@ -63,12 +63,15 @@ public class AnimationComponent implements Component {
 		if (frames != null) {
 			final boolean mirror = mirrorAll ? !definition.frames.get(curFrameIndex).mirror : definition.frames.get(curFrameIndex).mirror;
 			final Color color = definition.frames.get(curFrameIndex).color;
+			Color oldColor = null;
 			if (color != null) {
 				Game.batch().setColor(color);
+				oldColor = Game.batch().getColor();
 			}
 			//			Game.batch().draw(frames.get(0), entity.position.x - origin.x, entity.position.y - origin.y);
 			Game.batch().draw(frames.get(curFrameIndex), entity.position.x + (mirror ? definition.width : 0) - origin.x, entity.position.y + entity.position.z - origin.y, mirror ? -definition.width : definition.width, definition.height);
 			if (color != null) {
+				Game.batch().setColor(oldColor);
 				Game.batch().setColor(Color.WHITE);
 			}
 		}

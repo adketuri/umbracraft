@@ -8,6 +8,7 @@ import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 import net.alcuria.umbracraft.engine.inventory.Inventory;
 import net.alcuria.umbracraft.party.PartyMember;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -22,6 +23,7 @@ public class SaveProfile {
 		profile.location = new Location(Game.areas().getArea(), Game.areas().getNode(), Game.map().getName(), Game.entities().find(Entity.PLAYER).position);
 		profile.flags = Game.flags().getAll();
 		profile.variables = Game.variables().getAll();
+		profile.screenTint = Game.batch().getColor();
 		return profile;
 	}
 
@@ -48,8 +50,9 @@ public class SaveProfile {
 		Game.view().setBounds(Game.map().getBounds());
 		Game.view().setTarget(Game.entities().find(Entity.PLAYER));
 		Game.view().focus();
+		// set screen color
+		Game.batch().setColor(profile.screenTint != null ? profile.screenTint : Color.WHITE);
 		Game.log("Loaded slot 1!");
-
 	}
 
 	/** All flags enabled */
@@ -60,6 +63,8 @@ public class SaveProfile {
 	public Location location;
 	/** The current party */
 	public Array<PartyMember> party;
+	/** The color of the screen */
+	private Color screenTint;
 	/** Game Stats, like time played, etc */
 	public GameStatsManager stats;
 	/** All variables used */
