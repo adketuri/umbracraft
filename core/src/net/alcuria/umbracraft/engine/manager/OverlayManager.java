@@ -8,11 +8,13 @@ import net.alcuria.umbracraft.engine.events.Event;
 import net.alcuria.umbracraft.engine.events.EventListener;
 import net.alcuria.umbracraft.engine.events.TintScreenEvent;
 import net.alcuria.umbracraft.engine.screens.UmbraScreen;
+import net.alcuria.umbracraft.listeners.Listener;
+import net.alcuria.umbracraft.util.O.L;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.ColorAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -21,9 +23,11 @@ import com.badlogic.gdx.utils.Disposable;
  * @author Andrew Keturi */
 public class OverlayManager implements EventListener, BaseEntity, Disposable {
 
+	private final ColorAction colorAction = new ColorAction();
 	private final Image overlay = new Image(Drawables.skin("ui/black"));
 	private final Stage stage = new Stage(Game.view().getViewport());
-
+	private boolean startedColorAction = false;
+	private Listener tintListener;
 	{
 		overlay.setWidth(Config.viewWidth);
 		overlay.setHeight(Config.viewHeight);
@@ -37,22 +41,27 @@ public class OverlayManager implements EventListener, BaseEntity, Disposable {
 		Game.publisher().unsubscribe(this);
 	}
 
-	private Action getAction(TintScreenEvent event) {
-		return event.color != null ? Actions.color(event.color, event.duration) : Actions.alpha(event.target, event.duration);
-	}
-
 	@Override
 	public void onEvent(Event event) {
 		if (event instanceof TintScreenEvent) {
 			final TintScreenEvent tint = (TintScreenEvent) event;
-			overlay.addAction(Actions.sequence(getAction(tint), Actions.run(new Runnable() {
-				@Override
-				public void run() {
-					if (tint.listener != null) {
-						tint.listener.invoke();
+			if (tint.color == null) {
+				overlay.addAction(Actions.sequence(Actions.alpha(tint.target, tint.duration), Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						if (tint.listener != null) {
+							tint.listener.invoke();
+						}
 					}
-				}
-			})));
+				})));
+			} else {
+				colorAction.setColor(Game.batch().getColor());
+				colorAction.setEndColor(tint.color);
+				colorAction.setDuration(tint.duration);
+				colorAction.restart();
+				startedColorAction = true;
+				tintListener = tint.listener;
+			}
 		}
 	}
 
@@ -64,5 +73,12 @@ public class OverlayManager implements EventListener, BaseEntity, Disposable {
 	@Override
 	public void update() {
 		stage.act(Gdx.graphics.getDeltaTime());
+		if (startedColorAction) {
+			Game.batch().setColor(colorAction.getColor());
+			if (colorAction.act(Gdx.graphics.getDeltaTime())) {
+				L.$(tintListener);
+				startedColorAction = false;
+			}
+		}
 	}
 }
