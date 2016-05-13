@@ -3,6 +3,8 @@ package net.alcuria.umbracraft.engine.scripts;
 import java.util.Set;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.annotations.IgnorePopulate;
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.TintScreenEvent;
 import net.alcuria.umbracraft.listeners.Listener;
@@ -15,8 +17,11 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi */
 public class TintScreenCommand extends ScriptCommand {
 
+	@IgnorePopulate
 	public String color;
+	@Tooltip("The time taken, in seconds, to change the screen to this tint")
 	public float duration;
+	@Tooltip("Whether or not to halt script execution until this completes")
 	public boolean wait;
 
 	@Override

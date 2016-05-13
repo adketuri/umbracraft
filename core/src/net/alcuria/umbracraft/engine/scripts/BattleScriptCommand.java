@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.scripts;
 import java.util.Set;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.screens.SetInputEnabled;
 
@@ -13,6 +14,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi */
 public class BattleScriptCommand extends ScriptCommand {
 
+	@Tooltip("The id of the enemy party we want to fight")
 	public String id = "";
 
 	public BattleScriptCommand() {
@@ -33,7 +35,7 @@ public class BattleScriptCommand extends ScriptCommand {
 
 	@Override
 	public String getName() {
-		return "Battle:";
+		return "Battle: " + id;
 	}
 
 	@Override
