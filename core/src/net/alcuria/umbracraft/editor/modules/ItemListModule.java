@@ -93,7 +93,7 @@ public class ItemListModule extends ListModule<ItemDefinition> {
 
 		}
 		config.suggestions = new ObjectMap<String, Array<String>>();
-		config.suggestions.put("icon", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().iconPath, false));
+		config.suggestions.put("icon", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().iconPath));
 		populate(content, ItemDefinition.class, definition, config);
 		content.row();
 		if (definition.usageFilter == null) {

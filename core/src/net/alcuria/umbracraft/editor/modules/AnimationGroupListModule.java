@@ -3,6 +3,8 @@ package net.alcuria.umbracraft.editor.modules;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationListDefinition;
+import net.alcuria.umbracraft.editor.Editor;
+import net.alcuria.umbracraft.util.FileUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -39,6 +41,7 @@ public class AnimationGroupListModule extends ListModule<AnimationGroupDefinitio
 			suggestions.put("downRight", suggestionsStr);
 			suggestions.put("upLeft", suggestionsStr);
 			suggestions.put("upRight", suggestionsStr);
+			suggestions.put("template", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().spritePath));
 		}
 		config.cols = 1;
 		config.textFieldWidth = 200;

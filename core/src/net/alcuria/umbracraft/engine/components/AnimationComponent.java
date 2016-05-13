@@ -3,9 +3,11 @@ package net.alcuria.umbracraft.engine.components;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
+import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.listeners.TypeListener;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,28 +22,60 @@ public class AnimationComponent implements Component {
 	//private float alpha = 1;
 	private Listener completeListener;
 	private int curFrameCount, curFrameIndex;
-	private final AnimationDefinition definition;
+	private AnimationDefinition definition;
+	private final Direction direction;
 	private TypeListener<String> frameChangedListener;	// invoked when a frame changes
 	private Array<TextureRegion> frames;
 	private boolean mirrorAll;
 	private final Vector2 origin = new Vector2();
 	private boolean played = false;
+	private final String template;
 
 	public AnimationComponent(AnimationDefinition definition) {
 		this.definition = definition;
+		template = null;
+		direction = null;
+	}
+
+	public AnimationComponent(String template, Direction direction) {
+		definition = null;
+		this.template = template;
+		this.direction = direction;
 	}
 
 	@Override
 	public void create(Entity entity) {
+		// see if we need to template this. if so create definition
+		if (StringUtils.isNotEmpty(template)) {
+			//TODO: at some point config this correctly
+			definition = new AnimationDefinition();
+			int idx[] = { 0, 1, 2, 1 };
+			definition.frames = new Array<AnimationFrameDefinition>();
+			definition.width = 24;
+			definition.height = 32;
+			definition.filename = template;
+			for (int i = 0; i < idx.length; i++) {
+				AnimationFrameDefinition frameDef = new AnimationFrameDefinition();
+				frameDef.duration = 3;
+				frameDef.x = idx[i];
+				frameDef.y = direction.getTemplateIndex();
+				definition.frames.add(frameDef);
+			}
+			definition.originX = 24 / 2;
+			definition.originY = 2;
+		}
+
+		// now create
+		frames = new Array<TextureRegion>();
+		curFrameCount = curFrameIndex = 0;
 		if (definition != null) {
-			Texture texture = Game.assets().get("sprites/animations/" + definition.filename + ".png", Texture.class);
-			frames = new Array<TextureRegion>();
+			// definition-based animation
+			final Texture texture = Game.assets().get("sprites/animations/" + definition.filename + ".png", Texture.class);
 			for (AnimationFrameDefinition frame : definition.frames) {
-				frames.add(new TextureRegion(new TextureRegion(texture, frame.x * definition.width, frame.y * definition.height, definition.width, definition.height)));
+				frames.add(new TextureRegion(texture, frame.x * definition.width, frame.y * definition.height, definition.width, definition.height));
 			}
 			origin.x = definition.originX;
 			origin.y = definition.originY;
-			curFrameCount = curFrameIndex = 0;
 		}
 	}
 
