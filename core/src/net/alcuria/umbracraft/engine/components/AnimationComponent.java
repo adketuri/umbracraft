@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.components;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
+import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent.Pose;
 import net.alcuria.umbracraft.engine.components.AnimationGroupComponent.Direction;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.listeners.Listener;
@@ -30,6 +31,8 @@ public class AnimationComponent implements Component {
 	private final Vector2 origin = new Vector2();
 	private boolean played = false;
 	private final String template;
+	private Pose templatePose;
+	private int templateX, templateY;
 
 	public AnimationComponent(AnimationDefinition definition) {
 		this.definition = definition;
@@ -37,10 +40,13 @@ public class AnimationComponent implements Component {
 		direction = null;
 	}
 
-	public AnimationComponent(String template, Direction direction) {
+	public AnimationComponent(String template, int x, int y, Pose pose, Direction direction) {
 		definition = null;
 		this.template = template;
 		this.direction = direction;
+		templateX = x;
+		templateY = y;
+		templatePose = pose;
 	}
 
 	@Override
@@ -49,20 +55,32 @@ public class AnimationComponent implements Component {
 		if (StringUtils.isNotEmpty(template)) {
 			//TODO: at some point config this correctly
 			definition = new AnimationDefinition();
-			int idx[] = { 0, 1, 2, 1 };
-			definition.frames = new Array<AnimationFrameDefinition>();
 			definition.width = 24;
 			definition.height = 32;
-			definition.filename = template;
-			for (int i = 0; i < idx.length; i++) {
-				AnimationFrameDefinition frameDef = new AnimationFrameDefinition();
-				frameDef.duration = 3;
-				frameDef.x = idx[i];
-				frameDef.y = direction.getTemplateIndex();
-				definition.frames.add(frameDef);
-			}
 			definition.originX = 24 / 2;
 			definition.originY = 2;
+			definition.frames = new Array<AnimationFrameDefinition>();
+			definition.filename = template;
+			switch (templatePose) {
+			case IDLE:
+				AnimationFrameDefinition idleFrameDef = new AnimationFrameDefinition();
+				idleFrameDef.duration = 3;
+				idleFrameDef.x = 1;
+				idleFrameDef.y = direction.getTemplateIndex();
+				definition.frames.add(idleFrameDef);
+				break;
+			case WALKING:
+				int idx[] = { 0, 1, 2, 1 };
+				for (int i = 0; i < idx.length; i++) {
+					AnimationFrameDefinition walkFrameDef = new AnimationFrameDefinition();
+					walkFrameDef.duration = 3;
+					walkFrameDef.x = idx[i];
+					walkFrameDef.y = direction.getTemplateIndex();
+					definition.frames.add(walkFrameDef);
+				}
+
+				break;
+			}
 		}
 
 		// now create

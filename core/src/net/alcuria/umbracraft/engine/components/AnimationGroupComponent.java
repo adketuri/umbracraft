@@ -3,7 +3,6 @@ package net.alcuria.umbracraft.engine.components;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
-import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -81,28 +80,19 @@ public class AnimationGroupComponent implements Component {
 	public void create(Entity entity) {
 		if (definition != null) {
 			animations = new ObjectMap<Direction, AnimationComponent>();
-			if (StringUtils.isNotEmpty(definition.template)) {
-				for (Direction direction : Direction.values()) {
-					if (definition.cardinalOnly && !direction.isCardinal()) {
-						continue;
-					}
-					animations.put(direction, new AnimationComponent(definition.template, direction));
-				}
-			} else {
-				animations.put(Direction.DOWN, new AnimationComponent(Game.db().anim(definition.down)));
-				animations.put(Direction.LEFT, new AnimationComponent(Game.db().anim(definition.left)));
-				animations.put(Direction.RIGHT, new AnimationComponent(Game.db().anim(definition.right)));
-				animations.put(Direction.UP, new AnimationComponent(Game.db().anim(definition.up)));
-				animations.put(Direction.DOWNLEFT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.downLeft)));
-				animations.put(Direction.DOWNRIGHT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.downRight)));
-				animations.put(Direction.UPLEFT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.upLeft)));
-				animations.put(Direction.UPRIGHT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.upRight)));
-			}
-			for (AnimationComponent anim : animations.values()) {
-				anim.create(entity);
-			}
-			currentComponent = animations.get(Direction.DOWN);
+			animations.put(Direction.DOWN, new AnimationComponent(Game.db().anim(definition.down)));
+			animations.put(Direction.LEFT, new AnimationComponent(Game.db().anim(definition.left)));
+			animations.put(Direction.RIGHT, new AnimationComponent(Game.db().anim(definition.right)));
+			animations.put(Direction.UP, new AnimationComponent(Game.db().anim(definition.up)));
+			animations.put(Direction.DOWNLEFT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.downLeft)));
+			animations.put(Direction.DOWNRIGHT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.downRight)));
+			animations.put(Direction.UPLEFT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.upLeft)));
+			animations.put(Direction.UPRIGHT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.upRight)));
 		}
+		for (AnimationComponent anim : animations.values()) {
+			anim.create(entity);
+		}
+		currentComponent = animations.get(Direction.DOWN);
 	}
 
 	@Override

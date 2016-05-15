@@ -60,6 +60,8 @@ public class ConfigDefinition extends Definition {
 	public int startingX;
 	@Tooltip("The player's starting y coordinate, in tiles")
 	public int startingY;
+	@Tooltip("The size of the charset templates")
+	public int templateWidth, templateHeight;
 
 	@Override
 	public String getName() {

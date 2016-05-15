@@ -27,9 +27,6 @@ public class AnimationGroupDefinition extends Definition {
 	public String right;
 	@Tooltip("A tag for sorting")
 	public String tag;
-	@Tooltip("Optional path to an asset. When present, uses an rm2k-style template for the character instead of defining every animation")
-	@Order(2)
-	public String template;
 	@Tooltip("The id of the animation facing up")
 	public String up;
 	@Tooltip("The id of the animation facing upLeft")
