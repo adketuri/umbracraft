@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.engine.components;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
+import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent.Pose;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
 import com.badlogic.gdx.utils.ObjectMap;
@@ -71,24 +72,33 @@ public class AnimationGroupComponent implements Component {
 	private AnimationComponent currentComponent;
 	private Direction currentDirection;
 	private final AnimationGroupDefinition definition;
+	private final String template;
+	private final Pose templatePose;
+	private final int templateX, templateY;
 
 	public AnimationGroupComponent(AnimationGroupDefinition definition) {
+		this(definition, null, null, 0, 0);
+	}
+
+	public AnimationGroupComponent(AnimationGroupDefinition definition, String template, Pose templatePose, int templateX, int templateY) {
 		this.definition = definition;
+		this.template = template;
+		this.templateX = templateX;
+		this.templateY = templateY;
+		this.templatePose = templatePose;
 	}
 
 	@Override
 	public void create(Entity entity) {
-		if (definition != null) {
-			animations = new ObjectMap<Direction, AnimationComponent>();
-			animations.put(Direction.DOWN, new AnimationComponent(Game.db().anim(definition.down)));
-			animations.put(Direction.LEFT, new AnimationComponent(Game.db().anim(definition.left)));
-			animations.put(Direction.RIGHT, new AnimationComponent(Game.db().anim(definition.right)));
-			animations.put(Direction.UP, new AnimationComponent(Game.db().anim(definition.up)));
-			animations.put(Direction.DOWNLEFT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.downLeft)));
-			animations.put(Direction.DOWNRIGHT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.downRight)));
-			animations.put(Direction.UPLEFT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.upLeft)));
-			animations.put(Direction.UPRIGHT, new AnimationComponent(Game.db().anim(definition.cardinalOnly ? definition.down : definition.upRight)));
-		}
+		animations = new ObjectMap<Direction, AnimationComponent>();
+		animations.put(Direction.DOWN, new AnimationComponent(template, templateX, templateY, templatePose, Direction.DOWN, definition != null ? Game.db().anim(definition.down) : null));
+		animations.put(Direction.LEFT, new AnimationComponent(template, templateX, templateY, templatePose, Direction.LEFT, definition != null ? Game.db().anim(definition.left) : null));
+		animations.put(Direction.RIGHT, new AnimationComponent(template, templateX, templateY, templatePose, Direction.RIGHT, definition != null ? Game.db().anim(definition.right) : null));
+		animations.put(Direction.UP, new AnimationComponent(template, templateX, templateY, templatePose, Direction.UP, definition != null ? Game.db().anim(definition.up) : null));
+		animations.put(Direction.DOWNLEFT, new AnimationComponent(template, templateX, templateY, templatePose, Direction.DOWNLEFT, definition != null ? Game.db().anim(definition.cardinalOnly ? definition.down : definition.downLeft) : null));
+		animations.put(Direction.DOWNRIGHT, new AnimationComponent(template, templateX, templateY, templatePose, Direction.DOWNRIGHT, definition != null ? Game.db().anim(definition.cardinalOnly ? definition.down : definition.downRight) : null));
+		animations.put(Direction.UPLEFT, new AnimationComponent(template, templateX, templateY, templatePose, Direction.UPLEFT, definition != null ? Game.db().anim(definition.cardinalOnly ? definition.down : definition.upLeft) : null));
+		animations.put(Direction.UPRIGHT, new AnimationComponent(template, templateX, templateY, templatePose, Direction.UPRIGHT, definition != null ? Game.db().anim(definition.cardinalOnly ? definition.down : definition.upRight) : null));
 		for (AnimationComponent anim : animations.values()) {
 			anim.create(entity);
 		}
@@ -170,7 +180,9 @@ public class AnimationGroupComponent implements Component {
 			currentComponent = animations.get(tmpDirection);
 		}
 		// update actual current animation
-		currentComponent.update(entity);
+		if (currentComponent != null) {
+			currentComponent.update(entity);
+		}
 	}
 
 }

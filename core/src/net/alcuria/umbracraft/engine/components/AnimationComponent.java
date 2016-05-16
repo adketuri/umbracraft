@@ -40,8 +40,8 @@ public class AnimationComponent implements Component {
 		direction = null;
 	}
 
-	public AnimationComponent(String template, int x, int y, Pose pose, Direction direction) {
-		definition = null;
+	public AnimationComponent(String template, int x, int y, Pose pose, Direction direction, AnimationDefinition definition) {
+		this.definition = definition;
 		this.template = template;
 		this.direction = direction;
 		templateX = x;
@@ -64,7 +64,7 @@ public class AnimationComponent implements Component {
 			switch (templatePose) {
 			case IDLE:
 				AnimationFrameDefinition idleFrameDef = new AnimationFrameDefinition();
-				idleFrameDef.duration = 3;
+				idleFrameDef.duration = 6;
 				idleFrameDef.x = 1;
 				idleFrameDef.y = direction.getTemplateIndex();
 				definition.frames.add(idleFrameDef);
@@ -74,8 +74,8 @@ public class AnimationComponent implements Component {
 				for (int i = 0; i < idx.length; i++) {
 					AnimationFrameDefinition walkFrameDef = new AnimationFrameDefinition();
 					walkFrameDef.duration = 3;
-					walkFrameDef.x = idx[i];
-					walkFrameDef.y = direction.getTemplateIndex();
+					walkFrameDef.x = templateX + idx[i];
+					walkFrameDef.y = templateX + direction.getTemplateIndex();
 					definition.frames.add(walkFrameDef);
 				}
 

@@ -28,6 +28,9 @@ public class AnimationCollectionDefinition extends Definition {
 	@Tooltip("Optional path to an asset. When present, uses an rm2k-style template for the character instead of defining every animation")
 	@Order(2)
 	public String template;
+	@Tooltip("The coordinates of the top left cell for templates")
+	@Order(3)
+	public int templateX, templateY;
 	@Tooltip("The walking pose from AnimationGroupDefinition")
 	public String walking;
 

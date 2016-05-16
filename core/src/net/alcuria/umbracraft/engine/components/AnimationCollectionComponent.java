@@ -33,19 +33,18 @@ public class AnimationCollectionComponent implements Component {
 	@Override
 	public void create(Entity entity) {
 		if (definition != null) {
-			collision = entity.getComponent(MapCollisionComponent.class);
-			//FIXME: ugly
 			groups = new ObjectMap<Pose, AnimationGroupComponent>();
-			groups.put(Pose.IDLE, new AnimationGroupComponent(Game.db().animGroup(definition.idle)));
-			groups.put(Pose.WALKING, new AnimationGroupComponent(Game.db().animGroup(definition.walking)));
-			groups.put(Pose.FALLING, new AnimationGroupComponent(Game.db().animGroup(definition.falling)));
-			groups.put(Pose.JUMPING, new AnimationGroupComponent(Game.db().animGroup(definition.jumping)));
-			groups.put(Pose.RUNNING, new AnimationGroupComponent(Game.db().animGroup(definition.running)));
-			groups.put(Pose.INSPECT, new AnimationGroupComponent(Game.db().animGroup(definition.inspect)));
+			groups.put(Pose.IDLE, new AnimationGroupComponent(definition.idle != null ? Game.db().animGroup(definition.idle) : null, definition.template, Pose.IDLE, definition.templateX, definition.templateY));
+			groups.put(Pose.WALKING, new AnimationGroupComponent(definition.idle != null ? Game.db().animGroup(definition.walking) : null, definition.template, Pose.WALKING, definition.templateX, definition.templateY));
+			groups.put(Pose.FALLING, new AnimationGroupComponent(definition.idle != null ? Game.db().animGroup(definition.falling) : null, definition.template, Pose.FALLING, definition.templateX, definition.templateY));
+			groups.put(Pose.JUMPING, new AnimationGroupComponent(definition.idle != null ? Game.db().animGroup(definition.jumping) : null, definition.template, Pose.JUMPING, definition.templateX, definition.templateY));
+			groups.put(Pose.RUNNING, new AnimationGroupComponent(definition.idle != null ? Game.db().animGroup(definition.running) : null, definition.template, Pose.RUNNING, definition.templateX, definition.templateY));
+			groups.put(Pose.INSPECT, new AnimationGroupComponent(definition.idle != null ? Game.db().animGroup(definition.inspect) : null, definition.template, Pose.INSPECT, definition.templateX, definition.templateY));
 			for (AnimationGroupComponent anim : groups.values()) {
 				anim.create(entity);
 			}
 			currentGroup = groups.get(Pose.IDLE);
+			collision = entity.getComponent(MapCollisionComponent.class);
 		}
 	}
 

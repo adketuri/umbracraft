@@ -4,6 +4,8 @@ import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.definitions.ListDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
+import net.alcuria.umbracraft.editor.Editor;
+import net.alcuria.umbracraft.util.FileUtils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -41,6 +43,7 @@ public class AnimationCollectionListModule extends ListModule<AnimationCollectio
 			suggestions.put("running", suggestionsStr);
 			suggestions.put("walking", suggestionsStr);
 			suggestions.put("inspect", suggestionsStr);
+			suggestions.put("template", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().spritePath));
 		}
 		config.cols = 1;
 		config.textFieldWidth = 200;
