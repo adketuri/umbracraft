@@ -42,6 +42,7 @@ public class AnimationCollectionComponent implements Component {
 			groups.put(Pose.INSPECT, new AnimationGroupComponent(definition.idle != null ? Game.db().animGroup(definition.inspect) : null, definition.template, Pose.INSPECT, definition.templateX, definition.templateY));
 			for (AnimationGroupComponent anim : groups.values()) {
 				anim.create(entity);
+				anim.setCardinalOnly(definition.cardinalOnly);
 			}
 			currentGroup = groups.get(Pose.IDLE);
 			collision = entity.getComponent(MapCollisionComponent.class);

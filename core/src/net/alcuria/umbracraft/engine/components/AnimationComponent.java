@@ -62,13 +62,6 @@ public class AnimationComponent implements Component {
 			definition.frames = new Array<AnimationFrameDefinition>();
 			definition.filename = template;
 			switch (templatePose) {
-			case IDLE:
-				AnimationFrameDefinition idleFrameDef = new AnimationFrameDefinition();
-				idleFrameDef.duration = 6;
-				idleFrameDef.x = 1;
-				idleFrameDef.y = direction.getTemplateIndex();
-				definition.frames.add(idleFrameDef);
-				break;
 			case WALKING:
 				int idx[] = { 0, 1, 2, 1 };
 				for (int i = 0; i < idx.length; i++) {
@@ -79,6 +72,13 @@ public class AnimationComponent implements Component {
 					definition.frames.add(walkFrameDef);
 				}
 
+				break;
+			default:
+				AnimationFrameDefinition idleFrameDef = new AnimationFrameDefinition();
+				idleFrameDef.duration = 8;
+				idleFrameDef.x = 1;
+				idleFrameDef.y = direction.getTemplateIndex();
+				definition.frames.add(idleFrameDef);
 				break;
 			}
 		}
@@ -112,7 +112,7 @@ public class AnimationComponent implements Component {
 
 	@Override
 	public void render(Entity entity) {
-		if (frames != null) {
+		if (frames != null && frames.size > 0) {
 			final boolean mirror = mirrorAll ? !definition.frames.get(curFrameIndex).mirror : definition.frames.get(curFrameIndex).mirror;
 			final Color color = definition.frames.get(curFrameIndex).color;
 			Color oldColor = null;

@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.ObjectMap;
 /** A component used for displaying components in particular directions.
  * @author Andrew Keturi */
 public class AnimationGroupComponent implements Component {
-
 	/** Various animation facing directions
 	 * @author Andrew Keturi */
 	public static enum Direction {
@@ -69,6 +68,7 @@ public class AnimationGroupComponent implements Component {
 	}
 
 	private ObjectMap<Direction, AnimationComponent> animations;
+	private boolean cardinalOnly = false;
 	private AnimationComponent currentComponent;
 	private Direction currentDirection;
 	private final AnimationGroupDefinition definition;
@@ -86,6 +86,7 @@ public class AnimationGroupComponent implements Component {
 		this.templateX = templateX;
 		this.templateY = templateY;
 		this.templatePose = templatePose;
+		cardinalOnly = definition != null ? definition.cardinalOnly : false;
 	}
 
 	@Override
@@ -119,6 +120,12 @@ public class AnimationGroupComponent implements Component {
 		if (currentComponent != null) {
 			currentComponent.render(entity);
 		}
+	}
+
+	/** @param cardinalOnly if <code>true</code> this component will only move in
+	 *        4-directions. */
+	public void setCardinalOnly(boolean cardinalOnly) {
+		this.cardinalOnly = cardinalOnly;
 	}
 
 	public void setDirection(Direction direction) {
@@ -175,7 +182,7 @@ public class AnimationGroupComponent implements Component {
 			break;
 		}
 		// if it's different, update reference to the current component
-		if (tmpDirection != currentDirection) {
+		if (tmpDirection != null && (!tmpDirection.isCardinal() && !cardinalOnly || tmpDirection.isCardinal() && cardinalOnly) && tmpDirection != currentDirection) {
 			currentDirection = tmpDirection;
 			currentComponent = animations.get(tmpDirection);
 		}

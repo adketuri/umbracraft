@@ -10,6 +10,8 @@ import net.alcuria.umbracraft.definitions.Definition;
  * @author Andrew Keturi */
 public class AnimationCollectionDefinition extends Definition {
 
+	@Tooltip("True if we only want to move in cardinal directions")
+	public boolean cardinalOnly;
 	@Tooltip("The falling pose from AnimationGroupDefinition")
 	public String falling;
 	@Tooltip("The idle pose from AnimationGroupDefinition")
