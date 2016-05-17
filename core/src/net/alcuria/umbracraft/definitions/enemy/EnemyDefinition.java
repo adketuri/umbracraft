@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class EnemyDefinition extends Definition {
 
-	public static enum EnemyPositionPreference {
+	public static enum PositionPreference {
 		BACK, FRONT, MIDDLE;
 	}
 
@@ -41,7 +41,7 @@ public class EnemyDefinition extends Definition {
 	public String name;
 	@Tooltip("The grid position preferences")
 	@Order(9)
-	public EnemyPositionPreference position;
+	public PositionPreference position;
 	public Array<String> skills;
 	@Tooltip("Additional percentage-based stats")
 	@Order(8)
