@@ -114,6 +114,10 @@ public class MapCollisionComponent implements Component {
 		}
 	}
 
+	public void setOnGround(boolean onGround) {
+		this.onGround = onGround;
+	}
+
 	@Override
 	public void update(Entity entity) {
 

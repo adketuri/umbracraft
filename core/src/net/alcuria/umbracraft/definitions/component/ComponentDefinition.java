@@ -10,6 +10,7 @@ import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.components.EntityCollisionComponent;
 import net.alcuria.umbracraft.engine.components.IndicatorComponent;
 import net.alcuria.umbracraft.engine.components.MapCollisionComponent;
+import net.alcuria.umbracraft.engine.components.PlatformComponent;
 import net.alcuria.umbracraft.engine.components.ScriptComponent;
 import net.alcuria.umbracraft.engine.entities.ShadowComponent;
 
@@ -51,6 +52,7 @@ public abstract class ComponentDefinition extends Definition {
 		ENTITY_COLLISION(EntityCollisionComponentDefinition.class), //
 		INDICATOR(IndicatorOperationComponentDefinition.class), //
 		MAP_COLLISION(MapCollisionComponentDefinition.class), //
+		PLATFORM(PlatformComponentDefinition.class), //
 		SCRIPT(ScriptComponentDefinition.class), //
 		SHADOW(ShadowComponentDefinition.class);
 
@@ -82,6 +84,8 @@ public abstract class ComponentDefinition extends Definition {
 				return "Shadow";
 			case INDICATOR:
 				return "Indicator";
+			case PLATFORM:
+				return "Platform";
 			default:
 				return "Unknown";
 			}
@@ -134,6 +138,15 @@ public abstract class ComponentDefinition extends Definition {
 		@Override
 		public Component create() {
 			return new MapCollisionComponent(width, height);
+		}
+	}
+
+	/** Defines the {@link PlatformComponent} for an entity. */
+	public static class PlatformComponentDefinition extends ComponentDefinition {
+
+		@Override
+		public Component create() {
+			return new PlatformComponent();
 		}
 	}
 

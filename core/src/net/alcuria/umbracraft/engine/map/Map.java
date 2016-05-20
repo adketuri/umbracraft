@@ -396,7 +396,7 @@ public class Map implements Disposable {
 		return getAltitudeAt((int) f, (int) g);
 	}
 
-	/** Gets the altitude at some tile coordinates and does bounds checking too!
+	/** Gets the altitude, in tiles, at some tile coordinates.
 	 * @param x x tile
 	 * @param y y tile
 	 * @return */

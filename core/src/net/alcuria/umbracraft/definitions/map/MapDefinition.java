@@ -20,6 +20,8 @@ public class MapDefinition extends Definition {
 	private int height;
 	@Tooltip("The name of the map")
 	public String name;
+	@Tooltip("The overlay height")
+	public int overlayHeight;
 	@Tooltip("A tag for sorting")
 	public String tag;
 	/** The map tiles */
