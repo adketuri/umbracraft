@@ -17,16 +17,18 @@ public class MapCollisionComponent implements Component {
 	private final int height, width;
 	private boolean isControlled;
 	private final Map map;
-	private boolean onGround, onStairs;
+	//	private boolean onGround, onStairs;
+	private MapCollisionState state;
 
 	public MapCollisionComponent(int width, int height) {
 		this.width = width;
 		this.height = height;
 		map = Game.map();
+		state = MapCollisionState.FALLING_DOWN;
 	}
 
 	private void checkJump(Direction direction, Entity entity) {
-		if (onStairs) {
+		if (!state.isOnGround()) {
 			return;
 		}
 		final float len = Math.abs(entity.velocity.x) + Math.abs(entity.velocity.y);
@@ -61,14 +63,13 @@ public class MapCollisionComponent implements Component {
 		farY /= Config.tileWidth;
 
 		// check for jumping from a higher to lower altitude
-		if (map.getAltitudeAt(nearX, nearY) < (int) z && onGround && !onStairs) {
-			onGround = false;
+		if (map.getAltitudeAt(nearX, nearY) < (int) z && state == MapCollisionState.ON_GROUND) {
+			state = MapCollisionState.JUMPING_UP;
 			entity.velocity.z = 5;
 		}
 
 		// check if the altitude in front of the player is just one tile up
-		if ((map.getAltitudeAt(farX, farY) - 1 == z) && onGround && !onStairs) {
-			onGround = false;
+		if ((map.getAltitudeAt(farX, farY) - 1 == z) && state == MapCollisionState.ON_GROUND) {
 			entity.velocity.z = 5;
 		}
 	}
@@ -96,12 +97,12 @@ public class MapCollisionComponent implements Component {
 
 	/** @return whether or not the entity is colliding with the ground */
 	public boolean isOnGround() {
-		return onGround;
+		return state.isOnGround();
 	}
 
 	/** @return whether or not the entity is on stairs */
 	public boolean isOnStairs() {
-		return onStairs;
+		return state == MapCollisionState.ON_STAIRS;
 	}
 
 	@Override
@@ -114,12 +115,34 @@ public class MapCollisionComponent implements Component {
 		}
 	}
 
-	public void setOnGround(boolean onGround) {
-		this.onGround = onGround;
+	public void setOnPlatform() {
+		state = MapCollisionState.ON_PLATFORM;
+	}
+
+	public void setOnStairs() {
+		state = MapCollisionState.ON_STAIRS;
 	}
 
 	@Override
 	public void update(Entity entity) {
+
+		switch (state) {
+		case FALLING_DOWN:
+
+			break;
+		case JUMPING_UP:
+
+			break;
+
+		case ON_GROUND:
+			break;
+		case ON_PLATFORM:
+			break;
+		case ON_STAIRS:
+			break;
+		default:
+			break;
+		}
 
 		// stair updates
 		int centerX = (int) (entity.position.x) / Config.tileWidth;
@@ -136,9 +159,9 @@ public class MapCollisionComponent implements Component {
 				entity.velocity.z = entity.velocity.y;
 				entity.velocity.y = 0;
 			}
-			onStairs = true;
-		} else {
-			onStairs = false;
+			state = MapCollisionState.ON_STAIRS;
+		} else if (state == MapCollisionState.ON_STAIRS) {
+			state = MapCollisionState.ON_GROUND;
 		}
 		final int tileAltitude = (int) (entity.position.z / Config.tileWidth);
 
@@ -159,7 +182,7 @@ public class MapCollisionComponent implements Component {
 				}
 			}
 			checkJump(Direction.UP, entity);
-		} else if (entity.velocity.y < 0 && !onStairs) {
+		} else if (entity.velocity.y < 0 && state != MapCollisionState.ON_STAIRS) {
 			// SOUTH
 			int tileX1 = (int) (entity.position.x + width / 2) / Config.tileWidth;
 			int tileX2 = (int) (entity.position.x - width / 2) / Config.tileWidth;
@@ -209,21 +232,21 @@ public class MapCollisionComponent implements Component {
 		entity.position.add(entity.velocity);
 
 		// check for stairs, falling, or placement
-		if (onStairs) {
+		if (state == MapCollisionState.ON_STAIRS) {
 			// reset back to y so the animations work correctly
 			entity.velocity.y = entity.velocity.z;
 			entity.velocity.z = 0;
 		} else if (entity.position.z / Config.tileWidth > map.getAltitudeAt(centerX, centerY)) {
-			onGround = false;
+			state = MapCollisionState.FALLING_DOWN;
 			entity.velocity.z -= 0.5f;
 		} else {
-			onGround = true;
+			state = MapCollisionState.ON_GROUND;
 			entity.velocity.z = 0;
 			entity.position.z = map.getAltitudeAt(centerX, centerY) * Config.tileWidth;
 		}
 
 		// check if we're STILL inside a wall, and if so gently nudge out
-		if (onGround && !onStairs && entity.velocity.z <= 0) {
+		if (state == MapCollisionState.ON_GROUND && entity.velocity.z <= 0) {
 			// north/south
 			int tileY1 = (int) (entity.position.y + height / 2) / Config.tileWidth;
 			int tileY2 = (int) (entity.position.y - height / 2) / Config.tileWidth;

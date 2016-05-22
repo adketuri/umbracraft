@@ -16,7 +16,7 @@ public class PlatformComponent implements Component {
 			int otherX = (int) (otherEntity.position.x / Config.tileWidth);
 			int otherY = (int) (otherEntity.position.y / Config.tileWidth);
 			if (x == otherX && y == otherY) {
-				otherCollision.setOnGround(true);
+				otherCollision.setOnPlatform();
 				otherEntity.velocity.z = 0;
 			}
 		}
