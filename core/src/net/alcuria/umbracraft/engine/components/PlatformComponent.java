@@ -6,7 +6,12 @@ import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 import net.alcuria.umbracraft.util.StringUtils;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
+
 public class PlatformComponent implements Component {
+
+	private final Rectangle bounds = new Rectangle(0, 0, Config.tileWidth + 2, Config.tileWidth + 2);
 
 	private void checkCollision(final Entity entity, final Entity otherEntity) {
 		MapCollisionComponent otherCollision = otherEntity.getComponent(MapCollisionComponent.class);
@@ -45,11 +50,14 @@ public class PlatformComponent implements Component {
 
 	@Override
 	public void render(Entity entity) {
-
+		if (Game.isDebug()) {
+			Game.batch().draw(Game.assets().get("debug.png", Texture.class), bounds.x, bounds.y + entity.position.z, bounds.width, bounds.height);
+		}
 	}
 
 	@Override
 	public void update(Entity entity) {
+		bounds.setCenter(entity.position.x, entity.position.y);
 		for (EntityScope scope : EntityScope.values()) {
 			for (final Entity otherEntity : Game.entities().getEntities(scope)) {
 				checkCollision(entity, otherEntity);
@@ -57,5 +65,4 @@ public class PlatformComponent implements Component {
 		}
 
 	}
-
 }
