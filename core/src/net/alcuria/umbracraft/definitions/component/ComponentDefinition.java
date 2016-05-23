@@ -164,9 +164,11 @@ public abstract class ComponentDefinition extends Definition {
 	/** Defines the {@link ShadowComponent} for an entity. */
 	public static class ShadowComponentDefinition extends ComponentDefinition {
 
+		public boolean squareShadow;
+
 		@Override
 		public Component create() {
-			return new ShadowComponent();
+			return new ShadowComponent(squareShadow);
 		}
 	}
 

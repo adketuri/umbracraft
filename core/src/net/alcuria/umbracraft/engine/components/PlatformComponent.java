@@ -24,7 +24,6 @@ public class PlatformComponent implements Component {
 				otherEntity.position.add(platform.velocity);
 				otherEntity.position.z = platform.position.z;
 				otherEntity.velocity.z = 0;
-				Game.log("ON");
 			}
 		}
 	}

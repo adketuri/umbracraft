@@ -80,7 +80,6 @@ public class DirectedInputComponent implements Component {
 			//			Game.log("STUCK " + targetX + " " + targetY);
 			//			lastPosition.set(entity.position);
 		}
-
 		pathfinder.update(entity);
 
 		// see if we really need to move

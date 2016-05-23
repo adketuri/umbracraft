@@ -14,37 +14,51 @@ public class ShadowComponent implements Component {
 
 	private static final int WIDTH = 16, HEIGHT = 16;
 	private boolean added;
-	private final boolean ignoreMap;
 	private MapCollisionComponent collision;
+	private final boolean ignoreMap;
 	private TextureRegion shadow;
+	private boolean squareShadow = false;
 	private final int xOffset, yOffset;
 
-	public ShadowComponent() {
-		this(0, 0, false);
+	public ShadowComponent(boolean squareShadow) {
+		this(squareShadow, 0, 0, false);
 	}
 
-	public ShadowComponent(int x, int y, boolean ignoreMap) {
+	public ShadowComponent(boolean squareShadow, int x, int y, boolean ignoreMap) {
 		xOffset = x;
 		yOffset = y;
 		this.ignoreMap = ignoreMap;
+		this.squareShadow = squareShadow;
 	}
 
 	@Override
 	public void create(Entity entity) {
-		shadow = new TextureRegion(Game.assets().get("sprites/shadow.png", Texture.class), 16, 6);
+		if (squareShadow) {
+			shadow = new TextureRegion(Game.assets().get("sprites/shadow.png", Texture.class), 8, 4, 1, 1);
+		} else {
+			shadow = new TextureRegion(Game.assets().get("sprites/shadow.png", Texture.class), 16, 6);
+		}
 	}
 
 	@Override
 	public void dispose(Entity entity) {
 	}
 
+	private int getHeight() {
+		return squareShadow ? 16 : 6;
+	}
+
+	private int getWidth() {
+		return 16;
+	}
+
 	@Override
 	public void render(Entity entity) {
 		final int altitude = Game.map() == null || ignoreMap ? 0 : Game.map().getAltitudeAt((int) entity.position.x / Config.tileWidth, (int) entity.position.y / Config.tileWidth);
-		if (collision != null && collision.isOnStairs()) {
-			Game.batch().draw(shadow, entity.position.x - WIDTH / 2 + xOffset, entity.position.y - HEIGHT / 2 + yOffset + 2 + entity.position.z);
+		if (collision != null && collision.isOnGround()) {
+			Game.batch().draw(shadow, entity.position.x - WIDTH / 2 + xOffset, entity.position.y - HEIGHT / 2 + yOffset + 2 + entity.position.z, getWidth(), getHeight());
 		} else {
-			Game.batch().draw(shadow, entity.position.x - WIDTH / 2 + xOffset, entity.position.y - HEIGHT / 2 + yOffset + 2 + Config.tileWidth * altitude);
+			Game.batch().draw(shadow, entity.position.x - WIDTH / 2 + xOffset, entity.position.y - HEIGHT / 2 + yOffset + 2 + Config.tileWidth * altitude, getWidth(), getHeight());
 		}
 	}
 
