@@ -60,6 +60,7 @@ public class EntityManager {
 			for (ComponentDefinition componentDef : entityDef.components) {
 				entity.addComponent(componentDef);
 			}
+			entity.setRenderOffset(entityDef.renderOffset);
 			// TODO: for ControlledInputComponents, I think we need to set the input processor here...
 			if (entity.getName().equals(Entity.PLAYER)) { //FIXME: ugleh
 				Game.publisher().publish(new CameraTargetEvent(entity));

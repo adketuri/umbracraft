@@ -20,6 +20,7 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	private final Array<Component> components;
 	private String name, tag, id;
 	public Vector3 position, velocity;
+	private int renderOffset;
 
 	/** Creates an entity with no components */
 	public Entity() {
@@ -68,8 +69,8 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	}
 
 	@Override
-	public int compareTo(Entity arg0) {
-		return (int) (arg0.position.y - position.y);
+	public int compareTo(Entity otherEntity) {
+		return (int) ((otherEntity.position.y - otherEntity.position.z - otherEntity.renderOffset) - (position.y - position.z - renderOffset));
 	}
 
 	/** Disposes/kills all components */
@@ -169,6 +170,10 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		}
 		this.position.x = position.x;
 		this.position.y = position.y;
+	}
+
+	public void setRenderOffset(int renderOffset) {
+		this.renderOffset = renderOffset;
 	}
 
 	/** @param tag the tag to set */

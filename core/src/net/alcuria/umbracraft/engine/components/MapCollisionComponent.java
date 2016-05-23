@@ -107,6 +107,7 @@ public class MapCollisionComponent implements Component {
 
 	@Override
 	public void render(Entity entity) {
+		//		Game.log(state + "");
 		int tileX1 = (int) (entity.position.x + width) / Config.tileWidth;
 		int tileY = (int) (entity.position.y + height + entity.velocity.y) / Config.tileWidth;
 		if (Game.isDebug()) {

@@ -11,8 +11,10 @@ import com.badlogic.gdx.utils.Array;
 public class EntityDefinition extends Definition {
 	/** the components */
 	public Array<ComponentDefinition> components;
-	/** The unique name of the entity */
+	@Tooltip("A unique name")
 	public String name;
+	@Tooltip("A rendering offset, in pixels. Determines render order.")
+	public int renderOffset;
 	@Tooltip("A tag for sorting")
 	public String tag;
 

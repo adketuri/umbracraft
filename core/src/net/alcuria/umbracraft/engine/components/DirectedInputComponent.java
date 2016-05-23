@@ -145,6 +145,7 @@ public class DirectedInputComponent implements Component {
 			return;
 		}
 
+		Game.log(entity.getName() + " DIRECTION: " + direction);
 		lastPosition.set(entity.position);
 		// update velocity
 		switch (direction) {

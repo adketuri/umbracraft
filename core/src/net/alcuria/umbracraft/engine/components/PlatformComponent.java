@@ -7,22 +7,24 @@ import net.alcuria.umbracraft.engine.entities.EntityManager.EntityScope;
 import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
 public class PlatformComponent implements Component {
 
 	private final Rectangle bounds = new Rectangle(0, 0, Config.tileWidth + 2, Config.tileWidth + 2);
 
-	private void checkCollision(final Entity entity, final Entity otherEntity) {
+	private void checkCollision(final Entity platform, final Entity otherEntity) {
 		MapCollisionComponent otherCollision = otherEntity.getComponent(MapCollisionComponent.class);
 		if (otherCollision != null) {
-			int x = (int) (entity.position.x / Config.tileWidth);
-			int y = (int) (entity.position.y / Config.tileWidth);
-			int otherX = (int) (otherEntity.position.x / Config.tileWidth);
-			int otherY = (int) (otherEntity.position.y / Config.tileWidth);
-			if (x == otherX && y == otherY) {
+			float otherX = otherEntity.position.x;
+			float otherY = otherEntity.position.y;
+			if (bounds.contains(otherX, otherY) && MathUtils.isEqual(otherEntity.position.z, platform.position.z, 2)) {
 				otherCollision.setOnPlatform();
+				otherEntity.position.add(platform.velocity);
+				otherEntity.position.z = platform.position.z;
 				otherEntity.velocity.z = 0;
+				Game.log("ON");
 			}
 		}
 	}
@@ -57,12 +59,12 @@ public class PlatformComponent implements Component {
 
 	@Override
 	public void update(Entity entity) {
+		entity.position.add(entity.velocity);
 		bounds.setCenter(entity.position.x, entity.position.y);
 		for (EntityScope scope : EntityScope.values()) {
 			for (final Entity otherEntity : Game.entities().getEntities(scope)) {
 				checkCollision(entity, otherEntity);
 			}
 		}
-
 	}
 }
