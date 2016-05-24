@@ -21,6 +21,7 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	private String name, tag, id;
 	public Vector3 position, velocity;
 	private int renderOffset;
+	public float speedModifier = 1;
 
 	/** Creates an entity with no components */
 	public Entity() {
