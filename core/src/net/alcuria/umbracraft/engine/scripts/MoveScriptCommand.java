@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Andrew Keturi */
 public class MoveScriptCommand extends ScriptCommand {
 
+	private DirectedInputComponent component;
 	@Tooltip("The entity id we wish to move")
 	public String id = "";
 	@Tooltip("If checked, movement happens instantaneously")
@@ -26,8 +27,11 @@ public class MoveScriptCommand extends ScriptCommand {
 	public boolean relative;
 	@Tooltip("If checked, ignore id and just move the entity this script is attached to")
 	public boolean self;
+	@Tooltip("Wait until the move is complete before continuing script execution")
+	public boolean wait;
 	@Tooltip("The x coordinate (either a variable or constant)")
 	public String x;
+
 	@Tooltip("The y coordinate (either a variable or constant)")
 	public String y;
 
@@ -64,7 +68,7 @@ public class MoveScriptCommand extends ScriptCommand {
 
 	@Override
 	public String getName() {
-		return String.format("Move: %s to (%s, %s) %s, %s", self ? "<self>" : id, x, y, relative ? "relative" : "absolute", instant ? "instant" : "");
+		return String.format("Move: %s to (%s, %s) %s, %s, %s", self ? "<self>" : id, x, y, relative ? "relative" : "absolute", instant ? "instant" : "", wait ? "Wait" : "");
 	}
 
 	@Override
@@ -87,7 +91,7 @@ public class MoveScriptCommand extends ScriptCommand {
 	public void onStarted(Entity entity) {
 		Entity target = self ? entity : Game.entities().find(id);
 		if (target != null) {
-			DirectedInputComponent component = target.getComponent(DirectedInputComponent.class);
+			component = target.getComponent(DirectedInputComponent.class);
 			if (component != null || instant) {
 				// x/y can either be numbers or variables in the game's db
 				int convertedX = StringUtils.isNumber(x) ? Integer.valueOf(x) : Game.variables().get(x);
@@ -104,6 +108,7 @@ public class MoveScriptCommand extends ScriptCommand {
 						target.position.y = convertedY * Config.tileWidth;
 					}
 					component.resetTarget((int) (target.position.x / Config.tileWidth), (int) (target.position.y / Config.tileWidth));
+					complete();
 				} else {
 					if (relative) {
 						component.setTarget((int) target.position.x / Config.tileWidth + convertedX, (int) target.position.y / Config.tileWidth + convertedY);
@@ -111,17 +116,22 @@ public class MoveScriptCommand extends ScriptCommand {
 						Game.log("target set to moved " + convertedX + " " + convertedY);
 						component.setTarget(convertedX, convertedY);
 					}
+					if (!wait) {
+						complete();
+					}
 				}
 			} else {
 				Game.error("Entity has no DirectedInputComponent so it cannot be moved.");
 			}
 		}
-		complete();
 	}
 
 	@Override
 	public void update() {
-
+		if (component != null) {
+			if (component.hasNoMoves()) {
+				complete();
+			}
+		}
 	}
-
 }

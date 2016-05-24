@@ -40,6 +40,10 @@ public class DirectedInputComponent implements Component {
 	public void dispose(Entity entity) {
 	}
 
+	public boolean hasNoMoves() {
+		return pathfinder.getSolution().size == 0;
+	}
+
 	@Override
 	public void render(Entity entity) {
 		if (Game.isDebug()) {
