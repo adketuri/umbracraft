@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 /** A component specifically for handling object input from the player.
  * @author Andrew Keturi */
 public class ControlledInputComponent implements Component, EventListener {
+	private static final float KNOB_TOLERANCE = 0.35f;
 	private static final int MARGIN = 6;
 	private static final float MAX_SPEED = 2; // max speed of the entity
 	private static final float MAX_SPEED_TIME = 0.12f; // time entity takes to reach max speed
@@ -109,10 +110,18 @@ public class ControlledInputComponent implements Component, EventListener {
 
 		// check for touchpad input or keyboard input
 		if (touchpad != null && touchpad.isTouched()) {
-			entity.velocity.x = touchpad.getKnobPercentX() * MAX_SPEED;
-			entity.velocity.y = touchpad.getKnobPercentY() * MAX_SPEED;
+			Game.log(touchpad.getKnobPercentX() + " " + touchpad.getKnobPercentY());
+
+			entity.velocity.x = touchpad.getKnobPercentX() > KNOB_TOLERANCE ? MAX_SPEED : (touchpad.getKnobPercentX() < -KNOB_TOLERANCE ? -MAX_SPEED : 0);
+			entity.velocity.y = touchpad.getKnobPercentY() > KNOB_TOLERANCE ? MAX_SPEED : (touchpad.getKnobPercentY() < -KNOB_TOLERANCE ? -MAX_SPEED : 0);
 			pressingXKey = Math.abs(entity.velocity.x) > MAX_SPEED / 4;
 			pressingYKey = Math.abs(entity.velocity.y) > MAX_SPEED / 4;
+			Game.log(Math.abs(entity.velocity.x) + " " + pressingXKey + " " + pressingYKey);
+			if (pressingXKey && pressingYKey) {
+				entity.velocity.x *= 0.707f;
+				entity.velocity.y *= 0.707f;
+
+			}
 		} else {
 			if (Gdx.input.isKeyPressed(Keys.W)) {
 				entity.velocity.y = MAX_SPEED;

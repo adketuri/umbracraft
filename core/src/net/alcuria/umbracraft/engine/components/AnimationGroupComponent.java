@@ -182,7 +182,7 @@ public class AnimationGroupComponent implements Component {
 			break;
 		}
 		// if it's different, update reference to the current component
-		if (tmpDirection != null && (!tmpDirection.isCardinal() && !cardinalOnly || tmpDirection.isCardinal() && cardinalOnly) && tmpDirection != currentDirection) {
+		if (tmpDirection != null && (!cardinalOnly || tmpDirection.isCardinal() && cardinalOnly) && tmpDirection != currentDirection) {
 			currentDirection = tmpDirection;
 			currentComponent = animations.get(tmpDirection);
 		}
