@@ -39,7 +39,10 @@ public class TeleportScriptCommand extends ScriptCommand {
 
 	@Override
 	public ScriptCommand copy() {
-		return new TeleportScriptCommand(area, node);
+		TeleportScriptCommand cmd = new TeleportScriptCommand(area, node);
+		cmd.x = x;
+		cmd.y = y;
+		return cmd;
 	}
 
 	@Override

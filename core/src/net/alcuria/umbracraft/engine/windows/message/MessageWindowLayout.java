@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.windows.message;
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.editor.Drawables;
 import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand.MessageEmotion;
+import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand.MessageStyle;
 import net.alcuria.umbracraft.engine.windows.WindowLayout;
 import net.alcuria.umbracraft.engine.windows.WindowTable;
 import net.alcuria.umbracraft.engine.windows.message.MessageLabel.LabelEffect;
@@ -39,6 +40,7 @@ public class MessageWindowLayout extends WindowLayout {
 	private boolean hasFace = false;
 	private String message;
 	private final Array<MessageLabel> messageLabels = new Array<MessageLabel>();
+	private MessageStyle messageStyle;
 	private WindowTable messageWindow;
 	private Label nameLabel;
 	private Table nameTable, messageTable, faceTable;
@@ -78,7 +80,7 @@ public class MessageWindowLayout extends WindowLayout {
 	}
 
 	private void immediatelyShowAllText() {
-		setMessage(message, true);
+		setMessage(message, true, messageStyle);
 		state = MessageState.STEP_3_MESSAGE_DISPLAYED;
 	}
 
@@ -107,8 +109,9 @@ public class MessageWindowLayout extends WindowLayout {
 	 * @param message the message {@link String}
 	 * @param instant if <code>true</code>, show text instantly. Otherwise, it
 	 *        animates in by letter. */
-	public void setMessage(String message, boolean instant) {
+	public void setMessage(String message, boolean instant, MessageStyle messageStyle) {
 		this.message = message;
+		this.messageStyle = messageStyle;
 		if (messageTable != null) {
 			messageLabels.clear();
 			messageTable.clear();
@@ -218,7 +221,7 @@ public class MessageWindowLayout extends WindowLayout {
 						add(nameLabel = new VisLabel("Amiru", new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE))).pad(0, 60, 18, 20);
 					}
 				}).height(20).expand().bottom().left().row();
-				add(messageWindow = new WindowTable() {
+				add(messageWindow = new WindowTable(messageStyle.style) { //FIXME: uuuhh?
 					{
 						getColor().a = 0;
 						put(messageTextTable());

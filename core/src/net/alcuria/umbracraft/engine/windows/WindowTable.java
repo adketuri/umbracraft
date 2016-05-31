@@ -15,12 +15,16 @@ public class WindowTable extends Table {
 	private Table content;
 
 	public WindowTable() {
+		this("ui/bg");
+	}
+
+	public WindowTable(final String bg) {
 
 		stack(new Table() {
 			{
 				add(new Table() {
 					{
-						setBackground(new TiledDrawable(Drawables.skin("ui/bg")));
+						setBackground(new TiledDrawable(Drawables.skin(bg)));
 					}
 				}).expand().fill().pad(3);
 			}

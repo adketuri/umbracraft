@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.windows.message;
 
 import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand.MessageEmotion;
+import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand.MessageStyle;
 import net.alcuria.umbracraft.engine.windows.InputCode;
 import net.alcuria.umbracraft.engine.windows.Window;
 import net.alcuria.umbracraft.listeners.Listener;
@@ -11,12 +12,14 @@ public class MessageWindow extends Window<MessageWindowLayout> {
 	private Listener close;
 	private final MessageEmotion emotion;
 	private final String message, faceId, name;
+	private final MessageStyle style;
 
-	public MessageWindow(String message, String name, String faceId, MessageEmotion emotion) {
+	public MessageWindow(String message, String name, String faceId, MessageEmotion emotion, MessageStyle style) {
 		super(new MessageWindowLayout());
 		this.message = message;
 		this.name = name;
 		this.faceId = faceId;
+		this.style = style;
 		this.emotion = emotion;
 	}
 

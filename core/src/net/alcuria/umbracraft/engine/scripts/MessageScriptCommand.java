@@ -7,11 +7,13 @@ import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.entities.Entity;
+import net.alcuria.umbracraft.engine.windows.InputCode;
 import net.alcuria.umbracraft.engine.windows.message.MessageWindow;
 import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.util.FileUtils;
 import net.alcuria.umbracraft.util.StringUtils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -26,6 +28,15 @@ public class MessageScriptCommand extends ScriptCommand {
 		ANGRY, HAPPY, NEUTRAL, SAD
 	}
 
+	public static enum MessageStyle {
+		DARK("ui/bg"), NORMAL("ui/bg");
+		public String style;
+
+		private MessageStyle(String style) {
+			this.style = style;
+		}
+	}
+
 	@Tooltip("If true, tapping will not advance the message window; it must auto-close via the duration field instead.")
 	@Order(6)
 	public boolean disableDismiss;
@@ -35,7 +46,7 @@ public class MessageScriptCommand extends ScriptCommand {
 	@Tooltip("The expression to display on the character's portrait")
 	@Order(4)
 	public MessageEmotion emotion = MessageEmotion.NEUTRAL;
-	@Tooltip("The filename id person speaking the message. Leave empty to omit a face from displaying.")
+	@Tooltip("The filename id person speaking the message. Leave empty to omit.")
 	@Order(3)
 	public String faceId = "";
 	@Tooltip("The message to display")
@@ -44,7 +55,10 @@ public class MessageScriptCommand extends ScriptCommand {
 	@Order(2)
 	@Tooltip("The name text to display with the message. Requires a speaker.")
 	public String name = "";
+	@Tooltip("Styling of the message box.")
+	public MessageStyle style = MessageStyle.NORMAL;
 
+	private float timer;
 	private MessageWindow window;
 
 	public MessageScriptCommand() {
@@ -100,13 +114,19 @@ public class MessageScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
-		window = new MessageWindow(StringUtils.replaceArgs(message, entity.getArguments()), name, faceId, emotion);
+		window = new MessageWindow(StringUtils.replaceArgs(message, entity.getArguments()), name, faceId, emotion, style);
 		window.addCloseListener(close());
 		Game.windows().push(window);
 	}
 
 	@Override
 	public void update() {
+		if (disableDismiss && duration > 0) {
+			timer += Gdx.graphics.getDeltaTime();
+			if (timer > duration) {
+				window.invoke(InputCode.CONFIRM);
+				complete();
+			}
+		}
 	}
-
 }
