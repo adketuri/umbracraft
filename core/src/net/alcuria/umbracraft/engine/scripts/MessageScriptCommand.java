@@ -29,11 +29,13 @@ public class MessageScriptCommand extends ScriptCommand {
 	}
 
 	public static enum MessageStyle {
-		DARK("ui/bg"), NORMAL("ui/bg");
-		public String style;
+		DARK(null, "ui/subtitle"), NORMAL("ui/bg", "ui/frame");
+		public String bg;
+		public String frame;
 
-		private MessageStyle(String style) {
-			this.style = style;
+		private MessageStyle(String bg, String frame) {
+			this.bg = bg;
+			this.frame = frame;
 		}
 	}
 
@@ -86,6 +88,7 @@ public class MessageScriptCommand extends ScriptCommand {
 		cmd.message = message;
 		cmd.name = name;
 		cmd.window = window;
+		cmd.style = style;
 		return cmd;
 	}
 

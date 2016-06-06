@@ -71,6 +71,11 @@ public class Pathfinder {
 			// stair to stair is ok only for 4-way movement
 			return (cur.x == destX || cur.y == destY);
 		}
+		// TODO: if diagonal, ensure adjacent tiles are not drops
+		//		if (cur.x != destX && cur.y != destY){
+		//
+		//		}
+
 		return (map.getAltitudeAt(destX, destY) - 1) <= map.getAltitudeAt(cur.x, cur.y);
 	}
 

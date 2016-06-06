@@ -1,6 +1,7 @@
 package net.alcuria.umbracraft.engine.windows;
 
 import net.alcuria.umbracraft.editor.Drawables;
+import net.alcuria.umbracraft.engine.scripts.MessageScriptCommand.MessageStyle;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
@@ -15,22 +16,26 @@ public class WindowTable extends Table {
 	private Table content;
 
 	public WindowTable() {
-		this("ui/bg");
+		this(MessageStyle.NORMAL);
 	}
 
-	public WindowTable(final String bg) {
+	public WindowTable(final MessageStyle style) {
 
 		stack(new Table() {
 			{
-				add(new Table() {
-					{
-						setBackground(new TiledDrawable(Drawables.skin(bg)));
-					}
-				}).expand().fill().pad(3);
+				if (style.bg != null) {
+					add(new Table() {
+						{
+							setBackground(new TiledDrawable(Drawables.skin(style.bg)));
+						}
+					}).expand().fill().pad(3);
+				}
 			}
 		}, new Table() {
 			{
-				setBackground(Drawables.ninePatch("ui/frame"));
+				if (style.frame != null) {
+					setBackground(Drawables.ninePatch(style.frame));
+				}
 				add(content = new Table()).expand().fill();
 			}
 		}).expand().fill();

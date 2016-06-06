@@ -35,17 +35,22 @@ public class MessageWindowLayout extends WindowLayout {
 	}
 
 	private static final int FACE_WIDTH = 105;
+
 	private static final int MESSAGE_WIDTH = 360;
 	private static final float SHOW_TRANSITION_TIME = 0.1f;
 	private boolean hasFace = false;
 	private String message;
 	private final Array<MessageLabel> messageLabels = new Array<MessageLabel>();
-	private MessageStyle messageStyle;
+	private MessageStyle messageStyle = MessageStyle.NORMAL;
 	private WindowTable messageWindow;
 	private Label nameLabel;
 	private Table nameTable, messageTable, faceTable;
 	private MessageState state = MessageState.STEP_1_CREATE;
 	private final LabelStyle style = new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE);
+
+	public MessageWindowLayout(MessageStyle messageStyle) {
+		this.messageStyle = messageStyle;
+	}
 
 	/** Advances the message state
 	 * @return <code>true</code> when we are ready to close the message */
@@ -80,7 +85,7 @@ public class MessageWindowLayout extends WindowLayout {
 	}
 
 	private void immediatelyShowAllText() {
-		setMessage(message, true, messageStyle);
+		setMessage(message, true);
 		state = MessageState.STEP_3_MESSAGE_DISPLAYED;
 	}
 
@@ -109,9 +114,8 @@ public class MessageWindowLayout extends WindowLayout {
 	 * @param message the message {@link String}
 	 * @param instant if <code>true</code>, show text instantly. Otherwise, it
 	 *        animates in by letter. */
-	public void setMessage(String message, boolean instant, MessageStyle messageStyle) {
+	public void setMessage(String message, boolean instant) {
 		this.message = message;
-		this.messageStyle = messageStyle;
 		if (messageTable != null) {
 			messageLabels.clear();
 			messageTable.clear();
@@ -221,7 +225,7 @@ public class MessageWindowLayout extends WindowLayout {
 						add(nameLabel = new VisLabel("Amiru", new LabelStyle(Game.assets().get("fonts/message.fnt", BitmapFont.class), Color.WHITE))).pad(0, 60, 18, 20);
 					}
 				}).height(20).expand().bottom().left().row();
-				add(messageWindow = new WindowTable(messageStyle.style) { //FIXME: uuuhh?
+				add(messageWindow = new WindowTable(messageStyle) {
 					{
 						getColor().a = 0;
 						put(messageTextTable());

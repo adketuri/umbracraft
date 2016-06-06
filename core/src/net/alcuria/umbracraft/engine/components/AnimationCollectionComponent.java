@@ -59,7 +59,7 @@ public class AnimationCollectionComponent implements Component {
 	}
 
 	private boolean isJumping(Entity entity) {
-		return !collision.isOnGround();
+		return collision != null && !collision.isOnGround();
 	}
 
 	private boolean isMoving(Entity entity) {

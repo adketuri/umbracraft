@@ -12,14 +12,12 @@ public class MessageWindow extends Window<MessageWindowLayout> {
 	private Listener close;
 	private final MessageEmotion emotion;
 	private final String message, faceId, name;
-	private final MessageStyle style;
 
-	public MessageWindow(String message, String name, String faceId, MessageEmotion emotion, MessageStyle style) {
-		super(new MessageWindowLayout());
+	public MessageWindow(String message, String name, String faceId, MessageEmotion emotion, MessageStyle messageStyle) {
+		super(new MessageWindowLayout(messageStyle));
 		this.message = message;
 		this.name = name;
 		this.faceId = faceId;
-		this.style = style;
 		this.emotion = emotion;
 	}
 

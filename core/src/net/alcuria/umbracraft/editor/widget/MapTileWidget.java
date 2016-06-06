@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.editor.widget;
 import net.alcuria.umbracraft.Config;
 import net.alcuria.umbracraft.definitions.anim.AnimationCollectionDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
+import net.alcuria.umbracraft.definitions.anim.AnimationFrameDefinition;
 import net.alcuria.umbracraft.definitions.anim.AnimationGroupDefinition;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition;
 import net.alcuria.umbracraft.definitions.component.ComponentDefinition.AnimationCollectionComponentDefinition;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
 /** A representation of a single tile on the {@link MapEditorWidget} actor.
  * Handles updating the {@link MapDefinition} when it is clicked, either by
@@ -270,12 +272,32 @@ public class MapTileWidget extends Table {
 							// create the definition from the component
 							AnimationCollectionDefinition animDefinition = Editor.db().animCollection(((AnimationCollectionComponentDefinition) componentDefinition).animationCollectionComponent);
 							if (animDefinition != null) {
-								final AnimationGroupDefinition animGroup = Editor.db().animGroup(animDefinition.idle);
-								if (animGroup != null) {
-									final AnimationDefinition anim = Editor.db().anim(animGroup.down);
-									if (anim != null) {
-										entityPreview = new AnimationPreview(anim);
-										break;
+								if (animDefinition.template != null) {
+									AnimationFrameDefinition templateFrameDef = new AnimationFrameDefinition();
+									templateFrameDef.color = Color.WHITE;
+									templateFrameDef.duration = 10;
+									templateFrameDef.x = 1;
+									templateFrameDef.y = 2;
+									AnimationDefinition templateDef = new AnimationDefinition();
+									templateDef.filename = animDefinition.template;
+									templateDef.frames = new Array<AnimationFrameDefinition>();
+									templateDef.height = Editor.db().config().templateHeight;
+									templateDef.width = Editor.db().config().templateWidth;
+									templateDef.keepLast = true;
+									templateDef.loop = false;
+									templateDef.name = "Template";
+									templateDef.originX = Editor.db().config().templateWidth / 2;
+									templateDef.originY = 4;
+									templateDef.frames.add(templateFrameDef);
+									entityPreview = new AnimationPreview(templateDef);
+								} else {
+									final AnimationGroupDefinition animGroup = Editor.db().animGroup(animDefinition.idle);
+									if (animGroup != null) {
+										final AnimationDefinition anim = Editor.db().anim(animGroup.down);
+										if (anim != null) {
+											entityPreview = new AnimationPreview(anim);
+											break;
+										}
 									}
 								}
 							}

@@ -66,7 +66,7 @@ public class AnimationComponent implements Component {
 				int idx[] = { 0, 1, 2, 1 };
 				for (int i = 0; i < idx.length; i++) {
 					AnimationFrameDefinition walkFrameDef = new AnimationFrameDefinition();
-					walkFrameDef.duration = 3;
+					walkFrameDef.duration = 5;
 					walkFrameDef.x = templateX + idx[i];
 					walkFrameDef.y = templateX + direction.getTemplateIndex();
 					definition.frames.add(walkFrameDef);
