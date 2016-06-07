@@ -17,18 +17,17 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class CameraTargetScriptCommand extends ScriptCommand {
 
 	public String name = "";
+	public float x, y;
 
 	public CameraTargetScriptCommand() {
-	}
-
-	public CameraTargetScriptCommand(final String name) {
-		this.name = name;
 	}
 
 	@Override
 	public CameraTargetScriptCommand copy() {
 		CameraTargetScriptCommand command = new CameraTargetScriptCommand();
 		command.name = name;
+		command.x = x;
+		command.y = y;
 		return command;
 	}
 
@@ -39,7 +38,7 @@ public class CameraTargetScriptCommand extends ScriptCommand {
 
 	@Override
 	public String getName() {
-		return "Camera Target: " + name;
+		return String.format("Camera Operations: %s, %f, %f", name, x, y);
 	}
 
 	@Override
@@ -67,8 +66,10 @@ public class CameraTargetScriptCommand extends ScriptCommand {
 	public void onStarted(Entity entity) {
 		Entity target = Game.entities().find(name);
 		if (target != null) {
+			Game.view().pan(0, 0);
 			Game.publisher().publish(new CameraTargetEvent(target));
 		} else {
+			Game.view().pan(x, y);
 			Game.log("Entity not found: " + name + ". Cannot target.");
 		}
 		complete();

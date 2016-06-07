@@ -7,7 +7,9 @@ import net.alcuria.umbracraft.engine.events.EventListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -16,6 +18,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class View implements EventListener {
 	private Rectangle bounds;
 	private final OrthographicCamera camera;
+	private final Vector2 pan = new Vector2();
+	private boolean panning;
 	private float shakePeriod, shakeCounter, shakeFrequency, shakeAmplitude;
 	private Entity target;
 	private final OrthographicCamera uiCamera;
@@ -83,6 +87,12 @@ public class View implements EventListener {
 		}
 	}
 
+	public void pan(float x, float y) {
+		panning = !MathUtils.isEqual(x, 0) || !MathUtils.isEqual(y, 0);
+		pan.x = x;
+		pan.y = y;
+	}
+
 	/** Resizes the viewport
 	 * @param width width of the viewport
 	 * @param height height of the viewport */
@@ -131,6 +141,10 @@ public class View implements EventListener {
 		if (target != null) {
 			float dX = bounds != null ? (bounds.width > Config.viewWidth ? (target.position.x - camera.position.x) / 20f : bounds.x - camera.position.x) : 0;
 			float dY = bounds != null ? (bounds.height > Config.viewHeight ? (target.position.y - camera.position.y) / 20f : bounds.y - camera.position.y) : 0;
+			if (panning) {
+				dX = pan.x;
+				dY = pan.y;
+			}
 			if (dX < 0.5f && dX > -0.5f) {
 				dX = 0;
 			}
