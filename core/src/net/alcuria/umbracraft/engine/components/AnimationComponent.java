@@ -67,17 +67,16 @@ public class AnimationComponent implements Component {
 				for (int i = 0; i < idx.length; i++) {
 					AnimationFrameDefinition walkFrameDef = new AnimationFrameDefinition();
 					walkFrameDef.duration = 5;
-					walkFrameDef.x = templateX + idx[i];
-					walkFrameDef.y = templateX + direction.getTemplateIndex();
+					walkFrameDef.x = templateX * 3 + idx[i];
+					walkFrameDef.y = templateY * 4 + direction.getTemplateIndex();
 					definition.frames.add(walkFrameDef);
 				}
-
 				break;
 			default:
 				AnimationFrameDefinition idleFrameDef = new AnimationFrameDefinition();
-				idleFrameDef.duration = 8;
-				idleFrameDef.x = 1;
-				idleFrameDef.y = direction.getTemplateIndex();
+				idleFrameDef.duration = 5;
+				idleFrameDef.x = templateX * 3 + 1;
+				idleFrameDef.y = templateY * 4 + direction.getTemplateIndex();
 				definition.frames.add(idleFrameDef);
 				break;
 			}
