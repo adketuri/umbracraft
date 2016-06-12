@@ -23,12 +23,15 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.kotcrab.vis.ui.widget.VisLabel;
 
 /** A widget to display a map with options to edit it based on the
  * {@link EditMode}.
@@ -62,10 +65,11 @@ public class MapEditorWidget {
 	}
 
 	private Actor actor;
+	private Label coordinates;
 	private boolean entered;
 	private Listener listener;
 	private final MapListModule module;
-	private Table popupTable;
+	private Table popupTable, helpTable;
 	private final Array<MapTileWidget> tiles = new Array<MapTileWidget>();
 	private int zoom;
 
@@ -220,6 +224,30 @@ public class MapEditorWidget {
 								}
 
 							}
+						}
+
+					});
+					add(new Table() {
+						{
+							add(helpTable = new Table());
+							helpTable.setBackground(Drawables.get("black"));
+							helpTable.add(new VisLabel("0-9: Set Altitude")).row();
+							helpTable.add(new VisLabel("Q,W,E,R,T,S: Set Terrain Type")).row();
+							helpTable.add(new VisLabel("A: Set Tree Wall (Q Reverts)")).row();
+							helpTable.add(new VisLabel("Z,X,C,V,B,N: Set Upper Terrain Type")).row();
+							helpTable.add(new VisLabel("F: Fill | Ctrl + F: Dig ")).row();
+							helpTable.add(new VisLabel("Arrows: Set Teleport")).row();
+							WidgetUtils.divider(helpTable, "yellow");
+							helpTable.add(coordinates = new VisLabel()).row();
+							helpTable.setTouchable(Touchable.disabled);
+						}
+
+						@Override
+						public void act(float delta) {
+							super.act(delta);
+							helpTable.setVisible(Gdx.input.isKeyPressed(Keys.F2));
+							//coordinates.setText(String.format("(%d, %d)", MapTileWidget.selX, module.getDefinition().getHeight() - MapTileWidget.selY));
+							helpTable.setPosition(Gdx.input.getX() - 600, Gdx.graphics.getHeight() - Gdx.input.getY());
 						}
 
 					});
