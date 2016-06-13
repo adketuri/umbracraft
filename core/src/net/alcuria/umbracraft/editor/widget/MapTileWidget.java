@@ -47,6 +47,7 @@ public class MapTileWidget extends Table {
 	private final MapDefinition definition;
 	private Image entityPreview;
 	private final int i, j;
+	private final Color overlay = new Color(0, 0, 0, 0.9f);
 	private final MapEditorWidget widget;
 
 	public MapTileWidget(int x, int y, final MapDefinition definition, final MapEditorWidget widget) {
@@ -179,6 +180,13 @@ public class MapTileWidget extends Table {
 		if (alt(i, j - 1) < alt(i, j)) {
 			batch.draw(edge, getX(), getY() + getHeight() + altitude * getHeight() - 2, getWidth(), 2);
 		}
+
+		// dadrken bottom clamps
+		if (y < definition.bottomClamp) {
+			batch.setColor(overlay);
+			batch.draw(top, getX(), getY(), getWidth(), getHeight());
+			batch.setColor(Color.WHITE);
+		}
 	}
 
 	public void drawEntity(Batch batch) {
@@ -189,8 +197,8 @@ public class MapTileWidget extends Table {
 				final int offset = (int) ((AnimationPreview) entityPreview).getOriginX();
 				batch.draw(region, widget.getActor(widget.getZoom()).getX() + getX(), widget.getActor(widget.getZoom()).getY() + (definition.getHeight() - j - 1) * Config.tileWidth * 2 / widget.getZoom() + altitude * getHeight(), region.getRegionWidth() * 2 / widget.getZoom(), region.getRegionHeight() * 2 / widget.getZoom());
 			} else {
-				entityPreview.setX(getX());
-				entityPreview.setY(getY());
+				entityPreview.setX(widget.getActor(widget.getZoom()).getX() + getX());
+				entityPreview.setY(widget.getActor(widget.getZoom()).getY() + (definition.getHeight() - j - 1) * Config.tileWidth * 2 / widget.getZoom() + altitude * getHeight());
 				entityPreview.setScale(2 * widget.getZoom());
 				entityPreview.draw(batch, 1);
 			}

@@ -181,6 +181,7 @@ public class MapEditorWidget {
 								}
 								add(row).row();
 							}
+							setClip(true);
 							addListener(new ClickListener() {
 								@Override
 								public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
