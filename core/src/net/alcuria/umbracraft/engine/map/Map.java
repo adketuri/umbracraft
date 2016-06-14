@@ -45,9 +45,12 @@ public class Map implements Disposable {
 		}
 
 		// load the tileset
+		if (mapDef.tileset == null) {
+			throw new NullPointerException("Map '" + id + "' must define a tileset");
+		}
 		tilesetDefinition = Game.db().tileset(mapDef.tileset);
 		if (tilesetDefinition == null) {
-			throw new NullPointerException("Map " + id + " must define a tileset");
+			throw new NullPointerException("Cannot find tileset: " + mapDef.tileset);
 		}
 		String filename = tilesetDefinition.filename;
 

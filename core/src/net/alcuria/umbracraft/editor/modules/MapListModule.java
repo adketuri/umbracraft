@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.editor.modules;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
+import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.widget.MapEditorWidget;
 import net.alcuria.umbracraft.editor.widget.MapEditorWidget.EditMode;
 import net.alcuria.umbracraft.editor.widget.WidgetUtils;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -125,6 +127,11 @@ public class MapListModule extends ListModule<MapDefinition> {
 			}
 		}).row();
 		PopulateConfig config = new PopulateConfig();
+		config.suggestions = new ObjectMap<String, Array<String>>() {
+			{
+				put("tileset", Editor.db().tilesets().keys());
+			}
+		};
 		config.cols = 1;
 		populate(headerButtons, MapDefinition.class, definition, config);
 		headerButtons.row();
