@@ -14,6 +14,8 @@ public class TilesetDefinition extends Definition {
 	public String filename;
 	@Tooltip("The base floor of the map ")
 	public int floor;
+	@Tooltip("The name of the tileset")
+	public String name;
 	public int obstacle1;
 	@Tooltip("The tree/foliage overlay")
 	public int overlay;
@@ -46,7 +48,7 @@ public class TilesetDefinition extends Definition {
 
 	@Override
 	public String getName() {
-		return "Tileset";
+		return name != null ? name : "Unknown";
 	}
 
 	@Override

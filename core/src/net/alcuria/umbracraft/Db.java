@@ -19,7 +19,6 @@ import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.definitions.npc.ScriptDefinition;
 import net.alcuria.umbracraft.definitions.skill.SkillDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
-import net.alcuria.umbracraft.definitions.tileset.TilesetListDefinition;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.editor.modules.VariableDefinition;
 import net.alcuria.umbracraft.engine.entities.Entity;
@@ -61,7 +60,7 @@ public final class Db {
 		classes.put("enemies", ListDefinition.class);
 		classes.put("enemygroups", ListDefinition.class);
 		classes.put("configuration", ConfigDefinition.class);
-		classes.put("tilesets", TilesetListDefinition.class);
+		classes.put("tilesets", ListDefinition.class);
 		classes.put("items", ListDefinition.class);
 
 		// deserialize all definitions
@@ -264,12 +263,17 @@ public final class Db {
 		return (ListDefinition<SkillDefinition>) definitions.get("skills");
 	}
 
-	/** Gets a tileset TODO: refactor using keys
-	 * @param i the index
+	/** Gets a {@link TilesetDefinition} from the DB
+	 * @param id the tileset's id
 	 * @return the {@link TilesetDefinition} */
-	public TilesetDefinition tileset(int i) {
-		TilesetListDefinition listDef = (TilesetListDefinition) definitions.get("tilesets");
-		return listDef.tiles.get(i);
+	public TilesetDefinition tileset(String id) {
+		return (TilesetDefinition) tilesets().get(id);
+	}
+
+	/** @return all {@link TilesetDefinition} objects in the database */
+	public ListDefinition<TilesetDefinition> tilesets() {
+		O.notNull(definitions);
+		return (ListDefinition<TilesetDefinition>) definitions.get("tilesets");
 	}
 
 	/** @param id a variable id

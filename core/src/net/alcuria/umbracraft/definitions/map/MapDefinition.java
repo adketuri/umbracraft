@@ -26,6 +26,8 @@ public class MapDefinition extends Definition {
 	public String tag;
 	/** The map tiles */
 	public Array<Array<MapTileDefinition>> tiles;
+	@Tooltip("The tileset to use")
+	public String tileset;
 	@Tooltip("The default level of the water, in tiles. Floating-point.")
 	public float waterLevel;
 	/** The width of the map */

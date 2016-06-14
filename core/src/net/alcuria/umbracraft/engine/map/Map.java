@@ -37,19 +37,23 @@ public class Map implements Disposable {
 			throw new NullPointerException("id cannot be null. Perhaps an area node's mapDefinition field is null?");
 		}
 		name = id;
-		// json -> object
-		tilesetDefinition = Game.db().tileset(0);
-		String filename = tilesetDefinition.filename;
-
-		// create tiles from definition
-		tiles = new Array<TextureRegion>();
-		tiles.addAll(getRegions(filename));
 
 		// create alt map from definition
 		mapDef = Game.db().map(id);
 		if (mapDef == null) {
 			throw new NullPointerException("Map not found: " + id);
 		}
+
+		// load the tileset
+		tilesetDefinition = Game.db().tileset(mapDef.tileset);
+		if (tilesetDefinition == null) {
+			throw new NullPointerException("Map " + id + " must define a tileset");
+		}
+		String filename = tilesetDefinition.filename;
+
+		// create tiles from definition
+		tiles = new Array<TextureRegion>();
+		tiles.addAll(getRegions(filename));
 		width = mapDef.getWidth();
 		height = mapDef.getHeight();
 		altMap = new int[width][height];
@@ -92,6 +96,7 @@ public class Map implements Disposable {
 			}
 		}
 
+		// build map's terrains
 		int[] terrains = { tilesetDefinition.terrain1, tilesetDefinition.terrain2, tilesetDefinition.overlay };
 		boolean[] isOverlay = { false, false, true };
 		for (int i = 0; i < width; i++) {
