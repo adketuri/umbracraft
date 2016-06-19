@@ -158,7 +158,8 @@ public class ControlledInputComponent implements Component, EventListener {
 			holdTimeY = MathUtils.clamp(holdTimeY, 0, MAX_SPEED_TIME);
 			entity.velocity.x *= holdTimeX / MAX_SPEED_TIME;
 			entity.velocity.y *= holdTimeY / MAX_SPEED_TIME;
-			entity.velocity.scl(entity.speedModifier);
+			entity.velocity.x *= (entity.speedModifier);
+			entity.velocity.y *= (entity.speedModifier);
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.F1)) {
 			Game.setDebug(!Game.isDebug());

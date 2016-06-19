@@ -186,7 +186,8 @@ public class DirectedInputComponent implements Component {
 		default:
 			break;
 		}
-		entity.velocity.scl(entity.speedModifier);
+		entity.velocity.x *= (entity.speedModifier);
+		entity.velocity.y *= (entity.speedModifier);
 
 	}
 }
