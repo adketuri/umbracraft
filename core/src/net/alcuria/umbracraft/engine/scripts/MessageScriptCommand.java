@@ -88,6 +88,9 @@ public class MessageScriptCommand extends ScriptCommand {
 		cmd.message = message;
 		cmd.name = name;
 		cmd.window = window;
+		cmd.disableDismiss = disableDismiss;
+		cmd.duration = duration;
+		cmd.timer = timer;
 		cmd.style = style;
 		return cmd;
 	}

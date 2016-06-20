@@ -1,5 +1,6 @@
 package net.alcuria.umbracraft.definitions.map;
 
+import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.annotations.Tooltip;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
@@ -15,6 +16,7 @@ public class EntityReferenceDefinition extends Definition {
 	@Tooltip("The third argument (optional)")
 	public String arg3;
 	@Tooltip("The name of the entity to use")
+	@Order(1)
 	public String name;
 	@Tooltip("The X coordinate")
 	public int x;

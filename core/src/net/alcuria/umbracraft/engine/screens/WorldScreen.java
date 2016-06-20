@@ -78,7 +78,7 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 			AreaDefinition area = Game.db().area(evt.area);
 			AreaNodeDefinition node = area.find(area.root, evt.node);
 			if (node == null) {
-				throw new NullPointerException("Node not found in area " + area);
+				throw new NullPointerException("Node " + evt.node + " not found in area " + area.name);
 			}
 			Game.map().create(node.mapDefinition);
 			Game.view().setBounds(Game.map().getBounds());
