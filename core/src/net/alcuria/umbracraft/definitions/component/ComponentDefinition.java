@@ -6,6 +6,7 @@ import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent;
 import net.alcuria.umbracraft.engine.components.AnimationComponent;
 import net.alcuria.umbracraft.engine.components.Component;
 import net.alcuria.umbracraft.engine.components.ControlledInputComponent;
+import net.alcuria.umbracraft.engine.components.DebugPositionComponent;
 import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.components.EntityCollisionComponent;
 import net.alcuria.umbracraft.engine.components.IndicatorComponent;
@@ -48,6 +49,7 @@ public abstract class ComponentDefinition extends Definition {
 		ANIM(AnimationComponentDefinition.class), //
 		ANIM_COLLECTION(AnimationCollectionComponentDefinition.class), //
 		CONTROLLED_INPUT(ControlledInputComponentDefinition.class), //
+		DEBUG(DebugPositionComponentDefinition.class), //
 		DIRECTED_INPUT(DirectedInputComponentDefinition.class), //
 		ENTITY_COLLISION(EntityCollisionComponentDefinition.class), //
 		INDICATOR(IndicatorOperationComponentDefinition.class), //
@@ -86,6 +88,8 @@ public abstract class ComponentDefinition extends Definition {
 				return "Indicator";
 			case PLATFORM:
 				return "Platform";
+			case DEBUG:
+				return "Debug";
 			default:
 				return "Unknown";
 			}
@@ -98,6 +102,15 @@ public abstract class ComponentDefinition extends Definition {
 		@Override
 		public Component create() {
 			return new ControlledInputComponent();
+		}
+	}
+
+	/** Defines the {@link DebugPositionComponent} for an entity. */
+	public static class DebugPositionComponentDefinition extends ComponentDefinition {
+
+		@Override
+		public Component create() {
+			return new DebugPositionComponent();
 		}
 	}
 

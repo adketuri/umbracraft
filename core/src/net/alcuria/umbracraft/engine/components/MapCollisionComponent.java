@@ -78,6 +78,8 @@ public class MapCollisionComponent implements Component {
 	public void create(Entity entity) {
 		debug = Game.assets().get("fonts/message.fnt", BitmapFont.class);
 		isControlled = entity.getComponent(ControlledInputComponent.class) != null;
+		entity.setRenderOffset(height / 2);
+		Game.log("Set render offset for " + entity.getName() + " to " + entity.getRenderOffset());
 	}
 
 	@Override

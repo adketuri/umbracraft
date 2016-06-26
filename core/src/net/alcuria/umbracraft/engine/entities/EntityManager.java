@@ -61,7 +61,9 @@ public class EntityManager {
 				entity.addComponent(componentDef);
 			}
 			entity.speedModifier = entityDef.speedModifier;
-			entity.setRenderOffset(entityDef.renderOffset);
+			if (entityDef.renderOffset != 0) {
+				entity.setRenderOffset(entityDef.renderOffset);
+			}
 			// TODO: for ControlledInputComponents, I think we need to set the input processor here...
 			if (entity.getName().equals(Entity.PLAYER)) { //FIXME: ugleh
 				Game.publisher().publish(new CameraTargetEvent(entity));
@@ -195,7 +197,7 @@ public class EntityManager {
 		int idx = 0;
 		while (row > y - Game.map().getMaxAltitude() * 2) {
 			Game.map().render(row, x + ENTITY_TILE_PAD);
-			while (idx < visibleEntities.size && (visibleEntities.get(idx).position.y - 4) / Config.tileWidth >= row) {
+			while (idx < visibleEntities.size && (visibleEntities.get(idx).position.y - visibleEntities.get(idx).getRenderOffset()) / Config.tileWidth >= row) {
 				visibleEntities.get(idx).render();
 				idx++;
 			}

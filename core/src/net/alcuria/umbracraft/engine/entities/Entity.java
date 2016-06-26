@@ -11,7 +11,8 @@ import com.badlogic.gdx.utils.Array;
 
 /** A top-level game object. Players, enemies, decorations, and so on, all should
  * be instantiated as Entities with logic separated out in the {@link Component}
- * objects.
+ * objects. TODO: We can use a map instead of an array to get a minor
+ * performance boost out of fetching components.
  * @author Andrew Keturi */
 public class Entity implements BaseEntity, Comparable<Entity> {
 
@@ -108,6 +109,11 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	/** @return the name */
 	public String getName() {
 		return name;
+	}
+
+	/** @return the render offset */
+	public int getRenderOffset() {
+		return renderOffset;
 	}
 
 	/** @return the tag */

@@ -526,7 +526,7 @@ public class Map implements Disposable {
 	 * @param xOffset the camera offset in tiles, to ensure we only render tiles
 	 *        visible in the x axis */
 	public void render(int row, int xOffset) {
-		//		row = 1;
+		//		row = 17;
 		final int tileSize = Config.tileWidth;
 		if (layers == null) {
 			return;
