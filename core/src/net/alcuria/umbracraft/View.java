@@ -88,6 +88,7 @@ public class View implements EventListener {
 	}
 
 	public void pan(float x, float y) {
+		target = null;
 		panning = !MathUtils.isEqual(x, 0) || !MathUtils.isEqual(y, 0);
 		pan.x = x;
 		pan.y = y;
@@ -138,10 +139,13 @@ public class View implements EventListener {
 	 * map boundaries if present. */
 	public void update() {
 		boolean moved = false;
-		if (target != null) {
-			float dX = bounds != null ? (bounds.width > Config.viewWidth ? (target.position.x - camera.position.x) / 20f : bounds.x - camera.position.x) : 0;
-			float dY = bounds != null ? (bounds.height > Config.viewHeight ? (target.position.y - camera.position.y) / 20f : bounds.y - camera.position.y) : 0;
-			if (panning) {
+		if (target != null || panning) {
+			float dX = 0;
+			float dY = 0;
+			if (target != null) {
+				dX = bounds != null ? (bounds.width > Config.viewWidth ? (target.position.x - camera.position.x) / 20f : bounds.x - camera.position.x) : 0;
+				dY = bounds != null ? (bounds.height > Config.viewHeight ? (target.position.y - camera.position.y) / 20f : bounds.y - camera.position.y) : 0;
+			} else if (panning) {
 				dX = pan.x;
 				dY = pan.y;
 			}

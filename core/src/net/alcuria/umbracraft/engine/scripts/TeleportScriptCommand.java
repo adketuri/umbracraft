@@ -73,6 +73,7 @@ public class TeleportScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
+		Game.view().pan(0, 0);
 		Game.publisher().publish(new TintScreenEvent(1, FADE_TIME, new Listener() {
 
 			@Override

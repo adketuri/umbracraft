@@ -229,6 +229,12 @@ public final class Db {
 		return (ListDefinition<ItemDefinition>) definitions.get("items");
 	}
 
+	// FIXME: this needs to get a generic definition?
+	public <T extends Definition> ListDefinition<T> list(Class<T> list) {
+		O.notNull(definitions);
+		return (ListDefinition<T>) definitions.get("map");
+	}
+
 	/** @param name the name of the map
 	 * @return the {@link MapDefinition} from the database */
 	public MapDefinition map(String name) {

@@ -8,6 +8,7 @@ import net.alcuria.umbracraft.definitions.entity.EntityDefinition;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
+import net.alcuria.umbracraft.util.StringUtils;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -64,13 +65,16 @@ public class CameraTargetScriptCommand extends ScriptCommand {
 
 	@Override
 	public void onStarted(Entity entity) {
-		Entity target = Game.entities().find(name);
-		if (target != null) {
-			Game.view().pan(0, 0);
-			Game.publisher().publish(new CameraTargetEvent(target));
+		if (StringUtils.isNotEmpty(name)) {
+			Entity target = Game.entities().find(name);
+			if (target != null) {
+				Game.view().pan(0, 0);
+				Game.publisher().publish(new CameraTargetEvent(target));
+			} else {
+				Game.log("Entity not found: " + name + ". Cannot target.");
+			}
 		} else {
 			Game.view().pan(x, y);
-			Game.log("Entity not found: " + name + ". Cannot target.");
 		}
 		complete();
 	}
