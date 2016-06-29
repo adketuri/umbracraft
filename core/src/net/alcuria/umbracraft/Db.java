@@ -40,45 +40,40 @@ import com.badlogic.gdx.utils.ObjectMap;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public final class Db {
 
+	public static enum DefinitionReference {
+		ANIMATION_COLLECTION("animationcollection", ListDefinition.class), ANIMATION_GROUP("animationgroup", ListDefinition.class), ANIMATIONS("animations", AnimationListDefinition.class), AREAS("areas", ListDefinition.class), BATTLE_ANIM_GROUP("battleanimationgroup", ListDefinition.class), CONFIG("configuration", ConfigDefinition.class), ENEMIES("enemies", ListDefinition.class), ENEMY_GROUPS("enemygroups", ListDefinition.class), ENTITIES("entities", ListDefinition.class), FLAGS(
+				"flags", ListDefinition.class), HEROES("heroes", ListDefinition.class), ITEMS("items", ListDefinition.class), MAPS("map", ListDefinition.class), SCRIPTS("scripts", ListDefinition.class), SKILLS("skills", ListDefinition.class), TILESETS("tilesets", ListDefinition.class), VARIABLES("variables", ListDefinition.class);
+
+		public Class<? extends Definition> clazz;
+		public String id;
+
+		DefinitionReference(String id, Class<? extends Definition> clazz) {
+			this.id = id;
+			this.clazz = clazz;
+		}
+	}
+
 	private final ObjectMap<String, Definition> definitions;
 
 	public Db() {
-		// create the definition map
-		final ObjectMap<String, Class<? extends Definition>> classes = new ObjectMap<String, Class<? extends Definition>>();
-		classes.put("animations", AnimationListDefinition.class);
-		classes.put("animationgroup", ListDefinition.class);
-		classes.put("battleanimationgroup", ListDefinition.class);
-		classes.put("animationcollection", ListDefinition.class);
-		classes.put("entities", ListDefinition.class);
-		classes.put("map", ListDefinition.class);
-		classes.put("areas", ListDefinition.class);
-		classes.put("flags", ListDefinition.class);
-		classes.put("variables", ListDefinition.class);
-		classes.put("scripts", ListDefinition.class);
-		classes.put("heroes", ListDefinition.class);
-		classes.put("skills", ListDefinition.class);
-		classes.put("enemies", ListDefinition.class);
-		classes.put("enemygroups", ListDefinition.class);
-		classes.put("configuration", ConfigDefinition.class);
-		classes.put("tilesets", ListDefinition.class);
-		classes.put("items", ListDefinition.class);
-
 		// deserialize all definitions
 		definitions = new ObjectMap<>();
 		Json json = new Json();
 		json.setIgnoreUnknownFields(true);
-		for (String name : classes.keys()) {
+		for (DefinitionReference reference : DefinitionReference.values()) {
+			final String name = reference.id;
 			final FileHandle handle = Gdx.files.external("umbracraft/" + name + ".json");
 			if (handle.exists() && Gdx.app.getType() == ApplicationType.Desktop) {
-				definitions.put(name, json.fromJson(classes.get(name), handle));
+				definitions.put(name, json.fromJson(reference.clazz, handle));
 			} else {
 				final FileHandle internalHandle = Gdx.files.internal("db/" + name + ".json");
 				if (internalHandle.exists()) {
-					definitions.put(name, json.fromJson(classes.get(name), internalHandle));
+					definitions.put(name, json.fromJson(reference.clazz, internalHandle));
 				} else {
 					try {
-						definitions.put(name, classes.get(name).newInstance());
+						definitions.put(name, reference.clazz.newInstance());
 					} catch (InstantiationException | IllegalAccessException e) {
+						Game.error("Could not instantiate class: " + reference.clazz);
 						e.printStackTrace();
 					}
 				}
@@ -229,10 +224,9 @@ public final class Db {
 		return (ListDefinition<ItemDefinition>) definitions.get("items");
 	}
 
-	// FIXME: this needs to get a generic definition?
-	public <T extends Definition> ListDefinition<T> list(Class<T> list) {
+	public <T extends Definition> ListDefinition<T> list(Class<T> list, DefinitionReference reference) {
 		O.notNull(definitions);
-		return (ListDefinition<T>) definitions.get("map");
+		return (ListDefinition<T>) definitions.get(reference.id);
 	}
 
 	/** @param name the name of the map

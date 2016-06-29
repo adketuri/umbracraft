@@ -466,6 +466,9 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 			}).size(30);
 			popupFields.row();
 			popupFields.add(colorPickerTable);
+		} else if (localCommand == Commands.MOVE) {
+			popupFields.row();
+			popupFields.add(new MapPreviewWidget(null).getActor()); //FIXME: may want to see if we can intelligently crawl event commands to get the map
 		}
 	}
 }
