@@ -75,17 +75,17 @@ public class MapPreviewWidget {
 				for (int i = 0; i < definition.getWidth(); i++) {
 
 					// check if there is an EntityReference here
-					boolean foundEntity = false;
+					String entityName = null;
 					for (EntityReferenceDefinition entity : definition.entities) {
 						if (entity.x == i && entity.y == definition.getHeight() - j - 1) {
-							foundEntity = true;
+							entityName = entity.name;
 							break;
 						}
 					}
 
 					// create and add the tile
 					final Actor tile = new Image(Drawables.get("white"));
-					if (foundEntity) {
+					if (entityName != null) {
 						// color this tile red since we have an entity here
 						tile.setColor(Color.YELLOW);
 						tile.addAction(Actions.forever(Actions.sequence(Actions.alpha(0, 0.5f, Interpolation.sine), Actions.alpha(1, 0.5f, Interpolation.sine))));
@@ -100,10 +100,11 @@ public class MapPreviewWidget {
 					// add a listener that when clicked will display the coordinates
 					final int tileX = i;
 					final int tileY = definition.getHeight() - j - 1;
+					final String entityDisplayName = entityName != null ? entityName : "";
 					tile.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
-							coords.setText(String.format("(%d, %d)", tileX, tileY));
+							coords.setText(String.format("(%d, %d) %s", tileX, tileY, entityDisplayName));
 							// update the previously-selected tile's color
 							if (lastSelected != null && lastColor != null) {
 								lastSelected.setColor(lastColor);
