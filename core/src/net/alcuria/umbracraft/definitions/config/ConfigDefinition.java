@@ -62,6 +62,9 @@ public class ConfigDefinition extends Definition {
 	public int startingY;
 	@Tooltip("The size of the charset templates")
 	public int templateWidth, templateHeight;
+	@Order(504)
+	@Tooltip("The path to tilesets. Relative")
+	public String tilesetPath;
 
 	@Override
 	public String getName() {
