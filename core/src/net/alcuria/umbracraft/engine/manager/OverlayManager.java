@@ -12,6 +12,7 @@ import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.util.O.L;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.ColorAction;
@@ -59,8 +60,12 @@ public class OverlayManager implements EventListener, BaseEntity, Disposable {
 				colorAction.setEndColor(tint.color);
 				colorAction.setDuration(tint.duration);
 				colorAction.restart();
-				startedColorAction = true;
 				tintListener = tint.listener;
+				// if the action has nearly no duration, let's immediately set the color
+				if (MathUtils.isEqual(tint.duration, 0)) {
+					colorAction.setColor(tint.color);
+				}
+				startedColorAction = true;
 			}
 		}
 	}
@@ -72,10 +77,14 @@ public class OverlayManager implements EventListener, BaseEntity, Disposable {
 
 	@Override
 	public void update() {
+		if (colorAction != null && colorAction.getColor() != null) {
+			//Game.log(colorAction.getColor().toString());
+		}
 		stage.act(Gdx.graphics.getDeltaTime());
 		if (startedColorAction) {
 			Game.batch().setColor(colorAction.getColor());
 			if (colorAction.act(Gdx.graphics.getDeltaTime())) {
+				Game.log("Tint complete");
 				L.$(tintListener);
 				startedColorAction = false;
 			}
