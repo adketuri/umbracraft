@@ -35,8 +35,7 @@ public class MessageWindowLayout extends WindowLayout {
 	}
 
 	private static final int FACE_WIDTH = 105;
-
-	private static final int MESSAGE_WIDTH = 360;
+	private static final int MESSAGE_WIDTH = 340;
 	private static final float SHOW_TRANSITION_TIME = 0.1f;
 	private boolean hasFace = false;
 	private String message;
