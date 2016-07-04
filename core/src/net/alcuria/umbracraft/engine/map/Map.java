@@ -463,8 +463,7 @@ public class Map implements Disposable {
 			throw new NullPointerException("Tileset filename is null");
 		}
 		Array<TextureRegion> regions = new Array<TextureRegion>();
-		//		if (Game.assets().containsAsset("tiles/" + filename)) {
-		final Texture texture = Game.assets().get("tiles/" + filename, Texture.class);
+		final Texture texture = Game.assets().get("tiles/" + filename + ".png", Texture.class);
 		for (int i = 0; i < Math.pow(Config.tilesetWidth / Config.tileWidth, 2); i++) {
 			final int x = (i * Config.tileWidth) % Config.tilesetWidth;
 			final int y = (i / Config.tileWidth) * Config.tileWidth;
