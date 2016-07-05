@@ -577,7 +577,7 @@ public class Map implements Disposable {
 			for (int j = yOffset, m = yOffset + Config.viewWidth / Config.tileWidth + 1; j < m; j++) {
 				final int overlayId = getOverlayTypeAt(i, j);
 				if (overlayId > 0 && overlayId != tilesetDefinition.overlayPiece1 && overlayId != tilesetDefinition.overlayPiece2 && overlayId != tilesetDefinition.overlayPiece3 && overlayId != tilesetDefinition.overlayPiece4) {
-					Game.batch().draw(tiles.get(overlayId), (i * tileSize), (j * tileSize) + 4 * tileSize, tileSize, tileSize);
+					Game.batch().draw(tiles.get(overlayId), (i * tileSize), (j * tileSize) + mapDef.overlayHeight * tileSize, tileSize, tileSize);
 					if (j == 0) {
 						// draw down
 						for (int k = 1; k < 5; k++) {

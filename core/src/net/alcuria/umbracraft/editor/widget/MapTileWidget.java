@@ -157,8 +157,8 @@ public class MapTileWidget extends Table {
 		batch.draw(top, getX() + 1, getY() + altitude * getHeight() + 1, getWidth() - 2, getHeight() - 2);
 		if (overlayType != 0) {
 			batch.setColor(MapUtils.getTerrainColor(overlayType));
-			batch.draw(side, getX() + 4, getY() + altitude * getHeight() + 4, getWidth() - 8, getHeight() - 8);
-			batch.draw(top, getX() + 5, getY() + altitude * getHeight() + 5, getWidth() - 9, getHeight() - 9);
+			batch.draw(side, getX() + 4, getY() + definition.overlayHeight * getHeight() + 4, getWidth() - 8, getHeight() - 8);
+			batch.draw(top, getX() + 5, getY() + definition.overlayHeight * getHeight() + 5, getWidth() - 9, getHeight() - 9);
 		}
 		if (type != 0 || overlayType != 0 || isTeleport) {
 			batch.setColor(Color.WHITE);
