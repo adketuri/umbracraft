@@ -6,7 +6,6 @@ import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.definitions.tileset.TilesetDefinition;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -24,8 +23,8 @@ public class Map implements Disposable {
 	private MapDefinition mapDef;
 	private int maxAlt;
 	private String name;
-	private Array<TextureRegion> tiles;
 	private TilesetDefinition tilesetDefinition;
+	private TileView tileView;
 	private boolean[][] typeFlags;
 	private int width;
 
@@ -55,8 +54,7 @@ public class Map implements Disposable {
 		String filename = tilesetDefinition.filename;
 
 		// create tiles from definition
-		tiles = new Array<TextureRegion>();
-		tiles.addAll(getRegions(filename));
+		tileView = new TileView(filename);
 		width = mapDef.getWidth();
 		height = mapDef.getHeight();
 		altMap = new int[width][height];
@@ -456,24 +454,6 @@ public class Map implements Disposable {
 		return 0;
 	}
 
-	/** Returns an array of texture regions loaded from the tileset
-	 * @param filename */
-	private Array<TextureRegion> getRegions(String filename) {
-		if (filename == null) {
-			throw new NullPointerException("Tileset filename is null");
-		}
-		Array<TextureRegion> regions = new Array<TextureRegion>();
-		final Texture texture = Game.assets().get("tiles/" + filename + ".png", Texture.class);
-		for (int i = 0; i < Math.pow(Config.tilesetWidth / Config.tileWidth, 2); i++) {
-			final int x = (i * Config.tileWidth) % Config.tilesetWidth;
-			final int y = (i / Config.tileWidth) * Config.tileWidth;
-			final int w = Config.tileWidth;
-			regions.add(new TextureRegion(texture, x, y, w, w));
-		}
-		//		}
-		return regions;
-	}
-
 	/** Gets the terrain type at some tile coordinates and does bounds checking
 	 * too!
 	 * @param x x tile
@@ -550,9 +530,9 @@ public class Map implements Disposable {
 			for (int j = alt; j >= drop; j--) {
 				try {
 					if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
-						Game.batch().draw(tiles.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
+						Game.batch().draw(tileView.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
 						if (data[i][row + j].overId > 0) {
-							Game.batch().draw(tiles.get(data[i][row + j].overId), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
+							Game.batch().draw(tileView.get(data[i][row + j].overId), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
 						}
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
@@ -564,9 +544,9 @@ public class Map implements Disposable {
 				//FIXME: kinda hacky, will need to rewrite rendering at some point to remove the concept of a "layer" -- its making things more complicated than they need to
 				final int waterDefinition = getWaterDefinition(i, row, alt);
 				if (waterDefinition > tilesetDefinition.water) {
-					Game.batch().draw(tiles.get(waterDefinition), (i * tileSize), ((row + 1) * tileSize + mapDef.waterLevel * tileSize), tileSize, tileSize);
+					Game.batch().draw(tileView.get(waterDefinition), (i * tileSize), ((row + 1) * tileSize + mapDef.waterLevel * tileSize), tileSize, tileSize);
 				}
-				Game.batch().draw(tiles.get(tilesetDefinition.water), (i * tileSize), (row * tileSize + mapDef.waterLevel * tileSize), tileSize, tileSize);
+				Game.batch().draw(tileView.get(tilesetDefinition.water), (i * tileSize), (row * tileSize + mapDef.waterLevel * tileSize), tileSize, tileSize);
 			}
 		}
 	}
@@ -576,12 +556,12 @@ public class Map implements Disposable {
 		for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth + 1; i < n; i++) {
 			for (int j = yOffset, m = yOffset + Config.viewWidth / Config.tileWidth + 1; j < m; j++) {
 				final int overlayId = getOverlayTypeAt(i, j);
-				if (overlayId > 0 && overlayId != tilesetDefinition.overlayPiece1 && overlayId != tilesetDefinition.overlayPiece2 && overlayId != tilesetDefinition.overlayPiece3 && overlayId != tilesetDefinition.overlayPiece4) {
-					Game.batch().draw(tiles.get(overlayId), (i * tileSize), (j * tileSize) + mapDef.overlayHeight * tileSize, tileSize, tileSize);
+				if (overlayId > 0) {
+					Game.batch().draw(tileView.get(overlayId), (i * tileSize), (j * tileSize) + mapDef.overlayHeight * tileSize, tileSize, tileSize);
 					if (j == 0) {
 						// draw down
 						for (int k = 1; k < 5; k++) {
-							Game.batch().draw(tiles.get(overlayId), (i * tileSize), ((j - k) * tileSize) + 4 * tileSize, tileSize, tileSize);
+							Game.batch().draw(tileView.get(overlayId), (i * tileSize), ((j - k) * tileSize) + 4 * tileSize, tileSize, tileSize);
 						}
 					}
 				}
