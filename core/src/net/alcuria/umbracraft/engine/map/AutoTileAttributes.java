@@ -41,46 +41,121 @@ public class AutoTileAttributes {
 		if (type <= 0) {
 			throw new IllegalStateException("Tile type must be set first");
 		}
-		switch (neighborMask) {
-		case 0b0000_0000:
-			throw new IllegalStateException("Tile marked as valid but has no valid adjacent tiles");
-		}
+
 		// each corner is concerned with its three neighboring tiles. To elaborate:
-		// Corner 0 (Top Left)      | ?000_00??
-		// Corner 1 (Top Right)     | ???0_0000
-		// Corner 2 (Bottom Left)   | 0000_???0
-		// Corner 3 (Bottom Right)  | 00??_?000
+		// Corner 0 (Top Left)      |   ?000_00??   |   LEFT, LEFT TOP, TOP
+		// Corner 1 (Top Right)     |   ???0_0000   |   TOP, TOP_RIGHT, RIGHT
+		// Corner 2 (Bottom Left)   |   0000_???0   |   BOTTOM, BOTTOM_LEFT, LEFT
+		// Corner 3 (Bottom Right)  |   00??_?000   |   RIGHT, BOTTOM_RIGHT, BOTTOM
 
 		for (int i = 0; i < corners.length; i++) {
-			int edgeMask = neighborMask;
 			// i'm not smart enough to do this without a switch
-			// but the end goal is to get the bits we care about to the least significant digit
-			switch (i) {
-			case 0:
+			// but the end goal is to get the bits we care about to the least significant digits
+			// an excercise for the reader: please make this cleaner for me and I'll buy you a coffee :)
+			int edgeMask = neighborMask;
+			if (i == 0) {
 				edgeMask = edgeMask << 1;
-				if ((edgeMask & 0b10000_000) > 0) {
+				if ((edgeMask & 0b10000_0000) > 0) {
 					edgeMask++;
 				}
-				break;
-			case 1:
+				edgeMask = edgeMask & 0b0000_0111;
+				switch (edgeMask) {
+				case 0b000:
+				case 0b010:
+					corners[i] = 12;
+					break;
+				case 0b001:
+				case 0b011:
+					corners[i] = 24;
+					break;
+				case 0b100:
+				case 0b110:
+					corners[i] = 14;
+					break;
+				case 0b111:
+					corners[i] = 26;
+					break;
+				case 0b101:
+					corners[i] = 4;
+					break;
+				}
+			} else if (i == 1) {
 				edgeMask = edgeMask >> 5;
-				break;
-			case 2:
+				edgeMask = edgeMask & 0b0000_0111;
+				switch (edgeMask) {
+				case 0b000:
+				case 0b010:
+					corners[i] = 17;
+					break;
+				case 0b001:
+				case 0b011:
+					corners[i] = 15;
+					break;
+				case 0b100:
+				case 0b110:
+					corners[i] = 29;
+					break;
+				case 0b101:
+					corners[i] = 5;
+					break;
+				case 0b111:
+					corners[i] = 27;
+					break;
+				}
+			} else if (i == 2) {
 				edgeMask = edgeMask >> 1;
-		break;
-		case 3:
-			edgeMask = edgeMask >> 3;
-			break;
-		default:
-			break;
-			}
+				edgeMask = edgeMask & 0b0000_0111;
+				switch (edgeMask) {
+				case 0b000:
+				case 0b010:
+					corners[i] = 42;
+					break;
+				case 0b001:
+				case 0b011:
+					corners[i] = 44;
+					break;
+				case 0b100:
+				case 0b110:
+					corners[i] = 30;
+					break;
+				case 0b101:
+					corners[i] = 10;
+					break;
+				case 0b111:
+					corners[i] = 32;
+					break;
+				}
+			} else if (i == 3) {
+				edgeMask = edgeMask >> 3;
+				edgeMask = edgeMask & 0b0000_0111;
 
+				switch (edgeMask) {
+				case 0b000:
+				case 0b010:
+					corners[i] = 47;
+					break;
+				case 0b001:
+				case 0b011:
+					corners[i] = 35;
+					break;
+				case 0b100:
+				case 0b110:
+					corners[i] = 45;
+					break;
+				case 0b101:
+					corners[i] = 11;
+					break;
+				case 0b111:
+					corners[i] = 33;
+					break;
+				}
+			}
 		}
 
-		corners[0] = 14;
-		corners[1] = 15;
-		corners[2] = 20;
-		corners[3] = 21;
+		//		corners[0] = 14;
+		//		corners[1] = 15;
+		//		corners[2] = 20;
+		//		corners[3] = 21;
 
 	}
 

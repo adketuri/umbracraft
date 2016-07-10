@@ -26,7 +26,6 @@ public class Map implements Disposable {
 	private AutoTileAttributes[][] overlayTypeMap, typeMap;
 	private TilesetDefinition tilesetDefinition;
 	private TileView tileView;
-	private boolean[][] typeFlags;
 	private int width;
 
 	/** Creates the map, building all layers and calculating terrain tiles so the
@@ -57,13 +56,11 @@ public class Map implements Disposable {
 		width = mapDef.getWidth();
 		height = mapDef.getHeight();
 		altMap = new int[width][height];
-		typeFlags = new boolean[width][height];
 		overlayTypeMap = new AutoTileAttributes[width][height];
 		typeMap = new AutoTileAttributes[width][height];
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				typeFlags[i][j] = false;
 				altMap[i][j] = mapDef.tiles.get(i).get(height - j - 1).altitude;
 
 				// only initialize type indices where we know there is a terrain type
@@ -82,16 +79,13 @@ public class Map implements Disposable {
 		// build map's terrains
 		int[] terrains = { tilesetDefinition.terrain1, tilesetDefinition.terrain2, tilesetDefinition.overlay };
 		boolean[] isOverlay = { false, false, true };
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				for (int k = 0; k < terrains.length; k++) {
-					final int terrain = terrains[k];
-					// reset TYPE flags
-					for (int l = 0; l < width; l++) {
-						for (int m = 0; m < height; m++) {
-							typeFlags[i][j] = false;
-						}
-					}
+		for (int k = 0; k < terrains.length; k++) {
+			final int terrain = terrains[k];
+
+			// go thru and set everything
+			for (int i = 0; i < width; i++) {
+				for (int j = 0; j < height; j++) {
+
 					//AK
 					/** first, initialize the AutoTileAttributes as needed, for
 					 * areas with nonzero types. Next, At this point we need to
@@ -100,93 +94,23 @@ public class Map implements Disposable {
 					 * look at the adjacent tiles in order to set some
 					 * additional smart attributes for that tile (namely the
 					 * four corners) */
-					if ((!isOverlay[k] && typeMap[i][j] != null && typeMap[i][j].isInitialized()) || (isOverlay[k] && overlayTypeMap[i][j] != null && overlayTypeMap[i][j].isInitialized()) && !typeFlags[i][j]) {
+					if ((!isOverlay[k] && typeMap[i][j] != null && typeMap[i][j].isInitialized()) || (isOverlay[k] && overlayTypeMap[i][j] != null && overlayTypeMap[i][j].isInitialized())) {
 						// get surrounding mask
 						// top topright right rightdown _ down downleft left lefttop
 						int[] dX = { 0, 1, 1, 1, 0, -1, -1, -1 };
 						int[] dY = { 1, 1, 0, -1, -1, -1, 0, 1 };
 						int value = 0b0000_0000;
 						int mask = 0b1000_0000;
-						boolean valid = false;
 						for (int l = 0; l < dX.length; l++) {
 							System.out.println(String.format("Value: %s mask: %s ", Integer.toBinaryString(value), Integer.toBinaryString(mask)));
 							final int typeAt = isOverlay[k] ? getOverlayTypeAt(i + dX[l], j + dY[l]) : getTypeAt(i + dX[l], j + dY[l]);
 							if (typeAt == terrain) {
 								value = value ^ mask;
-								valid = true;
 							}
 							mask = mask >>> 1;
 						}
 
 						setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain, value);
-
-						//						if (valid) {
-						//							switch (value) {
-						//							case 0b0000_0000:
-						//								throw new IllegalStateException("Tile marked as valid but has no valid adjacent tiles");
-						//							case 0b1000_0000: // top permutations
-						//							case 0b1100_0000:
-						//							case 0b1000_0001:
-						//							case 0b1100_0001:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain + 16);
-						//								break;
-						//							case 0b0100_0000:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain + 15);
-						//								break;
-						//							case 0b0010_0000: // right permutations
-						//							case 0b0110_0000:
-						//							case 0b0011_0000:
-						//							case 0b0111_0000:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain - 1);
-						//								break;
-						//							case 0b0001_0000:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain - 17);
-						//								break;
-						//							case 0b0000_1000: // down permutations
-						//							case 0b0000_1100:
-						//							case 0b0001_1000:
-						//							case 0b0001_1100:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain - 16);
-						//								break;
-						//							case 0b0000_0100:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain - 15);
-						//								break;
-						//							case 0b0000_0010: // left permuatations
-						//							case 0b0000_0011:
-						//							case 0b0000_0110:
-						//							case 0b0000_0111:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain + 1);
-						//								break;
-						//							case 0b0000_0001:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain + 17);
-						//								break;
-						//							case 0b1000_0011: // top left 3/4ths
-						//							case 0b1000_0111:
-						//							case 0b1100_0011:
-						//							case 0b1100_0111:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain - 14);
-						//							case 0b1110_0000: // top right 3/4ths
-						//							case 0b1110_0001:
-						//							case 0b1111_0000:
-						//							case 0b1111_0001:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain - 13);
-						//								break;
-						//							case 0b0011_1000: // down right 3/4ths
-						//							case 0b0011_1100:
-						//							case 0b0111_1000:
-						//							case 0b0111_1100:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain + 3);
-						//								break;
-						//							case 0b0000_1110: // down left 3/4ths
-						//							case 0b0001_1110:
-						//							case 0b0000_1111:
-						//							case 0b0001_1111:
-						//								setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain + 2);
-						//							}
-						//							//case 0b1101_0000:
-						//							//case 0b1000_0101:
-						//							typeFlags[i][j] = true;
-						//						}
 					}
 				}
 			}
@@ -475,7 +399,13 @@ public class Map implements Disposable {
 			for (int j = alt; j >= drop; j--) {
 				try {
 					if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
-						Game.batch().draw(tileView.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
+						//tileView.draw(overlayTypeMap[i][j], i * tileSize, j * tileSize + mapDef.overlayHeight * tileSize);
+						//overlayTypeMap[i][j].draw(tileView, i * tileSize, j * tileSize + mapDef.overlayHeight * tileSize);
+						if (typeMap[i][row + j] != null) {
+							tileView.draw(typeMap[i][row + j], i * tileSize, row * tileSize + j * tileSize);
+						} else {
+							Game.batch().draw(tileView.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
+						}
 						if (data[i][row + j].overId > 0) {
 							Game.batch().draw(tileView.get(data[i][row + j].overId), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
 						}
@@ -503,11 +433,11 @@ public class Map implements Disposable {
 				final int overlayId = getOverlayTypeAt(i, j);
 				if (overlayId > 0) {
 					tileView.draw(overlayTypeMap[i][j], i * tileSize, j * tileSize + mapDef.overlayHeight * tileSize);
-					//					overlayTypeMap[i][j].draw(tileView, i * tileSize, j * tileSize + mapDef.overlayHeight * tileSize);
+					//overlayTypeMap[i][j].draw(tileView, i * tileSize, j * tileSize + mapDef.overlayHeight * tileSize);
 					if (j == 0) {
 						// draw down
 						for (int k = 1; k < 5; k++) {
-							Game.batch().draw(tileView.get(overlayId), (i * tileSize), ((j - k) * tileSize) + 4 * tileSize, tileSize, tileSize);
+							Game.batch().draw(tileView.get(overlayId), (i * tileSize), ((j - k) * tileSize) + mapDef.overlayHeight * tileSize, tileSize, tileSize);
 						}
 					}
 				}
