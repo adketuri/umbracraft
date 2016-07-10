@@ -82,35 +82,37 @@ public class Map implements Disposable {
 		for (int k = 0; k < terrains.length; k++) {
 			final int terrain = terrains[k];
 
-			// go thru and set everything
-			for (int i = 0; i < width; i++) {
-				for (int j = 0; j < height; j++) {
+			if (terrain > 0) {
+				// go thru and set everything
+				for (int i = 0; i < width; i++) {
+					for (int j = 0; j < height; j++) {
 
-					//AK
-					/** first, initialize the AutoTileAttributes as needed, for
-					 * areas with nonzero types. Next, At this point we need to
-					 * iterate thru the map and look at the type in the new
-					 * AutoTileAttributes class. If it's non null, we need to
-					 * look at the adjacent tiles in order to set some
-					 * additional smart attributes for that tile (namely the
-					 * four corners) */
-					if ((!isOverlay[k] && typeMap[i][j] != null && typeMap[i][j].isInitialized()) || (isOverlay[k] && overlayTypeMap[i][j] != null && overlayTypeMap[i][j].isInitialized())) {
-						// get surrounding mask
-						// top topright right rightdown _ down downleft left lefttop
-						int[] dX = { 0, 1, 1, 1, 0, -1, -1, -1 };
-						int[] dY = { 1, 1, 0, -1, -1, -1, 0, 1 };
-						int value = 0b0000_0000;
-						int mask = 0b1000_0000;
-						for (int l = 0; l < dX.length; l++) {
-							System.out.println(String.format("Value: %s mask: %s ", Integer.toBinaryString(value), Integer.toBinaryString(mask)));
-							final int typeAt = isOverlay[k] ? getOverlayTypeAt(i + dX[l], j + dY[l]) : getTypeAt(i + dX[l], j + dY[l]);
-							if (typeAt == terrain) {
-								value = value ^ mask;
+						//AK
+						/** first, initialize the AutoTileAttributes as needed,
+						 * for areas with nonzero types. Next, At this point we
+						 * need to iterate thru the map and look at the type in
+						 * the new AutoTileAttributes class. If it's non null,
+						 * we need to look at the adjacent tiles in order to set
+						 * some additional smart attributes for that tile
+						 * (namely the four corners) */
+						if ((!isOverlay[k] && typeMap[i][j] != null && typeMap[i][j].isInitialized()) || (isOverlay[k] && overlayTypeMap[i][j] != null && overlayTypeMap[i][j].isInitialized())) {
+							// get surrounding mask
+							// top topright right rightdown _ down downleft left lefttop
+							int[] dX = { 0, 1, 1, 1, 0, -1, -1, -1 };
+							int[] dY = { 1, 1, 0, -1, -1, -1, 0, 1 };
+							int value = 0b0000_0000;
+							int mask = 0b1000_0000;
+							for (int l = 0; l < dX.length; l++) {
+								System.out.println(String.format("Value: %s mask: %s ", Integer.toBinaryString(value), Integer.toBinaryString(mask)));
+								final int typeAt = isOverlay[k] ? getOverlayTypeAt(i + dX[l], j + dY[l]) : getTypeAt(i + dX[l], j + dY[l]);
+								if (typeAt == terrain) {
+									value = value ^ mask;
+								}
+								mask = mask >>> 1;
 							}
-							mask = mask >>> 1;
-						}
 
-						setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain, value);
+							setTypeAt(isOverlay[k] ? overlayTypeMap : typeMap, i, j, terrain, value);
+						}
 					}
 				}
 			}
@@ -399,8 +401,7 @@ public class Map implements Disposable {
 			for (int j = alt; j >= drop; j--) {
 				try {
 					if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
-						//tileView.draw(overlayTypeMap[i][j], i * tileSize, j * tileSize + mapDef.overlayHeight * tileSize);
-						//overlayTypeMap[i][j].draw(tileView, i * tileSize, j * tileSize + mapDef.overlayHeight * tileSize);
+						// if we have a special overlay here draw it
 						if (typeMap[i][row + j] != null) {
 							tileView.draw(typeMap[i][row + j], i * tileSize, row * tileSize + j * tileSize);
 						} else {
@@ -433,7 +434,6 @@ public class Map implements Disposable {
 				final int overlayId = getOverlayTypeAt(i, j);
 				if (overlayId > 0) {
 					tileView.draw(overlayTypeMap[i][j], i * tileSize, j * tileSize + mapDef.overlayHeight * tileSize);
-					//overlayTypeMap[i][j].draw(tileView, i * tileSize, j * tileSize + mapDef.overlayHeight * tileSize);
 					if (j == 0) {
 						// draw down
 						for (int k = 1; k < 5; k++) {
