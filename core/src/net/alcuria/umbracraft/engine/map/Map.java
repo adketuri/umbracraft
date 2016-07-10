@@ -241,24 +241,14 @@ public class Map implements Disposable {
 		if (getTypeAt(i, j - 1) == tilesetDefinition.stairs) {
 			return tilesetDefinition.stairs + 1;
 		}
-		if (drop == altitude - baseAlt) {
-			// lower walls
-			if (getAltitudeAt(i - 1, j) < altitude || getTypeAt(i - 1, j) == tilesetDefinition.treeWall) {
-				return tilesetDefinition.wall - 1;
-			} else if (getAltitudeAt(i + 1, j) < altitude || getTypeAt(i + 1, j) == tilesetDefinition.treeWall) {
-				return tilesetDefinition.wall + 1;
-			} else {
-				return tilesetDefinition.wall;
-			}
+		final int cols = Config.tilesetWidth / Config.tileWidth;
+		final int wall = cols * tilesetDefinition.wallHeight - (Math.min(drop, tilesetDefinition.wallHeight)) * cols;
+		if (getAltitudeAt(i - 1, j) < altitude || getTypeAt(i - 1, j) == tilesetDefinition.treeWall) {
+			return tilesetDefinition.wall - wall - 1;
+		} else if (getAltitudeAt(i + 1, j) < altitude || getTypeAt(i + 1, j) == tilesetDefinition.treeWall) {
+			return tilesetDefinition.wall - wall + 1;
 		} else {
-			// upper walls
-			if (getAltitudeAt(i - 1, j) < altitude || getTypeAt(i - 1, j) == tilesetDefinition.treeWall) {
-				return tilesetDefinition.wall - 17;
-			} else if (getAltitudeAt(i + 1, j) < altitude || getTypeAt(i + 1, j) == tilesetDefinition.treeWall) {
-				return tilesetDefinition.wall - 15;
-			} else {
-				return tilesetDefinition.wall - 16;
-			}
+			return tilesetDefinition.wall - wall;
 		}
 	}
 

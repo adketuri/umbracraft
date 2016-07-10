@@ -25,7 +25,6 @@ public class TileView {
 		// ensure we have everything we need
 		O.notNull(filename);
 		O.notNull(definition);
-		Game.setDebug(true);
 		// add regular tile textures
 		tiles = new Array<TextureRegion>();
 		final Texture texture = Game.assets().get("tiles/" + filename + ".png", Texture.class); //FIXME: hardcoded, bad andrew !!

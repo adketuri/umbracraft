@@ -43,6 +43,8 @@ public class TilesetDefinition extends Definition {
 	public int treeWall;
 	@Tooltip("The bottom center wall/cliffside id")
 	public int wall;
+	@Tooltip("The expected height of walls, in tiles. Taller walls will repeat the nth tile.")
+	public int wallHeight;
 	@Tooltip("The water tile")
 	public int water;
 
