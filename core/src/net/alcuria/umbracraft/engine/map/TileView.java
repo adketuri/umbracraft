@@ -11,7 +11,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** Manages all of the game's tile texture regions needed to render a map, both
- * standard and auto-tiled.
+ * standard and auto-tiled. Only one instance of this class is needed per map
+ * object.
  * @author Andrew Keturi */
 public class TileView {
 
@@ -67,6 +68,10 @@ public class TileView {
 
 	}
 
+	/** Draws either the autotile or regular tile at this coordinate
+	 * @param attributes tile attributes for this location
+	 * @param x x coordinate
+	 * @param y y coordinate */
 	public void draw(AutoTileAttributes attributes, int x, int y) {
 		final int type = attributes.getType();
 		final int w = Config.tileWidth / 2;
