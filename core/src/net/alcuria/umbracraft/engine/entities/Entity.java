@@ -157,8 +157,8 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	public void setFromReference(EntityReferenceDefinition reference, String mapId) {
 		setName(reference.name);
 		id = String.format("%s@%s(%d,%d)", reference.name, mapId, reference.x, reference.y);
-		position.x = reference.x * Config.tileWidth;
-		position.y = reference.y * Config.tileWidth;
+		position.x = reference.x * Config.tileWidth + Config.tileWidth / 2;
+		position.y = reference.y * Config.tileWidth + Config.tileWidth / 2;
 		args.clear();
 		args.addAll(reference.arg1, reference.arg2, reference.arg3);
 	}
