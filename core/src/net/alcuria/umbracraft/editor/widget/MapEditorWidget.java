@@ -19,6 +19,7 @@ import net.dermetfan.utils.Pair;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -69,7 +70,7 @@ public class MapEditorWidget {
 	private boolean entered;
 	private Listener listener;
 	private final MapListModule module;
-	private Table popupTable, helpTable;
+	private Table popupTable, helpTable, mapTable;
 	private final Array<MapTileWidget> tiles = new Array<MapTileWidget>();
 	private int zoom;
 
@@ -82,12 +83,13 @@ public class MapEditorWidget {
 
 			@Override
 			public void invoke() {
+				popupTable.setVisible(false);
 				if (entity == null || entity.name.length() < 1) {
 					module.getDefinition().entities.removeValue(entity, true);
 				} else {
 					module.refreshMap();
 				}
-				popupTable.setVisible(false);
+				mapTable.setTouchable(Touchable.enabled);
 			}
 		};
 	}
@@ -97,8 +99,9 @@ public class MapEditorWidget {
 
 			@Override
 			public void invoke() {
-				module.getDefinition().entities.removeValue(entity, true);
 				popupTable.setVisible(false);
+				module.getDefinition().entities.removeValue(entity, true);
+				mapTable.setTouchable(Touchable.enabled);
 				module.refreshMap();
 			}
 		};
@@ -170,7 +173,7 @@ public class MapEditorWidget {
 
 				{
 
-					add(new Table() {
+					add(mapTable = new Table() {
 						{
 							for (int j = 0; j < module.getDefinition().getHeight(); j++) {
 								Table row = new Table();
@@ -255,6 +258,7 @@ public class MapEditorWidget {
 					add(new Table() {
 						{
 							add(popupTable = new Table()).size(300);
+							popupTable.setVisible(false);
 						}
 					});
 				}
@@ -262,9 +266,11 @@ public class MapEditorWidget {
 				@Override
 				public void draw(Batch batch, float parentAlpha) {
 					super.draw(batch, parentAlpha);
+					batch.setColor(1, 1, 1, popupTable.isVisible() ? 0.2f : 1f);
 					for (int i = 0; i < tiles.size; i++) {
 						tiles.get(i).drawEntity(batch);
 					}
+					batch.setColor(Color.WHITE);
 				}
 
 			};
@@ -325,6 +331,7 @@ public class MapEditorWidget {
 	 * @param j */
 	public void showEntityPopup(int i, int j) {
 		popupTable.setVisible(true);
+		mapTable.setTouchable(Touchable.disabled);
 		popupTable.clear();
 		popupTable.setBackground(Drawables.get("black"));
 		EntityReferenceDefinition entity = module.getDefinition().findEntity(i, j);
@@ -340,7 +347,7 @@ public class MapEditorWidget {
 		module.populate(popupTable, EntityReferenceDefinition.class, entity, populateConfig());
 		popupTable.row();
 		final Table buttonTable = new Table();
-		buttonTable.add(WidgetUtils.button("Close", closeListener(entity)));
+		buttonTable.add(WidgetUtils.button("Create", closeListener(entity)));
 		buttonTable.add(WidgetUtils.button("Delete", deleteListener(entity)));
 		popupTable.add(buttonTable).expandX().fill();
 	}
