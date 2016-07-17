@@ -84,7 +84,7 @@ public class TileView {
 				Game.batch().draw(autoTileRegions.get(corner), x + xOffsets[idx] * w, y + yOffsets[idx] * w, w, w);
 			}
 		} else {
-			Game.batch().draw(get(type), x, y, w, w);
+			Game.batch().draw(get(type), x, y, w * 2, w * 2);
 		}
 	}
 

@@ -103,7 +103,6 @@ public class Map implements Disposable {
 							int value = 0b0000_0000;
 							int mask = 0b1000_0000;
 							for (int l = 0; l < dX.length; l++) {
-								System.out.println(String.format("Value: %s mask: %s ", Integer.toBinaryString(value), Integer.toBinaryString(mask)));
 								final int typeAt = isOverlay[k] ? getOverlayTypeAt(i + dX[l], j + dY[l]) : getTypeAt(i + dX[l], j + dY[l]);
 								if (typeAt == terrain) {
 									value = value ^ mask;
@@ -241,14 +240,40 @@ public class Map implements Disposable {
 		if (getTypeAt(i, j - 1) == tilesetDefinition.stairs) {
 			return tilesetDefinition.stairs + 1;
 		}
-		final int cols = Config.tilesetWidth / Config.tileWidth;
-		final int wall = cols * tilesetDefinition.wallHeight - (Math.min(drop, tilesetDefinition.wallHeight)) * cols;
-		if (getAltitudeAt(i - 1, j) < altitude || getTypeAt(i - 1, j) == tilesetDefinition.treeWall) {
-			return tilesetDefinition.wall - wall - 1;
-		} else if (getAltitudeAt(i + 1, j) < altitude || getTypeAt(i + 1, j) == tilesetDefinition.treeWall) {
-			return tilesetDefinition.wall - wall + 1;
+
+		if (tilesetDefinition.legacyWalls) {
+			if (drop == altitude - baseAlt) {
+				// lower walls
+				if (getAltitudeAt(i - 1, j) < altitude || getTypeAt(i - 1, j) == tilesetDefinition.treeWall) {
+					return tilesetDefinition.wall - 1;
+				} else if (getAltitudeAt(i + 1, j) < altitude || getTypeAt(i + 1, j) == tilesetDefinition.treeWall) {
+					return tilesetDefinition.wall + 1;
+				} else {
+					return tilesetDefinition.wall;
+				}
+			} else {
+				// upper walls
+				if (getAltitudeAt(i - 1, j) < altitude || getTypeAt(i - 1, j) == tilesetDefinition.treeWall) {
+					return tilesetDefinition.wall - 17;
+				} else if (getAltitudeAt(i + 1, j) < altitude || getTypeAt(i + 1, j) == tilesetDefinition.treeWall) {
+					return tilesetDefinition.wall - 15;
+				} else {
+					return tilesetDefinition.wall - 16;
+				}
+			}
 		} else {
-			return tilesetDefinition.wall - wall;
+			final int cols = Config.tilesetWidth / Config.tileWidth;
+			int wall = cols * tilesetDefinition.wallHeight - (Math.min(drop, tilesetDefinition.wallHeight)) * cols;
+			if (altitude - baseAlt == 1) {
+				wall = 0; // this is a hack to fix cliffs of height 1, we should in general start with the bottom and work up but...
+			}
+			if (getAltitudeAt(i - 1, j) < altitude || getTypeAt(i - 1, j) == tilesetDefinition.treeWall) {
+				return tilesetDefinition.wall - wall - 1;
+			} else if (getAltitudeAt(i + 1, j) < altitude || getTypeAt(i + 1, j) == tilesetDefinition.treeWall) {
+				return tilesetDefinition.wall - wall + 1;
+			} else {
+				return tilesetDefinition.wall - wall;
+			}
 		}
 	}
 
@@ -392,7 +417,7 @@ public class Map implements Disposable {
 				try {
 					if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
 						// if we have a special overlay here draw it
-						if (typeMap[i][row + j] != null) {
+						if (typeMap[i][row + j] != null && typeMap[i][row + j].getType() != tilesetDefinition.stairs) {
 							tileView.draw(typeMap[i][row + j], i * tileSize, row * tileSize + j * tileSize);
 						} else {
 							Game.batch().draw(tileView.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);

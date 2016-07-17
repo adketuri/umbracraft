@@ -14,6 +14,8 @@ public class TilesetDefinition extends Definition {
 	public String filename;
 	@Tooltip("The base floor of the map ")
 	public int floor;
+	@Tooltip("Use legacy walls, fixes nasty bugs. This is a hack and will be deprecated.")
+	public boolean legacyWalls;
 	@Tooltip("The name of the tileset")
 	public String name;
 	public int obstacle1;
