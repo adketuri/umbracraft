@@ -11,6 +11,7 @@ import net.alcuria.umbracraft.definitions.map.EntityReferenceDefinition;
 import net.alcuria.umbracraft.definitions.map.MapDefinition;
 import net.alcuria.umbracraft.engine.components.DirectedInputComponent;
 import net.alcuria.umbracraft.engine.events.CameraTargetEvent;
+import net.alcuria.umbracraft.engine.scripts.ChangeDirectionScriptCommand;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -109,6 +110,9 @@ public class EntityManager {
 					Entity entity = new Entity();
 					entity.setFromReference(reference, name);
 					addComponents(entity, reference.name);
+					if (reference.facing != null) {
+						ChangeDirectionScriptCommand.setDirection(reference.facing, entity);
+					}
 					entities.get(EntityScope.MAP).add(entity);
 				}
 			} else {

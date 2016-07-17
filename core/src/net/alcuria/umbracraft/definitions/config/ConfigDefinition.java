@@ -10,6 +10,9 @@ import com.badlogic.gdx.utils.Array;
  * location, starting sprites, and so on.
  * @author Andrew Keturi */
 public class ConfigDefinition extends Definition {
+	@Order(505)
+	@Tooltip("The path to battle backgrounds. Relative")
+	public String battleBgPath;
 	@Tooltip("The path to battle faces on the turn order table. Relative")
 	@Order(507)
 	public String battleFacePath;

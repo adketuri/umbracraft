@@ -149,6 +149,7 @@ public class EditorLayout extends Layout implements EventListener {
 								for (Module<?> m : modules) {
 									m.save();
 								}
+								Editor.reloadDb();
 							};
 						});
 					}

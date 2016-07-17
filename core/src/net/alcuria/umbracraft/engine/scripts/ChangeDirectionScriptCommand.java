@@ -18,12 +18,33 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class ChangeDirectionScriptCommand extends ScriptCommand {
 
 	private static final int angles[] = { 0, 45, 90, 135, 180, 225, 270, 315, 360 };
+
+	/** Given a direction and an entity, attempts to make the entity face that
+	 * direction. Requires either an {@link AnimationCollectionComponent} or an
+	 * {@link AnimationGroupComponent}.
+	 * @param direction the direction to face
+	 * @param entity the entity to change */
+	public static void setDirection(Direction direction, Entity entity) {
+		// update the entity's direction
+		// search for either a collection or a group, prioritizing the former
+		AnimationCollectionComponent component = entity.getComponent(AnimationCollectionComponent.class);
+		if (component != null) {
+			component.setDirection(direction);
+		} else {
+			AnimationGroupComponent group = entity.getComponent(AnimationGroupComponent.class);
+			if (group != null) {
+				group.setDirection(direction);
+			}
+		}
+	}
+
 	@Tooltip("If we want to only use the 4 cardinal directions")
 	public boolean cardinal;
 	@Tooltip("The direction to face, if fixed. Ignored if the target field is specified")
 	public Direction direction = Direction.DOWN;
 	@Tooltip("The entity we want to change the direction of")
 	public String entity;
+
 	@Tooltip("If not empty, the entity we want to face")
 	public String target;
 
@@ -111,17 +132,7 @@ public class ChangeDirectionScriptCommand extends ScriptCommand {
 				// no target, just change facing absolutely
 				newDirection = direction;
 			}
-			// update the entity's direction
-			// search for either a collection or a group, prioritizing the former
-			AnimationCollectionComponent component = changingEntity.getComponent(AnimationCollectionComponent.class);
-			if (component != null) {
-				component.setDirection(newDirection);
-			} else {
-				AnimationGroupComponent group = changingEntity.getComponent(AnimationGroupComponent.class);
-				if (group != null) {
-					group.setDirection(newDirection);
-				}
-			}
+			setDirection(newDirection, changingEntity);
 		} else {
 			Game.error("No entity found with name: " + target);
 		}

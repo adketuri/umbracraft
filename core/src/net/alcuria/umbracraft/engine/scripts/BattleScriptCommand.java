@@ -4,8 +4,10 @@ import java.util.Set;
 
 import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.annotations.Tooltip;
+import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.entities.Entity;
 import net.alcuria.umbracraft.engine.screens.SetInputEnabled;
+import net.alcuria.umbracraft.util.FileUtils;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -14,6 +16,8 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi */
 public class BattleScriptCommand extends ScriptCommand {
 
+	@Tooltip("The background to use for the battle")
+	public String background = "";
 	@Tooltip("The id of the enemy party we want to fight")
 	public String id = "";
 
@@ -25,6 +29,7 @@ public class BattleScriptCommand extends ScriptCommand {
 	public ScriptCommand copy() {
 		BattleScriptCommand command = new BattleScriptCommand();
 		command.id = id;
+		command.background = background;
 		return command;
 	}
 
@@ -35,14 +40,15 @@ public class BattleScriptCommand extends ScriptCommand {
 
 	@Override
 	public String getName() {
-		return "Battle: " + id;
+		return "Battle: " + id + ", " + background;
 	}
 
 	@Override
 	public ObjectMap<String, Array<String>> getSuggestions() {
 		return new ObjectMap<String, Array<String>>() {
 			{
-				put("id", new Array<String>());
+				put("id", Editor.db().enemyGroups().keys());
+				put("background", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().battleBgPath));
 			}
 		};
 	}
@@ -60,7 +66,7 @@ public class BattleScriptCommand extends ScriptCommand {
 	@Override
 	public void onStarted(Entity entity) {
 		Game.publisher().publish(new SetInputEnabled(false));
-		Game.battle().start();
+		Game.battle().start(this);
 	}
 
 	@Override

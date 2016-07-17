@@ -20,6 +20,12 @@ public final class Editor {
 		return publisher;
 	}
 
+	/** Reloads the db, allowing the editor's autocomplete to update after
+	 * saving. */
+	public static void reloadDb() {
+		db = new Db();
+	}
+
 	public Editor() {
 		db = new Db();
 		publisher = new EventPublisher();
