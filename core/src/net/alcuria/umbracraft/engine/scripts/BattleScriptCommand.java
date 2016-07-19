@@ -20,7 +20,10 @@ public class BattleScriptCommand extends ScriptCommand {
 	public String background = "";
 	@Tooltip("The id of the enemy party we want to fight")
 	public String id = "";
+	@Tooltip("A script to invoke mid-battle")
+	public String script;
 
+	/** For deserialization */
 	public BattleScriptCommand() {
 
 	}
@@ -30,6 +33,7 @@ public class BattleScriptCommand extends ScriptCommand {
 		BattleScriptCommand command = new BattleScriptCommand();
 		command.id = id;
 		command.background = background;
+		command.script = script;
 		return command;
 	}
 
@@ -48,6 +52,7 @@ public class BattleScriptCommand extends ScriptCommand {
 		return new ObjectMap<String, Array<String>>() {
 			{
 				put("id", Editor.db().enemyGroups().keys());
+				put("script", Editor.db().scripts().keys());
 				put("background", FileUtils.getFilesAt(Editor.db().config().projectPath + Editor.db().config().battleBgPath));
 			}
 		};
