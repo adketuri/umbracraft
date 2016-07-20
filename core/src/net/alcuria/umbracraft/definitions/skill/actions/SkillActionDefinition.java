@@ -34,6 +34,8 @@ public abstract class SkillActionDefinition extends Definition {
 		}
 	}
 
+	public abstract SkillActionDefinition cpy();
+
 	@Override
 	public String getName() {
 		return "Action";

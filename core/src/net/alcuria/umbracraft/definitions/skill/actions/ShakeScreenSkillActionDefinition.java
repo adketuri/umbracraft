@@ -12,4 +12,13 @@ public class ShakeScreenSkillActionDefinition extends SkillActionDefinition {
 	public float duration;
 	@Tooltip("The rate at which the screen shakes. Higher is faster.")
 	public float frequency;
+
+	@Override
+	public SkillActionDefinition cpy() {
+		ShakeScreenSkillActionDefinition def = new ShakeScreenSkillActionDefinition();
+		def.amplitude = amplitude;
+		def.duration = duration;
+		def.frequency = frequency;
+		return def;
+	}
 }

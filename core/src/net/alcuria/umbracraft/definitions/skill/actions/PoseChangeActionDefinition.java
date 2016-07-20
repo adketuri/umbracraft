@@ -14,4 +14,11 @@ public class PoseChangeActionDefinition extends SkillActionDefinition {
 	public PoseChangeActionDefinition(BattlePose pose) {
 		this.pose = pose;
 	}
+
+	@Override
+	public SkillActionDefinition cpy() {
+		PoseChangeActionDefinition def = new PoseChangeActionDefinition();
+		def.pose = pose;
+		return def;
+	}
 }

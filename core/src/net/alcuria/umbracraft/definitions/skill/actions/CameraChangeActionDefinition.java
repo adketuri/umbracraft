@@ -29,4 +29,11 @@ public class CameraChangeActionDefinition extends SkillActionDefinition {
 	private static final int OFFSET = 40; // offset for the left/right grid focus
 	@Tooltip("The position of the camera on the field")
 	public CameraDirection position;
+
+	@Override
+	public SkillActionDefinition cpy() {
+		CameraChangeActionDefinition def = new CameraChangeActionDefinition();
+		def.position = position;
+		return def;
+	}
 }

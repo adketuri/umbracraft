@@ -25,7 +25,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 
 public class SkillListModule extends ListModule<SkillDefinition> {
 
-	private Table actionDropdownTable, actionTable, iconTable;
+	private Table actionDropdownTable, actionTable, iconTable, listCommandTable;
 	private SkillDefinition definition;
 
 	@Override
@@ -55,6 +55,7 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 				add(new Table() {
 					{
 						defaults().pad(20);
+						add(listCommandTable = new Table()).row();
 						add(actionTable = new Table()).row();
 						add(actionDropdownTable = new Table()).row();
 					}
@@ -103,6 +104,44 @@ public class SkillListModule extends ListModule<SkillDefinition> {
 	}
 
 	private void updateActions() {
+		listCommandTable.clear();
+		listCommandTable.add(new Table() {
+			{
+				defaults().pad(20);
+				final VisTextButton copyButton = new VisTextButton("Copy Actions");
+				copyButton.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						super.clicked(event, x, y);
+						Editor.clipboard().skillActions = definition.actions;
+					}
+				});
+				final VisTextButton pasteButton = new VisTextButton("Paste Actions") {
+					@Override
+					public void act(float delta) {
+						setDisabled(Editor.clipboard().skillActions == null);
+					};
+				};
+				pasteButton.addListener(new ClickListener() {
+
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						super.clicked(event, x, y);
+						if (definition.actions == null) {
+							definition.actions = new Array<SkillActionDefinition>();
+						} else {
+							definition.actions.clear();
+						}
+						for (SkillActionDefinition act : Editor.clipboard().skillActions) {
+							definition.actions.add(act.cpy());
+						}
+						updateActions();
+					}
+				});
+				add(copyButton);
+				add(pasteButton);
+			}
+		});
 		actionTable.clear();
 		actionTable.add(new Table() {
 			{

@@ -12,4 +12,11 @@ public class DamageSkillActionDefinition extends SkillActionDefinition {
 	@Tooltip("The amount of damage to deal as a percent of the skill's total damage")
 	public float percentDamage;
 
+	@Override
+	public SkillActionDefinition cpy() {
+		DamageSkillActionDefinition def = new DamageSkillActionDefinition();
+		def.percentDamage = percentDamage;
+		return def;
+	}
+
 }

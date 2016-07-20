@@ -13,4 +13,11 @@ public class WaitSkillActionDefinition extends SkillActionDefinition {
 	public WaitSkillActionDefinition(float wait) {
 		this.wait = wait;
 	}
+
+	@Override
+	public SkillActionDefinition cpy() {
+		WaitSkillActionDefinition def = new WaitSkillActionDefinition();
+		def.wait = wait;
+		return def;
+	}
 }

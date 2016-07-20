@@ -16,4 +16,12 @@ public class ApproachSkillActionDefinition extends SkillActionDefinition {
 		this.x = x;
 		this.y = y;
 	}
+
+	@Override
+	public SkillActionDefinition cpy() {
+		ApproachSkillActionDefinition def = new ApproachSkillActionDefinition();
+		def.x = x;
+		def.y = y;
+		return def;
+	}
 }

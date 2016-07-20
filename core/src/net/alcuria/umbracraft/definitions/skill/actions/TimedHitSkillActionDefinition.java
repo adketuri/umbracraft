@@ -18,4 +18,11 @@ public class TimedHitSkillActionDefinition extends SkillActionDefinition {
 	@Tooltip("The length of time the player has (in secs) to get a timed hit")
 	public float window;
 
+	@Override
+	public SkillActionDefinition cpy() {
+		TimedHitSkillActionDefinition def = new TimedHitSkillActionDefinition();
+		def.type = type;
+		return def;
+	}
+
 }
