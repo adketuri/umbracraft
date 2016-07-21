@@ -157,6 +157,14 @@ public class AnimationComponent implements Component {
 	}
 
 	/** Sets the rendering origin of the sprite
+	 * @param x
+	 * @param y */
+	public void setOrigin(float x, float y) {
+		origin.x = x;
+		origin.y = y;
+	}
+
+	/** Sets the rendering origin of the sprite
 	 * @param origin the new origin {@link Vector2} to use. Member fields are
 	 *        set rather than tracking a pointer. */
 	public void setOrigin(Vector2 origin) {

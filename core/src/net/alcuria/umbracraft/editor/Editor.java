@@ -20,6 +20,7 @@ public final class Editor {
 	private static Db db;
 	private static EventPublisher publisher;
 
+	/** @return the editor's {@link Clipboard} */
 	public static Clipboard clipboard() {
 		return clipboard;
 	}

@@ -15,6 +15,7 @@ public abstract class SkillActionDefinition extends Definition {
 		DAMAGE(DamageSkillActionDefinition.class), //
 		GRID_EFFECT(PlaceGridEffectActionDefinition.class), //
 		POSE_CHANGE(PoseChangeActionDefinition.class), //
+		PROJECTILE(ProjectileSkillActionDefinition.class), //
 		RETURN(ReturnSkillActionDefinition.class), //
 		SHAKE(ShakeScreenSkillActionDefinition.class), //
 		SOUND(PlaySoundSkillActionDefinition.class), //
