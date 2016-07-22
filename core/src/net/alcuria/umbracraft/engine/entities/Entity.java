@@ -130,7 +130,9 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		return tag != null && this.tag != null && this.tag.equals(tag);
 	}
 
-	/** Removes a component from the entity
+	/** Removes a component from the entity by iterating through the components
+	 * attached to this entity until a class match is found. This is suboptimal.
+	 * We can rework this is it becomes a bottleneck.
 	 * @param clazz the component type */
 	public void removeComponent(Class<? extends Component> clazz) {
 		for (Component component : components) {
@@ -139,6 +141,12 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 				return;
 			}
 		}
+	}
+
+	/** Removes a component by identity comparison
+	 * @param component */
+	public void removeComponent(Component component) {
+		components.removeValue(component, true);
 	}
 
 	/** Renders all components */

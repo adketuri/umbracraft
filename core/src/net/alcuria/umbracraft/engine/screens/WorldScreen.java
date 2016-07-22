@@ -46,9 +46,6 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 		Game.view().focus();
 		Game.areas().setAreaAndNode(Game.db().config().startingArea, Game.db().config().startingNode);
 		in = new OnscreenInputManager();
-
-		//NOSHIP: forcing debug for now
-		//		Game.setDebug(true);
 	}
 
 	@Override
@@ -134,6 +131,5 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 	@Override
 	public void show() {
 		Game.audio().playOverworld();
-
 	}
 }
