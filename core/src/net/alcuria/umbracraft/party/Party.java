@@ -1,5 +1,7 @@
 package net.alcuria.umbracraft.party;
 
+import net.alcuria.umbracraft.Game;
+
 import com.badlogic.gdx.utils.Array;
 
 /** A representation of the player's current party.
@@ -31,6 +33,14 @@ public class Party {
 	/** @return all party members */
 	public Array<PartyMember> getMembers() {
 		return members;
+	}
+
+	/** Sets the default (starting) party as defined in the DB */
+	public void loadDefault() {
+		for (String hero : Game.db().config().startingParty) {
+			addMember(new PartyMember(hero));
+		}
+
 	}
 
 	/** @return the size of the party */

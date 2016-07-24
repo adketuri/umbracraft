@@ -11,7 +11,6 @@ import net.alcuria.umbracraft.engine.events.MapChangedEvent;
 import net.alcuria.umbracraft.engine.manager.input.DebugText;
 import net.alcuria.umbracraft.engine.manager.input.OnscreenInputManager;
 import net.alcuria.umbracraft.engine.windows.WindowStack;
-import net.alcuria.umbracraft.party.PartyMember;
 import net.alcuria.umbracraft.save.model.GameStatsManager.GameStat;
 
 import com.badlogic.gdx.Gdx;
@@ -30,10 +29,7 @@ public class WorldScreen extends UmbraScreen implements EventListener {
 		teleporter = new Teleporter();
 		Game.publisher().subscribe(this);
 
-		// set the starting party
-		for (String hero : Game.db().config().startingParty) {
-			Game.party().addMember(new PartyMember(hero));
-		}
+		Game.party().loadDefault();
 
 		// set the starting area/map location
 		Game.entities().create(EntityScope.MAP, WorldUtils.getStartingMapName());
