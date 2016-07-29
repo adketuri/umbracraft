@@ -2,6 +2,7 @@ package net.alcuria.umbracraft.engine.scripts;
 
 import java.util.Set;
 
+import net.alcuria.umbracraft.Game;
 import net.alcuria.umbracraft.definitions.Definition;
 import net.alcuria.umbracraft.engine.entities.Entity;
 
@@ -111,6 +112,7 @@ public abstract class ScriptCommand extends Definition implements Cloneable {
 	public final void start(Entity entity) {
 		state = CommandState.STARTED;
 		onStarted(entity);
+		Game.debug("Started: " + getName());
 	}
 
 	/** Called every frame to update the {@link ScriptCommand} */

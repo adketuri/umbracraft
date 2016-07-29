@@ -12,6 +12,7 @@ import net.alcuria.umbracraft.engine.scripts.ChangePoseScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ConditionalCommand;
 import net.alcuria.umbracraft.engine.scripts.ControlVariableCommand;
 import net.alcuria.umbracraft.engine.scripts.EmptyCommand;
+import net.alcuria.umbracraft.engine.scripts.EntityVisibilityScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.FlagScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.IndicatorOperationCommand;
 import net.alcuria.umbracraft.engine.scripts.ItemChangeScriptCommand;
@@ -50,7 +51,8 @@ public class ScriptCommandWidget extends Module<ScriptCommand> {
 		ITEM("Change Items/Inventory", ItemChangeScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), //
 		PAUSE("Pause", PauseScriptCommand.class), POSE("Change Pose", ChangePoseScriptCommand.class), RECOVER("Heal/Recover Party", RecoverScriptCommand.class), //
 		REMOVE("Remove Entity", RemoveEntityCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), SOUND("Play Sound", PlaySoundScriptCommand.class), //
-		TELEPORT("Teleport", TeleportScriptCommand.class), TINT("Tint Screen", TintScreenCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class);
+		TELEPORT("Teleport", TeleportScriptCommand.class), TINT("Tint Screen", TintScreenCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class), //
+		VISIBILITY("Entity Visibility", EntityVisibilityScriptCommand.class);
 
 		public static Commands from(Class<? extends ScriptCommand> clazz) {
 			for (Commands c : Commands.values()) {

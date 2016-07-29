@@ -19,6 +19,7 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	public static final String PLAYER = "Player";
 	private final Array<String> args = new Array<String>();
 	private final Array<Component> components;
+	private boolean isVisible = true;
 	private String name, tag, id;
 	public Vector3 position, velocity;
 	private int renderOffset;
@@ -130,6 +131,11 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 		return tag != null && this.tag != null && this.tag.equals(tag);
 	}
 
+	/** @return the isVisible */
+	public boolean isVisible() {
+		return isVisible;
+	}
+
 	/** Removes a component from the entity by iterating through the components
 	 * attached to this entity until a class match is found. This is suboptimal.
 	 * We can rework this is it becomes a bottleneck.
@@ -152,8 +158,10 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	/** Renders all components */
 	@Override
 	public void render() {
-		for (int i = 0; i < components.size; i++) {
-			components.get(i).render(this);
+		if (isVisible) {
+			for (int i = 0; i < components.size; i++) {
+				components.get(i).render(this);
+			}
 		}
 	}
 
@@ -194,6 +202,11 @@ public class Entity implements BaseEntity, Comparable<Entity> {
 	/** @param tag the tag to set */
 	public void setTag(String tag) {
 		this.tag = tag;
+	}
+
+	/** @param isVisible the isVisible to set */
+	public void setVisible(boolean isVisible) {
+		this.isVisible = isVisible;
 	}
 
 	/** Updates all components */
