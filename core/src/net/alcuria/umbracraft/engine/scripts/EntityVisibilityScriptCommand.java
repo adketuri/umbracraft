@@ -55,7 +55,7 @@ public class EntityVisibilityScriptCommand extends ScriptCommand {
 	public void onStarted(Entity entity) {
 		Entity target = self ? entity : Game.entities().find(id);
 		if (target != null) {
-			entity.setVisible(visible);
+			target.setVisible(visible);
 		} else {
 			Game.error("Cannot change visibility. No entity found with id " + id);
 		}

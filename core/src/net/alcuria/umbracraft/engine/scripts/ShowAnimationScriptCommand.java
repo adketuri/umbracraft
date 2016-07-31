@@ -3,6 +3,7 @@ package net.alcuria.umbracraft.engine.scripts;
 import java.util.Set;
 
 import net.alcuria.umbracraft.Game;
+import net.alcuria.umbracraft.annotations.Order;
 import net.alcuria.umbracraft.definitions.anim.AnimationDefinition;
 import net.alcuria.umbracraft.editor.Editor;
 import net.alcuria.umbracraft.engine.components.AnimationCollectionComponent;
@@ -21,7 +22,11 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Andrew Keturi */
 public class ShowAnimationScriptCommand extends ScriptCommand {
 
-	public String target = "", anim = "";
+	@Order(2)
+	public String anim = "";
+	@Order(1)
+	public String target = "";
+	@Order(3)
 	public boolean wait, removeAfter, self;
 
 	public ShowAnimationScriptCommand() {
@@ -84,6 +89,8 @@ public class ShowAnimationScriptCommand extends ScriptCommand {
 			if (StringUtils.isNotEmpty(anim)) {
 				final AnimationComponent component = new AnimationComponent(Game.db().anim(anim));
 				targetEntity.addComponent(component);
+				// set entity visibility to true -- we assume when we show an animation we actually want the entity visible
+				targetEntity.setVisible(true);
 				// hide the collection from appearing
 				AnimationCollectionComponent collection = targetEntity.getComponent(AnimationCollectionComponent.class);
 				if (collection != null) {

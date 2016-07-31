@@ -24,6 +24,7 @@ import net.alcuria.umbracraft.engine.scripts.PlaySoundScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.RecoverScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.RemoveEntityCommand;
 import net.alcuria.umbracraft.engine.scripts.ScriptCommand;
+import net.alcuria.umbracraft.engine.scripts.SetAnimationCollectionScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.ShowAnimationScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.TeleportScriptCommand;
 import net.alcuria.umbracraft.engine.scripts.TintScreenCommand;
@@ -46,13 +47,13 @@ import com.kotcrab.vis.ui.widget.color.ColorPickerListener;
 
 public class ScriptCommandWidget extends Module<ScriptCommand> {
 	public static enum Commands {
-		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), CONDITIONAL("Conditional", ConditionalCommand.class), //
-		DIRECTION("Change Direction", ChangeDirectionScriptCommand.class), FLAG("Flag", FlagScriptCommand.class), INDICATOR("Indicator Operations", IndicatorOperationCommand.class), //
-		ITEM("Change Items/Inventory", ItemChangeScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), MOVE("Move", MoveScriptCommand.class), //
-		PAUSE("Pause", PauseScriptCommand.class), POSE("Change Pose", ChangePoseScriptCommand.class), RECOVER("Heal/Recover Party", RecoverScriptCommand.class), //
-		REMOVE("Remove Entity", RemoveEntityCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), SOUND("Play Sound", PlaySoundScriptCommand.class), //
-		TELEPORT("Teleport", TeleportScriptCommand.class), TINT("Tint Screen", TintScreenCommand.class), VARIABLE("Control Variable", ControlVariableCommand.class), //
-		VISIBILITY("Entity Visibility", EntityVisibilityScriptCommand.class);
+		BATTLE("Battle", BattleScriptCommand.class), CAMERA_TARGET("Camera Target", CameraTargetScriptCommand.class), COLLECTION("Animation Collection", SetAnimationCollectionScriptCommand.class), //
+		CONDITIONAL("Conditional", ConditionalCommand.class), DIRECTION("Change Direction", ChangeDirectionScriptCommand.class), FLAG("Flag", FlagScriptCommand.class), //
+		INDICATOR("Indicator Operations", IndicatorOperationCommand.class), ITEM("Change Items/Inventory", ItemChangeScriptCommand.class), LOG("Log", LogScriptCommand.class), MESSAGE("Message", MessageScriptCommand.class), //
+		MOVE("Move", MoveScriptCommand.class), PAUSE("Pause", PauseScriptCommand.class), POSE("Change Pose", ChangePoseScriptCommand.class), //
+		RECOVER("Heal/Recover Party", RecoverScriptCommand.class), REMOVE("Remove Entity", RemoveEntityCommand.class), SHOW_ANIM("Show Animation", ShowAnimationScriptCommand.class), //
+		SOUND("Play Sound", PlaySoundScriptCommand.class), TELEPORT("Teleport", TeleportScriptCommand.class), TINT("Tint Screen", TintScreenCommand.class), //
+		VARIABLE("Control Variable", ControlVariableCommand.class), VISIBILITY("Entity Visibility", EntityVisibilityScriptCommand.class);
 
 		public static Commands from(Class<? extends ScriptCommand> clazz) {
 			for (Commands c : Commands.values()) {
