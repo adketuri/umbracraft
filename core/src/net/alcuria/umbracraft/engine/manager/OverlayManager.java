@@ -12,6 +12,7 @@ import net.alcuria.umbracraft.listeners.Listener;
 import net.alcuria.umbracraft.util.O.L;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -29,12 +30,16 @@ public class OverlayManager implements EventListener, BaseEntity, Disposable {
 	private final Stage stage = new Stage(Game.view().getViewport());
 	private boolean startedColorAction = false;
 	private Listener tintListener;
+	private final ShaderProgram transition = new ShaderProgram(Gdx.files.internal("shader/test_vertex"), Gdx.files.internal("shader/test_fragment"));
 	{
 		overlay.setWidth(Config.viewWidth);
 		overlay.setHeight(Config.viewHeight);
 		overlay.getColor().a = 0;
 		stage.addActor(overlay);
 		Game.publisher().subscribe(this);
+		if (transition.getLog().length() != 0) {
+			Game.error(transition.getLog());
+		}
 	}
 
 	@Override
@@ -72,14 +77,13 @@ public class OverlayManager implements EventListener, BaseEntity, Disposable {
 
 	@Override
 	public void render() {
+		//Game.batch().setShader(transition);
 		stage.draw();
+		//Game.batch().setShader(null);
 	}
 
 	@Override
 	public void update() {
-		if (colorAction != null && colorAction.getColor() != null) {
-			//Game.log(colorAction.getColor().toString());
-		}
 		stage.act(Gdx.graphics.getDeltaTime());
 		if (startedColorAction) {
 			Game.batch().setColor(colorAction.getColor());

@@ -17,6 +17,9 @@ import com.badlogic.gdx.utils.Disposable;
  * objects to render the map.
  * @author Andrew Keturi */
 public class Map implements Disposable {
+	private static final boolean debugRenderMode = false;
+	private static int staticRow;
+	private static int timer;
 	private int[][] altMap;
 	private int height;
 	private Array<Layer> layers;
@@ -25,6 +28,7 @@ public class Map implements Disposable {
 	private String name;
 	private AutoTileAttributes[][] overlayTypeMap, typeMap;
 	private TilesetDefinition tilesetDefinition;
+
 	private TileView tileView;
 	private int width;
 
@@ -77,7 +81,7 @@ public class Map implements Disposable {
 		}
 
 		// build map's terrains
-		int[] terrains = { tilesetDefinition.terrain1, tilesetDefinition.terrain2, tilesetDefinition.overlay };
+		int[] terrains = { tilesetDefinition.terrain1 };//, tilesetDefinition.terrain2, tilesetDefinition.overlay };
 		boolean[] isOverlay = { false, false, true };
 		for (int k = 0; k < terrains.length; k++) {
 			final int terrain = terrains[k];
@@ -102,9 +106,10 @@ public class Map implements Disposable {
 							int[] dY = { 1, 1, 0, -1, -1, -1, 0, 1 };
 							int value = 0b0000_0000;
 							int mask = 0b1000_0000;
+							int alt = altMap[i][j];
 							for (int l = 0; l < dX.length; l++) {
 								final int typeAt = isOverlay[k] ? getOverlayTypeAt(i + dX[l], j + dY[l]) : getTypeAt(i + dX[l], j + dY[l]);
-								if (typeAt == terrain) {
+								if (typeAt == terrain) {// && alt == getAltitudeAt(i + dX[l], j + dY[l])) {
 									value = value ^ mask;
 								}
 								mask = mask >>> 1;
@@ -391,12 +396,18 @@ public class Map implements Disposable {
 	 * @param xOffset the camera offset in tiles, to ensure we only render tiles
 	 *        visible in the x axis */
 	public void render(int row, int xOffset) {
-		//		row = 17;
+		if (debugRenderMode) {
+			timer = (timer + 1) % 600;
+			if (timer == 0) {
+				Game.log(staticRow + "");
+				staticRow = (staticRow + 1) % 10;
+			}
+			row = staticRow;
+		}
 		final int tileSize = Config.tileWidth;
 		if (layers == null) {
 			return;
 		}
-		;
 		for (int i = xOffset, n = xOffset + Config.viewWidth / Config.tileWidth + 1; i < n; i++) {
 			int alt = getAltitudeAt(i, row);
 			Tile[][] data = null;
@@ -417,16 +428,17 @@ public class Map implements Disposable {
 				try {
 					if (i >= 0 && i < data.length && row >= 0 && row < data[i].length && data[i][row + j] != null) {
 						// if we have a special overlay here draw it
-						if (typeMap[i][row + j] != null && typeMap[i][row + j].getType() != tilesetDefinition.stairs) {
-							tileView.draw(typeMap[i][row + j], i * tileSize, row * tileSize + j * tileSize);
+						if (typeMap[i][row] != null && typeMap[i][row].getType() != tilesetDefinition.stairs) {
+							tileView.draw(typeMap[i][row], i * tileSize, row * tileSize + alt * tileSize);
 						} else {
+							// dont draw pink
 							Game.batch().draw(tileView.get(data[i][row + j].id), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
 						}
 						if (data[i][row + j].overId > 0) {
 							Game.batch().draw(tileView.get(data[i][row + j].overId), (i * tileSize), (row * tileSize) + j * tileSize, tileSize, tileSize);
 						}
 					}
-				} catch (ArrayIndexOutOfBoundsException e) {
+				} catch (ArrayIndexOutOfBoundsException | NullPointerException e2) {
 					//FIXME: Halp. someting up with rendering very top and very bottom rows.
 					//Game.log("render oob " + i + " " + j + " " + row);
 				}

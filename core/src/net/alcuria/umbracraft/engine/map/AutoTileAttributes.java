@@ -152,11 +152,9 @@ public class AutoTileAttributes {
 			}
 		}
 
-		//		corners[0] = 14;
-		//		corners[1] = 15;
-		//		corners[2] = 20;
-		//		corners[3] = 21;
-
+		/*
+		 * corners[0] = 0; corners[1] = 0; corners[2] = 0; corners[3] = 0;
+		 */
 	}
 
 	/** Given an ID from the editor (1-6) this sets the TYPE of terrain for the
