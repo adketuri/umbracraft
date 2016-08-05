@@ -44,8 +44,8 @@ public class EntityCollisionComponent implements Component {
 		for (Entity otherEntity : Game.entities().getEntities(EntityScope.MAP)) {
 			// ensure it's another entity and it's on the same z axis
 			if (otherEntity != entity && MathUtils.isEqual(entity.position.z, otherEntity.position.z, 2f)) {
-				// only check a collision if both entities have an EntityCollisionComponent
-				if (entity.getComponent(EntityCollisionComponent.class) != null && otherEntity.getComponent(EntityCollisionComponent.class) != null) {
+				// only check a collision if both entities have an EntityCollisionComponent and the other entity is visible
+				if (entity.getComponent(EntityCollisionComponent.class) != null && otherEntity.getComponent(EntityCollisionComponent.class) != null && otherEntity.isVisible()) {
 					MapCollisionComponent component = entity.getComponent(MapCollisionComponent.class);
 					MapCollisionComponent otherComponent = otherEntity.getComponent(MapCollisionComponent.class);
 					// only check a collision if both entities have an MapCollisionComponent

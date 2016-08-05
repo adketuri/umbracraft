@@ -103,7 +103,7 @@ public class DirectedInputComponent implements Component {
 			targetY = lastNode.y + 0.5f;
 			choseNextNode = true;
 		}
-		if (MathUtils.isEqual(targetX, currentX, 1) && MathUtils.isEqual(targetY, currentY, 1) && pathfinder.getSolution().size > 0) {
+		if (MathUtils.isEqual(targetX, currentX, 0.5f) && MathUtils.isEqual(targetY, currentY, 0.5f) && pathfinder.getSolution().size > 0) {
 			choseNextNode = false;
 			pathfinder.getSolution().removeIndex(pathfinder.getSolution().size - 1);
 			return;

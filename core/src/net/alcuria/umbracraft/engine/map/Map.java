@@ -81,7 +81,7 @@ public class Map implements Disposable {
 		}
 
 		// build map's terrains
-		int[] terrains = { tilesetDefinition.terrain1 };//, tilesetDefinition.terrain2, tilesetDefinition.overlay };
+		int[] terrains = { tilesetDefinition.terrain1, tilesetDefinition.terrain2, tilesetDefinition.overlay }; // this second terrain FUCKS UP my autotiles
 		boolean[] isOverlay = { false, false, true };
 		for (int k = 0; k < terrains.length; k++) {
 			final int terrain = terrains[k];
