@@ -8,6 +8,7 @@ buildscript {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.android.tools.build:gradle:1.0.0'
         classpath 'org.robovm:robovm-gradle-plugin:1.0.0'
+		classpath 'net.sourceforge.jeval:jeval:0.9.4'
     }
 }
 
@@ -112,6 +113,7 @@ project(":core") {
         compile "net.dermetfan.libgdx-utils:libgdx-utils:0.10.0"
         compile "com.kotcrab.vis:vis-ui:0.8.2"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+		compile "net.sourceforge.jeval:jeval:0.9.4"
     }
 }
 

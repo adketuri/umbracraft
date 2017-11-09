@@ -44,6 +44,7 @@ public final class Game {
 	private static Saveable save;
 	private static UmbraScreen screen;
 	private static GameStatsManager stats;
+
 	private static VariableManager variables;
 	private static View view;
 
